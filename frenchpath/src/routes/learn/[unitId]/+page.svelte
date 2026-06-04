@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import { loadUnit, listUnitSummaries } from '$lib/content/loader';
+	import { renderInlineMarkdown } from '$lib/content/markdown';
 	import type { Unit } from '$lib/content/schema';
 	import { gradeExercise, scorePercent, type ExerciseResponse } from '$lib/lesson/engine';
 	import { completeLesson } from '$lib/lesson/complete';
@@ -104,7 +105,8 @@
 		{#if unit.bridge}
 			<section class="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4">
 				<h2 class="font-semibold text-amber-900">🌉 {unit.bridge.title}</h2>
-				<p class="mt-1 text-sm whitespace-pre-line text-amber-900">{unit.bridge.body}</p>
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -- escaped + trusted bridge content -->
+				<p class="mt-1 text-sm text-amber-900">{@html renderInlineMarkdown(unit.bridge.body)}</p>
 			</section>
 		{/if}
 
