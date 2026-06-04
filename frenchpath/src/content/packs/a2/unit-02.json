@@ -1,0 +1,149 @@
+{
+	"id": "a2-unit-02",
+	"cefrLevel": "A2",
+	"order": 2,
+	"title": "Le passé composé (être) — Movement verbs",
+	"objective": "Narrate past events involving movement, with correct agreement (A2: can recount a journey or trip).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: with être, the participle agrees with the subject",
+		"body": "A small set of movement/state verbs (aller, venir, partir, rester…) form the passé composé with **être**, and the past participle then **agrees** with the subject: *il est allé*, *elle est allé**e***, *ils sont allé**s***, *elles sont allé**es***. English has no such agreement, but Hindi does — वह गया (he went) vs वह गई (she went). Lean on that instinct; just add -e (feminine) and -s (plural) to the participle."
+	},
+	"cards": [
+		{
+			"id": "a2-pce-aller",
+			"french": "aller",
+			"gender": "none",
+			"ipa": "a.le",
+			"hindiGloss": "जाना",
+			"englishGloss": "to go (past participle: allé)",
+			"example": {
+				"french": "Je suis allé à Goa en train.",
+				"englishGloss": "I went to Goa by train."
+			},
+			"cefrLevel": "A2",
+			"skills": ["spokenProduction"]
+		},
+		{
+			"id": "a2-pce-venir",
+			"french": "venir",
+			"gender": "none",
+			"ipa": "və.niʁ",
+			"hindiGloss": "आना",
+			"englishGloss": "to come (past participle: venu)",
+			"example": {
+				"french": "Elle est venue de Chennai.",
+				"englishGloss": "She came from Chennai."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-pce-partir",
+			"french": "partir",
+			"gender": "none",
+			"ipa": "paʁ.tiʁ",
+			"hindiGloss": "रवाना होना",
+			"englishGloss": "to leave (past participle: parti)",
+			"example": {
+				"french": "Ils sont partis à six heures.",
+				"englishGloss": "They left at six o'clock."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-pce-rentrer",
+			"french": "rentrer",
+			"gender": "none",
+			"ipa": "ʁɑ̃.tʁe",
+			"hindiGloss": "घर लौटना",
+			"englishGloss": "to return home (past participle: rentré)",
+			"example": {
+				"french": "Pour Diwali, Arjun est rentré à Jaipur.",
+				"englishGloss": "For Diwali, Arjun returned home to Jaipur."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-pce-rester",
+			"french": "rester",
+			"gender": "none",
+			"ipa": "ʁɛs.te",
+			"hindiGloss": "रुकना / ठहरना",
+			"englishGloss": "to stay (NOT to rest) — past participle: resté",
+			"example": {
+				"french": "Nous sommes restés à l'hôtel.",
+				"englishGloss": "We stayed at the hotel."
+			},
+			"fauxAmi": true,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-pce-voyage",
+			"french": "le voyage",
+			"gender": "masculine",
+			"ipa": "lə vwa.jaʒ",
+			"hindiGloss": "यात्रा / सफ़र",
+			"englishGloss": "the trip / journey",
+			"example": {
+				"french": "Le voyage à Goa était long.",
+				"englishGloss": "The trip to Goa was long."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "cloze",
+			"id": "a2-u2-ex1",
+			"cardId": "a2-pce-venir",
+			"text": "Agreement (feminine): « Priya est {{}} de Chennai. » (venir)",
+			"answer": "venue",
+			"accept": ["venue"],
+			"hint": "être verb → participle agrees: feminine adds -e."
+		},
+		{
+			"type": "mcq",
+			"id": "a2-u2-ex2",
+			"prompt": "Which auxiliary do movement verbs like « aller » use in the passé composé?",
+			"options": ["être", "avoir", "aller", "faire"],
+			"answerIndex": 0,
+			"explanation": "Movement/state verbs (aller, venir, partir…) use être; the participle then agrees with the subject."
+		},
+		{
+			"type": "conjugation",
+			"id": "a2-u2-ex3",
+			"verb": "aller",
+			"pronoun": "nous",
+			"prompt": "Passé composé of « aller »: Nous ___ à Delhi. (two words)",
+			"answer": "sommes allés",
+			"accept": ["sommes alles"]
+		},
+		{
+			"type": "reorder",
+			"id": "a2-u2-ex4",
+			"prompt": "Build: “They left at six o'clock.”",
+			"words": ["Ils", "sont", "partis", "à", "six", "heures"]
+		},
+		{
+			"type": "translation",
+			"id": "a2-u2-ex5",
+			"cardId": "a2-pce-rester",
+			"prompt": "We stayed at the hotel.",
+			"direction": "en-fr",
+			"answer": "Nous sommes restés à l'hôtel",
+			"accept": ["nous sommes restes a l'hotel", "nous sommes restés à l'hôtel"]
+		},
+		{
+			"type": "gender",
+			"id": "a2-u2-ex6",
+			"cardId": "a2-pce-voyage",
+			"noun": "voyage",
+			"answer": "masculine",
+			"articleStyle": "definite"
+		}
+	]
+}

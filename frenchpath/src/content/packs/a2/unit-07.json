@@ -1,0 +1,147 @@
+{
+	"id": "a2-unit-07",
+	"cefrLevel": "A2",
+	"order": 7,
+	"title": "Les projets — Plans & the future",
+	"objective": "Talk about future plans and intentions (A2: can describe plans, hopes and intentions).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: « going to » vs « will »",
+		"body": "Two futures: **futur proche** = aller + infinitive (a near, planned “going to”): *Je vais étudier.* And **futur simple** = one word for “will”, formed from the infinitive + **-ai, -as, -a, -ons, -ez, -ont**: *J'étudierai.* Hindi marks the future with verb endings (पढ़ूँगा), so the futur simple’s single-word form will feel natural."
+	},
+	"cards": [
+		{
+			"id": "a2-fut-avenir",
+			"french": "l'avenir",
+			"gender": "masculine",
+			"ipa": "lav.niʁ",
+			"hindiGloss": "भविष्य",
+			"englishGloss": "the future",
+			"example": {
+				"french": "À l'avenir, je veux travailler en France.",
+				"englishGloss": "In the future, I want to work in France."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-fut-projet",
+			"french": "le projet",
+			"gender": "masculine",
+			"ipa": "lə pʁɔ.ʒɛ",
+			"hindiGloss": "योजना / प्रोजेक्ट",
+			"englishGloss": "the plan / project",
+			"example": {
+				"french": "Mon projet est d'étudier à l'étranger.",
+				"englishGloss": "My plan is to study abroad."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-fut-etudier",
+			"french": "étudier",
+			"gender": "none",
+			"ipa": "e.ty.dje",
+			"hindiGloss": "पढ़ाई करना",
+			"englishGloss": "to study (futur: j'étudierai)",
+			"example": {
+				"french": "L'année prochaine, j'étudierai à Paris.",
+				"englishGloss": "Next year, I will study in Paris."
+			},
+			"cefrLevel": "A2",
+			"skills": ["spokenProduction"]
+		},
+		{
+			"id": "a2-fut-economiser",
+			"french": "économiser",
+			"gender": "none",
+			"ipa": "e.kɔ.nɔ.mi.ze",
+			"hindiGloss": "बचत करना / पैसे बचाना",
+			"englishGloss": "to save (money) (futur: j'économiserai)",
+			"example": {
+				"french": "Je vais économiser pour le voyage.",
+				"englishGloss": "I'm going to save for the trip."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-fut-etranger",
+			"french": "l'étranger",
+			"gender": "masculine",
+			"ipa": "le.tʁɑ̃.ʒe",
+			"hindiGloss": "विदेश",
+			"englishGloss": "abroad (à l'étranger) / a foreigner",
+			"example": {
+				"french": "Beaucoup d'étudiants indiens partent à l'étranger.",
+				"englishGloss": "Many Indian students go abroad."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-fut-demain",
+			"french": "l'année prochaine",
+			"gender": "feminine",
+			"ipa": "la.ne pʁɔ.ʃɛn",
+			"hindiGloss": "अगले साल",
+			"englishGloss": "next year",
+			"example": {
+				"french": "L'année prochaine, je vais voyager.",
+				"englishGloss": "Next year, I'm going to travel."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "conjugation",
+			"id": "a2-u7-ex1",
+			"verb": "étudier",
+			"pronoun": "je",
+			"prompt": "Futur simple: L'année prochaine, j'___ à Paris. (I will study)",
+			"answer": "étudierai",
+			"accept": ["etudierai"]
+		},
+		{
+			"type": "cloze",
+			"id": "a2-u7-ex2",
+			"text": "Futur proche: « Demain, je {{}} voyager à Goa. » (aller)",
+			"answer": "vais",
+			"accept": ["vais"],
+			"hint": "aller (present, je) + infinitive."
+		},
+		{
+			"type": "mcq",
+			"id": "a2-u7-ex3",
+			"prompt": "« Je vais étudier ce soir » expresses…",
+			"options": ["a near-future plan", "a past habit", "a finished action", "a description"],
+			"answerIndex": 0,
+			"explanation": "futur proche (aller + infinitive) = a near-future plan."
+		},
+		{
+			"type": "translation",
+			"id": "a2-u7-ex4",
+			"cardId": "a2-fut-etudier",
+			"prompt": "I will travel.",
+			"direction": "en-fr",
+			"answer": "Je voyagerai",
+			"accept": ["je voyagerai"]
+		},
+		{
+			"type": "reorder",
+			"id": "a2-u7-ex5",
+			"prompt": "Build: “Next year, I will work in Mumbai.”",
+			"words": ["L'année", "prochaine", "je", "travaillerai", "à", "Mumbai"]
+		},
+		{
+			"type": "gender",
+			"id": "a2-u7-ex6",
+			"cardId": "a2-fut-projet",
+			"noun": "projet",
+			"answer": "masculine",
+			"articleStyle": "definite"
+		}
+	]
+}

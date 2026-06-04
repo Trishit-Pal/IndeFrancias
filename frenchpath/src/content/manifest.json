@@ -1,0 +1,128 @@
+[
+	{
+		"id": "a1-unit-01",
+		"cefrLevel": "A1",
+		"order": 1,
+		"title": "Bonjour ! — Greetings & introducing yourself",
+		"objective": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce oneself)."
+	},
+	{
+		"id": "a1-unit-02",
+		"cefrLevel": "A1",
+		"order": 2,
+		"title": "Ma famille — Family & possessives",
+		"objective": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings)."
+	},
+	{
+		"id": "a1-unit-03",
+		"cefrLevel": "A1",
+		"order": 3,
+		"title": "Les nombres et l'heure — Numbers, days & time",
+		"objective": "Count, ask and tell the time, and name the days of the week (A1: can handle numbers, quantities and time)."
+	},
+	{
+		"id": "a1-unit-04",
+		"cefrLevel": "A1",
+		"order": 4,
+		"title": "Au restaurant — Food & drink",
+		"objective": "Order food and drink and say what you like (A1: can order a meal and express simple preferences)."
+	},
+	{
+		"id": "a1-unit-05",
+		"cefrLevel": "A1",
+		"order": 5,
+		"title": "Les verbes en -er — Regular present tense",
+		"objective": "Describe everyday actions using regular -er verbs (A1: can describe habits and routines in simple terms)."
+	},
+	{
+		"id": "a1-unit-06",
+		"cefrLevel": "A1",
+		"order": 6,
+		"title": "Être, avoir, aller, faire — Key irregular verbs",
+		"objective": "Use the four essential irregular verbs in the present (A1: can use high-frequency verbs to handle basic needs)."
+	},
+	{
+		"id": "a1-unit-07",
+		"cefrLevel": "A1",
+		"order": 7,
+		"title": "Questions et négation — Asking & saying no",
+		"objective": "Ask simple questions and make negative statements (A1: can ask and answer simple questions on familiar topics)."
+	},
+	{
+		"id": "a1-unit-08",
+		"cefrLevel": "A1",
+		"order": 8,
+		"title": "En ville — Places & directions",
+		"objective": "Locate places and give simple directions (A1: can ask for and give directions using a map or in the street)."
+	},
+	{
+		"id": "a1-unit-09",
+		"cefrLevel": "A1",
+		"order": 9,
+		"title": "Le futur proche — Near future & plans",
+		"objective": "Say what you are going to do in the near future (A1: can make and describe simple plans)."
+	},
+	{
+		"id": "a1-unit-10",
+		"cefrLevel": "A1",
+		"order": 10,
+		"title": "Ma journée — Daily routine",
+		"objective": "Describe a typical day and how often you do things (A1: can describe daily routines and habits simply)."
+	},
+	{
+		"id": "a2-unit-01",
+		"cefrLevel": "A2",
+		"order": 1,
+		"title": "Le passé composé (avoir) — Talking about the past",
+		"objective": "Recount recent past events using the passé composé with avoir (A2: can describe past activities and personal experiences)."
+	},
+	{
+		"id": "a2-unit-02",
+		"cefrLevel": "A2",
+		"order": 2,
+		"title": "Le passé composé (être) — Movement verbs",
+		"objective": "Narrate past events involving movement, with correct agreement (A2: can recount a journey or trip)."
+	},
+	{
+		"id": "a2-unit-03",
+		"cefrLevel": "A2",
+		"order": 3,
+		"title": "L'imparfait — Describing the past",
+		"objective": "Describe past situations, habits and how things used to be (A2: can describe past routines and backgrounds)."
+	},
+	{
+		"id": "a2-unit-04",
+		"cefrLevel": "A2",
+		"order": 4,
+		"title": "Les verbes pronominaux — Reflexive verbs",
+		"objective": "Describe your daily routine in detail using reflexive verbs (A2: can describe routines and habits)."
+	},
+	{
+		"id": "a2-unit-05",
+		"cefrLevel": "A2",
+		"order": 5,
+		"title": "Faire les courses — Shopping & comparatives",
+		"objective": "Shop, ask quantities, and compare items (A2: can handle shopping and make simple comparisons)."
+	},
+	{
+		"id": "a2-unit-06",
+		"cefrLevel": "A2",
+		"order": 6,
+		"title": "Les pronoms COD/COI — Object pronouns",
+		"objective": "Replace nouns with object pronouns to avoid repetition (A2: can use pronouns in connected speech)."
+	},
+	{
+		"id": "a2-unit-07",
+		"cefrLevel": "A2",
+		"order": 7,
+		"title": "Les projets — Plans & the future",
+		"objective": "Talk about future plans and intentions (A2: can describe plans, hopes and intentions)."
+	},
+	{
+		"id": "a2-unit-08",
+		"cefrLevel": "A2",
+		"order": 8,
+		"title": "Donner son opinion — Giving opinions",
+		"objective": "Express and justify simple opinions (A2: can give and explain opinions on familiar topics)."
+	}
+]

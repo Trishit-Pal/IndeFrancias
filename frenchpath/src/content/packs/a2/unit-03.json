@@ -1,0 +1,158 @@
+{
+	"id": "a2-unit-03",
+	"cefrLevel": "A2",
+	"order": 3,
+	"title": "L'imparfait — Describing the past",
+	"objective": "Describe past situations, habits and how things used to be (A2: can describe past routines and backgrounds).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: the imparfait is “used to / was -ing”",
+		"body": "The imparfait describes the past — habits, descriptions, background — not single finished events. *Quand j'étais petit, je jouais au cricket* = “When I was little, I used to play cricket.” Form it from the **nous** present stem + endings **-ais, -ais, -ait, -ions, -iez, -aient**. Hindi’s past-habitual (खेलता था / “used to play”) is the closest match — use it as your anchor."
+	},
+	"cards": [
+		{
+			"id": "a2-imp-enfance",
+			"french": "l'enfance",
+			"gender": "feminine",
+			"ipa": "lɑ̃.fɑ̃s",
+			"hindiGloss": "बचपन",
+			"englishGloss": "childhood",
+			"example": {
+				"french": "Pendant mon enfance, j'habitais à Pune.",
+				"englishGloss": "During my childhood, I lived in Pune."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-imp-village",
+			"french": "le village",
+			"gender": "masculine",
+			"ipa": "lə vi.laʒ",
+			"hindiGloss": "गाँव",
+			"englishGloss": "the village",
+			"example": {
+				"french": "Mon village était petit et calme.",
+				"englishGloss": "My village was small and quiet."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-imp-autrefois",
+			"french": "autrefois",
+			"gender": "none",
+			"ipa": "o.tʁə.fwa",
+			"hindiGloss": "पुराने ज़माने में / पहले",
+			"englishGloss": "in the past / formerly",
+			"example": {
+				"french": "Autrefois, on jouait dehors.",
+				"englishGloss": "In the past, we used to play outside."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-imp-jouer",
+			"french": "jouer",
+			"gender": "none",
+			"ipa": "ʒwe",
+			"hindiGloss": "खेलना",
+			"englishGloss": "to play (imparfait: je jouais)",
+			"example": {
+				"french": "Je jouais au cricket chaque dimanche.",
+				"englishGloss": "I used to play cricket every Sunday."
+			},
+			"cefrLevel": "A2",
+			"skills": ["spokenProduction"]
+		},
+		{
+			"id": "a2-imp-ecole",
+			"french": "l'école",
+			"gender": "feminine",
+			"ipa": "le.kɔl",
+			"hindiGloss": "स्कूल / विद्यालय",
+			"englishGloss": "the school",
+			"example": {
+				"french": "L'école était près de la maison.",
+				"englishGloss": "The school was near the house."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-imp-petit",
+			"french": "petit",
+			"gender": "none",
+			"ipa": "pə.ti",
+			"hindiGloss": "छोटा",
+			"englishGloss": "small / little",
+			"example": {
+				"french": "Quand j'étais petit, j'aimais les mangues.",
+				"englishGloss": "When I was little, I loved mangoes."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "conjugation",
+			"id": "a2-u3-ex1",
+			"verb": "être",
+			"pronoun": "je",
+			"prompt": "Imparfait of « être »: Quand j'___ petit… (when I was little)",
+			"answer": "étais",
+			"accept": ["etais"]
+		},
+		{
+			"type": "cloze",
+			"id": "a2-u3-ex2",
+			"cardId": "a2-imp-jouer",
+			"text": "Habit in the past: « Autrefois, nous {{}} au cricket. » (jouer)",
+			"answer": "jouions",
+			"accept": ["jouions"],
+			"hint": "Imparfait, nous form (stem jou- + -ions)."
+		},
+		{
+			"type": "mcq",
+			"id": "a2-u3-ex3",
+			"prompt": "The imparfait is mainly used for…",
+			"options": [
+				"habits and descriptions in the past",
+				"a single finished action",
+				"a future plan",
+				"a command"
+			],
+			"answerIndex": 0,
+			"explanation": "Imparfait = ongoing/habitual/background past; the passé composé is for single finished actions."
+		},
+		{
+			"type": "translation",
+			"id": "a2-u3-ex4",
+			"cardId": "a2-imp-petit",
+			"prompt": "When I was little",
+			"direction": "en-fr",
+			"answer": "Quand j'étais petit",
+			"accept": ["quand j'étais petit", "quand j'etais petit", "quand j'étais petite"]
+		},
+		{
+			"type": "conjugation",
+			"id": "a2-u3-ex5",
+			"verb": "habiter",
+			"pronoun": "il",
+			"prompt": "Imparfait of « habiter »: Il ___ dans un village. (he used to live)",
+			"answer": "habitait",
+			"accept": []
+		},
+		{
+			"type": "matching",
+			"id": "a2-u3-ex6",
+			"prompt": "Match each imparfait form to its subject.",
+			"pairs": [
+				{ "left": "étais", "right": "je / tu" },
+				{ "left": "jouait", "right": "il / elle" },
+				{ "left": "habitions", "right": "nous" }
+			]
+		}
+	]
+}

@@ -1,0 +1,141 @@
+{
+	"id": "a1-unit-07",
+	"cefrLevel": "A1",
+	"order": 7,
+	"title": "Questions et négation — Asking & saying no",
+	"objective": "Ask simple questions and make negative statements (A1: can ask and answer simple questions on familiar topics).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: negation wraps the verb (ne … pas)",
+		"body": "French negation has TWO parts around the verb: **ne** + verb + **pas**. *Je ne parle pas anglais* = “I don’t speak English.” In speech, the **ne** is often dropped (*je parle pas*), but write both. To ask a yes/no question, just add **est-ce que** at the front: *Est-ce que tu parles français ?* Hindi puts नहीं after the verb and questions often use क्या at the front — similar instincts, different words."
+	},
+	"cards": [
+		{
+			"id": "a1-q-estceque",
+			"french": "est-ce que",
+			"gender": "none",
+			"ipa": "ɛs.kə",
+			"hindiGloss": "क्या (प्रश्न के लिए)",
+			"englishGloss": "(question marker, yes/no)",
+			"example": { "french": "Est-ce que tu aimes le thé ?", "englishGloss": "Do you like tea?" },
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-q-quest",
+			"french": "qu'est-ce que",
+			"gender": "none",
+			"ipa": "kɛs.kə",
+			"hindiGloss": "क्या (वस्तु पूछना)",
+			"englishGloss": "what",
+			"example": { "french": "Qu'est-ce que tu manges ?", "englishGloss": "What are you eating?" },
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-q-ou",
+			"french": "où",
+			"gender": "none",
+			"ipa": "u",
+			"hindiGloss": "कहाँ",
+			"englishGloss": "where",
+			"example": { "french": "Où habites-tu ?", "englishGloss": "Where do you live?" },
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-q-comment",
+			"french": "comment",
+			"gender": "none",
+			"ipa": "kɔ.mɑ̃",
+			"hindiGloss": "कैसे",
+			"englishGloss": "how",
+			"example": { "french": "Comment ça va ?", "englishGloss": "How are you?" },
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-q-pourquoi",
+			"french": "pourquoi",
+			"gender": "none",
+			"ipa": "puʁ.kwa",
+			"hindiGloss": "क्यों",
+			"englishGloss": "why",
+			"example": { "french": "Pourquoi pas ?", "englishGloss": "Why not?" },
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-q-nepas",
+			"french": "ne … pas",
+			"gender": "none",
+			"ipa": "nə … pa",
+			"hindiGloss": "नहीं (निषेध)",
+			"englishGloss": "not (negation)",
+			"example": {
+				"french": "Je ne parle pas espagnol.",
+				"englishGloss": "I don't speak Spanish."
+			},
+			"cefrLevel": "A1",
+			"skills": ["writing"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "reorder",
+			"id": "a1-u7-ex1",
+			"prompt": "Build the question: “Do you speak French?”",
+			"words": ["Est-ce", "que", "tu", "parles", "français"]
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u7-ex2",
+			"cardId": "a1-q-nepas",
+			"text": "Make it negative: « Je {{}} mange pas de viande. »",
+			"answer": "ne",
+			"accept": ["ne", "n'"],
+			"hint": "First part of the ne … pas sandwich."
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u7-ex3",
+			"cardId": "a1-q-ou",
+			"prompt": "Which word means « where »?",
+			"options": ["où", "comment", "pourquoi", "qui"],
+			"answerIndex": 0,
+			"explanation": "« où » = where; « comment » = how; « pourquoi » = why."
+		},
+		{
+			"type": "translation",
+			"id": "a1-u7-ex4",
+			"cardId": "a1-q-quest",
+			"prompt": "What are you eating?",
+			"direction": "en-fr",
+			"answer": "Qu'est-ce que tu manges",
+			"accept": ["qu'est-ce que tu manges", "quest-ce que tu manges"]
+		},
+		{
+			"type": "matching",
+			"id": "a1-u7-ex5",
+			"prompt": "Match each question word to English.",
+			"pairs": [
+				{ "left": "où", "right": "where" },
+				{ "left": "comment", "right": "how" },
+				{ "left": "pourquoi", "right": "why" },
+				{ "left": "qu'est-ce que", "right": "what" }
+			]
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u7-ex6",
+			"prompt": "How do you say “I don't speak Spanish”?",
+			"options": [
+				"Je ne parle pas espagnol",
+				"Je parle pas ne espagnol",
+				"Je pas parle espagnol",
+				"Je ne pas parle espagnol"
+			],
+			"answerIndex": 0,
+			"explanation": "ne + verb + pas: « Je ne parle pas espagnol »."
+		}
+	]
+}

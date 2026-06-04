@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+/* Honour the OS reduce-motion preference. */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		transition-duration: 0.01ms !important;
+	}
+}
+
+/* Manual override from Settings (toggles .reduce-motion on <html>). */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+	animation: none !important;
+	transition: none !important;
+}

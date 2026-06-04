@@ -1,0 +1,154 @@
+{
+	"id": "a2-unit-05",
+	"cefrLevel": "A2",
+	"order": 5,
+	"title": "Faire les courses — Shopping & comparatives",
+	"objective": "Shop, ask quantities, and compare items (A2: can handle shopping and make simple comparisons).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: plus / moins / aussi … que",
+		"body": "Compare with **plus … que** (more … than), **moins … que** (less … than), **aussi … que** (as … as): *Les mangues sont plus chères que les pommes.* The adjective still agrees (chère/chères). Hindi uses से ज़्यादा / से कम (… than) — same idea, different position. For quantities use **de**: *un kilo **de** légumes*, *beaucoup **de** thé*."
+	},
+	"cards": [
+		{
+			"id": "a2-shop-magasin",
+			"french": "le magasin",
+			"gender": "masculine",
+			"ipa": "lə ma.ɡa.zɛ̃",
+			"hindiGloss": "दुकान",
+			"englishGloss": "the shop / store",
+			"example": {
+				"french": "Le magasin ouvre à neuf heures.",
+				"englishGloss": "The shop opens at nine."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-shop-kilo",
+			"french": "un kilo",
+			"gender": "masculine",
+			"ipa": "œ̃ ki.lo",
+			"hindiGloss": "एक किलो",
+			"englishGloss": "a kilo",
+			"example": {
+				"french": "Je voudrais un kilo de tomates.",
+				"englishGloss": "I'd like a kilo of tomatoes."
+			},
+			"cefrLevel": "A2",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a2-shop-cher",
+			"french": "cher",
+			"gender": "none",
+			"ipa": "ʃɛʁ",
+			"hindiGloss": "महँगा",
+			"englishGloss": "expensive (fem: chère)",
+			"example": {
+				"french": "Les épices ne sont pas chères ici.",
+				"englishGloss": "Spices are not expensive here."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-shop-legumes",
+			"french": "les légumes",
+			"gender": "masculine",
+			"ipa": "le le.ɡym",
+			"hindiGloss": "सब्ज़ियाँ",
+			"englishGloss": "vegetables",
+			"example": {
+				"french": "J'achète les légumes au marché.",
+				"englishGloss": "I buy vegetables at the market."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-shop-epices",
+			"french": "les épices",
+			"gender": "feminine",
+			"ipa": "le.z‿e.pis",
+			"hindiGloss": "मसाले",
+			"englishGloss": "spices",
+			"example": {
+				"french": "Les épices indiennes sont parfumées.",
+				"englishGloss": "Indian spices are fragrant."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-shop-argent",
+			"french": "l'argent",
+			"gender": "masculine",
+			"ipa": "laʁ.ʒɑ̃",
+			"hindiGloss": "पैसा",
+			"englishGloss": "money (also: silver)",
+			"example": {
+				"french": "Je n'ai pas beaucoup d'argent.",
+				"englishGloss": "I don't have much money."
+			},
+			"fauxAmi": true,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "cloze",
+			"id": "a2-u5-ex1",
+			"text": "Comparison (more … than): « Les mangues sont {{}} chères que les pommes. »",
+			"answer": "plus",
+			"accept": ["plus"],
+			"hint": "“more … than” = plus … que."
+		},
+		{
+			"type": "mcq",
+			"id": "a2-u5-ex2",
+			"prompt": "« Le thé est moins cher que le café » means…",
+			"options": [
+				"Tea is less expensive than coffee",
+				"Tea is more expensive than coffee",
+				"Tea is as expensive as coffee",
+				"Coffee is cheap"
+			],
+			"answerIndex": 0,
+			"explanation": "moins … que = less … than."
+		},
+		{
+			"type": "translation",
+			"id": "a2-u5-ex3",
+			"cardId": "a2-shop-kilo",
+			"prompt": "a kilo of vegetables",
+			"direction": "en-fr",
+			"answer": "un kilo de légumes",
+			"accept": ["un kilo de legumes"]
+		},
+		{
+			"type": "reorder",
+			"id": "a2-u5-ex4",
+			"prompt": "Build: “Tea is less expensive than coffee.”",
+			"words": ["Le", "thé", "est", "moins", "cher", "que", "le", "café"]
+		},
+		{
+			"type": "matching",
+			"id": "a2-u5-ex5",
+			"prompt": "Match the comparison words to English.",
+			"pairs": [
+				{ "left": "plus … que", "right": "more … than" },
+				{ "left": "moins … que", "right": "less … than" },
+				{ "left": "aussi … que", "right": "as … as" }
+			]
+		},
+		{
+			"type": "gender",
+			"id": "a2-u5-ex6",
+			"cardId": "a2-shop-magasin",
+			"noun": "magasin",
+			"answer": "masculine",
+			"articleStyle": "definite"
+		}
+	]
+}

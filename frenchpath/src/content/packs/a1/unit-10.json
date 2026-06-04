@@ -1,0 +1,146 @@
+{
+	"id": "a1-unit-10",
+	"cefrLevel": "A1",
+	"order": 10,
+	"title": "Ma journée — Daily routine",
+	"objective": "Describe a typical day and how often you do things (A1: can describe daily routines and habits simply).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: present tense + frequency words",
+		"body": "French has no separate “habitual present” — the simple present covers habits: *Je travaille le matin* = “I work in the morning.” Add frequency words like **souvent** (often), **toujours** (always), **tous les jours** (every day). Place them after the verb: *Je bois souvent du chai.* This matches Hindi रोज़ / अक्सर placement closely."
+	},
+	"cards": [
+		{
+			"id": "a1-day-matin",
+			"french": "le matin",
+			"gender": "masculine",
+			"ipa": "lə ma.tɛ̃",
+			"hindiGloss": "सुबह",
+			"englishGloss": "the morning",
+			"example": {
+				"french": "Le matin, je bois du chai.",
+				"englishGloss": "In the morning, I drink chai."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-day-soir",
+			"french": "le soir",
+			"gender": "masculine",
+			"ipa": "lə swaʁ",
+			"hindiGloss": "शाम",
+			"englishGloss": "the evening",
+			"example": {
+				"french": "Le soir, je regarde un film.",
+				"englishGloss": "In the evening, I watch a film."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-day-souvent",
+			"french": "souvent",
+			"gender": "none",
+			"ipa": "su.vɑ̃",
+			"hindiGloss": "अक्सर",
+			"englishGloss": "often",
+			"example": { "french": "Je mange souvent du dal.", "englishGloss": "I often eat dal." },
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-day-toujours",
+			"french": "toujours",
+			"gender": "none",
+			"ipa": "tu.ʒuʁ",
+			"hindiGloss": "हमेशा",
+			"englishGloss": "always",
+			"example": {
+				"french": "Elle est toujours à l'heure.",
+				"englishGloss": "She is always on time."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-day-tousles",
+			"french": "tous les jours",
+			"gender": "none",
+			"ipa": "tu le ʒuʁ",
+			"hindiGloss": "रोज़",
+			"englishGloss": "every day",
+			"example": { "french": "Je travaille tous les jours.", "englishGloss": "I work every day." },
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-day-travail",
+			"french": "le travail",
+			"gender": "masculine",
+			"ipa": "lə tʁa.vaj",
+			"hindiGloss": "काम",
+			"englishGloss": "the work / job",
+			"example": {
+				"french": "Le travail commence à neuf heures.",
+				"englishGloss": "Work starts at nine o'clock."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "cloze",
+			"id": "a1-u10-ex1",
+			"cardId": "a1-day-souvent",
+			"text": "Say you often eat dal: « Je mange {{}} du dal. »",
+			"answer": "souvent",
+			"accept": ["souvent"],
+			"hint": "Frequency word for 'often', placed after the verb."
+		},
+		{
+			"type": "conjugation",
+			"id": "a1-u10-ex2",
+			"verb": "travailler",
+			"pronoun": "je",
+			"prompt": "Habit (present): Je ___ tous les jours.",
+			"answer": "travaille",
+			"accept": []
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u10-ex3",
+			"cardId": "a1-day-matin",
+			"prompt": "« Le matin » means…",
+			"options": ["in the morning", "in the evening", "at night", "tomorrow"],
+			"answerIndex": 0,
+			"explanation": "le matin = the morning; le soir = the evening."
+		},
+		{
+			"type": "translation",
+			"id": "a1-u10-ex4",
+			"cardId": "a1-day-tousles",
+			"prompt": "every day",
+			"direction": "en-fr",
+			"answer": "tous les jours",
+			"accept": ["tous les jours"]
+		},
+		{
+			"type": "reorder",
+			"id": "a1-u10-ex5",
+			"prompt": "Build: “In the evening, I watch a film.”",
+			"words": ["Le", "soir", "je", "regarde", "un", "film"]
+		},
+		{
+			"type": "matching",
+			"id": "a1-u10-ex6",
+			"prompt": "Match the frequency/time words to English.",
+			"pairs": [
+				{ "left": "souvent", "right": "often" },
+				{ "left": "toujours", "right": "always" },
+				{ "left": "le matin", "right": "the morning" },
+				{ "left": "le soir", "right": "the evening" }
+			]
+		}
+	]
+}

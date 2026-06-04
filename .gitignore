@@ -1,0 +1,17 @@
+# Dependencies / build output (frenchpath/ has its own .gitignore too)
+node_modules/
+frenchpath/node_modules/
+frenchpath/build/
+frenchpath/.svelte-kit/
+frenchpath/coverage/
+frenchpath/test-results/
+frenchpath/playwright-report/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env / secrets
+.env
+.env.*
+!.env.example

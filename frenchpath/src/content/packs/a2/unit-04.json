@@ -1,0 +1,142 @@
+{
+	"id": "a2-unit-04",
+	"cefrLevel": "A2",
+	"order": 4,
+	"title": "Les verbes pronominaux — Reflexive verbs",
+	"objective": "Describe your daily routine in detail using reflexive verbs (A2: can describe routines and habits).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: the “self” pronoun comes before the verb",
+		"body": "Reflexive verbs carry a pronoun that refers back to the subject: **je me lève** (I get [myself] up), **il se lave** (he washes [himself]). English often hides this (“I get up”), so don’t forget the **me / te / se / nous / vous / se** — and it goes **before** the verb. Think of Hindi’s खुद / अपने को. Order: subject + reflexive pronoun + verb."
+	},
+	"cards": [
+		{
+			"id": "a2-ref-selever",
+			"french": "se lever",
+			"gender": "none",
+			"ipa": "sə lə.ve",
+			"hindiGloss": "उठना",
+			"englishGloss": "to get up (je me lève)",
+			"example": { "french": "Je me lève à six heures.", "englishGloss": "I get up at six." },
+			"cefrLevel": "A2",
+			"skills": ["spokenProduction"]
+		},
+		{
+			"id": "a2-ref-selaver",
+			"french": "se laver",
+			"gender": "none",
+			"ipa": "sə la.ve",
+			"hindiGloss": "नहाना / खुद को धोना",
+			"englishGloss": "to wash (oneself) (je me lave)",
+			"example": {
+				"french": "Elle se lave le matin.",
+				"englishGloss": "She washes in the morning."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-ref-shabiller",
+			"french": "s'habiller",
+			"gender": "none",
+			"ipa": "sa.bi.je",
+			"hindiGloss": "कपड़े पहनना",
+			"englishGloss": "to get dressed (je m'habille)",
+			"example": {
+				"french": "Arjun s'habille vite.",
+				"englishGloss": "Arjun gets dressed quickly."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-ref-sebrosser",
+			"french": "se brosser les dents",
+			"gender": "none",
+			"ipa": "sə bʁɔ.se le dɑ̃",
+			"hindiGloss": "दाँत साफ़ करना",
+			"englishGloss": "to brush one's teeth (je me brosse les dents)",
+			"example": {
+				"french": "Je me brosse les dents après le petit-déjeuner.",
+				"englishGloss": "I brush my teeth after breakfast."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-ref-secoucher",
+			"french": "se coucher",
+			"gender": "none",
+			"ipa": "sə ku.ʃe",
+			"hindiGloss": "सोने जाना",
+			"englishGloss": "to go to bed (je me couche)",
+			"example": { "french": "Nous nous couchons tard.", "englishGloss": "We go to bed late." },
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-ref-douche",
+			"french": "la douche",
+			"gender": "feminine",
+			"ipa": "la duʃ",
+			"hindiGloss": "शॉवर / नहाना",
+			"englishGloss": "the shower",
+			"example": {
+				"french": "Je prends une douche le matin.",
+				"englishGloss": "I take a shower in the morning."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "conjugation",
+			"id": "a2-u4-ex1",
+			"verb": "se lever",
+			"pronoun": "je",
+			"prompt": "Reflexive present: Je ___ à six heures. (get up — two words)",
+			"answer": "me lève",
+			"accept": ["me leve"]
+		},
+		{
+			"type": "cloze",
+			"id": "a2-u4-ex2",
+			"cardId": "a2-ref-sebrosser",
+			"text": "Le matin, il {{}} brosse les dents.",
+			"answer": "se",
+			"accept": ["se"],
+			"hint": "Reflexive pronoun for il/elle."
+		},
+		{
+			"type": "reorder",
+			"id": "a2-u4-ex3",
+			"prompt": "Build: “I wash in the morning.”",
+			"words": ["Je", "me", "lave", "le", "matin"]
+		},
+		{
+			"type": "mcq",
+			"id": "a2-u4-ex4",
+			"prompt": "Which reflexive pronoun goes with « je »?",
+			"options": ["me", "te", "se", "nous"],
+			"answerIndex": 0,
+			"explanation": "je → me, tu → te, il/elle → se, nous → nous, vous → vous, ils/elles → se."
+		},
+		{
+			"type": "translation",
+			"id": "a2-u4-ex5",
+			"cardId": "a2-ref-shabiller",
+			"prompt": "I get dressed.",
+			"direction": "en-fr",
+			"answer": "Je m'habille",
+			"accept": ["je m'habille", "je mhabille"]
+		},
+		{
+			"type": "gender",
+			"id": "a2-u4-ex6",
+			"cardId": "a2-ref-douche",
+			"noun": "douche",
+			"answer": "feminine",
+			"articleStyle": "definite"
+		}
+	]
+}

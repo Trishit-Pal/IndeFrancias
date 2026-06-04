@@ -1,0 +1,114 @@
+{
+	"id": "a1-unit-06",
+	"cefrLevel": "A1",
+	"order": 6,
+	"title": "Être, avoir, aller, faire — Key irregular verbs",
+	"objective": "Use the four essential irregular verbs in the present (A1: can use high-frequency verbs to handle basic needs).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: French says “I HAVE hunger”, not “I am hungry”",
+		"body": "For states like hunger, thirst and age, French uses **avoir**, not **être**: **j'ai faim** (lit. “I have hunger”), **j'ai 20 ans** (lit. “I have 20 years”). English uses “to be”, which trips up learners — ✗ *je suis faim*, ✗ *je suis 20 ans*. Hindi actually helps here: मुझे भूख है (“to me there is hunger”) and मेरी उम्र 20 साल है both avoid “I am”, just like French. Memorise the four verbs — they appear everywhere."
+	},
+	"cards": [
+		{
+			"id": "a1-irr-etre",
+			"french": "être",
+			"gender": "none",
+			"ipa": "ɛtʁ",
+			"hindiGloss": "होना",
+			"englishGloss": "to be",
+			"example": { "french": "Je suis indien.", "englishGloss": "I am Indian." },
+			"cefrLevel": "A1",
+			"skills": ["spokenProduction"]
+		},
+		{
+			"id": "a1-irr-avoir",
+			"french": "avoir",
+			"gender": "none",
+			"ipa": "a.vwaʁ",
+			"hindiGloss": "होना (पास होना)",
+			"englishGloss": "to have",
+			"example": { "french": "J'ai faim.", "englishGloss": "I am hungry (lit. I have hunger)." },
+			"cefrLevel": "A1",
+			"skills": ["spokenProduction"]
+		},
+		{
+			"id": "a1-irr-aller",
+			"french": "aller",
+			"gender": "none",
+			"ipa": "a.le",
+			"hindiGloss": "जाना",
+			"englishGloss": "to go",
+			"example": { "french": "Je vais au marché.", "englishGloss": "I am going to the market." },
+			"cefrLevel": "A1",
+			"skills": ["spokenProduction"]
+		},
+		{
+			"id": "a1-irr-faire",
+			"french": "faire",
+			"gender": "none",
+			"ipa": "fɛʁ",
+			"hindiGloss": "करना / बनाना",
+			"englishGloss": "to do / to make",
+			"example": { "french": "Nous faisons la cuisine.", "englishGloss": "We do the cooking." },
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "conjugation",
+			"id": "a1-u6-ex1",
+			"verb": "être",
+			"pronoun": "je",
+			"prompt": "Conjugate « être »: Je ___ étudiant.",
+			"answer": "suis",
+			"accept": []
+		},
+		{
+			"type": "conjugation",
+			"id": "a1-u6-ex2",
+			"verb": "aller",
+			"pronoun": "nous",
+			"prompt": "Conjugate « aller »: Nous ___ à Goa.",
+			"answer": "allons",
+			"accept": []
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u6-ex3",
+			"prompt": "How do you say “I am hungry” in French?",
+			"options": ["J'ai faim", "Je suis faim", "Je fais faim", "Je vais faim"],
+			"answerIndex": 0,
+			"explanation": "French uses avoir for hunger: « j'ai faim » (I have hunger). « je suis faim » is a classic mistake."
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u6-ex4",
+			"cardId": "a1-irr-avoir",
+			"text": "Priya is 20 years old: « Elle {{}} vingt ans. »",
+			"answer": "a",
+			"accept": ["a"],
+			"hint": "Age uses avoir (il/elle form), not être."
+		},
+		{
+			"type": "translation",
+			"id": "a1-u6-ex5",
+			"cardId": "a1-irr-aller",
+			"prompt": "I am going to the market.",
+			"direction": "en-fr",
+			"answer": "Je vais au marché",
+			"accept": ["je vais au marche", "je vais au marché"]
+		},
+		{
+			"type": "matching",
+			"id": "a1-u6-ex6",
+			"prompt": "Match each verb to its meaning.",
+			"pairs": [
+				{ "left": "être", "right": "to be" },
+				{ "left": "avoir", "right": "to have" },
+				{ "left": "aller", "right": "to go" },
+				{ "left": "faire", "right": "to do/make" }
+			]
+		}
+	]
+}

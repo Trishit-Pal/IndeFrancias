@@ -1,0 +1,149 @@
+{
+	"id": "a2-unit-06",
+	"cefrLevel": "A2",
+	"order": 6,
+	"title": "Les pronoms COD/COI — Object pronouns",
+	"objective": "Replace nouns with object pronouns to avoid repetition (A2: can use pronouns in connected speech).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: the object pronoun comes BEFORE the verb",
+		"body": "Direct objects use **le / la / les** (him/her/it/them); indirect objects (with **à**) use **lui** (to him/her) / **leur** (to them). Unlike English (“I see **him**” — after), French puts them **before** the verb: *Je **le** vois.* *Je **lui** parle.* Hindi word order actually helps — the object usually comes before the verb there too (मैं उसे देखता हूँ)."
+	},
+	"cards": [
+		{
+			"id": "a2-pron-voir",
+			"french": "voir",
+			"gender": "none",
+			"ipa": "vwaʁ",
+			"hindiGloss": "देखना",
+			"englishGloss": "to see (je le/la vois)",
+			"example": {
+				"french": "Je le vois souvent au bureau.",
+				"englishGloss": "I see him often at the office."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-pron-appeler",
+			"french": "appeler",
+			"gender": "none",
+			"ipa": "a.ple",
+			"hindiGloss": "बुलाना / फ़ोन करना",
+			"englishGloss": "to call (je les appelle)",
+			"example": {
+				"french": "Je les appelle le dimanche.",
+				"englishGloss": "I call them on Sundays."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-pron-donner",
+			"french": "donner",
+			"gender": "none",
+			"ipa": "dɔ.ne",
+			"hindiGloss": "देना",
+			"englishGloss": "to give (je lui donne)",
+			"example": {
+				"french": "Je lui donne un cadeau pour Diwali.",
+				"englishGloss": "I give her a gift for Diwali."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-pron-parler",
+			"french": "parler à",
+			"gender": "none",
+			"ipa": "paʁ.le a",
+			"hindiGloss": "किसी से बात करना",
+			"englishGloss": "to talk to (je lui/leur parle)",
+			"example": {
+				"french": "Je leur parle en français.",
+				"englishGloss": "I talk to them in French."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-pron-cadeau",
+			"french": "le cadeau",
+			"gender": "masculine",
+			"ipa": "lə ka.do",
+			"hindiGloss": "उपहार / तोहफ़ा",
+			"englishGloss": "the gift",
+			"example": {
+				"french": "Le cadeau est pour ma sœur.",
+				"englishGloss": "The gift is for my sister."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-pron-lettre",
+			"french": "la lettre",
+			"gender": "feminine",
+			"ipa": "la lɛtʁ",
+			"hindiGloss": "पत्र / चिट्ठी",
+			"englishGloss": "the letter",
+			"example": {
+				"french": "J'écris une lettre à mon ami.",
+				"englishGloss": "I write a letter to my friend."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "mcq",
+			"id": "a2-u6-ex1",
+			"cardId": "a2-pron-voir",
+			"prompt": "“I see him often.” → « Je ___ vois souvent. »",
+			"options": ["le", "lui", "leur", "la"],
+			"answerIndex": 0,
+			"explanation": "Direct object “him” = le, placed before the verb."
+		},
+		{
+			"type": "cloze",
+			"id": "a2-u6-ex2",
+			"cardId": "a2-pron-donner",
+			"text": "“I give a gift to Priya.” → « Je {{}} donne un cadeau. » (to her)",
+			"answer": "lui",
+			"accept": ["lui"],
+			"hint": "Indirect object (à + person), singular = lui."
+		},
+		{
+			"type": "reorder",
+			"id": "a2-u6-ex3",
+			"prompt": "Build: “I see him often.”",
+			"words": ["Je", "le", "vois", "souvent"]
+		},
+		{
+			"type": "translation",
+			"id": "a2-u6-ex4",
+			"cardId": "a2-pron-appeler",
+			"prompt": "I call them.",
+			"direction": "en-fr",
+			"answer": "Je les appelle",
+			"accept": ["je les appelle"]
+		},
+		{
+			"type": "mcq",
+			"id": "a2-u6-ex5",
+			"cardId": "a2-pron-parler",
+			"prompt": "« parler à quelqu'un » takes which pronoun for “to them”?",
+			"options": ["leur", "les", "le", "la"],
+			"answerIndex": 0,
+			"explanation": "“parler à” is indirect → lui (singular) / leur (plural)."
+		},
+		{
+			"type": "gender",
+			"id": "a2-u6-ex6",
+			"cardId": "a2-pron-cadeau",
+			"noun": "cadeau",
+			"answer": "masculine",
+			"articleStyle": "definite"
+		}
+	]
+}

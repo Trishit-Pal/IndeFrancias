@@ -1,0 +1,133 @@
+{
+	"id": "a1-unit-09",
+	"cefrLevel": "A1",
+	"order": 9,
+	"title": "Le futur proche — Near future & plans",
+	"objective": "Say what you are going to do in the near future (A1: can make and describe simple plans).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: « going to » = aller + infinitive",
+		"body": "The near future is easy: **aller** (present) + an **infinitive**. *Je vais manger* = “I’m going to eat”; *Nous allons voyager* = “We’re going to travel.” It mirrors English “going to + verb”. Hindi marks the future with verb endings (मैं खाऊँगा), so focus on the two-word French pattern: a form of *aller* + the base verb."
+	},
+	"cards": [
+		{
+			"id": "a1-fut-demain",
+			"french": "demain",
+			"gender": "none",
+			"ipa": "də.mɛ̃",
+			"hindiGloss": "कल (आने वाला)",
+			"englishGloss": "tomorrow",
+			"example": {
+				"french": "Demain, je vais étudier.",
+				"englishGloss": "Tomorrow, I'm going to study."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-fut-weekend",
+			"french": "le week-end",
+			"gender": "masculine",
+			"ipa": "lə wi.kɛnd",
+			"hindiGloss": "सप्ताहांत",
+			"englishGloss": "the weekend",
+			"example": {
+				"french": "Ce week-end, on va à Goa.",
+				"englishGloss": "This weekend, we're going to Goa."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-fut-bientot",
+			"french": "bientôt",
+			"gender": "none",
+			"ipa": "bjɛ̃.to",
+			"hindiGloss": "जल्द ही",
+			"englishGloss": "soon",
+			"example": { "french": "À bientôt !", "englishGloss": "See you soon!" },
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-fut-prochaine",
+			"french": "la semaine prochaine",
+			"gender": "feminine",
+			"ipa": "la sə.mɛn pʁɔ.ʃɛn",
+			"hindiGloss": "अगले हफ़्ते",
+			"englishGloss": "next week",
+			"example": {
+				"french": "La semaine prochaine, je vais visiter Agra.",
+				"englishGloss": "Next week, I'm going to visit Agra."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-fut-voyager",
+			"french": "voyager",
+			"gender": "none",
+			"ipa": "vwa.ja.ʒe",
+			"hindiGloss": "यात्रा करना",
+			"englishGloss": "to travel",
+			"example": {
+				"french": "Nous allons voyager en train.",
+				"englishGloss": "We're going to travel by train."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "conjugation",
+			"id": "a1-u9-ex1",
+			"verb": "aller",
+			"pronoun": "je",
+			"prompt": "Near future: Je ___ manger un thali.",
+			"answer": "vais",
+			"accept": []
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u9-ex2",
+			"cardId": "a1-fut-voyager",
+			"text": "We're going to travel: « Nous allons {{}} en train. »",
+			"answer": "voyager",
+			"accept": ["voyager"],
+			"hint": "The infinitive after aller."
+		},
+		{
+			"type": "reorder",
+			"id": "a1-u9-ex3",
+			"prompt": "Build: “Tomorrow, I'm going to study.”",
+			"words": ["Demain", "je", "vais", "étudier"]
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u9-ex4",
+			"prompt": "« Ce week-end, on va à Goa » talks about…",
+			"options": ["a near-future plan", "a past trip", "a daily habit", "a question"],
+			"answerIndex": 0,
+			"explanation": "« on va à … » (aller) expresses a near-future plan."
+		},
+		{
+			"type": "translation",
+			"id": "a1-u9-ex5",
+			"cardId": "a1-fut-prochaine",
+			"prompt": "next week",
+			"direction": "en-fr",
+			"answer": "la semaine prochaine",
+			"accept": ["la semaine prochaine"]
+		},
+		{
+			"type": "matching",
+			"id": "a1-u9-ex6",
+			"prompt": "Match the time words to English.",
+			"pairs": [
+				{ "left": "demain", "right": "tomorrow" },
+				{ "left": "bientôt", "right": "soon" },
+				{ "left": "le week-end", "right": "the weekend" }
+			]
+		}
+	]
+}

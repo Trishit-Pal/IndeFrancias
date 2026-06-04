@@ -1,0 +1,146 @@
+{
+	"id": "a1-unit-03",
+	"cefrLevel": "A1",
+	"order": 3,
+	"title": "Les nombres et l'heure — Numbers, days & time",
+	"objective": "Count, ask and tell the time, and name the days of the week (A1: can handle numbers, quantities and time).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: telling time with « il est … heures »",
+		"body": "French tells the time impersonally: **Il est trois heures** = “It is three o’clock” (literally “It is three hours”). English uses “o’clock”; Hindi uses तीन बजे (teen baje). Numbers 1–16 are unique words to memorise (like Hindi एक, दो, तीन…), then they become regular. Don’t forget the silent letters: **deux** sounds like /dø/ (the x is silent)."
+	},
+	"cards": [
+		{
+			"id": "a1-num-deux",
+			"french": "deux",
+			"gender": "none",
+			"ipa": "dø",
+			"hindiGloss": "दो (2)",
+			"englishGloss": "two",
+			"example": { "french": "J'ai deux frères.", "englishGloss": "I have two brothers." },
+			"cefrLevel": "A1",
+			"skills": ["listening"]
+		},
+		{
+			"id": "a1-num-cinq",
+			"french": "cinq",
+			"gender": "none",
+			"ipa": "sɛ̃k",
+			"hindiGloss": "पाँच (5)",
+			"englishGloss": "five",
+			"example": {
+				"french": "Le thé coûte cinq roupies.",
+				"englishGloss": "The tea costs five rupees."
+			},
+			"cefrLevel": "A1",
+			"skills": ["listening"]
+		},
+		{
+			"id": "a1-num-dix",
+			"french": "dix",
+			"gender": "none",
+			"ipa": "dis",
+			"hindiGloss": "दस (10)",
+			"englishGloss": "ten",
+			"example": { "french": "Il est dix heures.", "englishGloss": "It is ten o'clock." },
+			"cefrLevel": "A1",
+			"skills": ["listening"]
+		},
+		{
+			"id": "a1-time-heure",
+			"french": "l'heure",
+			"gender": "feminine",
+			"ipa": "lœʁ",
+			"hindiGloss": "घंटा / समय",
+			"englishGloss": "the hour / time",
+			"example": { "french": "Quelle heure est-il ?", "englishGloss": "What time is it?" },
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-time-midi",
+			"french": "midi",
+			"gender": "masculine",
+			"ipa": "mi.di",
+			"hindiGloss": "दोपहर (12 बजे)",
+			"englishGloss": "noon / midday",
+			"example": { "french": "On déjeune à midi.", "englishGloss": "We have lunch at noon." },
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-day-lundi",
+			"french": "lundi",
+			"gender": "masculine",
+			"ipa": "lœ̃.di",
+			"hindiGloss": "सोमवार",
+			"englishGloss": "Monday",
+			"example": {
+				"french": "Lundi, je vais au bureau à Bangalore.",
+				"englishGloss": "On Monday, I go to the office in Bangalore."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "dictation",
+			"id": "a1-u3-ex1",
+			"cardId": "a1-num-dix",
+			"audioText": "dix",
+			"answer": "dix",
+			"accept": [],
+			"hint": "A number between 9 and 11."
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u3-ex2",
+			"prompt": "How do you ask « What time is it? » in French?",
+			"options": [
+				"Quelle heure est-il ?",
+				"Quel jour est-il ?",
+				"Combien ça coûte ?",
+				"Où est-il ?"
+			],
+			"answerIndex": 0,
+			"explanation": "« Quelle heure est-il ? » literally: which hour is it?"
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u3-ex3",
+			"cardId": "a1-time-heure",
+			"text": "It is two o'clock: « Il est deux {{}}. »",
+			"answer": "heures",
+			"accept": ["heures"],
+			"hint": "Plural of l'heure after a number > 1."
+		},
+		{
+			"type": "matching",
+			"id": "a1-u3-ex4",
+			"prompt": "Match each French number to its digit.",
+			"pairs": [
+				{ "left": "deux", "right": "2" },
+				{ "left": "cinq", "right": "5" },
+				{ "left": "dix", "right": "10" }
+			]
+		},
+		{
+			"type": "translation",
+			"id": "a1-u3-ex5",
+			"cardId": "a1-day-lundi",
+			"prompt": "Monday",
+			"direction": "en-fr",
+			"answer": "lundi",
+			"accept": []
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u3-ex6",
+			"cardId": "a1-time-midi",
+			"prompt": "« On déjeune à midi » — at what time is lunch?",
+			"options": ["At noon", "At midnight", "In the morning", "In the evening"],
+			"answerIndex": 0,
+			"explanation": "midi = noon; minuit = midnight."
+		}
+	]
+}

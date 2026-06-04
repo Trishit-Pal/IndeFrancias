@@ -1,0 +1,144 @@
+{
+	"id": "a1-unit-08",
+	"cefrLevel": "A1",
+	"order": 8,
+	"title": "En ville — Places & directions",
+	"objective": "Locate places and give simple directions (A1: can ask for and give directions using a map or in the street).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: « à + le = au » and « il y a »",
+		"body": "“To/at the” contracts: **à + le → au**, **à + les → aux** (but **à la** and **à l'** stay). So *je vais au marché* (to the market). **Il y a** = “there is / there are” (one phrase for both): *Il y a une gare ici.* Hindi यहाँ एक स्टेशन है works similarly — location word + है. Watch the contraction; learners often wrongly say ✗ *à le marché*."
+	},
+	"cards": [
+		{
+			"id": "a1-city-gare",
+			"french": "la gare",
+			"gender": "feminine",
+			"ipa": "la ɡaʁ",
+			"hindiGloss": "रेलवे स्टेशन",
+			"englishGloss": "the train station",
+			"example": {
+				"french": "La gare est près du marché.",
+				"englishGloss": "The station is near the market."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-city-marche",
+			"french": "le marché",
+			"gender": "masculine",
+			"ipa": "lə maʁ.ʃe",
+			"hindiGloss": "बाज़ार",
+			"englishGloss": "the market",
+			"example": {
+				"french": "Je vais au marché à Delhi.",
+				"englishGloss": "I'm going to the market in Delhi."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-city-droite",
+			"french": "à droite",
+			"gender": "none",
+			"ipa": "a dʁwat",
+			"hindiGloss": "दाईं ओर",
+			"englishGloss": "on/to the right",
+			"example": { "french": "Tournez à droite.", "englishGloss": "Turn right." },
+			"cefrLevel": "A1",
+			"skills": ["listening"]
+		},
+		{
+			"id": "a1-city-gauche",
+			"french": "à gauche",
+			"gender": "none",
+			"ipa": "a ɡoʃ",
+			"hindiGloss": "बाईं ओर",
+			"englishGloss": "on/to the left",
+			"example": {
+				"french": "Le temple est à gauche.",
+				"englishGloss": "The temple is on the left."
+			},
+			"cefrLevel": "A1",
+			"skills": ["listening"]
+		},
+		{
+			"id": "a1-city-toutdroit",
+			"french": "tout droit",
+			"gender": "none",
+			"ipa": "tu dʁwa",
+			"hindiGloss": "सीधे",
+			"englishGloss": "straight ahead",
+			"example": { "french": "Allez tout droit.", "englishGloss": "Go straight ahead." },
+			"cefrLevel": "A1",
+			"skills": ["listening"]
+		},
+		{
+			"id": "a1-city-ilya",
+			"french": "il y a",
+			"gender": "none",
+			"ipa": "il.i.a",
+			"hindiGloss": "है / हैं (मौजूद)",
+			"englishGloss": "there is / there are",
+			"example": {
+				"french": "Il y a un temple à Jaipur.",
+				"englishGloss": "There is a temple in Jaipur."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "gender",
+			"id": "a1-u8-ex1",
+			"cardId": "a1-city-marche",
+			"noun": "marché",
+			"answer": "masculine",
+			"articleStyle": "definite"
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u8-ex2",
+			"cardId": "a1-city-marche",
+			"text": "Use the contraction: « Je vais {{}} marché. » (à + le)",
+			"answer": "au",
+			"accept": ["au"],
+			"hint": "à + le contracts to one word."
+		},
+		{
+			"type": "dictation",
+			"id": "a1-u8-ex3",
+			"cardId": "a1-city-toutdroit",
+			"audioText": "Allez tout droit.",
+			"answer": "Allez tout droit",
+			"accept": ["allez tout droit"],
+			"hint": "A direction: go straight."
+		},
+		{
+			"type": "reorder",
+			"id": "a1-u8-ex4",
+			"prompt": "Build: “There is a station here.”",
+			"words": ["Il", "y", "a", "une", "gare", "ici"]
+		},
+		{
+			"type": "matching",
+			"id": "a1-u8-ex5",
+			"prompt": "Match directions to English.",
+			"pairs": [
+				{ "left": "à droite", "right": "to the right" },
+				{ "left": "à gauche", "right": "to the left" },
+				{ "left": "tout droit", "right": "straight ahead" }
+			]
+		},
+		{
+			"type": "translation",
+			"id": "a1-u8-ex6",
+			"cardId": "a1-city-gare",
+			"prompt": "the train station",
+			"direction": "fr-en",
+			"answer": "the train station",
+			"accept": ["train station", "the station", "station"]
+		}
+	]
+}

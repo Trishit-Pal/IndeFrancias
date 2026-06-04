@@ -1,0 +1,164 @@
+{
+	"id": "a1-unit-02",
+	"cefrLevel": "A1",
+	"order": 2,
+	"title": "Ma famille — Family & possessives",
+	"objective": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: possessives agree with the THING, not the owner",
+		"body": "In French, **mon** / **ma** match the gender of the noun owned, not the speaker: a girl still says **mon livre** (my book, masc.) and **ma sœur** (my sister, fem.). English “his/her” works the opposite way. Good news — Hindi already agrees like French: मेरा भाई (mera bhai, masc.) vs मेरी बहन (meri behen, fem.). Lean on that instinct. ⚠️ Note: **un parent** often means “a relative”, not only “a parent”."
+	},
+	"cards": [
+		{
+			"id": "a1-fam-famille",
+			"french": "la famille",
+			"gender": "feminine",
+			"ipa": "la fa.mij",
+			"hindiGloss": "परिवार",
+			"englishGloss": "the family",
+			"example": {
+				"french": "Pendant Diwali, ma famille se réunit à Jaipur.",
+				"englishGloss": "During Diwali, my family gathers in Jaipur."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading", "spokenProduction"]
+		},
+		{
+			"id": "a1-fam-pere",
+			"french": "le père",
+			"gender": "masculine",
+			"ipa": "lə pɛʁ",
+			"hindiGloss": "पिता / पापा",
+			"englishGloss": "the father",
+			"example": {
+				"french": "Mon père travaille à Pune.",
+				"englishGloss": "My father works in Pune."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-fam-mere",
+			"french": "la mère",
+			"gender": "feminine",
+			"ipa": "la mɛʁ",
+			"hindiGloss": "माता / माँ",
+			"englishGloss": "the mother",
+			"example": {
+				"french": "Ma mère prépare le dîner.",
+				"englishGloss": "My mother makes dinner."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-fam-frere",
+			"french": "le frère",
+			"gender": "masculine",
+			"ipa": "lə fʁɛʁ",
+			"hindiGloss": "भाई",
+			"englishGloss": "the brother",
+			"example": { "french": "Arjun est mon frère.", "englishGloss": "Arjun is my brother." },
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-fam-soeur",
+			"french": "la sœur",
+			"gender": "feminine",
+			"ipa": "la sœʁ",
+			"hindiGloss": "बहन",
+			"englishGloss": "the sister",
+			"example": {
+				"french": "J'ai une sœur, Ananya.",
+				"englishGloss": "I have one sister, Ananya."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-fam-parents",
+			"french": "les parents",
+			"gender": "masculine",
+			"ipa": "le pa.ʁɑ̃",
+			"hindiGloss": "माता-पिता / रिश्तेदार",
+			"englishGloss": "parents (also: relatives)",
+			"example": {
+				"french": "Mes parents habitent à Chennai.",
+				"englishGloss": "My parents live in Chennai."
+			},
+			"fauxAmi": true,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "gender",
+			"id": "a1-u2-ex1",
+			"cardId": "a1-fam-pere",
+			"noun": "père",
+			"answer": "masculine",
+			"articleStyle": "definite"
+		},
+		{
+			"type": "gender",
+			"id": "a1-u2-ex2",
+			"cardId": "a1-fam-soeur",
+			"noun": "sœur",
+			"answer": "feminine",
+			"articleStyle": "definite"
+		},
+		{
+			"type": "conjugation",
+			"id": "a1-u2-ex3",
+			"verb": "avoir",
+			"pronoun": "j'",
+			"prompt": "Conjugate « avoir »: j'___ une sœur.",
+			"answer": "ai",
+			"accept": []
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u2-ex4",
+			"cardId": "a1-fam-mere",
+			"text": "Priya parle de sa maman : « Voici {{}} mère. »",
+			"answer": "ma",
+			"accept": ["ma"],
+			"hint": "Feminine possessive (mère is feminine)."
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u2-ex5",
+			"prompt": "What does « J'ai deux frères » mean?",
+			"options": [
+				"I have two brothers",
+				"I am two brothers",
+				"My two brothers",
+				"I want two brothers"
+			],
+			"answerIndex": 0,
+			"explanation": "« J'ai » = I have (avoir). « deux frères » = two brothers."
+		},
+		{
+			"type": "translation",
+			"id": "a1-u2-ex6",
+			"cardId": "a1-fam-famille",
+			"prompt": "ma famille",
+			"direction": "fr-en",
+			"answer": "my family",
+			"accept": []
+		},
+		{
+			"type": "matching",
+			"id": "a1-u2-ex7",
+			"prompt": "Match the French family words to English.",
+			"pairs": [
+				{ "left": "le père", "right": "father" },
+				{ "left": "la mère", "right": "mother" },
+				{ "left": "le frère", "right": "brother" },
+				{ "left": "la sœur", "right": "sister" }
+			]
+		}
+	]
+}

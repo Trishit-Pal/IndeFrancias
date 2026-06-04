@@ -1,0 +1,152 @@
+{
+	"id": "a2-unit-08",
+	"cefrLevel": "A2",
+	"order": 8,
+	"title": "Donner son opinion — Giving opinions",
+	"objective": "Express and justify simple opinions (A2: can give and explain opinions on familiar topics).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: « je pense que … » + a reason with « parce que »",
+		"body": "Open an opinion with **je pense que** / **je crois que** / **à mon avis**, then a full sentence: *Je pense que ce film est intéressant.* Give a reason with **parce que** (because) and link ideas with **mais** (but), **donc** (so), **aussi** (also). It mirrors English “I think that …” and Hindi मुझे लगता है कि … — same shape, just learn the connectors."
+	},
+	"cards": [
+		{
+			"id": "a2-op-penser",
+			"french": "penser",
+			"gender": "none",
+			"ipa": "pɑ̃.se",
+			"hindiGloss": "सोचना / लगना",
+			"englishGloss": "to think (je pense que…)",
+			"example": {
+				"french": "Je pense que le biryani est délicieux.",
+				"englishGloss": "I think biryani is delicious."
+			},
+			"cefrLevel": "A2",
+			"skills": ["spokenProduction"]
+		},
+		{
+			"id": "a2-op-avis",
+			"french": "l'avis",
+			"gender": "masculine",
+			"ipa": "la.vi",
+			"hindiGloss": "राय",
+			"englishGloss": "opinion (à mon avis = in my opinion)",
+			"example": {
+				"french": "À mon avis, le cricket est passionnant.",
+				"englishGloss": "In my opinion, cricket is exciting."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-op-interessant",
+			"french": "intéressant",
+			"gender": "none",
+			"ipa": "ɛ̃.te.ʁɛ.sɑ̃",
+			"hindiGloss": "दिलचस्प",
+			"englishGloss": "interesting",
+			"example": {
+				"french": "Ce livre est très intéressant.",
+				"englishGloss": "This book is very interesting."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-op-ennuyeux",
+			"french": "ennuyeux",
+			"gender": "none",
+			"ipa": "ɑ̃.nɥi.jø",
+			"hindiGloss": "उबाऊ / बोरिंग",
+			"englishGloss": "boring",
+			"example": {
+				"french": "Je trouve ce film ennuyeux.",
+				"englishGloss": "I find this film boring."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-op-film",
+			"french": "le film",
+			"gender": "masculine",
+			"ipa": "lə film",
+			"hindiGloss": "फ़िल्म",
+			"englishGloss": "the film / movie",
+			"example": {
+				"french": "Le film de Bollywood était long.",
+				"englishGloss": "The Bollywood film was long."
+			},
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-op-parceque",
+			"french": "parce que",
+			"gender": "none",
+			"ipa": "paʁs kə",
+			"hindiGloss": "क्योंकि",
+			"englishGloss": "because",
+			"example": {
+				"french": "J'aime le thé parce que c'est chaud.",
+				"englishGloss": "I like tea because it's hot."
+			},
+			"cefrLevel": "A2",
+			"skills": ["writing"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "cloze",
+			"id": "a2-u8-ex1",
+			"cardId": "a2-op-penser",
+			"text": "Give an opinion: « Je {{}} que ce film est bien. » (penser)",
+			"answer": "pense",
+			"accept": ["pense"],
+			"hint": "penser, je form."
+		},
+		{
+			"type": "mcq",
+			"id": "a2-u8-ex2",
+			"cardId": "a2-op-parceque",
+			"prompt": "« parce que » means…",
+			"options": ["because", "but", "so", "also"],
+			"answerIndex": 0,
+			"explanation": "parce que = because; mais = but; donc = so; aussi = also."
+		},
+		{
+			"type": "translation",
+			"id": "a2-u8-ex3",
+			"cardId": "a2-op-avis",
+			"prompt": "in my opinion",
+			"direction": "en-fr",
+			"answer": "à mon avis",
+			"accept": ["a mon avis"]
+		},
+		{
+			"type": "reorder",
+			"id": "a2-u8-ex4",
+			"prompt": "Build: “I think that the film is interesting.”",
+			"words": ["Je", "pense", "que", "le", "film", "est", "intéressant"]
+		},
+		{
+			"type": "matching",
+			"id": "a2-u8-ex5",
+			"prompt": "Match each connector/phrase to English.",
+			"pairs": [
+				{ "left": "à mon avis", "right": "in my opinion" },
+				{ "left": "parce que", "right": "because" },
+				{ "left": "mais", "right": "but" },
+				{ "left": "donc", "right": "so" }
+			]
+		},
+		{
+			"type": "mcq",
+			"id": "a2-u8-ex6",
+			"cardId": "a2-op-ennuyeux",
+			"prompt": "Which adjective means « boring »?",
+			"options": ["ennuyeux", "intéressant", "délicieux", "passionnant"],
+			"answerIndex": 0,
+			"explanation": "ennuyeux = boring; intéressant = interesting."
+		}
+	]
+}

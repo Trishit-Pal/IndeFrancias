@@ -1,0 +1,185 @@
+{
+	"id": "a1-unit-01",
+	"cefrLevel": "A1",
+	"order": 1,
+	"title": "Bonjour ! — Greetings & introducing yourself",
+	"objective": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce oneself).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: French has gender — and so do you",
+		"body": "Every French noun is masculine or feminine: **un ami** (a male friend) vs **une amie** (a female friend). This feels strange in English, but Hindi already does it — किताब (kitaab, 'book') is feminine, घर (ghar, 'house') is masculine, and adjectives change to agree. Use that instinct as a bridge. ⚠️ Caution: the gender of a word in Hindi does NOT predict its gender in French — treat Hindi gender as an *awareness* tool, not a rule. Always learn each French noun together with its un/une."
+	},
+	"cards": [
+		{
+			"id": "a1-greet-bonjour",
+			"french": "bonjour",
+			"gender": "none",
+			"ipa": "bɔ̃ʒuʁ",
+			"hindiGloss": "नमस्ते / सुप्रभात",
+			"englishGloss": "hello / good morning (formal, daytime)",
+			"example": {
+				"french": "Bonjour ! Priya salue Arjun à Mumbai.",
+				"englishGloss": "Hello! Priya greets Arjun in Mumbai.",
+				"hindiGloss": "नमस्ते! प्रिया मुंबई में अर्जुन का अभिवादन करती है।"
+			},
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction", "spokenProduction"]
+		},
+		{
+			"id": "a1-greet-salut",
+			"french": "salut",
+			"gender": "none",
+			"ipa": "saly",
+			"hindiGloss": "हाय (अनौपचारिक)",
+			"englishGloss": "hi / bye (informal)",
+			"example": {
+				"french": "Salut Arjun, ça va ?",
+				"englishGloss": "Hi Arjun, how's it going?"
+			},
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-greet-merci",
+			"french": "merci",
+			"gender": "none",
+			"ipa": "mɛʁsi",
+			"hindiGloss": "धन्यवाद / शुक्रिया",
+			"englishGloss": "thank you",
+			"example": {
+				"french": "Merci beaucoup, Priya !",
+				"englishGloss": "Thank you very much, Priya!"
+			},
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-greet-aurevoir",
+			"french": "au revoir",
+			"gender": "none",
+			"ipa": "o ʁəvwaʁ",
+			"hindiGloss": "अलविदा / फिर मिलेंगे",
+			"englishGloss": "goodbye",
+			"example": {
+				"french": "Au revoir ! À demain à Jaipur.",
+				"englishGloss": "Goodbye! See you tomorrow in Jaipur."
+			},
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-intro-jemappelle",
+			"french": "je m'appelle",
+			"gender": "none",
+			"ipa": "ʒə mapɛl",
+			"hindiGloss": "मेरा नाम ... है",
+			"englishGloss": "my name is",
+			"example": {
+				"french": "Bonjour, je m'appelle Priya.",
+				"englishGloss": "Hello, my name is Priya.",
+				"hindiGloss": "नमस्ते, मेरा नाम प्रिया है।"
+			},
+			"cefrLevel": "A1",
+			"skills": ["spokenProduction", "writing"]
+		},
+		{
+			"id": "a1-noun-ami",
+			"french": "un ami",
+			"gender": "masculine",
+			"ipa": "œ̃n‿ami",
+			"hindiGloss": "एक (पुरुष) दोस्त",
+			"englishGloss": "a (male) friend",
+			"example": {
+				"french": "Arjun est un ami de Bangalore.",
+				"englishGloss": "Arjun is a friend from Bangalore."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-noun-amie",
+			"french": "une amie",
+			"gender": "feminine",
+			"ipa": "yn‿ami",
+			"hindiGloss": "एक (महिला) दोस्त",
+			"englishGloss": "a (female) friend",
+			"example": {
+				"french": "Priya est une amie de Delhi.",
+				"englishGloss": "Priya is a friend from Delhi."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "mcq",
+			"id": "a1-u1-ex1",
+			"cardId": "a1-greet-bonjour",
+			"prompt": "Priya meets her teacher in the morning. Which word does she use to greet him politely?",
+			"options": ["Bonjour", "Merci", "Au revoir", "Salut"],
+			"answerIndex": 0,
+			"explanation": "« Bonjour » is the standard polite greeting. « Salut » is informal; « Merci » means thank you; « Au revoir » means goodbye."
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u1-ex2",
+			"cardId": "a1-intro-jemappelle",
+			"prompt": "What does « Je m'appelle Arjun » mean?",
+			"options": ["My name is Arjun", "I am from Arjun", "Thank you, Arjun", "Goodbye, Arjun"],
+			"answerIndex": 0,
+			"explanation": "« Je m'appelle … » literally means 'I call myself …', i.e. 'My name is …'."
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u1-ex3",
+			"cardId": "a1-greet-aurevoir",
+			"text": "At the end of the call, Priya says: « {{}} ! À demain. »",
+			"answer": "Au revoir",
+			"accept": ["au revoir", "au-revoir"],
+			"hint": "It means 'goodbye'."
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u1-ex4",
+			"cardId": "a1-noun-amie",
+			"text": "Priya is a female friend, so in French: Priya est {{}} amie.",
+			"answer": "une",
+			"accept": ["une"],
+			"hint": "Feminine indefinite article (like the gender of किताब)."
+		},
+		{
+			"type": "matching",
+			"id": "a1-u1-ex5",
+			"prompt": "Match each French word to its English meaning.",
+			"pairs": [
+				{ "left": "bonjour", "right": "hello" },
+				{ "left": "merci", "right": "thank you" },
+				{ "left": "au revoir", "right": "goodbye" },
+				{ "left": "un ami", "right": "a (male) friend" }
+			]
+		},
+		{
+			"type": "gender",
+			"id": "a1-u1-ex6",
+			"cardId": "a1-noun-ami",
+			"noun": "ami",
+			"answer": "masculine",
+			"articleStyle": "indefinite"
+		},
+		{
+			"type": "reorder",
+			"id": "a1-u1-ex7",
+			"prompt": "Build the sentence: “My name is Priya.”",
+			"words": ["Je", "m'appelle", "Priya"]
+		},
+		{
+			"type": "translation",
+			"id": "a1-u1-ex8",
+			"cardId": "a1-greet-bonjour",
+			"prompt": "Bonjour",
+			"direction": "fr-en",
+			"answer": "hello",
+			"accept": ["good morning", "good day"]
+		}
+	]
+}

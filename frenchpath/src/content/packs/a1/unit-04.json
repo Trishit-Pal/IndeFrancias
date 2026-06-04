@@ -1,0 +1,146 @@
+{
+	"id": "a1-unit-04",
+	"cefrLevel": "A1",
+	"order": 4,
+	"title": "Au restaurant — Food & drink",
+	"objective": "Order food and drink and say what you like (A1: can order a meal and express simple preferences).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: « du / de la » means “some”",
+		"body": "To ask for an unspecified amount, French uses the partitive: **du** (masc.), **de la** (fem.), **des** (plural) — “some”. **Je voudrais du thé** = “I’d like some tea.” Hindi and English often drop “some” (मुझे चाय चाहिए / “I’d like tea”), so remember to add it in French. ⚠️ Faux-ami: **une entrée** is a *starter*, not the main dish."
+	},
+	"cards": [
+		{
+			"id": "a1-food-pain",
+			"french": "le pain",
+			"gender": "masculine",
+			"ipa": "lə pɛ̃",
+			"hindiGloss": "रोटी / ब्रेड",
+			"englishGloss": "the bread",
+			"example": {
+				"french": "Je voudrais du pain, s'il vous plaît.",
+				"englishGloss": "I'd like some bread, please."
+			},
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-food-eau",
+			"french": "l'eau",
+			"gender": "feminine",
+			"ipa": "lo",
+			"hindiGloss": "पानी",
+			"englishGloss": "the water",
+			"example": { "french": "De l'eau, s'il vous plaît.", "englishGloss": "Some water, please." },
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-food-the",
+			"french": "le thé",
+			"gender": "masculine",
+			"ipa": "lə te",
+			"hindiGloss": "चाय",
+			"englishGloss": "the tea",
+			"example": {
+				"french": "Arjun aime le thé masala.",
+				"englishGloss": "Arjun likes masala tea."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-food-riz",
+			"french": "le riz",
+			"gender": "masculine",
+			"ipa": "lə ʁi",
+			"hindiGloss": "चावल",
+			"englishGloss": "the rice",
+			"example": {
+				"french": "Le riz est servi avec le dal.",
+				"englishGloss": "Rice is served with dal."
+			},
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-food-entree",
+			"french": "une entrée",
+			"gender": "feminine",
+			"ipa": "yn ɑ̃.tʁe",
+			"hindiGloss": "स्टार्टर (पहला व्यंजन)",
+			"englishGloss": "a starter / first course",
+			"example": {
+				"french": "Comme entrée, je prends une samosa.",
+				"englishGloss": "As a starter, I'll have a samosa."
+			},
+			"fauxAmi": true,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-food-aimer",
+			"french": "aimer",
+			"gender": "none",
+			"ipa": "e.me",
+			"hindiGloss": "पसंद करना",
+			"englishGloss": "to like / to love",
+			"example": { "french": "J'aime le biryani.", "englishGloss": "I like biryani." },
+			"cefrLevel": "A1",
+			"skills": ["spokenProduction"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "gender",
+			"id": "a1-u4-ex1",
+			"cardId": "a1-food-pain",
+			"noun": "pain",
+			"answer": "masculine",
+			"articleStyle": "definite"
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u4-ex2",
+			"cardId": "a1-food-eau",
+			"text": "Asking for some water: « Je voudrais {{}} eau. »",
+			"answer": "de l'",
+			"accept": ["de l'", "de l", "de la"],
+			"hint": "Partitive before a vowel."
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u4-ex3",
+			"cardId": "a1-food-entree",
+			"prompt": "In a French menu, « une entrée » is…",
+			"options": ["a starter", "the main dish", "the entrance", "the bill"],
+			"answerIndex": 0,
+			"explanation": "Faux-ami! « entrée » = starter, not the main course."
+		},
+		{
+			"type": "reorder",
+			"id": "a1-u4-ex4",
+			"prompt": "Build: “I'd like some tea.”",
+			"words": ["Je", "voudrais", "du", "thé"]
+		},
+		{
+			"type": "translation",
+			"id": "a1-u4-ex5",
+			"cardId": "a1-food-aimer",
+			"prompt": "I like biryani.",
+			"direction": "en-fr",
+			"answer": "J'aime le biryani",
+			"accept": ["jaime le biryani", "j'aime le biryani"]
+		},
+		{
+			"type": "matching",
+			"id": "a1-u4-ex6",
+			"prompt": "Match the food/drink to English.",
+			"pairs": [
+				{ "left": "le pain", "right": "bread" },
+				{ "left": "l'eau", "right": "water" },
+				{ "left": "le riz", "right": "rice" },
+				{ "left": "le thé", "right": "tea" }
+			]
+		}
+	]
+}
