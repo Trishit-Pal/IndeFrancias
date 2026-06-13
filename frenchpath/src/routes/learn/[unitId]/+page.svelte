@@ -6,7 +6,7 @@
 	import { renderInlineMarkdown } from '$lib/content/markdown';
 	import type { Unit } from '$lib/content/schema';
 	import { gradeExercise, scorePercent, type ExerciseResponse } from '$lib/lesson/engine';
-	import { completeLesson } from '$lib/lesson/complete';
+	import { completeLesson, type CompleteOutcome } from '$lib/lesson/complete';
 	import { isUnitLocked } from '$lib/lesson/progression';
 	import { progressRepo } from '$lib/db';
 	import { ensurePersistence } from '$lib/pwa/persist';
@@ -25,6 +25,7 @@
 	let submitted = $state(false);
 	let correct = $state(false);
 	let correctCount = $state(0);
+	let outcome = $state<CompleteOutcome | null>(null);
 
 	const current = $derived(unit?.exercises[index] ?? null);
 	const total = $derived(unit?.exercises.length ?? 0);
@@ -63,7 +64,7 @@
 			submitted = false;
 			correct = false;
 		} else {
-			await completeLesson(unit, { correct: correctCount, total, score });
+			outcome = await completeLesson(unit, { correct: correctCount, total, score });
 			await ensurePersistence();
 			phase = 'finished';
 		}
@@ -90,9 +91,8 @@
 			<p class="mt-2 font-semibold text-slate-800">{m.lesson_locked_title()}</p>
 			<p class="text-sm text-slate-500">{m.lesson_locked_desc()}</p>
 			<a
-				class="mt-4 inline-block rounded-xl bg-blue-600 px-4 py-2 font-semibold text-white"
-				href={resolve('/')}>{m.common_back_to_path()}</a
-			>
+				class="mt-4 inline-block rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white"
+				href={resolve('/')}>{m.common_back_to_path()}</a>
 		</div>
 	{:else if phase === 'intro' && unit}
 		<a class="text-sm text-slate-500 hover:underline" href={resolve('/')}>{m.common_home()}</a>
@@ -155,8 +155,8 @@
 		{#if submitted}
 			<div
 				class="mt-5 rounded-xl p-3 text-sm font-medium {correct
-					? 'bg-green-100 text-green-800'
-					: 'bg-red-100 text-red-800'}"
+					? 'bg-green-100 text-green-800 animate-spring-in'
+					: 'bg-red-100 text-red-800 animate-shake'}"
 				data-testid="feedback"
 				role="status"
 			>
@@ -189,17 +189,56 @@
 				You scored <span class="font-semibold text-slate-900">{score}%</span>
 				({correctCount}/{total}).
 			</p>
+			{#if outcome && outcome.goalXp > 0}
+				<p class="mt-1 text-sm font-medium text-green-700" data-testid="xp-awarded">
+					{outcome.isNewBest ? 'New best!' : ''} +{outcome.goalXp} XP
+				</p>
+			{:else}
+				<p class="mt-1 text-sm text-slate-500" data-testid="practice-note">
+					Practice complete — no new XP (best: {outcome?.bestScore ?? score}%).
+					<a class="text-blue-700 underline" href={resolve('/review')}>Review due cards</a>>
+					to keep your streak.
+				</p>
+			{/if}
 			<p class="mt-1 text-sm text-slate-500">{m.lesson_srs_note()}</p>
 			<div class="mt-6 grid gap-3">
 				<a
 					class="rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700"
-					href={resolve('/review')}>{m.lesson_review_now()}</a
-				>
+					href={resolve('/review')}>{m.lesson_review_now()}</a>
 				<a
 					class="rounded-xl border border-slate-300 px-4 py-3 font-semibold text-slate-700"
-					href={resolve('/')}>{m.common_back_to_path()}</a
-				>
+					href={resolve('/')}>{m.common_back_to_path()}</a>
 			</div>
 		</div>
 	{/if}
-</main>
+	</main>
+
+	<style>
+		@keyframes shake {
+			0%, 100% { transform: translateX(0); }
+			25% { transform: translateX(-4px); }
+			75% { transform: translateX(4px); }
+		}
+
+		@keyframes spring-in {
+			0% { transform: scale(0.9); opacity: 0; }
+			60% { transform: scale(1.05); opacity: 1; }
+			100% { transform: scale(1); opacity: 1; }
+		}
+
+		.animate-shake {
+			animation: shake 0.3s ease-in-out;
+		}
+
+		.animate-spring-in {
+			animation: spring-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			.animate-shake, .animate-spring-in {
+				animation: none !important;
+				transform: none !important;
+			}
+		}
+	</style>
+
