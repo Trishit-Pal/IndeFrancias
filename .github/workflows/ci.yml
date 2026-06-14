@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master, 'hardening/**']
+  pull_request:
+
+defaults:
+  run:
+    working-directory: frenchpath
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frenchpath/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm run test:unit -- --run
+
+      - name: Content validate
+        run: npm run content:validate
+
+      - name: Content proofread (A1/A2 launch gate)
+        run: npm run content:proofread:launch
+
+      - name: Content proofread (B1–C1 report)
+        run: npm run content:proofread
+        continue-on-error: true
+
+      - name: Build
+        run: npm run build
+
+      - name: E2E tests
+        run: npm run test:e2e

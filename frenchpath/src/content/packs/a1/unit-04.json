@@ -6,7 +6,16 @@
 	"objective": "Order food and drink and say what you like (A1: can order a meal and express simple preferences).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: « du / de la » means “some”",
-		"body": "To ask for an unspecified amount, French uses the partitive: **du** (masc.), **de la** (fem.), **des** (plural) — “some”. **Je voudrais du thé** = “I’d like some tea.” Hindi and English often drop “some” (मुझे चाय चाहिए / “I’d like tea”), so remember to add it in French. ⚠️ Faux-ami: **une entrée** is a *starter*, not the main dish."
+		"body": "To ask for an unspecified amount, French uses the partitive: **du** (masc.), **de la** (fem.), **des** (plural) — “some”. **Je voudrais du thé** = “I’d like some tea.” Hindi and English often drop “some” (मुझे चाय चाहिए / “I’d like tea”), so remember to add it in French. ⚠️ Faux-ami: **une entrée** is a *starter*, not the main dish.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Au restaurant — Food & drink\"?",
+			"options": [
+				"Focus on: « du / de la » means “some”",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,10 +25,33 @@
 			"ipa": "lə pɛ̃",
 			"hindiGloss": "रोटी / ब्रेड",
 			"englishGloss": "the bread",
+			"glosses": {
+				"hi": "रोटी / ब्रेड",
+				"en": "the bread",
+				"bn": "রোটী / ব্রেড",
+				"mr": "रोटी / ब्रेड",
+				"gu": "રોટી / બ્રેડ",
+				"pa": "ਰੋਟੀ / ਬ੍ਰੇਡ",
+				"ta": "ரொட்டை / பிரெட்",
+				"te": "బ్రెడ్ / రొట్టె",
+				"kn": "ಬ್ರೆಡ್ / ರೊಟ್ಟಿ"
+			},
 			"example": {
 				"french": "Je voudrais du pain, s'il vous plaît.",
-				"englishGloss": "I'd like some bread, please."
+				"englishGloss": "I'd like some bread, please.",
+				"glosses": {
+					"hi": "रोटी / ब्रेड",
+					"en": "I'd like some bread, please.",
+					"bn": "রোটী / ব্রেড",
+					"mr": "रोटी / ब्रेड",
+					"gu": "રોટી / બ્રેડ",
+					"pa": "ਰੋਟੀ / ਬ੍ਰੇਡ",
+					"ta": "சிறிது ரொட்டை வேண்டும், தயவுசெய்து.",
+					"te": "కొంచెం బ్రెడ్ కావాలి, దయచేసి.",
+					"kn": "ಸ್ವಲ್ಪ ಬ್ರೆಡ್ ಬೇಕು, ದಯವಿಟ್ಟು."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenInteraction"]
 		},
@@ -30,7 +62,33 @@
 			"ipa": "lo",
 			"hindiGloss": "पानी",
 			"englishGloss": "the water",
-			"example": { "french": "De l'eau, s'il vous plaît.", "englishGloss": "Some water, please." },
+			"glosses": {
+				"hi": "पानी",
+				"en": "the water",
+				"bn": "পানী",
+				"mr": "पानी",
+				"gu": "પાની",
+				"pa": "ਪਾਨੀ",
+				"ta": "தண்ணீர்",
+				"te": "నీరు",
+				"kn": "ನೀರು"
+			},
+			"example": {
+				"french": "De l'eau, s'il vous plaît.",
+				"englishGloss": "Some water, please.",
+				"glosses": {
+					"hi": "पानी",
+					"en": "Some water, please.",
+					"bn": "পানী",
+					"mr": "पानी",
+					"gu": "પાની",
+					"pa": "ਪਾਨੀ",
+					"ta": "சிறிது தண்ணீர், தயவுசெய்து.",
+					"te": "కొంచెం నీరు, దయచేసి.",
+					"kn": "ಸ್ವಲ್ಪ ನೀರು, ದಯವಿಟ್ಟು."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenInteraction"]
 		},
@@ -41,10 +99,33 @@
 			"ipa": "lə te",
 			"hindiGloss": "चाय",
 			"englishGloss": "the tea",
+			"glosses": {
+				"hi": "चाय",
+				"en": "the tea",
+				"bn": "চায",
+				"mr": "चाय",
+				"gu": "ચાય",
+				"pa": "ਚਾਯ",
+				"ta": "தேநீர் / சாய்",
+				"te": "టీ / చాయ్",
+				"kn": "ಟೀ / ಚಾಯ್"
+			},
 			"example": {
 				"french": "Arjun aime le thé masala.",
-				"englishGloss": "Arjun likes masala tea."
+				"englishGloss": "Arjun likes masala tea.",
+				"glosses": {
+					"hi": "चाय",
+					"en": "Arjun likes masala tea.",
+					"bn": "চায",
+					"mr": "चाय",
+					"gu": "ચાય",
+					"pa": "ਚਾਯ",
+					"ta": "அர்ஜுன் மசாலா தேநீர் விரும்புகிறான்.",
+					"te": "Arjun మసాలా టీ ఇష్టపడతాడు.",
+					"kn": "Arjun ಮಸಾಲಾ ಟೀ ಇಷ್ಟಪಡುತ್ತಾನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -55,10 +136,33 @@
 			"ipa": "lə ʁi",
 			"hindiGloss": "चावल",
 			"englishGloss": "the rice",
+			"glosses": {
+				"hi": "चावल",
+				"en": "the rice",
+				"bn": "চা঵ল",
+				"mr": "चावल",
+				"gu": "ચાવલ",
+				"pa": "ਚਾਵਲ",
+				"ta": "அரிசி / சாதம்",
+				"te": "అన్నం / బియ్యం",
+				"kn": "ಅನ್ನ / ಅಕ್ಕಿ"
+			},
 			"example": {
 				"french": "Le riz est servi avec le dal.",
-				"englishGloss": "Rice is served with dal."
+				"englishGloss": "Rice is served with dal.",
+				"glosses": {
+					"hi": "चावल",
+					"en": "Rice is served with dal.",
+					"bn": "চা঵ল",
+					"mr": "चावल",
+					"gu": "ચાવલ",
+					"pa": "ਚਾਵਲ",
+					"ta": "சாதம் dal உடன் வழங்கப்படுகிறது.",
+					"te": "అన్నం dal తో వడ్డిస్తారు.",
+					"kn": "ಅನ್ನ dal ಜೊತೆಗೆ ನೀಡಲಾಗುತ್ತದೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -69,9 +173,31 @@
 			"ipa": "yn ɑ̃.tʁe",
 			"hindiGloss": "स्टार्टर (पहला व्यंजन)",
 			"englishGloss": "a starter / first course",
+			"glosses": {
+				"hi": "स्टार्टर (पहला व्यंजन)",
+				"en": "a starter / first course",
+				"bn": "স্টার্টর (পহলা ঵্যংজন)",
+				"mr": "स्टार्टर (पहला व्यंजन)",
+				"gu": "સ્ટાર્ટર (પહલા વ્યંજન)",
+				"pa": "ਸ੍ਟਾਰ੍ਟਰ (ਪਹਲਾ ਵ੍ਯਂਜਨ)",
+				"ta": "ஆரம்ப உணவு / முதல் பாடம்",
+				"te": "మొదటి వంటకం / ప్రథమ పాత్ర",
+				"kn": "ಮೊದಲ ವ್ಯಂಜನ / ಪ್ರಥಮ ಪಾತ್ರ"
+			},
 			"example": {
 				"french": "Comme entrée, je prends une samosa.",
-				"englishGloss": "As a starter, I'll have a samosa."
+				"englishGloss": "As a starter, I'll have a samosa.",
+				"glosses": {
+					"hi": "स्टार्टर (पहला व्यंजन)",
+					"en": "As a starter, I'll have a samosa.",
+					"bn": "স্টার্টর (পহলা ঵্যংজন)",
+					"mr": "स्टार्टर (पहला व्यंजन)",
+					"gu": "સ્ટાર્ટર (પહલા વ્યંજન)",
+					"pa": "ਸ੍ਟਾਰ੍ਟਰ (ਪਹਲਾ ਵ੍ਯਂਜਨ)",
+					"ta": "ஆரம்ப உணவாக, நான் சமோசா வாங்குகிறேன்.",
+					"te": "మొదటి వంటకం కాబట్టి, నేను సమోసా తీసుకుంటాను.",
+					"kn": "ಮೊದಲ ವ್ಯಂಜನವಾಗಿ, ನಾನು ಸಮೋಸಾ ತೆಗೆದುಕೊಳ್ಳುತ್ತೇನೆ."
+				}
 			},
 			"fauxAmi": true,
 			"cefrLevel": "A1",
@@ -84,7 +210,33 @@
 			"ipa": "e.me",
 			"hindiGloss": "पसंद करना",
 			"englishGloss": "to like / to love",
-			"example": { "french": "J'aime le biryani.", "englishGloss": "I like biryani." },
+			"glosses": {
+				"hi": "पसंद करना",
+				"en": "to like / to love",
+				"bn": "পসংদ করনা",
+				"mr": "पसंद करना",
+				"gu": "પસંદ કરના",
+				"pa": "ਪਸਂਦ ਕਰਨਾ",
+				"ta": "விரும்புதல் / பிடித்திருத்தல்",
+				"te": "ఇష్టపడడం",
+				"kn": "ಇಷ್ಟಪಡುವುದು"
+			},
+			"example": {
+				"french": "J'aime le biryani.",
+				"englishGloss": "I like biryani.",
+				"glosses": {
+					"hi": "पसंद करना",
+					"en": "I like biryani.",
+					"bn": "পসংদ করনা",
+					"mr": "पसंद करना",
+					"gu": "પસંદ કરના",
+					"pa": "ਪਸਂਦ ਕਰਨਾ",
+					"ta": "நான் பிரியாணி விரும்புகிறேன்.",
+					"te": "నేను బిర్యానీ ఇష్టపడతాను.",
+					"kn": "ನಾನು ಬಿರಿಯಾನಿ ಇಷ್ಟಪಡುತ್ತೇನೆ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenProduction"]
 		}
@@ -94,6 +246,8 @@
 			"type": "gender",
 			"id": "a1-u4-ex1",
 			"cardId": "a1-food-pain",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Order food and drink and say what you like (A1: can order a meal and express simple preferences).",
 			"noun": "pain",
 			"answer": "masculine",
 			"articleStyle": "definite"
@@ -102,15 +256,18 @@
 			"type": "cloze",
 			"id": "a1-u4-ex2",
 			"cardId": "a1-food-eau",
+			"hint": "Partitive before a vowel.",
+			"coachNote": "Order food and drink and say what you like (A1: can order a meal and express simple preferences).",
 			"text": "Asking for some water: « Je voudrais {{}} eau. »",
 			"answer": "de l'",
-			"accept": ["de l'", "de l", "de la"],
-			"hint": "Partitive before a vowel."
+			"accept": ["de l'", "de l", "de la"]
 		},
 		{
 			"type": "mcq",
 			"id": "a1-u4-ex3",
 			"cardId": "a1-food-entree",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Order food and drink and say what you like (A1: can order a meal and express simple preferences).",
 			"prompt": "In a French menu, « une entrée » is…",
 			"options": ["a starter", "the main dish", "the entrance", "the bill"],
 			"answerIndex": 0,
@@ -119,6 +276,8 @@
 		{
 			"type": "reorder",
 			"id": "a1-u4-ex4",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Order food and drink and say what you like (A1: can order a meal and express simple preferences).",
 			"prompt": "Build: “I'd like some tea.”",
 			"words": ["Je", "voudrais", "du", "thé"]
 		},
@@ -126,6 +285,8 @@
 			"type": "translation",
 			"id": "a1-u4-ex5",
 			"cardId": "a1-food-aimer",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Order food and drink and say what you like (A1: can order a meal and express simple preferences).",
 			"prompt": "I like biryani.",
 			"direction": "en-fr",
 			"answer": "J'aime le biryani",
@@ -134,12 +295,26 @@
 		{
 			"type": "matching",
 			"id": "a1-u4-ex6",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Order food and drink and say what you like (A1: can order a meal and express simple preferences).",
 			"prompt": "Match the food/drink to English.",
 			"pairs": [
-				{ "left": "le pain", "right": "bread" },
-				{ "left": "l'eau", "right": "water" },
-				{ "left": "le riz", "right": "rice" },
-				{ "left": "le thé", "right": "tea" }
+				{
+					"left": "le pain",
+					"right": "bread"
+				},
+				{
+					"left": "l'eau",
+					"right": "water"
+				},
+				{
+					"left": "le riz",
+					"right": "rice"
+				},
+				{
+					"left": "le thé",
+					"right": "tea"
+				}
 			]
 		}
 	]

@@ -44,7 +44,7 @@
 	}
 
 	const btn =
-		'rounded-full border border-slate-300 px-3 py-1 text-sm hover:border-blue-400 disabled:opacity-40';
+		'rounded-full border border-border px-3 py-1 text-sm hover:border-primary disabled:opacity-40';
 </script>
 
 <div class="flex items-center gap-1">

@@ -24,4 +24,20 @@ describe('renderInlineMarkdown', () => {
 	it('leaves plain text untouched', () => {
 		expect(renderInlineMarkdown('la vs le — gender')).toBe('la vs le — gender');
 	});
+
+	it('escapes script injection attempts', () => {
+		expect(renderInlineMarkdown('<script>alert(1)</script>')).toBe(
+			'&lt;script&gt;alert(1)&lt;/script&gt;'
+		);
+		expect(renderInlineMarkdown('**<img onerror=1>**')).toBe(
+			'<strong>&lt;img onerror=1&gt;</strong>'
+		);
+	});
+
+	it('documents nested emphasis as non-nested (bold regex does not cross inner italics)', () => {
+		// Inner * pairs are processed first; outer ** does not span across them.
+		expect(renderInlineMarkdown('**bold *inner* bold**')).toBe(
+			'*<em>bold </em>inner<em> bold</em>*'
+		);
+	});
 });

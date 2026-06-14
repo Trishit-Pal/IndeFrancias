@@ -6,7 +6,16 @@
 	"objective": "Recount recent past events using the passé composé with avoir (A2: can describe past activities and personal experiences).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: “have + done” = avoir + past participle",
-		"body": "The passé composé is built like the English present perfect: **avoir** (present) + a **past participle**. Regular -er verbs form their participle in **-é**: manger → **mangé**, visiter → **visité**. So *j'ai mangé* = “I ate / I have eaten”. Hindi marks the past with separate forms (मैंने खाया), so focus on the two-part French structure: helper verb + participle."
+		"body": "The passé composé is built like the English present perfect: **avoir** (present) + a **past participle**. Regular -er verbs form their participle in **-é**: manger → **mangé**, visiter → **visité**. So *j'ai mangé* = “I ate / I have eaten”. Hindi marks the past with separate forms (मैंने खाया), so focus on the two-part French structure: helper verb + participle.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Le passé composé (avoir) — Talking about the past\"?",
+			"options": [
+				"Focus on: “have + done” = avoir + past participle",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,10 +25,33 @@
 			"ipa": "jɛʁ",
 			"hindiGloss": "कल (बीता हुआ)",
 			"englishGloss": "yesterday",
+			"glosses": {
+				"hi": "कल (बीता हुआ)",
+				"en": "yesterday",
+				"bn": "কল (বীতা হুআ)",
+				"mr": "कल (बीता हुआ)",
+				"gu": "કલ (બીતા હુઆ)",
+				"pa": "ਕਲ (ਬੀਤਾ ਹੁਆ)",
+				"ta": "நேற்று",
+				"te": "నిన్న",
+				"kn": "ನಿನ್ನೆ"
+			},
 			"example": {
 				"french": "Hier, j'ai visité un temple.",
-				"englishGloss": "Yesterday, I visited a temple."
+				"englishGloss": "Yesterday, I visited a temple.",
+				"glosses": {
+					"hi": "कल (बीता हुआ)",
+					"en": "Yesterday, I visited a temple.",
+					"bn": "কল (বীতা হুআ)",
+					"mr": "कल (बीता हुआ)",
+					"gu": "કલ (બીતા હુઆ)",
+					"pa": "ਕਲ (ਬੀਤਾ ਹੁਆ)",
+					"ta": "நேற்று, நான் ஒரு கோயிலைப் பார்வையிட்டேன்.",
+					"te": "నిన్న, నేను ఒక ఆలయం సందర్శించాను.",
+					"kn": "ನಿನ್ನೆ, ನಾನು ಒಂದು ದೇವಾಲಯ ಭೇಟಿ ಮಾಡಿದೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -30,7 +62,33 @@
 			"ipa": "mɑ̃.ʒe",
 			"hindiGloss": "खाना",
 			"englishGloss": "to eat (past participle: mangé)",
-			"example": { "french": "J'ai mangé un thali.", "englishGloss": "I ate a thali." },
+			"glosses": {
+				"hi": "खाना",
+				"en": "to eat (past participle: mangé)",
+				"bn": "খানা",
+				"mr": "खाना",
+				"gu": "ખાના",
+				"pa": "ਖਾਨਾ",
+				"ta": "சாப்பிடுதல்",
+				"te": "తినడం",
+				"kn": "ತಿನ್ನುವುದು"
+			},
+			"example": {
+				"french": "J'ai mangé un thali.",
+				"englishGloss": "I ate a thali.",
+				"glosses": {
+					"hi": "खाना",
+					"en": "I ate a thali.",
+					"bn": "খানা",
+					"mr": "खाना",
+					"gu": "ખાના",
+					"pa": "ਖਾਨਾ",
+					"ta": "நான் ஒரு தாலி சாப்பிட்டேன்.",
+					"te": "నేను ఒక తాలీ తిన్నాను.",
+					"kn": "ನಾನು ಒಂದು ತಾಲಿ ತಿಂದೆ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["spokenProduction"]
 		},
@@ -41,7 +99,33 @@
 			"ipa": "vi.zi.te",
 			"hindiGloss": "घूमने जाना (किसी जगह)",
 			"englishGloss": "to visit (a place)",
-			"example": { "french": "Nous avons visité Jaipur.", "englishGloss": "We visited Jaipur." },
+			"glosses": {
+				"hi": "घूमने जाना (किसी जगह)",
+				"en": "to visit (a place)",
+				"bn": "ঘূমনে জানা (কিসী জগহ)",
+				"mr": "घूमने जाना (किसी जगह)",
+				"gu": "ઘૂમને જાના (કિસી જગહ)",
+				"pa": "ਘੂਮਨੇ ਜਾਨਾ (ਕਿਸੀ ਜਗਹ)",
+				"ta": "பார்வையிடுதல் / சுற்றிப் பார்த்தல்",
+				"te": "సందర్శించడం",
+				"kn": "ಭೇಟಿ ಮಾಡುವುದು"
+			},
+			"example": {
+				"french": "Nous avons visité Jaipur.",
+				"englishGloss": "We visited Jaipur.",
+				"glosses": {
+					"hi": "घूमने जाना (किसी जगह)",
+					"en": "We visited Jaipur.",
+					"bn": "ঘূমনে জানা (কিসী জগহ)",
+					"mr": "घूमने जाना (किसी जगह)",
+					"gu": "ઘૂમને જાના (કિસી જગહ)",
+					"pa": "ਘੂਮਨੇ ਜਾਨਾ (ਕਿਸੀ ਜਗਹ)",
+					"ta": "நாங்கள் Jaipur பார்வையிட்டோம்.",
+					"te": "మేము Jaipur సందర్శించాం.",
+					"kn": "ನಾವು Jaipur ಭೇಟಿ ಮಾಡಿದೆವು."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -52,7 +136,33 @@
 			"ipa": "aʃ.te",
 			"hindiGloss": "खरीदना",
 			"englishGloss": "to buy (past participle: acheté)",
-			"example": { "french": "Elle a acheté un sari.", "englishGloss": "She bought a sari." },
+			"glosses": {
+				"hi": "खरीदना",
+				"en": "to buy (past participle: acheté)",
+				"bn": "খরীদনা",
+				"mr": "खरीदना",
+				"gu": "ખરીદના",
+				"pa": "ਖਰੀਦਨਾ",
+				"ta": "வாங்குதல்",
+				"te": "కొనుగోలు చేయడం",
+				"kn": "ಕೊಳ್ಳುವುದು"
+			},
+			"example": {
+				"french": "Elle a acheté un sari.",
+				"englishGloss": "She bought a sari.",
+				"glosses": {
+					"hi": "खरीदना",
+					"en": "She bought a sari.",
+					"bn": "খরীদনা",
+					"mr": "खरीदना",
+					"gu": "ખરીદના",
+					"pa": "ਖਰੀਦਨਾ",
+					"ta": "அவள் ஒரு saree வாங்கினாள்.",
+					"te": "ఆమె ఒక saree కొన్నది.",
+					"kn": "ಅವಳು ಒಂದು saree ಕೊಂಡಿದ್ದಾಳೆ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -63,10 +173,33 @@
 			"ipa": "la sə.mɛn dɛʁ.njɛʁ",
 			"hindiGloss": "पिछले हफ़्ते",
 			"englishGloss": "last week",
+			"glosses": {
+				"hi": "पिछले हफ़्ते",
+				"en": "last week",
+				"bn": "পিছলে হফ়্তে",
+				"mr": "पिछले हफ़्ते",
+				"gu": "પિછલે હફ઼્તે",
+				"pa": "ਪਿਛਲੇ ਹਫ़੍ਤੇ",
+				"ta": "கடந்த வாரம்",
+				"te": "గత వారం",
+				"kn": "ಕಳೆದ ವಾರ"
+			},
 			"example": {
 				"french": "La semaine dernière, j'ai voyagé à Goa.",
-				"englishGloss": "Last week, I travelled to Goa."
+				"englishGloss": "Last week, I travelled to Goa.",
+				"glosses": {
+					"hi": "पिछले हफ़्ते",
+					"en": "Last week, I travelled to Goa.",
+					"bn": "পিছলে হফ়্তে",
+					"mr": "पिछले हफ़्ते",
+					"gu": "પિછલે હફ઼્તે",
+					"pa": "ਪਿਛਲੇ ਹਫ़੍ਤੇ",
+					"ta": "கடந்த வாரம், நான் Goa பயணம் செய்தேன்.",
+					"te": "గత వారం, నేను Goa ప్రయాణించాను.",
+					"kn": "ಕಳೆದ ವಾರ, ನಾನು Goa ಪ್ರಯಾಣಿಸಿದೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		}
@@ -76,14 +209,17 @@
 			"type": "cloze",
 			"id": "a2-u1-ex1",
 			"cardId": "a2-pc-manger",
+			"hint": "Past participle of manger (-er → -é).",
+			"coachNote": "Recount recent past events using the passé composé with avoir (A2: can describe past activities and personal experiences",
 			"text": "Yesterday I ate a biryani: « Hier, j'ai {{}} un biryani. »",
 			"answer": "mangé",
-			"accept": ["mange", "mangé"],
-			"hint": "Past participle of manger (-er → -é)."
+			"accept": ["mange", "mangé"]
 		},
 		{
 			"type": "mcq",
 			"id": "a2-u1-ex2",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Recount recent past events using the passé composé with avoir (A2: can describe past activities and personal experiences",
 			"prompt": "The passé composé is formed with…",
 			"options": [
 				"avoir/être (present) + past participle",
@@ -97,6 +233,8 @@
 		{
 			"type": "conjugation",
 			"id": "a2-u1-ex3",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Recount recent past events using the passé composé with avoir (A2: can describe past activities and personal experiences",
 			"verb": "avoir",
 			"pronoun": "tu",
 			"prompt": "Auxiliary « avoir »: Tu ___ acheté un sari.",
@@ -107,14 +245,17 @@
 			"type": "cloze",
 			"id": "a2-u1-ex4",
 			"cardId": "a2-pc-visiter",
+			"hint": "Past participle of visiter.",
+			"coachNote": "Recount recent past events using the passé composé with avoir (A2: can describe past activities and personal experiences",
 			"text": "We visited the Taj Mahal: « Nous avons {{}} le Taj Mahal. »",
 			"answer": "visité",
-			"accept": ["visite", "visité"],
-			"hint": "Past participle of visiter."
+			"accept": ["visite", "visité"]
 		},
 		{
 			"type": "reorder",
 			"id": "a2-u1-ex5",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Recount recent past events using the passé composé with avoir (A2: can describe past activities and personal experiences",
 			"prompt": "Build: “I ate a thali.”",
 			"words": ["J'", "ai", "mangé", "un", "thali"]
 		},
@@ -122,6 +263,8 @@
 			"type": "translation",
 			"id": "a2-u1-ex6",
 			"cardId": "a2-pc-semaine",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Recount recent past events using the passé composé with avoir (A2: can describe past activities and personal experiences",
 			"prompt": "last week",
 			"direction": "en-fr",
 			"answer": "la semaine dernière",

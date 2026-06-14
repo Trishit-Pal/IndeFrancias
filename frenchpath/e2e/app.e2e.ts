@@ -1,61 +1,5 @@
-import { test, expect, type Page } from '@playwright/test';
-
-/** Opens the home path map, dismissing the first-run onboarding if shown. */
-async function gotoHome(page: Page) {
-	await page.goto('/');
-	const start = page.getByTestId('onboarding-start');
-	const unitCard = page.getByTestId('unit-card');
-	await expect(start.or(unitCard).first()).toBeVisible();
-	if (await start.count()) await start.click();
-	await expect(unitCard.first()).toBeVisible();
-}
-
-/**
- * Answers each exercise in turn (correctness doesn't matter for the flow —
- * cards are seeded regardless) until the lesson summary appears.
- */
-async function completeLesson(page: Page) {
-	const summary = page.getByTestId('summary');
-	const check = page.getByTestId('check');
-	// Synchronise on observable UI: a question (check button) or the summary.
-	await expect(check.or(summary).first()).toBeVisible();
-
-	while (!(await summary.isVisible().catch(() => false))) {
-		const cloze = page.getByTestId('cloze-input');
-		const text = page.getByTestId('text-answer');
-		const selects = page.getByTestId('matching-select');
-		const mcq = page.getByTestId('mcq-option');
-		const reorderWord = page.getByTestId('reorder-word');
-		const genderOption = page.getByTestId('gender-option');
-
-		// Wait for the (possibly just-remounted) exercise input to mount.
-		await expect(
-			cloze.or(text).or(selects).or(mcq).or(reorderWord).or(genderOption).first()
-		).toBeVisible();
-
-		if (await cloze.count()) {
-			await cloze.fill('bonjour');
-		} else if (await text.count()) {
-			await text.fill('test');
-		} else if (await selects.count()) {
-			const count = await selects.count();
-			for (let s = 0; s < count; s++) await selects.nth(s).selectOption({ index: 1 });
-		} else if (await reorderWord.count()) {
-			// Tap every word into the answer line (bank shrinks as words are placed).
-			while ((await reorderWord.count()) > 0) await reorderWord.first().click();
-		} else if (await genderOption.count()) {
-			await genderOption.first().click();
-		} else {
-			await mcq.first().click();
-		}
-
-		await expect(check).toBeEnabled();
-		await check.click();
-		await page.getByTestId('continue').click();
-		// Wait for the next question or the summary before looping.
-		await expect(check.or(summary).first()).toBeVisible();
-	}
-}
+import { test, expect } from '@playwright/test';
+import { gotoHome, completeLesson } from './helpers';
 
 test('learner can complete the A1 lesson and see a score', async ({ page }) => {
 	await gotoHome(page);
@@ -75,13 +19,11 @@ test('progress persists across a reload (IndexedDB)', async ({ page }) => {
 	await page.getByTestId('start-lesson').click();
 	await completeLesson(page);
 
-	// Back to the path map, then a hard reload — progress comes from IndexedDB.
 	await page.getByRole('link', { name: 'Back to path' }).click();
 	await page.reload();
 	await expect(page.getByTestId('unit-card').first()).toContainText('✓');
-	// Retention loop: completing a lesson started the streak and earned XP.
 	await expect(page.getByTestId('streak-badge')).toContainText('1');
-	await expect(page.getByTestId('daily-goal')).toContainText('/ 30 XP');
+	await expect(page.getByTestId('daily-goal')).toContainText('/ 50 XP');
 });
 
 test('completed lesson seeds the SRS queue and reviews can be graded', async ({ page }) => {
@@ -99,7 +41,6 @@ test('completed lesson seeds the SRS queue and reviews can be graded', async ({ 
 	while (!(await done.isVisible().catch(() => false))) {
 		await reveal.click();
 		await page.locator('[data-grade="good"]').click();
-		// Wait for the next card's reveal button or the done screen.
 		await expect(reveal.or(done).first()).toBeVisible();
 	}
 	await expect(done).toBeVisible();
@@ -119,7 +60,6 @@ test('exposes an installable web manifest', async ({ page }) => {
 
 test('app shell still loads when offline', async ({ page, context }) => {
 	await gotoHome(page);
-	// Let the service worker install and take control.
 	await page.evaluate(() => navigator.serviceWorker.ready);
 	await page.reload();
 
@@ -145,11 +85,10 @@ test('mock DELF A2 runs through all sections and shows a scored result', async (
 		if (await result.isVisible().catch(() => false)) break;
 
 		if (await submitSection.count()) {
-			await submitSection.click(); // productive section: self-assessed
+			await submitSection.click();
 			continue;
 		}
 
-		// objective item — fill whichever input is shown, then check + continue
 		const text = page.getByTestId('text-answer');
 		const mcq = page.getByTestId('mcq-option');
 		const cloze = page.getByTestId('cloze-input');
@@ -166,10 +105,49 @@ test('mock DELF A2 runs through all sections and shows a scored result', async (
 	await expect(result).toContainText('/ 100');
 });
 
+test('no CSP violations on core and dynamic routes', async ({ page }) => {
+	const violations: string[] = [];
+	page.on('console', (msg) => {
+		if (msg.type() === 'error' && /content security policy/i.test(msg.text())) {
+			violations.push(msg.text());
+		}
+	});
+	for (const path of [
+		'/',
+		'/review',
+		'/progress',
+		'/settings',
+		'/learn/a1-unit-01',
+		'/checkpoint/g1',
+		'/exam/delf-a2',
+		'/exam/delf-b1',
+		'/exam/delf-b2',
+		'/exam/dalf-c1'
+	]) {
+		await page.goto(path);
+		await page.waitForLoadState('networkidle');
+	}
+	expect(violations).toEqual([]);
+});
+
 test('UI language toggle switches the interface to Hindi', async ({ page }) => {
-	await gotoHome(page); // dismiss onboarding first
+	await gotoHome(page);
 	await page.goto('/settings');
 	await page.getByTestId('language-select').selectOption('hi');
-	// setLocale persists the choice and reloads; the nav renders in Hindi.
 	await expect(page.getByRole('navigation')).toContainText('सीखें');
+});
+
+test('replaying a perfect lesson awards zero improvement XP', async ({ page }) => {
+	await gotoHome(page);
+	await page.getByTestId('unit-card').first().click();
+	await page.getByTestId('start-lesson').click();
+	await completeLesson(page);
+	await expect(page.getByTestId('xp-awarded')).toBeVisible();
+
+	await page.getByRole('link', { name: 'Back to path' }).click();
+	await page.getByTestId('unit-card').first().click();
+	await page.getByTestId('start-lesson').click();
+	await completeLesson(page);
+
+	await expect(page.getByTestId('practice-note')).toContainText('no new XP');
 });

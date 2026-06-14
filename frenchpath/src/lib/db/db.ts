@@ -36,6 +36,9 @@ export function getDB(): Promise<IDBPDatabase<FrenchPathDB>> {
 					db.createObjectStore('stats', { keyPath: 'date' });
 					db.createObjectStore('skillProfile', { keyPath: 'skill' });
 				}
+				if (oldVersion < 2) {
+					db.createObjectStore('assessments', { keyPath: 'assessmentId' });
+				}
 			}
 		});
 	}

@@ -3,8 +3,20 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vitest/config';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
+import { visualizer } from 'rollup-plugin-visualizer';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+	build: {
+		rollupOptions: {
+			output: {
+				manualChunks(id) {
+					if (id.includes('three') || id.includes('@threlte')) return 'vendor-3d';
+					const packMatch = id.match(/[/\\]content[/\\]packs[/\\]([^/\\]+)[/\\]([^/\\]+)\.json/);
+					if (packMatch) return `lesson-${packMatch[1]}-${packMatch[2].replace('.json', '')}`;
+				}
+			}
+		}
+	},
 	plugins: [
 		tailwindcss(),
 		sveltekit(),
@@ -18,6 +30,15 @@ export default defineConfig({
 		SvelteKitPWA({
 			registerType: 'autoUpdate',
 			injectRegister: 'auto',
+			includeAssets: [
+				'favicon.svg',
+				'icon.svg',
+				'pwa-64x64.png',
+				'pwa-192x192.png',
+				'pwa-512x512.png',
+				'maskable-icon-512x512.png',
+				'apple-touch-icon-180x180.png'
+			],
 			manifest: {
 				name: 'FrenchPath — Learn French',
 				short_name: 'FrenchPath',
@@ -45,13 +66,9 @@ export default defineConfig({
 				]
 			},
 			workbox: {
-				// Precache the whole app shell so the SPA loads with zero network.
 				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2,json,html}'],
-				// Serve the precached home shell for any uncached navigation (e.g. the
-				// dynamic /learn/[unitId] route) so the client router can take over offline.
 				navigateFallback: '/',
 				navigateFallbackDenylist: [/^\/manifest\.webmanifest$/],
-				// Native-speaker audio (added later) is large + immutable -> cache-first.
 				runtimeCaching: [
 					{
 						urlPattern: ({ url }) => url.pathname.startsWith('/audio/'),
@@ -61,21 +78,31 @@ export default defineConfig({
 							expiration: { maxEntries: 500, maxAgeSeconds: 60 * 60 * 24 * 60 },
 							cacheableResponse: { statuses: [0, 200] }
 						}
+					},
+					{
+						urlPattern: ({ url }) => url.pathname.includes('/_app/immutable/chunks/'),
+						handler: 'CacheFirst',
+						options: {
+							cacheName: 'frenchpath-chunks',
+							expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 365 },
+							cacheableResponse: { statuses: [0, 200] }
+						}
 					}
 				]
 			},
-			// Offline is verified against the production build (`npm run preview`),
-			// which is also what Playwright drives. Keeping the SW off during
-			// `vite dev` avoids known dev-mode navigation-fallback pitfalls.
 			devOptions: { enabled: false }
-		})
-	],
+		}),
+		mode === 'analyze' &&
+			visualizer({
+				filename: 'build/stats.html',
+				gzipSize: true,
+				open: false
+			})
+	].filter(Boolean),
 	test: {
 		expect: { requireAssertions: true },
 		coverage: {
 			provider: 'v8',
-			// Measure the business/data logic. Thin browser wrappers (tts, persist,
-			// online store) and generated code are covered by E2E / excluded.
 			include: ['src/lib/**/*.ts'],
 			exclude: [
 				'**/*.spec.ts',
@@ -99,4 +126,4 @@ export default defineConfig({
 			}
 		]
 	}
-});
+}));

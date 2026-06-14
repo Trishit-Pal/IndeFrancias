@@ -6,7 +6,16 @@
 	"objective": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce oneself).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: French has gender — and so do you",
-		"body": "Every French noun is masculine or feminine: **un ami** (a male friend) vs **une amie** (a female friend). This feels strange in English, but Hindi already does it — किताब (kitaab, 'book') is feminine, घर (ghar, 'house') is masculine, and adjectives change to agree. Use that instinct as a bridge. ⚠️ Caution: the gender of a word in Hindi does NOT predict its gender in French — treat Hindi gender as an *awareness* tool, not a rule. Always learn each French noun together with its un/une."
+		"body": "Every French noun is masculine or feminine: **un ami** (a male friend) vs **une amie** (a female friend). This feels strange in English, but Hindi already does it — किताब (kitaab, 'book') is feminine, घर (ghar, 'house') is masculine, and adjectives change to agree. Use that instinct as a bridge. ⚠️ Caution: the gender of a word in Hindi does NOT predict its gender in French — treat Hindi gender as an *awareness* tool, not a rule. Always learn each French noun together with its un/une.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Bonjour ! — Greetings & introducing yourself\"?",
+			"options": [
+				"Focus on: French has gender — and so do you",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,11 +25,34 @@
 			"ipa": "bɔ̃ʒuʁ",
 			"hindiGloss": "नमस्ते / सुप्रभात",
 			"englishGloss": "hello / good morning (formal, daytime)",
+			"glosses": {
+				"hi": "नमस्ते / सुप्रभात",
+				"en": "hello / good morning (formal, daytime)",
+				"bn": "নমস্তে / সুপ্রভাত",
+				"mr": "नमस्ते / सुप्रभात",
+				"gu": "નમસ્તે / સુપ્રભાત",
+				"pa": "ਨਮਸ੍ਤੇ / ਸੁਪ੍ਰਭਾਤ",
+				"ta": "வணக்கம் / காலை வணக்கம் (முறைசார்)",
+				"te": "నమస్కారం / శుభోదయం (ఔపచారిక)",
+				"kn": "ನಮಸ್ಕಾರ / ಶುಭೋದಯ (ಔಪಚಾರಿಕ)"
+			},
 			"example": {
 				"french": "Bonjour ! Priya salue Arjun à Mumbai.",
 				"englishGloss": "Hello! Priya greets Arjun in Mumbai.",
-				"hindiGloss": "नमस्ते! प्रिया मुंबई में अर्जुन का अभिवादन करती है।"
+				"hindiGloss": "नमस्ते! प्रिया मुंबई में अर्जुन का अभिवादन करती है।",
+				"glosses": {
+					"hi": "नमस्ते! प्रिया मुंबई में अर्जुन का अभिवादन करती है।",
+					"en": "Hello! Priya greets Arjun in Mumbai.",
+					"bn": "নমস্তে! প্রিযা মুংবঈ মেং অর্জুন কা অভি঵াদন করতী হৈ৤",
+					"mr": "नमस्ते! प्रिया मुंबई में अर्जुन का अभिवादन करती है।",
+					"gu": "નમસ્તે! પ્રિયા મુંબઈ મેં અર્જુન કા અભિવાદન કરતી હૈ૤",
+					"pa": "ਨਮਸ੍ਤੇ! ਪ੍ਰਿਯਾ ਮੁਂਬਈ ਮੇਂ ਅਰ੍ਜੁਨ ਕਾ ਅਭਿਵਾਦਨ ਕਰਤੀ ਹੈ।",
+					"ta": "வணக்கம்! Priya Mumbai-இல் Arjun-ஐ வணங்குகிறாள்.",
+					"te": "నమస్కారం! Priya Mumbai-లో Arjun-కు నమస్కారం చేస్తుంది.",
+					"kn": "ನಮಸ್ಕಾರ! Priya Mumbai-ನಲ್ಲಿ Arjun-ಗೆ ನಮಸ್ಕಾರ ಹೇಳುತ್ತಾಳೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenInteraction", "spokenProduction"]
 		},
@@ -31,10 +63,33 @@
 			"ipa": "saly",
 			"hindiGloss": "हाय (अनौपचारिक)",
 			"englishGloss": "hi / bye (informal)",
+			"glosses": {
+				"hi": "हाय (अनौपचारिक)",
+				"en": "hi / bye (informal)",
+				"bn": "হায (অনৌপচারিক)",
+				"mr": "हाय (अनौपचारिक)",
+				"gu": "હાય (અનૌપચારિક)",
+				"pa": "ਹਾਯ (ਅਨੌਪਚਾਰਿਕ)",
+				"ta": "ஹாய் (அநாகரிகமான)",
+				"te": "హాయ్ (అనధికారిక)",
+				"kn": "ಹಾಯ್ (ಅನೌಪಚಾರಿಕ)"
+			},
 			"example": {
 				"french": "Salut Arjun, ça va ?",
-				"englishGloss": "Hi Arjun, how's it going?"
+				"englishGloss": "Hi Arjun, how's it going?",
+				"glosses": {
+					"hi": "हाय (अनौपचारिक)",
+					"en": "Hi Arjun, how's it going?",
+					"bn": "হায (অনৌপচারিক)",
+					"mr": "हाय (अनौपचारिक)",
+					"gu": "હાય (અનૌપચારિક)",
+					"pa": "ਹਾਯ (ਅਨੌਪਚਾਰਿਕ)",
+					"ta": "ஹாய் Arjun, எப்படி இருக்கிறாய்?",
+					"te": "హాయ్ Arjun, ఎలా ఉన్నావు?",
+					"kn": "ಹಾಯ್ Arjun, ಹೇಗಿದ್ದೀಯ?"
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenInteraction"]
 		},
@@ -45,10 +100,33 @@
 			"ipa": "mɛʁsi",
 			"hindiGloss": "धन्यवाद / शुक्रिया",
 			"englishGloss": "thank you",
+			"glosses": {
+				"hi": "धन्यवाद / शुक्रिया",
+				"en": "thank you",
+				"bn": "ধন্য঵াদ / শুক্রিযা",
+				"mr": "धन्यवाद / शुक्रिया",
+				"gu": "ધન્યવાદ / શુક્રિયા",
+				"pa": "ਧਨ੍ਯਵਾਦ / ਸ਼ੁਕ੍ਰਿਯਾ",
+				"ta": "நன்றி",
+				"te": "ధన్యవాదాలు",
+				"kn": "ಧನ್ಯವಾದಗಳು"
+			},
 			"example": {
 				"french": "Merci beaucoup, Priya !",
-				"englishGloss": "Thank you very much, Priya!"
+				"englishGloss": "Thank you very much, Priya!",
+				"glosses": {
+					"hi": "धन्यवाद / शुक्रिया",
+					"en": "Thank you very much, Priya!",
+					"bn": "ধন্য঵াদ / শুক্রিযা",
+					"mr": "धन्यवाद / शुक्रिया",
+					"gu": "ધન્યવાદ / શુક્રિયા",
+					"pa": "ਧਨ੍ਯਵਾਦ / ਸ਼ੁਕ੍ਰਿਯਾ",
+					"ta": "மிக்க நன்றி, Priya!",
+					"te": "చాలా ధన్యవాదాలు, Priya!",
+					"kn": "ತುಂಬ ಧನ್ಯವಾದಗಳು, Priya!"
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenInteraction"]
 		},
@@ -59,10 +137,33 @@
 			"ipa": "o ʁəvwaʁ",
 			"hindiGloss": "अलविदा / फिर मिलेंगे",
 			"englishGloss": "goodbye",
+			"glosses": {
+				"hi": "अलविदा / फिर मिलेंगे",
+				"en": "goodbye",
+				"bn": "অল঵িদা / ফির মিলেংগে",
+				"mr": "अलविदा / फिर मिलेंगे",
+				"gu": "અલવિદા / ફિર મિલેંગે",
+				"pa": "ਅਲਵਿਦਾ / ਫਿਰ ਮਿਲੇਂਗੇ",
+				"ta": "போய் வாருங்கள் / மீண்டும் சந்திப்போம்",
+				"te": "వీడ్కోలు / మళ్ళీ కలుద్దాం",
+				"kn": "ವಿದಾಯ / ಮತ್ತೆ ಭೇಟಿಯಾಗೋಣ"
+			},
 			"example": {
 				"french": "Au revoir ! À demain à Jaipur.",
-				"englishGloss": "Goodbye! See you tomorrow in Jaipur."
+				"englishGloss": "Goodbye! See you tomorrow in Jaipur.",
+				"glosses": {
+					"hi": "अलविदा / फिर मिलेंगे",
+					"en": "Goodbye! See you tomorrow in Jaipur.",
+					"bn": "অল঵িদা / ফির মিলেংগে",
+					"mr": "अलविदा / फिर मिलेंगे",
+					"gu": "અલવિદા / ફિર મિલેંગે",
+					"pa": "ਅਲਵਿਦਾ / ਫਿਰ ਮਿਲੇਂਗੇ",
+					"ta": "போய் வாருங்கள்! நாளை Jaipur-இல் சந்திக்கலாம்.",
+					"te": "వీడ్కోలు! రేపు Jaipur-లో కలుద్దాం.",
+					"kn": "ವಿದಾಯ! ನಾಳೆ Jaipur-ನಲ್ಲಿ ಭೇಟಿಯಾಗೋಣ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenInteraction"]
 		},
@@ -73,11 +174,34 @@
 			"ipa": "ʒə mapɛl",
 			"hindiGloss": "मेरा नाम ... है",
 			"englishGloss": "my name is",
+			"glosses": {
+				"hi": "मेरा नाम ... है",
+				"en": "my name is",
+				"bn": "মেরা নাম ... হৈ",
+				"mr": "मेरा नाम ... है",
+				"gu": "મેરા નામ ... હૈ",
+				"pa": "ਮੇਰਾ ਨਾਮ ... ਹੈ",
+				"ta": "என் பெயர் ... ",
+				"te": "నా పేరు ... ",
+				"kn": "ನನ್ನ ಹೆಸರು ... "
+			},
 			"example": {
 				"french": "Bonjour, je m'appelle Priya.",
 				"englishGloss": "Hello, my name is Priya.",
-				"hindiGloss": "नमस्ते, मेरा नाम प्रिया है।"
+				"hindiGloss": "नमस्ते, मेरा नाम प्रिया है।",
+				"glosses": {
+					"hi": "नमस्ते, मेरा नाम प्रिया है।",
+					"en": "Hello, my name is Priya.",
+					"bn": "নমস্তে, মেরা নাম প্রিযা হৈ৤",
+					"mr": "नमस्ते, मेरा नाम प्रिया है।",
+					"gu": "નમસ્તે, મેરા નામ પ્રિયા હૈ૤",
+					"pa": "ਨਮਸ੍ਤੇ, ਮੇਰਾ ਨਾਮ ਪ੍ਰਿਯਾ ਹੈ।",
+					"ta": "வணக்கம், என் பெயர் Priya.",
+					"te": "నమస్కారం, నా పేరు Priya.",
+					"kn": "ನಮಸ್ಕಾರ, ನನ್ನ ಹೆಸರು Priya."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenProduction", "writing"]
 		},
@@ -88,10 +212,33 @@
 			"ipa": "œ̃n‿ami",
 			"hindiGloss": "एक (पुरुष) दोस्त",
 			"englishGloss": "a (male) friend",
+			"glosses": {
+				"hi": "एक (पुरुष) दोस्त",
+				"en": "a (male) friend",
+				"bn": "এক (পুরুষ) দোস্ত",
+				"mr": "एक (पुरुष) दोस्त",
+				"gu": "એક (પુરુષ) દોસ્ત",
+				"pa": "ਏਕ (ਪੁਰੁ਷) ਦੋਸ੍ਤ",
+				"ta": "ஒரு (ஆண்) நண்பன்",
+				"te": "ఒక (పురుష) స్నేహితుడు",
+				"kn": "ಒಬ್ಬ (ಪುರುಷ) ಸ್ನೇಹಿತ"
+			},
 			"example": {
 				"french": "Arjun est un ami de Bangalore.",
-				"englishGloss": "Arjun is a friend from Bangalore."
+				"englishGloss": "Arjun is a friend from Bangalore.",
+				"glosses": {
+					"hi": "एक (पुरुष) दोस्त",
+					"en": "Arjun is a friend from Bangalore.",
+					"bn": "এক (পুরুষ) দোস্ত",
+					"mr": "एक (पुरुष) दोस्त",
+					"gu": "એક (પુરુષ) દોસ્ત",
+					"pa": "ਏਕ (ਪੁਰੁ਷) ਦੋਸ੍ਤ",
+					"ta": "அர்ஜுன் பெங்களூரில் இருந்து ஒரு நண்பன்.",
+					"te": "Arjun బెంగళూరు నుండి ఒక స్నేహితుడు.",
+					"kn": "Arjun ಬೆಂಗಳೂರಿನಿಂದ ಒಬ್ಬ ಸ್ನೇಹಿತ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -102,10 +249,33 @@
 			"ipa": "yn‿ami",
 			"hindiGloss": "एक (महिला) दोस्त",
 			"englishGloss": "a (female) friend",
+			"glosses": {
+				"hi": "एक (महिला) दोस्त",
+				"en": "a (female) friend",
+				"bn": "এক (মহিলা) দোস্ত",
+				"mr": "एक (महिला) दोस्त",
+				"gu": "એક (મહિલા) દોસ્ત",
+				"pa": "ਏਕ (ਮਹਿਲਾ) ਦੋਸ੍ਤ",
+				"ta": "ஒரு (பெண்) தோழி",
+				"te": "ఒక (స్త్రీ) స్నేహితురాలు",
+				"kn": "ಒಬ್ಬ (ಸ್ತ್ರೀ) ಸ್ನೇಹಿತೆ"
+			},
 			"example": {
 				"french": "Priya est une amie de Delhi.",
-				"englishGloss": "Priya is a friend from Delhi."
+				"englishGloss": "Priya is a friend from Delhi.",
+				"glosses": {
+					"hi": "एक (महिला) दोस्त",
+					"en": "Priya is a friend from Delhi.",
+					"bn": "এক (মহিলা) দোস্ত",
+					"mr": "एक (महिला) दोस्त",
+					"gu": "એક (મહિલા) દોસ્ત",
+					"pa": "ਏਕ (ਮਹਿਲਾ) ਦੋਸ੍ਤ",
+					"ta": "Priya Delhi-இல் இருந்து ஒரு தோழி.",
+					"te": "Priya Delhi నుండి ఒక స్నేహితురాలు.",
+					"kn": "Priya Delhi-ನಿಂದ ಒಬ್ಬ ಸ್ನೇಹಿತೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		}
@@ -115,6 +285,8 @@
 			"type": "mcq",
 			"id": "a1-u1-ex1",
 			"cardId": "a1-greet-bonjour",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce onese",
 			"prompt": "Priya meets her teacher in the morning. Which word does she use to greet him politely?",
 			"options": ["Bonjour", "Merci", "Au revoir", "Salut"],
 			"answerIndex": 0,
@@ -124,6 +296,8 @@
 			"type": "mcq",
 			"id": "a1-u1-ex2",
 			"cardId": "a1-intro-jemappelle",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce onese",
 			"prompt": "What does « Je m'appelle Arjun » mean?",
 			"options": ["My name is Arjun", "I am from Arjun", "Thank you, Arjun", "Goodbye, Arjun"],
 			"answerIndex": 0,
@@ -133,35 +307,53 @@
 			"type": "cloze",
 			"id": "a1-u1-ex3",
 			"cardId": "a1-greet-aurevoir",
+			"hint": "It means 'goodbye'.",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce onese",
 			"text": "At the end of the call, Priya says: « {{}} ! À demain. »",
 			"answer": "Au revoir",
-			"accept": ["au revoir", "au-revoir"],
-			"hint": "It means 'goodbye'."
+			"accept": ["au revoir", "au-revoir"]
 		},
 		{
 			"type": "cloze",
 			"id": "a1-u1-ex4",
 			"cardId": "a1-noun-amie",
+			"hint": "Feminine indefinite article (like the gender of किताब).",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce onese",
 			"text": "Priya is a female friend, so in French: Priya est {{}} amie.",
 			"answer": "une",
-			"accept": ["une"],
-			"hint": "Feminine indefinite article (like the gender of किताब)."
+			"accept": ["une"]
 		},
 		{
 			"type": "matching",
 			"id": "a1-u1-ex5",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce onese",
 			"prompt": "Match each French word to its English meaning.",
 			"pairs": [
-				{ "left": "bonjour", "right": "hello" },
-				{ "left": "merci", "right": "thank you" },
-				{ "left": "au revoir", "right": "goodbye" },
-				{ "left": "un ami", "right": "a (male) friend" }
+				{
+					"left": "bonjour",
+					"right": "hello"
+				},
+				{
+					"left": "merci",
+					"right": "thank you"
+				},
+				{
+					"left": "au revoir",
+					"right": "goodbye"
+				},
+				{
+					"left": "un ami",
+					"right": "a (male) friend"
+				}
 			]
 		},
 		{
 			"type": "gender",
 			"id": "a1-u1-ex6",
 			"cardId": "a1-noun-ami",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce onese",
 			"noun": "ami",
 			"answer": "masculine",
 			"articleStyle": "indefinite"
@@ -169,6 +361,8 @@
 		{
 			"type": "reorder",
 			"id": "a1-u1-ex7",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce onese",
 			"prompt": "Build the sentence: “My name is Priya.”",
 			"words": ["Je", "m'appelle", "Priya"]
 		},
@@ -176,6 +370,8 @@
 			"type": "translation",
 			"id": "a1-u1-ex8",
 			"cardId": "a1-greet-bonjour",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce onese",
 			"prompt": "Bonjour",
 			"direction": "fr-en",
 			"answer": "hello",

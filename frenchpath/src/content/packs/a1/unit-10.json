@@ -6,7 +6,16 @@
 	"objective": "Describe a typical day and how often you do things (A1: can describe daily routines and habits simply).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: present tense + frequency words",
-		"body": "French has no separate “habitual present” — the simple present covers habits: *Je travaille le matin* = “I work in the morning.” Add frequency words like **souvent** (often), **toujours** (always), **tous les jours** (every day). Place them after the verb: *Je bois souvent du chai.* This matches Hindi रोज़ / अक्सर placement closely."
+		"body": "French has no separate “habitual present” — the simple present covers habits: *Je travaille le matin* = “I work in the morning.” Add frequency words like **souvent** (often), **toujours** (always), **tous les jours** (every day). Place them after the verb: *Je bois souvent du chai.* This matches Hindi रोज़ / अक्सर placement closely.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Ma journée — Daily routine\"?",
+			"options": [
+				"Focus on: present tense + frequency words",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,10 +25,33 @@
 			"ipa": "lə ma.tɛ̃",
 			"hindiGloss": "सुबह",
 			"englishGloss": "the morning",
+			"glosses": {
+				"hi": "सुबह",
+				"en": "the morning",
+				"bn": "সুবহ",
+				"mr": "सुबह",
+				"gu": "સુબહ",
+				"pa": "ਸੁਬਹ",
+				"ta": "காலை",
+				"te": "ఉదయం",
+				"kn": "ಬೆಳಗ್ಗೆ / ಮುಂಜಾನೆ"
+			},
 			"example": {
 				"french": "Le matin, je bois du chai.",
-				"englishGloss": "In the morning, I drink chai."
+				"englishGloss": "In the morning, I drink chai.",
+				"glosses": {
+					"hi": "सुबह",
+					"en": "In the morning, I drink chai.",
+					"bn": "সুবহ",
+					"mr": "सुबह",
+					"gu": "સુબહ",
+					"pa": "ਸੁਬਹ",
+					"ta": "காலையில் நான் chai குடிக்கிறேன்.",
+					"te": "ఉదయం నేను chai తాగుతాను.",
+					"kn": "ಬೆಳಗ್ಗೆ ನಾನು chai ಕುಡಿಯುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -30,10 +62,33 @@
 			"ipa": "lə swaʁ",
 			"hindiGloss": "शाम",
 			"englishGloss": "the evening",
+			"glosses": {
+				"hi": "शाम",
+				"en": "the evening",
+				"bn": "শাম",
+				"mr": "शाम",
+				"gu": "શામ",
+				"pa": "ਸ਼ਾਮ",
+				"ta": "மாலை",
+				"te": "సాయంత్రం",
+				"kn": "ಸಂಜೆ"
+			},
 			"example": {
 				"french": "Le soir, je regarde un film.",
-				"englishGloss": "In the evening, I watch a film."
+				"englishGloss": "In the evening, I watch a film.",
+				"glosses": {
+					"hi": "शाम",
+					"en": "In the evening, I watch a film.",
+					"bn": "শাম",
+					"mr": "शाम",
+					"gu": "શામ",
+					"pa": "ਸ਼ਾਮ",
+					"ta": "மாலையில் நான் ஒரு திரைப்படம் பார்க்கிறேன்.",
+					"te": "సాయంత్రం నేను ఒక సినిమా చూస్తాను.",
+					"kn": "ಸಂಜೆ ನಾನು ಒಂದು ಚಿತ್ರ ನೋಡುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -44,7 +99,33 @@
 			"ipa": "su.vɑ̃",
 			"hindiGloss": "अक्सर",
 			"englishGloss": "often",
-			"example": { "french": "Je mange souvent du dal.", "englishGloss": "I often eat dal." },
+			"glosses": {
+				"hi": "अक्सर",
+				"en": "often",
+				"bn": "অক্সর",
+				"mr": "अक्सर",
+				"gu": "અક્સર",
+				"pa": "ਅਕ੍ਸਰ",
+				"ta": "அடிக்கடி",
+				"te": "తరచుగా",
+				"kn": "ಆಗಾಗ್ಗೆ"
+			},
+			"example": {
+				"french": "Je mange souvent du dal.",
+				"englishGloss": "I often eat dal.",
+				"glosses": {
+					"hi": "अक्सर",
+					"en": "I often eat dal.",
+					"bn": "অক্সর",
+					"mr": "अक्सर",
+					"gu": "અક્સર",
+					"pa": "ਅਕ੍ਸਰ",
+					"ta": "நான் அடிக்கடி dal சாப்பிடுகிறேன்.",
+					"te": "నేను తరచుగా dal తింటాను.",
+					"kn": "ನಾನು ಆಗಾಗ್ಗೆ dal ತಿನ್ನುತ್ತೇನೆ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -55,10 +136,33 @@
 			"ipa": "tu.ʒuʁ",
 			"hindiGloss": "हमेशा",
 			"englishGloss": "always",
+			"glosses": {
+				"hi": "हमेशा",
+				"en": "always",
+				"bn": "হমেশা",
+				"mr": "हमेशा",
+				"gu": "હમેશા",
+				"pa": "ਹਮੇਸ਼ਾ",
+				"ta": "எப்போதும்",
+				"te": "ఎప్పుడూ",
+				"kn": "ಎಂದಿಗೂ"
+			},
 			"example": {
 				"french": "Elle est toujours à l'heure.",
-				"englishGloss": "She is always on time."
+				"englishGloss": "She is always on time.",
+				"glosses": {
+					"hi": "हमेशा",
+					"en": "She is always on time.",
+					"bn": "হমেশা",
+					"mr": "हमेशा",
+					"gu": "હમેશા",
+					"pa": "ਹਮੇਸ਼ਾ",
+					"ta": "அவள் எப்போதும் சரியான நேரத்தில் வருகிறாள்.",
+					"te": "ఆమె ఎప్పుడూ సరైన సమయంలో వస్తుంది.",
+					"kn": "ಅವಳು ಎಂದಿಗೂ ಸರಿಯಾದ ಸಮಯದಲ್ಲಿ ಬರುತ್ತಾಳೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -69,7 +173,33 @@
 			"ipa": "tu le ʒuʁ",
 			"hindiGloss": "रोज़",
 			"englishGloss": "every day",
-			"example": { "french": "Je travaille tous les jours.", "englishGloss": "I work every day." },
+			"glosses": {
+				"hi": "रोज़",
+				"en": "every day",
+				"bn": "রোজ়",
+				"mr": "रोज़",
+				"gu": "રોજ઼",
+				"pa": "ਰੋਜ़",
+				"ta": "தினமும்",
+				"te": "ప్రతి రోజు",
+				"kn": "ಪ್ರತಿದಿನ"
+			},
+			"example": {
+				"french": "Je travaille tous les jours.",
+				"englishGloss": "I work every day.",
+				"glosses": {
+					"hi": "रोज़",
+					"en": "I work every day.",
+					"bn": "রোজ়",
+					"mr": "रोज़",
+					"gu": "રોજ઼",
+					"pa": "ਰੋਜ़",
+					"ta": "நான் தினமும் வேலை செய்கிறேன்.",
+					"te": "నేను ప్రతి రోజు పని చేస్తాను.",
+					"kn": "ನಾನು ಪ್ರತಿದಿನ ಕೆಲಸ ಮಾಡುತ್ತೇನೆ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -80,10 +210,33 @@
 			"ipa": "lə tʁa.vaj",
 			"hindiGloss": "काम",
 			"englishGloss": "the work / job",
+			"glosses": {
+				"hi": "काम",
+				"en": "the work / job",
+				"bn": "কাম",
+				"mr": "काम",
+				"gu": "કામ",
+				"pa": "ਕਾਮ",
+				"ta": "வேலை",
+				"te": "పని",
+				"kn": "ಕೆಲಸ"
+			},
 			"example": {
 				"french": "Le travail commence à neuf heures.",
-				"englishGloss": "Work starts at nine o'clock."
+				"englishGloss": "Work starts at nine o'clock.",
+				"glosses": {
+					"hi": "काम",
+					"en": "Work starts at nine o'clock.",
+					"bn": "কাম",
+					"mr": "काम",
+					"gu": "કામ",
+					"pa": "ਕਾਮ",
+					"ta": "வேலை ஒன்பது மணிக்கு தொடங்குகிறது.",
+					"te": "పని తొమ్మిది గంటలకు మొదలవుతుంది.",
+					"kn": "ಕೆಲಸ ಒಂಬತ್ತು ಗಂಟೆಗೆ ಪ್ರಾರಂಭವಾಗುತ್ತದೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		}
@@ -93,14 +246,17 @@
 			"type": "cloze",
 			"id": "a1-u10-ex1",
 			"cardId": "a1-day-souvent",
+			"hint": "Frequency word for 'often', placed after the verb.",
+			"coachNote": "Describe a typical day and how often you do things (A1: can describe daily routines and habits simply).",
 			"text": "Say you often eat dal: « Je mange {{}} du dal. »",
 			"answer": "souvent",
-			"accept": ["souvent"],
-			"hint": "Frequency word for 'often', placed after the verb."
+			"accept": ["souvent"]
 		},
 		{
 			"type": "conjugation",
 			"id": "a1-u10-ex2",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe a typical day and how often you do things (A1: can describe daily routines and habits simply).",
 			"verb": "travailler",
 			"pronoun": "je",
 			"prompt": "Habit (present): Je ___ tous les jours.",
@@ -111,6 +267,8 @@
 			"type": "mcq",
 			"id": "a1-u10-ex3",
 			"cardId": "a1-day-matin",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe a typical day and how often you do things (A1: can describe daily routines and habits simply).",
 			"prompt": "« Le matin » means…",
 			"options": ["in the morning", "in the evening", "at night", "tomorrow"],
 			"answerIndex": 0,
@@ -120,6 +278,8 @@
 			"type": "translation",
 			"id": "a1-u10-ex4",
 			"cardId": "a1-day-tousles",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe a typical day and how often you do things (A1: can describe daily routines and habits simply).",
 			"prompt": "every day",
 			"direction": "en-fr",
 			"answer": "tous les jours",
@@ -128,18 +288,34 @@
 		{
 			"type": "reorder",
 			"id": "a1-u10-ex5",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe a typical day and how often you do things (A1: can describe daily routines and habits simply).",
 			"prompt": "Build: “In the evening, I watch a film.”",
 			"words": ["Le", "soir", "je", "regarde", "un", "film"]
 		},
 		{
 			"type": "matching",
 			"id": "a1-u10-ex6",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe a typical day and how often you do things (A1: can describe daily routines and habits simply).",
 			"prompt": "Match the frequency/time words to English.",
 			"pairs": [
-				{ "left": "souvent", "right": "often" },
-				{ "left": "toujours", "right": "always" },
-				{ "left": "le matin", "right": "the morning" },
-				{ "left": "le soir", "right": "the evening" }
+				{
+					"left": "souvent",
+					"right": "often"
+				},
+				{
+					"left": "toujours",
+					"right": "always"
+				},
+				{
+					"left": "le matin",
+					"right": "the morning"
+				},
+				{
+					"left": "le soir",
+					"right": "the evening"
+				}
 			]
 		}
 	]

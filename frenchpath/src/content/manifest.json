@@ -124,5 +124,243 @@
 		"order": 8,
 		"title": "Donner son opinion — Giving opinions",
 		"objective": "Express and justify simple opinions (A2: can give and explain opinions on familiar topics)."
+	},
+	{
+		"id": "b1-unit-01",
+		"cefrLevel": "B1",
+		"order": 1,
+		"title": "Passé composé vs imparfait",
+		"objective": "Narrating past events"
+	},
+	{
+		"id": "b1-unit-02",
+		"cefrLevel": "B1",
+		"order": 2,
+		"title": "Object pronouns",
+		"objective": "Using le, la, les, lui, leur"
+	},
+	{
+		"id": "b1-unit-03",
+		"cefrLevel": "B1",
+		"order": 3,
+		"title": "Subjunctive introduction",
+		"objective": "Expressing doubt and desire"
+	},
+	{
+		"id": "b1-unit-04",
+		"cefrLevel": "B1",
+		"order": 4,
+		"title": "Opinions & debates",
+		"objective": "Agreeing and disagreeing"
+	},
+	{
+		"id": "b1-unit-05",
+		"cefrLevel": "B1",
+		"order": 5,
+		"title": "Travel & transport",
+		"objective": "Booking and navigating"
+	},
+	{
+		"id": "b1-unit-06",
+		"cefrLevel": "B1",
+		"order": 6,
+		"title": "Work & studies",
+		"objective": "Describing jobs and studies"
+	},
+	{
+		"id": "b1-unit-07",
+		"cefrLevel": "B1",
+		"order": 7,
+		"title": "Health & wellbeing",
+		"objective": "Doctor visits and advice"
+	},
+	{
+		"id": "b1-unit-08",
+		"cefrLevel": "B1",
+		"order": 8,
+		"title": "Environment",
+		"objective": "Talking about climate and cities"
+	},
+	{
+		"id": "b1-unit-09",
+		"cefrLevel": "B1",
+		"order": 9,
+		"title": "Media & news",
+		"objective": "Understanding headlines"
+	},
+	{
+		"id": "b1-unit-10",
+		"cefrLevel": "B1",
+		"order": 10,
+		"title": "Conditional present",
+		"objective": "Hypothetical situations"
+	},
+	{
+		"id": "b1-unit-11",
+		"cefrLevel": "B1",
+		"order": 11,
+		"title": "Relative pronouns",
+		"objective": "Qui, que, dont, où"
+	},
+	{
+		"id": "b1-unit-12",
+		"cefrLevel": "B1",
+		"order": 12,
+		"title": "B1 synthesis",
+		"objective": "Mixed B1 review"
+	},
+	{
+		"id": "b2-unit-01",
+		"cefrLevel": "B2",
+		"order": 1,
+		"title": "Plus-que-parfait",
+		"objective": "Earlier past events"
+	},
+	{
+		"id": "b2-unit-02",
+		"cefrLevel": "B2",
+		"order": 2,
+		"title": "Passive voice",
+		"objective": "Formal descriptions"
+	},
+	{
+		"id": "b2-unit-03",
+		"cefrLevel": "B2",
+		"order": 3,
+		"title": "Subjunctive nuances",
+		"objective": "Emotion, doubt, concession"
+	},
+	{
+		"id": "b2-unit-04",
+		"cefrLevel": "B2",
+		"order": 4,
+		"title": "Register & formality",
+		"objective": "Tu vs vous in context"
+	},
+	{
+		"id": "b2-unit-05",
+		"cefrLevel": "B2",
+		"order": 5,
+		"title": "Argumentation",
+		"objective": "Building a line of reasoning"
+	},
+	{
+		"id": "b2-unit-06",
+		"cefrLevel": "B2",
+		"order": 6,
+		"title": "Professional French",
+		"objective": "Emails and meetings"
+	},
+	{
+		"id": "b2-unit-07",
+		"cefrLevel": "B2",
+		"order": 7,
+		"title": "Culture & society",
+		"objective": "Indian diaspora in France"
+	},
+	{
+		"id": "b2-unit-08",
+		"cefrLevel": "B2",
+		"order": 8,
+		"title": "Literary tenses",
+		"objective": "Passé simple recognition"
+	},
+	{
+		"id": "b2-unit-09",
+		"cefrLevel": "B2",
+		"order": 9,
+		"title": "Conditionnel passé",
+		"objective": "Regrets and hypotheses"
+	},
+	{
+		"id": "b2-unit-10",
+		"cefrLevel": "B2",
+		"order": 10,
+		"title": "Discourse markers",
+		"objective": "Cependant, en revanche"
+	},
+	{
+		"id": "b2-unit-11",
+		"cefrLevel": "B2",
+		"order": 11,
+		"title": "Media analysis",
+		"objective": "Critique and summary"
+	},
+	{
+		"id": "b2-unit-12",
+		"cefrLevel": "B2",
+		"order": 12,
+		"title": "B2 synthesis",
+		"objective": "Mixed B2 review"
+	},
+	{
+		"id": "c1-unit-01",
+		"cefrLevel": "C1",
+		"order": 1,
+		"title": "Nominalisation",
+		"objective": "Turning verbs into nouns"
+	},
+	{
+		"id": "c1-unit-02",
+		"cefrLevel": "C1",
+		"order": 2,
+		"title": "Implicit meaning",
+		"objective": "Reading between the lines"
+	},
+	{
+		"id": "c1-unit-03",
+		"cefrLevel": "C1",
+		"order": 3,
+		"title": "Stylistic variation",
+		"objective": "Formal vs informal registers"
+	},
+	{
+		"id": "c1-unit-04",
+		"cefrLevel": "C1",
+		"order": 4,
+		"title": "Academic French",
+		"objective": "Structuring essays"
+	},
+	{
+		"id": "c1-unit-05",
+		"cefrLevel": "C1",
+		"order": 5,
+		"title": "Professional negotiation",
+		"objective": "Nuanced disagreement"
+	},
+	{
+		"id": "c1-unit-06",
+		"cefrLevel": "C1",
+		"order": 6,
+		"title": "Literary analysis",
+		"objective": "Tone and imagery"
+	},
+	{
+		"id": "c1-unit-07",
+		"cefrLevel": "C1",
+		"order": 7,
+		"title": "Synthesis skills",
+		"objective": "Combining sources"
+	},
+	{
+		"id": "c1-unit-08",
+		"cefrLevel": "C1",
+		"order": 8,
+		"title": "Argumentative essay",
+		"objective": "Essai argumenté"
+	},
+	{
+		"id": "c1-unit-09",
+		"cefrLevel": "C1",
+		"order": 9,
+		"title": "Oral exposé",
+		"objective": "Structured presentation"
+	},
+	{
+		"id": "c1-unit-10",
+		"cefrLevel": "C1",
+		"order": 10,
+		"title": "C1 capstone",
+		"objective": "DALF C1 readiness"
 	}
 ]

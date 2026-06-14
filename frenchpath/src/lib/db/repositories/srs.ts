@@ -25,6 +25,18 @@ export async function getAllCards(): Promise<SrsCard[]> {
 	return (await getDB()).getAll('srsCards');
 }
 
+export async function countCards(): Promise<number> {
+	return (await getDB()).count('srsCards');
+}
+
+/** Soonest card due strictly after `now` (index scan, no full table load). */
+export async function getNextDueAfter(now: Date = new Date()): Promise<SrsCard | undefined> {
+	const db = await getDB();
+	const range = IDBKeyRange.lowerBound(now, true);
+	const cursor = await db.transaction('srsCards').store.index('due').openCursor(range);
+	return cursor?.value;
+}
+
 /**
  * Cards due at or before `now`, soonest-due first (ascending `due` index),
  * optionally capped at `limit`.

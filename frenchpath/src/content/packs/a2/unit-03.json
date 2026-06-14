@@ -6,7 +6,16 @@
 	"objective": "Describe past situations, habits and how things used to be (A2: can describe past routines and backgrounds).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: the imparfait is “used to / was -ing”",
-		"body": "The imparfait describes the past — habits, descriptions, background — not single finished events. *Quand j'étais petit, je jouais au cricket* = “When I was little, I used to play cricket.” Form it from the **nous** present stem + endings **-ais, -ais, -ait, -ions, -iez, -aient**. Hindi’s past-habitual (खेलता था / “used to play”) is the closest match — use it as your anchor."
+		"body": "The imparfait describes the past — habits, descriptions, background — not single finished events. *Quand j'étais petit, je jouais au cricket* = “When I was little, I used to play cricket.” Form it from the **nous** present stem + endings **-ais, -ais, -ait, -ions, -iez, -aient**. Hindi’s past-habitual (खेलता था / “used to play”) is the closest match — use it as your anchor.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"L'imparfait — Describing the past\"?",
+			"options": [
+				"Focus on: the imparfait is “used to / was -ing”",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,10 +25,33 @@
 			"ipa": "lɑ̃.fɑ̃s",
 			"hindiGloss": "बचपन",
 			"englishGloss": "childhood",
+			"glosses": {
+				"hi": "बचपन",
+				"en": "childhood",
+				"bn": "বচপন",
+				"mr": "बचपन",
+				"gu": "બચપન",
+				"pa": "ਬਚਪਨ",
+				"ta": "சிறுவயது / குழந்தைப் பருவம்",
+				"te": "బాల్యం / చిన్నప్పటి రోజులు",
+				"kn": "ಬಾಲ್ಯ / ಚಿಕ್ಕ ವಯಸ್ಸು"
+			},
 			"example": {
 				"french": "Pendant mon enfance, j'habitais à Pune.",
-				"englishGloss": "During my childhood, I lived in Pune."
+				"englishGloss": "During my childhood, I lived in Pune.",
+				"glosses": {
+					"hi": "बचपन",
+					"en": "During my childhood, I lived in Pune.",
+					"bn": "বচপন",
+					"mr": "बचपन",
+					"gu": "બચપન",
+					"pa": "ਬਚਪਨ",
+					"ta": "என் சிறுவயதில், நான் Pune-இல் வாழ்ந்தேன்.",
+					"te": "నా బాల్యంలో, నేను Pune-లో ఉండేవాడను.",
+					"kn": "ನನ್ನ ಬಾಲ್ಯದಲ್ಲಿ, ನಾನು Pune-ನಲ್ಲಿ ವಾಸಿಸುತ್ತಿದ್ದೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -30,10 +62,33 @@
 			"ipa": "lə vi.laʒ",
 			"hindiGloss": "गाँव",
 			"englishGloss": "the village",
+			"glosses": {
+				"hi": "गाँव",
+				"en": "the village",
+				"bn": "গাঁ঵",
+				"mr": "गाँव",
+				"gu": "ગાઁવ",
+				"pa": "ਗਾँਵ",
+				"ta": "கிராமம்",
+				"te": "గ్రామం",
+				"kn": "ಗ್ರಾಮ"
+			},
 			"example": {
 				"french": "Mon village était petit et calme.",
-				"englishGloss": "My village was small and quiet."
+				"englishGloss": "My village was small and quiet.",
+				"glosses": {
+					"hi": "गाँव",
+					"en": "My village was small and quiet.",
+					"bn": "গাঁ঵",
+					"mr": "गाँव",
+					"gu": "ગાઁવ",
+					"pa": "ਗਾँਵ",
+					"ta": "என் கிராமம் சிறியதாகவும் அமைதியாகவும் இருந்தது.",
+					"te": "నా గ్రామం చిన్నది మరియు నిశ్శబ్దంగా ఉండేది.",
+					"kn": "ನನ್ನ ಗ್ರಾಮ ಚಿಕ್ಕದು ಮತ್ತು ಶಾಂತವಾಗಿತ್ತು."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -44,10 +99,33 @@
 			"ipa": "o.tʁə.fwa",
 			"hindiGloss": "पुराने ज़माने में / पहले",
 			"englishGloss": "in the past / formerly",
+			"glosses": {
+				"hi": "पुराने ज़माने में / पहले",
+				"en": "in the past / formerly",
+				"bn": "পুরানে জ়মানে মেং / পহলে",
+				"mr": "पुराने ज़माने में / पहले",
+				"gu": "પુરાને જ઼માને મેં / પહલે",
+				"pa": "ਪੁਰਾਨੇ ਜ़ਮਾਨੇ ਮੇਂ / ਪਹਲੇ",
+				"ta": "முன்பு / முன்காலத்தில்",
+				"te": "ముందు / పూర్వకాలంలో",
+				"kn": "ಮೊದಲು / ಹಿಂದೆ"
+			},
 			"example": {
 				"french": "Autrefois, on jouait dehors.",
-				"englishGloss": "In the past, we used to play outside."
+				"englishGloss": "In the past, we used to play outside.",
+				"glosses": {
+					"hi": "पुराने ज़माने में / पहले",
+					"en": "In the past, we used to play outside.",
+					"bn": "পুরানে জ়মানে মেং / পহলে",
+					"mr": "पुराने ज़माने में / पहले",
+					"gu": "પુરાને જ઼માને મેં / પહલે",
+					"pa": "ਪੁਰਾਨੇ ਜ़ਮਾਨੇ ਮੇਂ / ਪਹਲੇ",
+					"ta": "முன்பு, நாங்கள் வெளியே விளையாடுவது வழக்கம்.",
+					"te": "ముందు, మేము బయట ఆడేవాళ్ళం.",
+					"kn": "ಮೊದಲು, ನಾವು ಹೊರಗೆ ಆಡುತ್ತಿದ್ದೆವು."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -58,10 +136,33 @@
 			"ipa": "ʒwe",
 			"hindiGloss": "खेलना",
 			"englishGloss": "to play (imparfait: je jouais)",
+			"glosses": {
+				"hi": "खेलना",
+				"en": "to play (imparfait: je jouais)",
+				"bn": "খেলনা",
+				"mr": "खेलना",
+				"gu": "ખેલના",
+				"pa": "ਖੇਲਨਾ",
+				"ta": "விளையாடுதல்",
+				"te": "ఆడడం",
+				"kn": "ಆಡುವುದು"
+			},
 			"example": {
 				"french": "Je jouais au cricket chaque dimanche.",
-				"englishGloss": "I used to play cricket every Sunday."
+				"englishGloss": "I used to play cricket every Sunday.",
+				"glosses": {
+					"hi": "खेलना",
+					"en": "I used to play cricket every Sunday.",
+					"bn": "খেলনা",
+					"mr": "खेलना",
+					"gu": "ખેલના",
+					"pa": "ਖੇਲਨਾ",
+					"ta": "ஒவ்வொரு ஞாயிற்றுக்கிழமை கிரிக்கெட் விளையாடுவது என் வழக்கம்.",
+					"te": "ప్రతి ఆదివారం క్రికెట్ ఆడేవాడను.",
+					"kn": "ಪ್ರತಿ ಭಾನುವಾರ ಕ್ರಿಕೆಟ್ ಆಡುತ್ತಿದ್ದೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["spokenProduction"]
 		},
@@ -72,10 +173,33 @@
 			"ipa": "le.kɔl",
 			"hindiGloss": "स्कूल / विद्यालय",
 			"englishGloss": "the school",
+			"glosses": {
+				"hi": "स्कूल / विद्यालय",
+				"en": "the school",
+				"bn": "স্কূল / ঵িদ্যালয",
+				"mr": "स्कूल / विद्यालय",
+				"gu": "સ્કૂલ / વિદ્યાલય",
+				"pa": "ਸ੍ਕੂਲ / ਵਿਦ੍ਯਾਲਯ",
+				"ta": "பள்ளி",
+				"te": "పాఠశాల",
+				"kn": "ಶಾಲೆ"
+			},
 			"example": {
 				"french": "L'école était près de la maison.",
-				"englishGloss": "The school was near the house."
+				"englishGloss": "The school was near the house.",
+				"glosses": {
+					"hi": "स्कूल / विद्यालय",
+					"en": "The school was near the house.",
+					"bn": "স্কূল / ঵িদ্যালয",
+					"mr": "स्कूल / विद्यालय",
+					"gu": "સ્કૂલ / વિદ્યાલય",
+					"pa": "ਸ੍ਕੂਲ / ਵਿਦ੍ਯਾਲਯ",
+					"ta": "பள்ளி வீட்டிற்கு அருகில் இருந்தது.",
+					"te": "పాఠశాల ఇంటికి దగ్గరలో ఉండేది.",
+					"kn": "ಶಾಲೆ ಮನೆಯ ಹತ್ತಿರ ಇತ್ತು."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -86,10 +210,33 @@
 			"ipa": "pə.ti",
 			"hindiGloss": "छोटा",
 			"englishGloss": "small / little",
+			"glosses": {
+				"hi": "छोटा",
+				"en": "small / little",
+				"bn": "ছোটা",
+				"mr": "छोटा",
+				"gu": "છોટા",
+				"pa": "ਛੋਟਾ",
+				"ta": "சிறிய",
+				"te": "చిన్న",
+				"kn": "ಚಿಕ್ಕ"
+			},
 			"example": {
 				"french": "Quand j'étais petit, j'aimais les mangues.",
-				"englishGloss": "When I was little, I loved mangoes."
+				"englishGloss": "When I was little, I loved mangoes.",
+				"glosses": {
+					"hi": "छोटा",
+					"en": "When I was little, I loved mangoes.",
+					"bn": "ছোটা",
+					"mr": "छोटा",
+					"gu": "છોટા",
+					"pa": "ਛੋਟਾ",
+					"ta": "சிறுவயதில், நான் மாம்பழங்களை விரும்பினேன்.",
+					"te": "చిన్నప్పుడు, నేను మామిడిపండ్లు ఇష్టపడేవాడను.",
+					"kn": "ಚಿಕ್ಕವಾಗಿದ್ದಾಗ, ನಾನು ಮಾವಿನಹಣ್ಣುಗಳನ್ನು ಇಷ್ಟಪಡುತ್ತಿದ್ದೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		}
@@ -98,6 +245,8 @@
 		{
 			"type": "conjugation",
 			"id": "a2-u3-ex1",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe past situations, habits and how things used to be (A2: can describe past routines and backgrounds).",
 			"verb": "être",
 			"pronoun": "je",
 			"prompt": "Imparfait of « être »: Quand j'___ petit… (when I was little)",
@@ -108,14 +257,17 @@
 			"type": "cloze",
 			"id": "a2-u3-ex2",
 			"cardId": "a2-imp-jouer",
+			"hint": "Imparfait, nous form (stem jou- + -ions).",
+			"coachNote": "Describe past situations, habits and how things used to be (A2: can describe past routines and backgrounds).",
 			"text": "Habit in the past: « Autrefois, nous {{}} au cricket. » (jouer)",
 			"answer": "jouions",
-			"accept": ["jouions"],
-			"hint": "Imparfait, nous form (stem jou- + -ions)."
+			"accept": ["jouions"]
 		},
 		{
 			"type": "mcq",
 			"id": "a2-u3-ex3",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe past situations, habits and how things used to be (A2: can describe past routines and backgrounds).",
 			"prompt": "The imparfait is mainly used for…",
 			"options": [
 				"habits and descriptions in the past",
@@ -130,6 +282,8 @@
 			"type": "translation",
 			"id": "a2-u3-ex4",
 			"cardId": "a2-imp-petit",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe past situations, habits and how things used to be (A2: can describe past routines and backgrounds).",
 			"prompt": "When I was little",
 			"direction": "en-fr",
 			"answer": "Quand j'étais petit",
@@ -138,6 +292,8 @@
 		{
 			"type": "conjugation",
 			"id": "a2-u3-ex5",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe past situations, habits and how things used to be (A2: can describe past routines and backgrounds).",
 			"verb": "habiter",
 			"pronoun": "il",
 			"prompt": "Imparfait of « habiter »: Il ___ dans un village. (he used to live)",
@@ -147,11 +303,22 @@
 		{
 			"type": "matching",
 			"id": "a2-u3-ex6",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe past situations, habits and how things used to be (A2: can describe past routines and backgrounds).",
 			"prompt": "Match each imparfait form to its subject.",
 			"pairs": [
-				{ "left": "étais", "right": "je / tu" },
-				{ "left": "jouait", "right": "il / elle" },
-				{ "left": "habitions", "right": "nous" }
+				{
+					"left": "étais",
+					"right": "je / tu"
+				},
+				{
+					"left": "jouait",
+					"right": "il / elle"
+				},
+				{
+					"left": "habitions",
+					"right": "nous"
+				}
 			]
 		}
 	]

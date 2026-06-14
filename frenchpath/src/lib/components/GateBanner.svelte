@@ -1,0 +1,11 @@
+<script lang="ts">
+	let { reason }: { reason: string } = $props();
+</script>
+
+<div
+	class="fp-glass-panel fp-neon-border rounded-lg px-3 py-2 text-sm text-foreground"
+	role="status"
+	data-testid="gate-banner"
+>
+	🔒 {reason}
+</div>

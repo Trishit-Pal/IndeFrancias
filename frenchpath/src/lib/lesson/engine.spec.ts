@@ -8,6 +8,11 @@ describe('normalizeAnswer', () => {
 		expect(normalizeAnswer('  Au revoir. ')).toBe('au revoir');
 		expect(normalizeAnswer('Garçon')).toBe('garcon');
 	});
+
+	it('normalises combining acute accent the same as precomposed é', () => {
+		expect(normalizeAnswer('e\u0301')).toBe('e');
+		expect(normalizeAnswer('é')).toBe('e');
+	});
 });
 
 describe('gradeExercise', () => {
@@ -35,6 +40,12 @@ describe('gradeExercise', () => {
 		expect(gradeExercise(cloze, { type: 'cloze', text: 'AU REVOIR' })).toBe(true);
 		expect(gradeExercise(cloze, { type: 'cloze', text: 'au-revoir' })).toBe(true);
 		expect(gradeExercise(cloze, { type: 'cloze', text: 'bonjour' })).toBe(false);
+	});
+
+	it('rejects empty cloze answers', () => {
+		const cloze: Exercise = { type: 'cloze', id: 'c', text: 'x {{}}', answer: 'oui', accept: [] };
+		expect(gradeExercise(cloze, { type: 'cloze', text: '' })).toBe(false);
+		expect(gradeExercise(cloze, { type: 'cloze', text: '   ' })).toBe(false);
 	});
 
 	it('returns false when the response type does not match the exercise', () => {
@@ -87,6 +98,26 @@ describe('gradeExercise', () => {
 			})
 		).toBe(false);
 	});
+
+	it('rejects matching when only one pair is correct', () => {
+		const matching: Exercise = {
+			type: 'matching',
+			id: 'm',
+			pairs: [
+				{ left: 'a', right: '1' },
+				{ left: 'b', right: '2' }
+			]
+		};
+		expect(
+			gradeExercise(matching, {
+				type: 'matching',
+				pairs: [
+					{ left: 'a', right: '1' },
+					{ left: 'b', right: '1' }
+				]
+			})
+		).toBe(false);
+	});
 });
 
 describe('gradeExercise — added types', () => {
@@ -100,6 +131,7 @@ describe('gradeExercise — added types', () => {
 		};
 		expect(gradeExercise(ex, { type: 'dictation', text: 'bonjour' })).toBe(true);
 		expect(gradeExercise(ex, { type: 'dictation', text: 'merci' })).toBe(false);
+		expect(gradeExercise(ex, { type: 'dictation', text: '' })).toBe(false);
 	});
 
 	it('grades translation against the answer or accepts', () => {
@@ -120,6 +152,12 @@ describe('gradeExercise — added types', () => {
 		const ex: Exercise = { type: 'reorder', id: 'r', words: ['Je', 'suis', 'Priya'] };
 		expect(gradeExercise(ex, { type: 'reorder', words: ['Je', 'suis', 'Priya'] })).toBe(true);
 		expect(gradeExercise(ex, { type: 'reorder', words: ['Priya', 'suis', 'Je'] })).toBe(false);
+	});
+
+	it('grades reorder with duplicate words in the bank', () => {
+		const ex: Exercise = { type: 'reorder', id: 'r', words: ['le', 'le', 'chat'] };
+		expect(gradeExercise(ex, { type: 'reorder', words: ['le', 'le', 'chat'] })).toBe(true);
+		expect(gradeExercise(ex, { type: 'reorder', words: ['le', 'chat', 'le'] })).toBe(false);
 	});
 
 	it('grades conjugation against the normalised form', () => {
@@ -145,6 +183,45 @@ describe('gradeExercise — added types', () => {
 		};
 		expect(gradeExercise(ex, { type: 'gender', choice: 'masculine' })).toBe(true);
 		expect(gradeExercise(ex, { type: 'gender', choice: 'feminine' })).toBe(false);
+	});
+
+	it('grades reading comprehension MCQs', () => {
+		const ex: Exercise = {
+			type: 'reading',
+			id: 'r',
+			passage: 'Bonjour',
+			questions: [
+				{ prompt: 'Q1', options: ['a', 'b'], answerIndex: 1 },
+				{ prompt: 'Q2', options: ['c', 'd'], answerIndex: 0 }
+			]
+		};
+		expect(gradeExercise(ex, { type: 'reading', selectedIndices: [1, 0] })).toBe(true);
+		expect(gradeExercise(ex, { type: 'reading', selectedIndices: [0, 0] })).toBe(false);
+	});
+
+	it('grades listening dictation-style answers', () => {
+		const ex: Exercise = {
+			type: 'listening',
+			id: 'l',
+			audioText: 'Bonjour',
+			answer: 'Bonjour',
+			accept: []
+		};
+		expect(gradeExercise(ex, { type: 'listening', text: 'bonjour' })).toBe(true);
+		expect(gradeExercise(ex, { type: 'listening', text: 'salut' })).toBe(false);
+	});
+
+	it('grades productive self-check rubric minimum', () => {
+		const ex: Exercise = {
+			type: 'productive',
+			id: 'p',
+			prompt: 'Write',
+			modelAnswer: 'Model',
+			rubric: ['a', 'b', 'c'],
+			minChecks: 2
+		};
+		expect(gradeExercise(ex, { type: 'productive', checked: [true, true, false] })).toBe(true);
+		expect(gradeExercise(ex, { type: 'productive', checked: [true, false, false] })).toBe(false);
 	});
 });
 

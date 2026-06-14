@@ -1,17 +1,21 @@
 <script lang="ts">
 	import type { Exercise } from '$lib/content/schema';
 	import type { ExerciseResponse } from '$lib/lesson/engine';
+	import type { Lexicon } from '$lib/content/lexicon';
+	import GlossText from '$lib/components/GlossText.svelte';
 
 	type Gender = 'masculine' | 'feminine';
 
 	let {
 		exercise,
 		response = $bindable(),
-		submitted
+		submitted,
+		lexicon
 	}: {
 		exercise: Extract<Exercise, { type: 'gender' }>;
 		response: ExerciseResponse | null;
 		submitted: boolean;
+		lexicon: Lexicon;
 	} = $props();
 
 	const choice = $derived(response?.type === 'gender' ? response.choice : null);
@@ -34,18 +38,17 @@
 
 	function optionClass(value: Gender): string {
 		const base =
-			'rounded-xl border px-4 py-3 text-lg font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500';
-		if (submitted && value === exercise.answer)
-			return `${base} border-green-500 bg-green-50 text-green-900`;
-		if (submitted && value === choice) return `${base} border-red-500 bg-red-50 text-red-900`;
-		if (value === choice) return `${base} border-blue-500 bg-blue-50`;
-		return `${base} border-slate-300 bg-white hover:border-blue-400`;
+			'rounded-xl border px-4 py-3 text-lg font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary';
+		if (submitted && value === exercise.answer) return `${base} option-correct`;
+		if (submitted && value === choice) return `${base} option-incorrect`;
+		if (value === choice) return `${base} option-selected`;
+		return `${base} option-default`;
 	}
 </script>
 
 <fieldset class="space-y-3" disabled={submitted}>
-	<legend class="mb-1 text-lg font-semibold text-slate-900">
-		Choose the correct article for « {exercise.noun} »
+	<legend class="mb-1 text-lg font-semibold text-foreground">
+		Choose the correct article for « <GlossText text={exercise.noun} {lexicon} class="inline" /> »
 	</legend>
 	<div class="grid grid-cols-2 gap-3">
 		{#each options as opt (opt.value)}
@@ -57,7 +60,7 @@
 				onclick={() => pick(opt.value)}
 			>
 				{opt.label}
-				{exercise.noun}
+				<GlossText text={exercise.noun} {lexicon} class="inline" />
 			</button>
 		{/each}
 	</div>

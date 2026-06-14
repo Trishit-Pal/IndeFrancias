@@ -1,0 +1,356 @@
+{
+	"id": "c1-unit-03",
+	"cefrLevel": "C1",
+	"order": 3,
+	"title": "Stylistic variation",
+	"objective": "Formal vs informal registers",
+	"bridge": {
+		"title": "Bridge: stylistic variation",
+		"body": "**stylistic variation** — Hindi learners often map this to patterns they know from English exams. Practise with Indian contexts: Priya in Mumbai, Arjun in Delhi.",
+		"quiz": {
+			"prompt": "What is the focus of « Stylistic variation »?",
+			"options": ["stylistic variation", "Ignore grammar entirely", "Only numbers, never verbs"],
+			"answerIndex": 0
+		}
+	},
+	"cards": [
+		{
+			"id": "c1-u03-c1",
+			"french": "stylisti",
+			"gender": "none",
+			"hindiGloss": "मुख्य विचार: Stylistic variation",
+			"englishGloss": "key idea: Stylistic variation",
+			"glosses": {
+				"hi": "मुख्य विचार: Stylistic variation",
+				"en": "key idea: Stylistic variation",
+				"bn": "মুখ্য ঵িচার: Stylistic variation",
+				"mr": "मुख्य विचार: Stylistic variation",
+				"gu": "મુખ્ય વિચાર: Stylistic variation",
+				"pa": "ਮੁਖ੍ਯ ਵਿਚਾਰ: Stylistic variation",
+				"ta": "key idea: Stylistic variation",
+				"te": "key idea: Stylistic variation",
+				"kn": "key idea: Stylistic variation"
+			},
+			"example": {
+				"french": "Cette notion est essentielle pour Priya à Mumbai.",
+				"englishGloss": "This concept is essential for Priya in Mumbai.",
+				"hindiGloss": "यह अवधारणा मुंबई में प्रिया के लिए आवश्यक है।",
+				"glosses": {
+					"hi": "यह अवधारणा मुंबई में प्रिया के लिए आवश्यक है।",
+					"en": "This concept is essential for Priya in Mumbai.",
+					"bn": "যহ অ঵ধারণা মুংবঈ মেং প্রিযা কে লিএ আ঵শ্যক হৈ৤",
+					"mr": "यह अवधारणा मुंबई में प्रिया के लिए आवश्यक है।",
+					"gu": "યહ અવધારણા મુંબઈ મેં પ્રિયા કે લિએ આવશ્યક હૈ૤",
+					"pa": "ਯਹ ਅਵਧਾਰਣਾ ਮੁਂਬਈ ਮੇਂ ਪ੍ਰਿਯਾ ਕੇ ਲਿਏ ਆਵਸ਼੍ਯਕ ਹੈ।",
+					"ta": "This concept is essential for Priya in Mumbai.",
+					"te": "This concept is essential for Priya in Mumbai.",
+					"kn": "This concept is essential for Priya in Mumbai."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "C1",
+			"skills": ["reading", "spokenInteraction"]
+		},
+		{
+			"id": "c1-u03-c2",
+			"french": "cependant",
+			"gender": "none",
+			"hindiGloss": "हालाँकि",
+			"englishGloss": "however",
+			"glosses": {
+				"hi": "हालाँकि",
+				"en": "however",
+				"bn": "হালাঁকি",
+				"mr": "हालाँकि",
+				"gu": "હાલાઁકિ",
+				"pa": "ਹਾਲਾँਕਿ",
+				"ta": "however",
+				"te": "however",
+				"kn": "however"
+			},
+			"example": {
+				"french": "Cependant, Arjun préfère étudier le soir.",
+				"englishGloss": "However, Arjun prefers to study in the evening.",
+				"hindiGloss": "हालाँकि, अर्जुन शाम को पढ़ना पसंद करता है।",
+				"glosses": {
+					"hi": "हालाँकि, अर्जुन शाम को पढ़ना पसंद करता है।",
+					"en": "However, Arjun prefers to study in the evening.",
+					"bn": "হালাঁকি, অর্জুন শাম কো পঢ়না পসংদ করতা হৈ৤",
+					"mr": "हालाँकि, अर्जुन शाम को पढ़ना पसंद करता है।",
+					"gu": "હાલાઁકિ, અર્જુન શામ કો પઢ઼ના પસંદ કરતા હૈ૤",
+					"pa": "ਹਾਲਾँਕਿ, ਅਰ੍ਜੁਨ ਸ਼ਾਮ ਕੋ ਪਢ़ਨਾ ਪਸਂਦ ਕਰਤਾ ਹੈ।",
+					"ta": "However, Arjun prefers to study in the evening.",
+					"te": "However, Arjun prefers to study in the evening.",
+					"kn": "However, Arjun prefers to study in the evening."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "C1",
+			"skills": ["reading", "spokenInteraction"]
+		},
+		{
+			"id": "c1-u03-c3",
+			"french": "en outre",
+			"gender": "none",
+			"hindiGloss": "इसके अलावा",
+			"englishGloss": "furthermore",
+			"glosses": {
+				"hi": "इसके अलावा",
+				"en": "furthermore",
+				"bn": "ইসকে অলা঵া",
+				"mr": "इसके अलावा",
+				"gu": "ઇસકે અલાવા",
+				"pa": "ਇਸਕੇ ਅਲਾਵਾ",
+				"ta": "furthermore",
+				"te": "furthermore",
+				"kn": "furthermore"
+			},
+			"example": {
+				"french": "En outre, nous devons pratiquer chaque jour.",
+				"englishGloss": "Furthermore, we must practise every day.",
+				"hindiGloss": "इसके अलावा, हमें हर दिन अभ्यास करना चाहिए।",
+				"glosses": {
+					"hi": "इसके अलावा, हमें हर दिन अभ्यास करना चाहिए।",
+					"en": "Furthermore, we must practise every day.",
+					"bn": "ইসকে অলা঵া, হমেং হর দিন অভ্যাস করনা চাহিএ৤",
+					"mr": "इसके अलावा, हमें हर दिन अभ्यास करना चाहिए।",
+					"gu": "ઇસકે અલાવા, હમેં હર દિન અભ્યાસ કરના ચાહિએ૤",
+					"pa": "ਇਸਕੇ ਅਲਾਵਾ, ਹਮੇਂ ਹਰ ਦਿਨ ਅਭ੍ਯਾਸ ਕਰਨਾ ਚਾਹਿਏ।",
+					"ta": "Furthermore, we must practise every day.",
+					"te": "Furthermore, we must practise every day.",
+					"kn": "Furthermore, we must practise every day."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "C1",
+			"skills": ["reading", "spokenInteraction"]
+		},
+		{
+			"id": "c1-u03-c4",
+			"french": "néanmoins",
+			"gender": "none",
+			"hindiGloss": "फिर भी",
+			"englishGloss": "nevertheless",
+			"glosses": {
+				"hi": "फिर भी",
+				"en": "nevertheless",
+				"bn": "ফির ভী",
+				"mr": "फिर भी",
+				"gu": "ફિર ભી",
+				"pa": "ਫਿਰ ਭੀ",
+				"ta": "nevertheless",
+				"te": "nevertheless",
+				"kn": "nevertheless"
+			},
+			"example": {
+				"french": "Néanmoins, le cours reste accessible.",
+				"englishGloss": "Nevertheless, the course remains accessible.",
+				"hindiGloss": "फिर भी, कोर्स सुलभ रहता है।",
+				"glosses": {
+					"hi": "फिर भी, कोर्स सुलभ रहता है।",
+					"en": "Nevertheless, the course remains accessible.",
+					"bn": "ফির ভী, কোর্স সুলভ রহতা হৈ৤",
+					"mr": "फिर भी, कोर्स सुलभ रहता है।",
+					"gu": "ફિર ભી, કોર્સ સુલભ રહતા હૈ૤",
+					"pa": "ਫਿਰ ਭੀ, ਕੋਰ੍ਸ ਸੁਲਭ ਰਹਤਾ ਹੈ।",
+					"ta": "Nevertheless, the course remains accessible.",
+					"te": "Nevertheless, the course remains accessible.",
+					"kn": "Nevertheless, the course remains accessible."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "C1",
+			"skills": ["reading", "spokenInteraction"]
+		},
+		{
+			"id": "c1-u03-c5",
+			"french": "discours",
+			"gender": "masculine",
+			"hindiGloss": "भाषण / प्रवचन",
+			"englishGloss": "speech / discourse",
+			"glosses": {
+				"hi": "भाषण / प्रवचन",
+				"en": "speech / discourse",
+				"bn": "ভাষণ / প্র঵চন",
+				"mr": "भाषण / प्रवचन",
+				"gu": "ભાષણ / પ્રવચન",
+				"pa": "ਭਾ਷ਣ / ਪ੍ਰਵਚਨ",
+				"ta": "speech / discourse",
+				"te": "speech / discourse",
+				"kn": "speech / discourse"
+			},
+			"example": {
+				"french": "Le discours de Priya était clair et structuré.",
+				"englishGloss": "Priya's speech was clear and structured.",
+				"hindiGloss": "प्रिया का भाषण स्पष्ट और संरचित था।",
+				"glosses": {
+					"hi": "प्रिया का भाषण स्पष्ट और संरचित था।",
+					"en": "Priya's speech was clear and structured.",
+					"bn": "প্রিযা কা ভাষণ স্পষ্ট ঔর সংরচিত থা৤",
+					"mr": "प्रिया का भाषण स्पष्ट और संरचित था।",
+					"gu": "પ્રિયા કા ભાષણ સ્પષ્ટ ઔર સંરચિત થા૤",
+					"pa": "ਪ੍ਰਿਯਾ ਕਾ ਭਾ਷ਣ ਸ੍ਪ਷੍ਟ ਔਰ ਸਂਰਚਿਤ ਥਾ।",
+					"ta": "Priya's speech was clear and structured.",
+					"te": "Priya's speech was clear and structured.",
+					"kn": "Priya's speech was clear and structured."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "C1",
+			"skills": ["reading", "spokenInteraction"]
+		},
+		{
+			"id": "c1-u03-c6",
+			"french": "nuance",
+			"gender": "feminine",
+			"hindiGloss": "सूक्ष्म अंतर",
+			"englishGloss": "nuance",
+			"glosses": {
+				"hi": "सूक्ष्म अंतर",
+				"en": "nuance",
+				"bn": "সূক্ষ্ম অংতর",
+				"mr": "सूक्ष्म अंतर",
+				"gu": "સૂક્ષ્મ અંતર",
+				"pa": "ਸੂਕ੍਷੍ਮ ਅਂਤਰ",
+				"ta": "nuance",
+				"te": "nuance",
+				"kn": "nuance"
+			},
+			"example": {
+				"french": "Il faut comprendre chaque nuance du texte.",
+				"englishGloss": "One must understand each nuance of the text.",
+				"hindiGloss": "पाठ की प्रत्येक बारीकी को समझना चाहिए।",
+				"glosses": {
+					"hi": "पाठ की प्रत्येक बारीकी को समझना चाहिए।",
+					"en": "One must understand each nuance of the text.",
+					"bn": "পাঠ কী প্রত্যেক বারীকী কো সমঝনা চাহিএ৤",
+					"mr": "पाठ की प्रत्येक बारीकी को समझना चाहिए।",
+					"gu": "પાઠ કી પ્રત્યેક બારીકી કો સમઝના ચાહિએ૤",
+					"pa": "ਪਾਠ ਕੀ ਪ੍ਰਤ੍ਯੇਕ ਬਾਰੀਕੀ ਕੋ ਸਮਝਨਾ ਚਾਹਿਏ।",
+					"ta": "One must understand each nuance of the text.",
+					"te": "One must understand each nuance of the text.",
+					"kn": "One must understand each nuance of the text."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "C1",
+			"skills": ["reading", "spokenInteraction"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "mcq",
+			"id": "c1-u03-mcq1",
+			"cardId": "c1-u03-c1",
+			"hint": "Think about stylistic variation and unit vocabulary.",
+			"coachNote": "stylistic variation unlocks more natural French at C1.",
+			"prompt": "Which sentence best shows stylistic variation?",
+			"options": [
+				"Cependant, Arjun préfère étudier le soir.",
+				"Je hier aller marché.",
+				"Il mange hier le passé.",
+				"Nous suis content."
+			],
+			"answerIndex": 0,
+			"explanation": "Correct usage reflects stylistic variation."
+		},
+		{
+			"type": "cloze",
+			"id": "c1-u03-cloze1",
+			"cardId": "c1-u03-c2",
+			"hint": "Think about stylistic variation and unit vocabulary.",
+			"coachNote": "Formal vs informal registers",
+			"text": "Priya dit : « Je {{}} contente aujourd'hui. »",
+			"answer": "suis",
+			"accept": ["suis"]
+		},
+		{
+			"type": "translation",
+			"id": "c1-u03-trans1",
+			"cardId": "c1-u03-c3",
+			"hint": "Look for cognates and tense markers.",
+			"coachNote": "Formal vs informal registers",
+			"prompt": "En outre, nous devons pratiquer chaque jour.",
+			"direction": "fr-en",
+			"answer": "Furthermore, we must practise every day.",
+			"accept": []
+		},
+		{
+			"type": "matching",
+			"id": "c1-u03-match1",
+			"hint": "Think about stylistic variation and unit vocabulary.",
+			"coachNote": "Formal vs informal registers",
+			"prompt": "Match the French word to its meaning",
+			"pairs": [
+				{
+					"left": "stylisti",
+					"right": "key idea: Stylistic variation"
+				},
+				{
+					"left": "cependant",
+					"right": "however"
+				},
+				{
+					"left": "en outre",
+					"right": "furthermore"
+				},
+				{
+					"left": "néanmoins",
+					"right": "nevertheless"
+				}
+			]
+		},
+		{
+			"type": "dictation",
+			"id": "c1-u03-dict1",
+			"cardId": "c1-u03-c1",
+			"hint": "Listen for verb endings and liaisons.",
+			"coachNote": "Formal vs informal registers",
+			"audioText": "Néanmoins, le cours reste accessible.",
+			"answer": "Néanmoins, le cours reste accessible.",
+			"accept": ["néanmoins, le cours reste accessible."]
+		},
+		{
+			"type": "reorder",
+			"id": "c1-u03-reorder1",
+			"hint": "Think about stylistic variation and unit vocabulary.",
+			"coachNote": "Formal vs informal registers",
+			"prompt": "Build a correct sentence",
+			"words": ["En", "conclusion", ",", "la", "persévérance", "paie", "."]
+		},
+		{
+			"type": "reading",
+			"id": "c1-u03-read1",
+			"hint": "Read for tone and implicit meaning.",
+			"coachNote": "C1 texts reward careful reading of connectors.",
+			"passage": "La mondialisation transforme les métropoles indiennes aussi vite que les capitales européennes. Cependant, cette évolution n'efface pas les spécificités culturelles : elles se réinventent. En outre, maîtriser le français à un niveau C1 permet de participer à des débats où l'implicite compte autant que le explicite.",
+			"questions": [
+				{
+					"prompt": "What does the author suggest about cultural specificity?",
+					"options": [
+						"It is reinvented rather than erased",
+						"It disappears completely",
+						"It is irrelevant to language learning",
+						"It blocks globalization"
+					],
+					"answerIndex": 0
+				}
+			]
+		},
+		{
+			"type": "productive",
+			"id": "c1-u03-prod1",
+			"hint": "Plan before writing: intro, développement, conclusion.",
+			"coachNote": "Formal vs informal registers",
+			"prompt": "Rédigez un essai argumenté (150 mots) : le français est-il utile pour la diaspora indienne ?",
+			"modelAnswer": "En somme, le français ouvre des portes académiques et professionnelles sans nier l'identité indienne. Néanmoins, l'apprentissage exige une pratique régulière et une lecture exigeante.",
+			"rubric": [
+				"I used advanced connectors (cependant, en outre, néanmoins)",
+				"I maintained appropriate register",
+				"I structured an argument with thesis and counterpoint",
+				"My vocabulary matches C1 level"
+			],
+			"minChecks": 2
+		}
+	]
+}

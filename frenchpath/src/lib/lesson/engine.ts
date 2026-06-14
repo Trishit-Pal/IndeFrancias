@@ -10,7 +10,10 @@ export type ExerciseResponse =
 	| { type: 'translation'; text: string }
 	| { type: 'reorder'; words: string[] }
 	| { type: 'conjugation'; text: string }
-	| { type: 'gender'; choice: 'masculine' | 'feminine' };
+	| { type: 'gender'; choice: 'masculine' | 'feminine' }
+	| { type: 'reading'; selectedIndices: number[] }
+	| { type: 'listening'; text: string }
+	| { type: 'productive'; checked: boolean[] };
 
 /** True if `text` matches the answer or any accepted alternative (normalised). */
 function matchesText(answer: string, accept: readonly string[], text: string): boolean {
@@ -83,6 +86,23 @@ export function gradeExercise(exercise: Exercise, response: ExerciseResponse): b
 
 		case 'gender':
 			return response.type === 'gender' && response.choice === exercise.answer;
+
+		case 'reading': {
+			if (response.type !== 'reading') return false;
+			return exercise.questions.every((q, i) => response.selectedIndices[i] === q.answerIndex);
+		}
+
+		case 'listening':
+			return (
+				response.type === 'listening' &&
+				matchesText(exercise.answer, exercise.accept, response.text)
+			);
+
+		case 'productive': {
+			if (response.type !== 'productive') return false;
+			const checked = response.checked.filter(Boolean).length;
+			return checked >= exercise.minChecks;
+		}
 	}
 }
 

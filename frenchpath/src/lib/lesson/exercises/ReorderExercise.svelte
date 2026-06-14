@@ -1,15 +1,20 @@
 <script lang="ts">
 	import type { Exercise } from '$lib/content/schema';
 	import { gradeExercise, type ExerciseResponse } from '$lib/lesson/engine';
+	import type { Lexicon } from '$lib/content/lexicon';
+	import GlossText from '$lib/components/GlossText.svelte';
+	import { flip } from 'svelte/animate';
 
 	let {
 		exercise,
 		response = $bindable(),
-		submitted
+		submitted,
+		lexicon
 	}: {
 		exercise: Extract<Exercise, { type: 'reorder' }>;
 		response: ExerciseResponse | null;
 		submitted: boolean;
+		lexicon: Lexicon;
 	} = $props();
 
 	function shuffle<T>(arr: readonly T[]): T[] {
@@ -21,11 +26,9 @@
 		return a;
 	}
 
-	// Each token keeps its original index as a stable id (handles duplicate words).
 	const bank = $derived(shuffle(exercise.words.map((word, id) => ({ id, word }))));
-	let placed = $state<number[]>([]); // token ids, in chosen order
+	let placed = $state<number[]>([]);
 	const available = $derived(bank.filter((t) => !placed.includes(t.id)));
-	const isCorrect = $derived(submitted && response ? gradeExercise(exercise, response) : false);
 
 	function sync() {
 		response =
@@ -49,18 +52,21 @@
 
 <div class="space-y-4">
 	{#if exercise.prompt}
-		<p class="text-lg font-semibold text-slate-900">{exercise.prompt}</p>
+		<p class="text-lg font-semibold text-foreground">
+			<GlossText text={exercise.prompt} {lexicon} frenchOnly={false} />
+		</p>
 	{/if}
-	<p class="text-sm text-slate-500">Tap the words to build the sentence:</p>
+	<p class="text-sm text-muted">Tap the words to build the sentence:</p>
 
 	<div
-		class="flex min-h-12 flex-wrap gap-2 rounded-lg border border-slate-300 bg-slate-50 p-2"
+		class="flex min-h-12 flex-wrap gap-2 rounded-lg border border-border bg-subtle p-2"
 		data-testid="reorder-answer"
 	>
 		{#each placed as id, pos (id)}
 			<button
+				animate:flip
 				type="button"
-				class="rounded-lg bg-blue-100 px-3 py-1 text-blue-900"
+				class="rounded-lg bg-blue-100 px-3 py-1 text-blue-900 dark:bg-blue-950 dark:text-blue-200"
 				onclick={() => removeAt(pos)}>{exercise.words[id]}</button
 			>
 		{/each}
@@ -69,15 +75,18 @@
 	<div class="flex flex-wrap gap-2">
 		{#each available as token (token.id)}
 			<button
+				animate:flip
 				type="button"
-				class="rounded-lg border border-slate-300 px-3 py-1 hover:border-blue-400"
+				class="rounded-lg border border-border bg-card px-3 py-1 hover:border-primary"
 				data-testid="reorder-word"
 				onclick={() => add(token.id)}>{token.word}</button
 			>
 		{/each}
 	</div>
 
-	{#if submitted && !isCorrect}
-		<p class="text-sm">Correct: <span class="text-green-700">{exercise.words.join(' ')}</span></p>
+	{#if submitted && response && !gradeExercise(exercise, response)}
+		<p class="text-sm">
+			Correct: <span class="text-green-700 dark:text-green-400">{exercise.words.join(' ')}</span>
+		</p>
 	{/if}
 </div>

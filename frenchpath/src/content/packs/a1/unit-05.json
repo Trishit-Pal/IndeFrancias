@@ -6,7 +6,16 @@
 	"objective": "Describe everyday actions using regular -er verbs (A1: can describe habits and routines in simple terms).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: one pattern for most verbs (and silent endings!)",
-		"body": "About 90% of French verbs end in **-er** and share ONE set of endings: je parl**e**, tu parl**es**, il/elle parl**e**, nous parl**ons**, vous parl**ez**, ils/elles parl**ent**. ⚠️ The **-ent** ending is SILENT: *ils parlent* sounds exactly like *il parle*. Hindi verbs also change with the subject (मैं बोलता/बोलती हूँ), so the idea of agreement is familiar — just learn this one French pattern."
+		"body": "About 90% of French verbs end in **-er** and share ONE set of endings: je parl**e**, tu parl**es**, il/elle parl**e**, nous parl**ons**, vous parl**ez**, ils/elles parl**ent**. ⚠️ The **-ent** ending is SILENT: *ils parlent* sounds exactly like *il parle*. Hindi verbs also change with the subject (मैं बोलता/बोलती हूँ), so the idea of agreement is familiar — just learn this one French pattern.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Les verbes en -er — Regular present tense\"?",
+			"options": [
+				"Focus on: one pattern for most verbs (and silent endings!)",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,10 +25,33 @@
 			"ipa": "paʁ.le",
 			"hindiGloss": "बोलना",
 			"englishGloss": "to speak / to talk",
+			"glosses": {
+				"hi": "बोलना",
+				"en": "to speak / to talk",
+				"bn": "বোলনা",
+				"mr": "बोलना",
+				"gu": "બોલના",
+				"pa": "ਬੋਲਨਾ",
+				"ta": "பேசுதல்",
+				"te": "మాట్లాడడం",
+				"kn": "ಮಾತನಾಡುವುದು"
+			},
 			"example": {
 				"french": "Je parle un peu français.",
-				"englishGloss": "I speak a little French."
+				"englishGloss": "I speak a little French.",
+				"glosses": {
+					"hi": "बोलना",
+					"en": "I speak a little French.",
+					"bn": "বোলনা",
+					"mr": "बोलना",
+					"gu": "બોલના",
+					"pa": "ਬੋਲਨਾ",
+					"ta": "நான் கொஞ்சம் பிரெஞ்சு பேசுகிறேன்.",
+					"te": "నేను కొంచెం ఫ్రెంచ్ మాట్లాడతాను.",
+					"kn": "ನಾನು ಸ್ವಲ್ಪ ಫ್ರೆಂಚ್ ಮಾತನಾಡುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenProduction"]
 		},
@@ -30,7 +62,33 @@
 			"ipa": "a.bi.te",
 			"hindiGloss": "रहना (निवास करना)",
 			"englishGloss": "to live (somewhere)",
-			"example": { "french": "J'habite à Hyderabad.", "englishGloss": "I live in Hyderabad." },
+			"glosses": {
+				"hi": "रहना (निवास करना)",
+				"en": "to live (somewhere)",
+				"bn": "রহনা (নি঵াস করনা)",
+				"mr": "रहना (निवास करना)",
+				"gu": "રહના (નિવાસ કરના)",
+				"pa": "ਰਹਨਾ (ਨਿਵਾਸ ਕਰਨਾ)",
+				"ta": "வாழ்தல்",
+				"te": "ఉండటం / నివాసం చేయడం",
+				"kn": "ವಾಸಿಸುವುದು / ನಿವಾಸ ಮಾಡುವುದು"
+			},
+			"example": {
+				"french": "J'habite à Hyderabad.",
+				"englishGloss": "I live in Hyderabad.",
+				"glosses": {
+					"hi": "रहना (निवास करना)",
+					"en": "I live in Hyderabad.",
+					"bn": "রহনা (নি঵াস করনা)",
+					"mr": "रहना (निवास करना)",
+					"gu": "રહના (નિવાસ કરના)",
+					"pa": "ਰਹਨਾ (ਨਿਵਾਸ ਕਰਨਾ)",
+					"ta": "நான் Hyderabad-இல் வாழ்கிறேன்.",
+					"te": "నేను Hyderabad-లో ఉంటాను.",
+					"kn": "ನಾನು Hyderabad-ನಲ್ಲಿ ವಾಸಿಸುತ್ತೇನೆ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenProduction"]
 		},
@@ -41,10 +99,33 @@
 			"ipa": "tʁa.va.je",
 			"hindiGloss": "काम करना",
 			"englishGloss": "to work",
+			"glosses": {
+				"hi": "काम करना",
+				"en": "to work",
+				"bn": "কাম করনা",
+				"mr": "काम करना",
+				"gu": "કામ કરના",
+				"pa": "ਕਾਮ ਕਰਨਾ",
+				"ta": "வேலை செய்தல்",
+				"te": "పని చేయడం",
+				"kn": "ಕೆಲಸ ಮಾಡುವುದು"
+			},
 			"example": {
 				"french": "Arjun travaille dans une banque.",
-				"englishGloss": "Arjun works in a bank."
+				"englishGloss": "Arjun works in a bank.",
+				"glosses": {
+					"hi": "काम करना",
+					"en": "Arjun works in a bank.",
+					"bn": "কাম করনা",
+					"mr": "काम करना",
+					"gu": "કામ કરના",
+					"pa": "ਕਾਮ ਕਰਨਾ",
+					"ta": "அர்ஜுன் ஒரு வங்கியில் வேலை செய்கிறான்.",
+					"te": "Arjun ఒక బ్యాంకులో పని చేస్తాడు.",
+					"kn": "Arjun ಒಂದು ಬ್ಯಾಂಕಿನಲ್ಲಿ ಕೆಲಸ ಮಾಡುತ್ತಾನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -55,10 +136,33 @@
 			"ipa": "ʁə.ɡaʁ.de",
 			"hindiGloss": "देखना",
 			"englishGloss": "to watch / to look at",
+			"glosses": {
+				"hi": "देखना",
+				"en": "to watch / to look at",
+				"bn": "দেখনা",
+				"mr": "देखना",
+				"gu": "દેખના",
+				"pa": "ਦੇਖਨਾ",
+				"ta": "பார்த்தல்",
+				"te": "చూడడం",
+				"kn": "ನೋಡುವುದು"
+			},
 			"example": {
 				"french": "Nous regardons un film hindi.",
-				"englishGloss": "We watch a Hindi film."
+				"englishGloss": "We watch a Hindi film.",
+				"glosses": {
+					"hi": "देखना",
+					"en": "We watch a Hindi film.",
+					"bn": "দেখনা",
+					"mr": "देखना",
+					"gu": "દેખના",
+					"pa": "ਦੇਖਨਾ",
+					"ta": "நாங்கள் ஒரு ஹிந்தி திரைப்படம் பார்க்கிறோம்.",
+					"te": "మేము ఒక హిందీ సినిమా చూస్తాం.",
+					"kn": "ನಾವು ಒಂದು ಹಿಂದಿ ಚಿತ್ರ ನೋಡುತ್ತೇವೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -69,7 +173,33 @@
 			"ipa": "e.ty.dje",
 			"hindiGloss": "पढ़ाई करना",
 			"englishGloss": "to study",
-			"example": { "french": "Priya étudie à Delhi.", "englishGloss": "Priya studies in Delhi." },
+			"glosses": {
+				"hi": "पढ़ाई करना",
+				"en": "to study",
+				"bn": "পঢ়াঈ করনা",
+				"mr": "पढ़ाई करना",
+				"gu": "પઢ઼ાઈ કરના",
+				"pa": "ਪਢ़ਾਈ ਕਰਨਾ",
+				"ta": "படித்தல்",
+				"te": "చదువుకోవడం",
+				"kn": "ಓದುವುದು"
+			},
+			"example": {
+				"french": "Priya étudie à Delhi.",
+				"englishGloss": "Priya studies in Delhi.",
+				"glosses": {
+					"hi": "पढ़ाई करना",
+					"en": "Priya studies in Delhi.",
+					"bn": "পঢ়াঈ করনা",
+					"mr": "पढ़ाई करना",
+					"gu": "પઢ઼ાઈ કરના",
+					"pa": "ਪਢ़ਾਈ ਕਰਨਾ",
+					"ta": "Priya Delhi-இல் படிக்கிறாள்.",
+					"te": "Priya Delhi-లో చదువుతుంది.",
+					"kn": "Priya Delhi-ನಲ್ಲಿ ಓದುತ್ತಾಳೆ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		}
@@ -78,6 +208,8 @@
 		{
 			"type": "conjugation",
 			"id": "a1-u5-ex1",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe everyday actions using regular -er verbs (A1: can describe habits and routines in simple terms).",
 			"verb": "parler",
 			"pronoun": "je",
 			"prompt": "Conjugate « parler »: Je ___ anglais.",
@@ -87,6 +219,8 @@
 		{
 			"type": "conjugation",
 			"id": "a1-u5-ex2",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe everyday actions using regular -er verbs (A1: can describe habits and routines in simple terms).",
 			"verb": "habiter",
 			"pronoun": "nous",
 			"prompt": "Conjugate « habiter »: Nous ___ en Inde.",
@@ -96,6 +230,8 @@
 		{
 			"type": "mcq",
 			"id": "a1-u5-ex3",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe everyday actions using regular -er verbs (A1: can describe habits and routines in simple terms).",
 			"prompt": "Which ending is SILENT when spoken?",
 			"options": [
 				"-ent (ils parlent)",
@@ -110,14 +246,17 @@
 			"type": "cloze",
 			"id": "a1-u5-ex4",
 			"cardId": "a1-verb-travailler",
+			"hint": "Regular -er verb, il/elle form.",
+			"coachNote": "Describe everyday actions using regular -er verbs (A1: can describe habits and routines in simple terms).",
 			"text": "Arjun works: « Il {{}} dans une banque. »",
 			"answer": "travaille",
-			"accept": ["travaille"],
-			"hint": "Regular -er verb, il/elle form."
+			"accept": ["travaille"]
 		},
 		{
 			"type": "reorder",
 			"id": "a1-u5-ex5",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe everyday actions using regular -er verbs (A1: can describe habits and routines in simple terms).",
 			"prompt": "Build: “I live in Hyderabad.”",
 			"words": ["J'", "habite", "à", "Hyderabad"]
 		},
@@ -125,6 +264,8 @@
 			"type": "translation",
 			"id": "a1-u5-ex6",
 			"cardId": "a1-verb-regarder",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe everyday actions using regular -er verbs (A1: can describe habits and routines in simple terms).",
 			"prompt": "We watch a film.",
 			"direction": "en-fr",
 			"answer": "Nous regardons un film",

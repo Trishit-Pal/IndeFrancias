@@ -6,7 +6,16 @@
 	"objective": "Replace nouns with object pronouns to avoid repetition (A2: can use pronouns in connected speech).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: the object pronoun comes BEFORE the verb",
-		"body": "Direct objects use **le / la / les** (him/her/it/them); indirect objects (with **à**) use **lui** (to him/her) / **leur** (to them). Unlike English (“I see **him**” — after), French puts them **before** the verb: *Je **le** vois.* *Je **lui** parle.* Hindi word order actually helps — the object usually comes before the verb there too (मैं उसे देखता हूँ)."
+		"body": "Direct objects use **le / la / les** (him/her/it/them); indirect objects (with **à**) use **lui** (to him/her) / **leur** (to them). Unlike English (“I see **him**” — after), French puts them **before** the verb: *Je **le** vois.* *Je **lui** parle.* Hindi word order actually helps — the object usually comes before the verb there too (मैं उसे देखता हूँ).",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Les pronoms COD/COI — Object pronouns\"?",
+			"options": [
+				"Focus on: the object pronoun comes BEFORE the verb",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,10 +25,33 @@
 			"ipa": "vwaʁ",
 			"hindiGloss": "देखना",
 			"englishGloss": "to see (je le/la vois)",
+			"glosses": {
+				"hi": "देखना",
+				"en": "to see (je le/la vois)",
+				"bn": "দেখনা",
+				"mr": "देखना",
+				"gu": "દેખના",
+				"pa": "ਦੇਖਨਾ",
+				"ta": "பார்த்தல்",
+				"te": "చూడడం",
+				"kn": "ನೋಡುವುದು"
+			},
 			"example": {
 				"french": "Je le vois souvent au bureau.",
-				"englishGloss": "I see him often at the office."
+				"englishGloss": "I see him often at the office.",
+				"glosses": {
+					"hi": "देखना",
+					"en": "I see him often at the office.",
+					"bn": "দেখনা",
+					"mr": "देखना",
+					"gu": "દેખના",
+					"pa": "ਦੇਖਨਾ",
+					"ta": "நான் அவனை அடிக்கடி அலுவலகத்தில் பார்க்கிறேன்.",
+					"te": "నేను అతన్ని తరచుగా ఆఫీస్‌లో చూస్తాను.",
+					"kn": "ನಾನು ಅವನನ್ನು ಆಗಾಗ್ಗೆ ಆಫೀಸಿನಲ್ಲಿ ನೋಡುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -30,10 +62,33 @@
 			"ipa": "a.ple",
 			"hindiGloss": "बुलाना / फ़ोन करना",
 			"englishGloss": "to call (je les appelle)",
+			"glosses": {
+				"hi": "बुलाना / फ़ोन करना",
+				"en": "to call (je les appelle)",
+				"bn": "বুলানা / ফ়োন করনা",
+				"mr": "बुलाना / फ़ोन करना",
+				"gu": "બુલાના / ફ઼ોન કરના",
+				"pa": "ਬੁਲਾਨਾ / ਫ़ੋਨ ਕਰਨਾ",
+				"ta": "அழைத்தல் / போனில் பேசுதல்",
+				"te": "ఫోన్ చేయడం / పిలవడం",
+				"kn": "ಫೋನ್ ಮಾಡುವುದು / ಕರೆಯುವುದು"
+			},
 			"example": {
 				"french": "Je les appelle le dimanche.",
-				"englishGloss": "I call them on Sundays."
+				"englishGloss": "I call them on Sundays.",
+				"glosses": {
+					"hi": "बुलाना / फ़ोन करना",
+					"en": "I call them on Sundays.",
+					"bn": "বুলানা / ফ়োন করনা",
+					"mr": "बुलाना / फ़ोन करना",
+					"gu": "બુલાના / ફ઼ોન કરના",
+					"pa": "ਬੁਲਾਨਾ / ਫ़ੋਨ ਕਰਨਾ",
+					"ta": "ஞாயிற்றுக்கிழமைகளில் நான் அவர்களை அழைக்கிறேன்.",
+					"te": "ఆదివారాల్లో నేను వారికి ఫోన్ చేస్తాను.",
+					"kn": "ಭಾನುವಾರಗಳಲ್ಲಿ ನಾನು ಅವರಿಗೆ ಫೋನ್ ಮಾಡುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -44,10 +99,33 @@
 			"ipa": "dɔ.ne",
 			"hindiGloss": "देना",
 			"englishGloss": "to give (je lui donne)",
+			"glosses": {
+				"hi": "देना",
+				"en": "to give (je lui donne)",
+				"bn": "দেনা",
+				"mr": "देना",
+				"gu": "દેના",
+				"pa": "ਦੇਨਾ",
+				"ta": "கொடுத்தல்",
+				"te": "ఇవ్వడం",
+				"kn": "ನೀಡುವುದು"
+			},
 			"example": {
 				"french": "Je lui donne un cadeau pour Diwali.",
-				"englishGloss": "I give her a gift for Diwali."
+				"englishGloss": "I give her a gift for Diwali.",
+				"glosses": {
+					"hi": "देना",
+					"en": "I give her a gift for Diwali.",
+					"bn": "দেনা",
+					"mr": "देना",
+					"gu": "દેના",
+					"pa": "ਦੇਨਾ",
+					"ta": "தீபாவளிக்காக நான் அவளுக்கு பரிசு கொடுக்கிறேன்.",
+					"te": "దీపావళి కోసం నేను ఆమెకు బహుమతి ఇస్తాను.",
+					"kn": "ದೀಪಾವಳಿಗೆ ನಾನು ಅವಳಿಗೆ ಉಡುಗೊರೆ ನೀಡುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -58,10 +136,33 @@
 			"ipa": "paʁ.le a",
 			"hindiGloss": "किसी से बात करना",
 			"englishGloss": "to talk to (je lui/leur parle)",
+			"glosses": {
+				"hi": "किसी से बात करना",
+				"en": "to talk to (je lui/leur parle)",
+				"bn": "কিসী সে বাত করনা",
+				"mr": "किसी से बात करना",
+				"gu": "કિસી સે બાત કરના",
+				"pa": "ਕਿਸੀ ਸੇ ਬਾਤ ਕਰਨਾ",
+				"ta": "பேசுதல்",
+				"te": "మాట్లాడడం",
+				"kn": "ಮಾತನಾಡುವುದು"
+			},
 			"example": {
 				"french": "Je leur parle en français.",
-				"englishGloss": "I talk to them in French."
+				"englishGloss": "I talk to them in French.",
+				"glosses": {
+					"hi": "किसी से बात करना",
+					"en": "I talk to them in French.",
+					"bn": "কিসী সে বাত করনা",
+					"mr": "किसी से बात करना",
+					"gu": "કિસી સે બાત કરના",
+					"pa": "ਕਿਸੀ ਸੇ ਬਾਤ ਕਰਨਾ",
+					"ta": "நான் அவர்களிடம் பிரெஞ்சில் பேசுகிறேன்.",
+					"te": "నేను వారితో ఫ్రెంచ్‌లో మాట్లాడతాను.",
+					"kn": "ನಾನು ಅವರೊಂದಿಗೆ ಫ್ರೆಂಚ್‌ನಲ್ಲಿ ಮಾತನಾಡುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -72,10 +173,33 @@
 			"ipa": "lə ka.do",
 			"hindiGloss": "उपहार / तोहफ़ा",
 			"englishGloss": "the gift",
+			"glosses": {
+				"hi": "उपहार / तोहफ़ा",
+				"en": "the gift",
+				"bn": "উপহার / তোহফ়া",
+				"mr": "उपहार / तोहफ़ा",
+				"gu": "ઉપહાર / તોહફ઼ા",
+				"pa": "ਉਪਹਾਰ / ਤੋਹਫ़ਾ",
+				"ta": "பரிசு",
+				"te": "బహుమతి",
+				"kn": "ಉಡುಗೊರೆ"
+			},
 			"example": {
 				"french": "Le cadeau est pour ma sœur.",
-				"englishGloss": "The gift is for my sister."
+				"englishGloss": "The gift is for my sister.",
+				"glosses": {
+					"hi": "उपहार / तोहफ़ा",
+					"en": "The gift is for my sister.",
+					"bn": "উপহার / তোহফ়া",
+					"mr": "उपहार / तोहफ़ा",
+					"gu": "ઉપહાર / તોહફ઼ા",
+					"pa": "ਉਪਹਾਰ / ਤੋਹਫ़ਾ",
+					"ta": "பரிசு என் சகோதரிக்கு.",
+					"te": "బహుమతి నా సోదరికి.",
+					"kn": "ಉಡುಗೊರೆ ನನ್ನ ಸಹೋದರಿಗೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -86,10 +210,33 @@
 			"ipa": "la lɛtʁ",
 			"hindiGloss": "पत्र / चिट्ठी",
 			"englishGloss": "the letter",
+			"glosses": {
+				"hi": "पत्र / चिट्ठी",
+				"en": "the letter",
+				"bn": "পত্র / চিট্ঠী",
+				"mr": "पत्र / चिट्ठी",
+				"gu": "પત્ર / ચિટ્ઠી",
+				"pa": "ਪਤ੍ਰ / ਚਿਟ੍ਠੀ",
+				"ta": "கடிதம்",
+				"te": "లేఖ",
+				"kn": "ಪತ್ರ"
+			},
 			"example": {
 				"french": "J'écris une lettre à mon ami.",
-				"englishGloss": "I write a letter to my friend."
+				"englishGloss": "I write a letter to my friend.",
+				"glosses": {
+					"hi": "पत्र / चिट्ठी",
+					"en": "I write a letter to my friend.",
+					"bn": "পত্র / চিট্ঠী",
+					"mr": "पत्र / चिट्ठी",
+					"gu": "પત્ર / ચિટ્ઠી",
+					"pa": "ਪਤ੍ਰ / ਚਿਟ੍ਠੀ",
+					"ta": "நான் என் நண்பனுக்கு கடிதம் எழுதுகிறேன்.",
+					"te": "నేను నా స్నేహితుడికి లేఖ రాస్తాను.",
+					"kn": "ನಾನು ನನ್ನ ಸ್ನೇಹಿತನಿಗೆ ಪತ್ರ ಬರೆಯುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		}
@@ -99,6 +246,8 @@
 			"type": "mcq",
 			"id": "a2-u6-ex1",
 			"cardId": "a2-pron-voir",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Replace nouns with object pronouns to avoid repetition (A2: can use pronouns in connected speech).",
 			"prompt": "“I see him often.” → « Je ___ vois souvent. »",
 			"options": ["le", "lui", "leur", "la"],
 			"answerIndex": 0,
@@ -108,14 +257,17 @@
 			"type": "cloze",
 			"id": "a2-u6-ex2",
 			"cardId": "a2-pron-donner",
+			"hint": "Indirect object (à + person), singular = lui.",
+			"coachNote": "Replace nouns with object pronouns to avoid repetition (A2: can use pronouns in connected speech).",
 			"text": "“I give a gift to Priya.” → « Je {{}} donne un cadeau. » (to her)",
 			"answer": "lui",
-			"accept": ["lui"],
-			"hint": "Indirect object (à + person), singular = lui."
+			"accept": ["lui"]
 		},
 		{
 			"type": "reorder",
 			"id": "a2-u6-ex3",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Replace nouns with object pronouns to avoid repetition (A2: can use pronouns in connected speech).",
 			"prompt": "Build: “I see him often.”",
 			"words": ["Je", "le", "vois", "souvent"]
 		},
@@ -123,6 +275,8 @@
 			"type": "translation",
 			"id": "a2-u6-ex4",
 			"cardId": "a2-pron-appeler",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Replace nouns with object pronouns to avoid repetition (A2: can use pronouns in connected speech).",
 			"prompt": "I call them.",
 			"direction": "en-fr",
 			"answer": "Je les appelle",
@@ -132,6 +286,8 @@
 			"type": "mcq",
 			"id": "a2-u6-ex5",
 			"cardId": "a2-pron-parler",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Replace nouns with object pronouns to avoid repetition (A2: can use pronouns in connected speech).",
 			"prompt": "« parler à quelqu'un » takes which pronoun for “to them”?",
 			"options": ["leur", "les", "le", "la"],
 			"answerIndex": 0,
@@ -141,6 +297,8 @@
 			"type": "gender",
 			"id": "a2-u6-ex6",
 			"cardId": "a2-pron-cadeau",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Replace nouns with object pronouns to avoid repetition (A2: can use pronouns in connected speech).",
 			"noun": "cadeau",
 			"answer": "masculine",
 			"articleStyle": "definite"

@@ -12,7 +12,22 @@ const config = {
 		adapter: adapter({ fallback: '200.html', precompress: true, strict: false }),
 		// Emit absolute paths from resolve() (e.g. /learn/...). Relative paths
 		// resolve against the wrong base under the SW navigateFallback.
-		paths: { relative: false }
+		paths: { relative: false },
+		csp: {
+			mode: 'hash',
+			directives: {
+				'default-src': ['self'],
+				'script-src': ['self'],
+				'connect-src': ['self'],
+				'img-src': ['self', 'data:'],
+				'style-src': ['self', 'unsafe-inline'],
+				'object-src': ['none'],
+				'base-uri': ['self'],
+				'frame-ancestors': ['none'],
+				'manifest-src': ['self'],
+				'worker-src': ['self']
+			}
+		}
 	}
 };
 

@@ -27,6 +27,6 @@ export type ExamSection = ObjectiveSection | ProductiveSection;
 export interface MockExam {
 	id: string;
 	title: string;
-	level: 'A1' | 'A2';
+	level: 'A1' | 'A2' | 'B1' | 'B2' | 'C1';
 	sections: ExamSection[];
 }

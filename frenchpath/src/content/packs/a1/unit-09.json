@@ -6,7 +6,16 @@
 	"objective": "Say what you are going to do in the near future (A1: can make and describe simple plans).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: « going to » = aller + infinitive",
-		"body": "The near future is easy: **aller** (present) + an **infinitive**. *Je vais manger* = “I’m going to eat”; *Nous allons voyager* = “We’re going to travel.” It mirrors English “going to + verb”. Hindi marks the future with verb endings (मैं खाऊँगा), so focus on the two-word French pattern: a form of *aller* + the base verb."
+		"body": "The near future is easy: **aller** (present) + an **infinitive**. *Je vais manger* = “I’m going to eat”; *Nous allons voyager* = “We’re going to travel.” It mirrors English “going to + verb”. Hindi marks the future with verb endings (मैं खाऊँगा), so focus on the two-word French pattern: a form of *aller* + the base verb.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Le futur proche — Near future & plans\"?",
+			"options": [
+				"Focus on: « going to » = aller + infinitive",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,10 +25,33 @@
 			"ipa": "də.mɛ̃",
 			"hindiGloss": "कल (आने वाला)",
 			"englishGloss": "tomorrow",
+			"glosses": {
+				"hi": "कल (आने वाला)",
+				"en": "tomorrow",
+				"bn": "কল (আনে ঵ালা)",
+				"mr": "कल (आने वाला)",
+				"gu": "કલ (આને વાલા)",
+				"pa": "ਕਲ (ਆਨੇ ਵਾਲਾ)",
+				"ta": "நாளை",
+				"te": "రేపు",
+				"kn": "ನಾಳೆ"
+			},
 			"example": {
 				"french": "Demain, je vais étudier.",
-				"englishGloss": "Tomorrow, I'm going to study."
+				"englishGloss": "Tomorrow, I'm going to study.",
+				"glosses": {
+					"hi": "कल (आने वाला)",
+					"en": "Tomorrow, I'm going to study.",
+					"bn": "কল (আনে ঵ালা)",
+					"mr": "कल (आने वाला)",
+					"gu": "કલ (આને વાલા)",
+					"pa": "ਕਲ (ਆਨੇ ਵਾਲਾ)",
+					"ta": "நாளை, நான் படிக்கப் போகிறேன்.",
+					"te": "రేపు, నేను చదువుతాను.",
+					"kn": "ನಾಳೆ, ನಾನು ಓದುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -30,10 +62,33 @@
 			"ipa": "lə wi.kɛnd",
 			"hindiGloss": "सप्ताहांत",
 			"englishGloss": "the weekend",
+			"glosses": {
+				"hi": "सप्ताहांत",
+				"en": "the weekend",
+				"bn": "সপ্তাহাংত",
+				"mr": "सप्ताहांत",
+				"gu": "સપ્તાહાંત",
+				"pa": "ਸਪ੍ਤਾਹਾਂਤ",
+				"ta": "வார இறுதி",
+				"te": "వారాంతం",
+				"kn": "ವಾರಾಂತ್ಯ"
+			},
 			"example": {
 				"french": "Ce week-end, on va à Goa.",
-				"englishGloss": "This weekend, we're going to Goa."
+				"englishGloss": "This weekend, we're going to Goa.",
+				"glosses": {
+					"hi": "सप्ताहांत",
+					"en": "This weekend, we're going to Goa.",
+					"bn": "সপ্তাহাংত",
+					"mr": "सप्ताहांत",
+					"gu": "સપ્તાહાંત",
+					"pa": "ਸਪ੍ਤਾਹਾਂਤ",
+					"ta": "இந்த வார இறுதியில், நாங்கள் Goa போகிறோம்.",
+					"te": "ఈ వారాంతం, మేము Goa వెళ్తున్నాం.",
+					"kn": "ಈ ವಾರಾಂತ್ಯ, ನಾವು Goa ಹೋಗುತ್ತಿದ್ದೇವೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -44,7 +99,33 @@
 			"ipa": "bjɛ̃.to",
 			"hindiGloss": "जल्द ही",
 			"englishGloss": "soon",
-			"example": { "french": "À bientôt !", "englishGloss": "See you soon!" },
+			"glosses": {
+				"hi": "जल्द ही",
+				"en": "soon",
+				"bn": "জল্দ হী",
+				"mr": "जल्द ही",
+				"gu": "જલ્દ હી",
+				"pa": "ਜਲ੍ਦ ਹੀ",
+				"ta": "விரைவில்",
+				"te": "త్వరలో",
+				"kn": "ಶೀಘ್ರದಲ್ಲೇ"
+			},
+			"example": {
+				"french": "À bientôt !",
+				"englishGloss": "See you soon!",
+				"glosses": {
+					"hi": "जल्द ही",
+					"en": "See you soon!",
+					"bn": "জল্দ হী",
+					"mr": "जल्द ही",
+					"gu": "જલ્દ હી",
+					"pa": "ਜਲ੍ਦ ਹੀ",
+					"ta": "விரைவில் சந்திப்போம்!",
+					"te": "త్వరలో కలుద్దాం!",
+					"kn": "ಶೀಘ್ರದಲ್ಲೇ ಭೇಟಿಯಾಗೋಣ!"
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenInteraction"]
 		},
@@ -55,10 +136,33 @@
 			"ipa": "la sə.mɛn pʁɔ.ʃɛn",
 			"hindiGloss": "अगले हफ़्ते",
 			"englishGloss": "next week",
+			"glosses": {
+				"hi": "अगले हफ़्ते",
+				"en": "next week",
+				"bn": "অগলে হফ়্তে",
+				"mr": "अगले हफ़्ते",
+				"gu": "અગલે હફ઼્તે",
+				"pa": "ਅਗਲੇ ਹਫ़੍ਤੇ",
+				"ta": "அடுத்த வாரம்",
+				"te": "మరువారం",
+				"kn": "ಮುಂದಿನ ವಾರ"
+			},
 			"example": {
 				"french": "La semaine prochaine, je vais visiter Agra.",
-				"englishGloss": "Next week, I'm going to visit Agra."
+				"englishGloss": "Next week, I'm going to visit Agra.",
+				"glosses": {
+					"hi": "अगले हफ़्ते",
+					"en": "Next week, I'm going to visit Agra.",
+					"bn": "অগলে হফ়্তে",
+					"mr": "अगले हफ़्ते",
+					"gu": "અગલે હફ઼્તે",
+					"pa": "ਅਗਲੇ ਹਫ़੍ਤੇ",
+					"ta": "அடுத்த வாரம், நான் Agra பார்வையிடப் போகிறேன்.",
+					"te": "మరువారం, నేను Agra సందర్శించబోతున్నాను.",
+					"kn": "ಮುಂದಿನ ವಾರ, ನಾನು Agra ಭೇಟಿ ಮಾಡಲು ಹೋಗುತ್ತಿದ್ದೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -69,10 +173,33 @@
 			"ipa": "vwa.ja.ʒe",
 			"hindiGloss": "यात्रा करना",
 			"englishGloss": "to travel",
+			"glosses": {
+				"hi": "यात्रा करना",
+				"en": "to travel",
+				"bn": "যাত্রা করনা",
+				"mr": "यात्रा करना",
+				"gu": "યાત્રા કરના",
+				"pa": "ਯਾਤ੍ਰਾ ਕਰਨਾ",
+				"ta": "பயணம் செய்தல்",
+				"te": "ప్రయాణం చేయడం",
+				"kn": "ಪ್ರಯಾಣ ಮಾಡುವುದು"
+			},
 			"example": {
 				"french": "Nous allons voyager en train.",
-				"englishGloss": "We're going to travel by train."
+				"englishGloss": "We're going to travel by train.",
+				"glosses": {
+					"hi": "यात्रा करना",
+					"en": "We're going to travel by train.",
+					"bn": "যাত্রা করনা",
+					"mr": "यात्रा करना",
+					"gu": "યાત્રા કરના",
+					"pa": "ਯਾਤ੍ਰਾ ਕਰਨਾ",
+					"ta": "நாங்கள் ரயிலில் பயணம் செய்யப் போகிறோம்.",
+					"te": "మేము రైలులో ప్రయాణం చేస్తాం.",
+					"kn": "ನಾವು ರೈಲಿನಲ್ಲಿ ಪ್ರಯಾಣ ಮಾಡುತ್ತೇವೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		}
@@ -81,6 +208,8 @@
 		{
 			"type": "conjugation",
 			"id": "a1-u9-ex1",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Say what you are going to do in the near future (A1: can make and describe simple plans).",
 			"verb": "aller",
 			"pronoun": "je",
 			"prompt": "Near future: Je ___ manger un thali.",
@@ -91,20 +220,25 @@
 			"type": "cloze",
 			"id": "a1-u9-ex2",
 			"cardId": "a1-fut-voyager",
+			"hint": "The infinitive after aller.",
+			"coachNote": "Say what you are going to do in the near future (A1: can make and describe simple plans).",
 			"text": "We're going to travel: « Nous allons {{}} en train. »",
 			"answer": "voyager",
-			"accept": ["voyager"],
-			"hint": "The infinitive after aller."
+			"accept": ["voyager"]
 		},
 		{
 			"type": "reorder",
 			"id": "a1-u9-ex3",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Say what you are going to do in the near future (A1: can make and describe simple plans).",
 			"prompt": "Build: “Tomorrow, I'm going to study.”",
 			"words": ["Demain", "je", "vais", "étudier"]
 		},
 		{
 			"type": "mcq",
 			"id": "a1-u9-ex4",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Say what you are going to do in the near future (A1: can make and describe simple plans).",
 			"prompt": "« Ce week-end, on va à Goa » talks about…",
 			"options": ["a near-future plan", "a past trip", "a daily habit", "a question"],
 			"answerIndex": 0,
@@ -114,6 +248,8 @@
 			"type": "translation",
 			"id": "a1-u9-ex5",
 			"cardId": "a1-fut-prochaine",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Say what you are going to do in the near future (A1: can make and describe simple plans).",
 			"prompt": "next week",
 			"direction": "en-fr",
 			"answer": "la semaine prochaine",
@@ -122,11 +258,22 @@
 		{
 			"type": "matching",
 			"id": "a1-u9-ex6",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Say what you are going to do in the near future (A1: can make and describe simple plans).",
 			"prompt": "Match the time words to English.",
 			"pairs": [
-				{ "left": "demain", "right": "tomorrow" },
-				{ "left": "bientôt", "right": "soon" },
-				{ "left": "le week-end", "right": "the weekend" }
+				{
+					"left": "demain",
+					"right": "tomorrow"
+				},
+				{
+					"left": "bientôt",
+					"right": "soon"
+				},
+				{
+					"left": "le week-end",
+					"right": "the weekend"
+				}
 			]
 		}
 	]

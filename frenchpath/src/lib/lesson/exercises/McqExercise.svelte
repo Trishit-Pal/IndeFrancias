@@ -1,15 +1,21 @@
 <script lang="ts">
 	import type { Exercise } from '$lib/content/schema';
 	import type { ExerciseResponse } from '$lib/lesson/engine';
+	import type { Lexicon } from '$lib/content/lexicon';
+	import GlossText from '$lib/components/GlossText.svelte';
 
 	let {
 		exercise,
 		response = $bindable(),
-		submitted
+		submitted,
+		hiddenMcqIndices = [],
+		lexicon
 	}: {
 		exercise: Extract<Exercise, { type: 'mcq' }>;
 		response: ExerciseResponse | null;
 		submitted: boolean;
+		hiddenMcqIndices?: number[];
+		lexicon: Lexicon;
 	} = $props();
 
 	const selected = $derived(response?.type === 'mcq' ? response.selectedIndex : -1);
@@ -21,26 +27,29 @@
 
 	function optionClass(i: number): string {
 		const base =
-			'w-full rounded-xl border px-4 py-3 text-left text-base transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500';
-		if (submitted && i === exercise.answerIndex)
-			return `${base} border-green-500 bg-green-50 text-green-900`;
-		if (submitted && i === selected) return `${base} border-red-500 bg-red-50 text-red-900`;
-		if (i === selected) return `${base} border-blue-500 bg-blue-50`;
-		return `${base} border-slate-300 bg-white hover:border-blue-400`;
+			'min-h-11 w-full rounded-xl border px-4 py-3 text-left text-base transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-ring-offset';
+		if (submitted && i === exercise.answerIndex) return `${base} option-correct`;
+		if (submitted && i === selected) return `${base} option-incorrect`;
+		if (i === selected) return `${base} option-selected`;
+		return `${base} option-default`;
 	}
 </script>
 
 <fieldset class="space-y-3" disabled={submitted}>
-	<legend class="mb-2 text-lg font-semibold text-slate-900">{exercise.prompt}</legend>
+	<legend class="mb-2 text-lg font-semibold text-foreground">
+		<GlossText text={exercise.prompt} {lexicon} forceGlossWords={exercise.promptGlosses ?? []} />
+	</legend>
 	{#each exercise.options as option, i (i)}
-		<button
-			type="button"
-			class={optionClass(i)}
-			aria-pressed={i === selected}
-			data-testid="mcq-option"
-			onclick={() => choose(i)}
-		>
-			{option}
-		</button>
+		{#if !hiddenMcqIndices.includes(i)}
+			<button
+				type="button"
+				class={optionClass(i)}
+				aria-pressed={i === selected}
+				data-testid="mcq-option"
+				onclick={() => choose(i)}
+			>
+				<GlossText text={option} {lexicon} />
+			</button>
+		{/if}
 	{/each}
 </fieldset>
