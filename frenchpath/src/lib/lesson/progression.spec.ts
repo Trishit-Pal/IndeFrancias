@@ -44,11 +44,36 @@ describe('computeUnitStates', () => {
 		});
 		expect(states.get('a2-1')).toBe('available');
 	});
+
+	it('blocks next segment when checkpoint not passed', () => {
+		const gated: UnitSummary[] = [
+			{ id: 'a1-unit-01', cefrLevel: 'A1', order: 1, title: '', objective: '' },
+			{ id: 'a1-unit-02', cefrLevel: 'A1', order: 2, title: '', objective: '' },
+			{ id: 'a1-unit-03', cefrLevel: 'A1', order: 3, title: '', objective: '' },
+			{ id: 'a1-unit-04', cefrLevel: 'A1', order: 4, title: '', objective: '' }
+		];
+		const progress = {
+			...completed('a1-unit-01'),
+			...completed('a1-unit-02'),
+			...completed('a1-unit-03')
+		};
+		const states = computeUnitStates(gated, progress, new Set());
+		expect(states.get('a1-unit-04')).toBe('locked');
+	});
 });
 
 describe('isUnitLocked', () => {
 	it('reports locked units', () => {
 		expect(isUnitLocked('a2-1', summaries, {})).toBe(true);
 		expect(isUnitLocked('a1-1', summaries, {})).toBe(false);
+	});
+
+	it('unlocks first A2 unit after all prior A1 units complete', () => {
+		const a1Only: UnitSummary[] = [
+			{ id: 'a1-10', cefrLevel: 'A1', order: 10, title: '', objective: '' },
+			{ id: 'a2-01', cefrLevel: 'A2', order: 1, title: '', objective: '' }
+		];
+		const progress = completed('a1-10');
+		expect(computeUnitStates(a1Only, progress).get('a2-01')).toBe('available');
 	});
 });

@@ -1,15 +1,19 @@
 <script lang="ts">
 	import type { Exercise } from '$lib/content/schema';
 	import { gradeExercise, type ExerciseResponse } from '$lib/lesson/engine';
+	import type { Lexicon } from '$lib/content/lexicon';
+	import GlossText from '$lib/components/GlossText.svelte';
 
 	let {
 		exercise,
 		response = $bindable(),
-		submitted
+		submitted,
+		lexicon
 	}: {
 		exercise: Extract<Exercise, { type: 'cloze' }>;
 		response: ExerciseResponse | null;
 		submitted: boolean;
+		lexicon: Lexicon;
 	} = $props();
 
 	const parts = $derived(exercise.text.split('{{}}'));
@@ -36,7 +40,8 @@
 		<p class="text-sm text-muted">Hint: {exercise.hint}</p>
 	{/if}
 	<p>
-		{parts[0]}<input
+		<GlossText text={parts[0] ?? ''} {lexicon} />
+		<input
 			type="text"
 			class={inputClass()}
 			{value}
@@ -47,7 +52,10 @@
 			autocapitalize="off"
 			spellcheck="false"
 			oninput={onInput}
-		/>{parts[1] ?? ''}
+		/>
+		{#if parts[1]}
+			<GlossText text={parts[1]} {lexicon} />
+		{/if}
 	</p>
 	{#if submitted && !isCorrect}
 		<p class="text-sm font-medium text-foreground">

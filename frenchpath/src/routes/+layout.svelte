@@ -6,7 +6,10 @@
 	import * as m from '$lib/paraglide/messages';
 	import { network } from '$lib/stores/online.svelte';
 	import { settingsRepo } from '$lib/db';
+	import { countDue } from '$lib/srs/queue';
+	import { shouldNotify, revisionNotificationBody } from '$lib/pwa/revisionNotify';
 	import { applyTheme, watchSystemTheme } from '$lib/theme/apply';
+	import { configureTts } from '$lib/audio/tts';
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 
@@ -30,17 +33,38 @@
 	onMount(() => {
 		let cleanup: (() => void) | undefined;
 
+		async function maybeNotifyRevision() {
+			if (typeof document === 'undefined' || document.visibilityState !== 'visible') return;
+			if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+			const settings = await settingsRepo.getSettings();
+			const due = await countDue();
+			if (!shouldNotify(due, settings)) return;
+			new Notification(m.revision_notify_title(), {
+				body: revisionNotificationBody(due),
+				tag: 'frenchpath-revision'
+			});
+		}
+
 		void (async () => {
 			const { registerSW } = await import('virtual:pwa-register');
 			registerSW({ immediate: true });
 
 			const settings = await settingsRepo.getSettings();
 			document.documentElement.classList.toggle('reduce-motion', settings.reduceMotion);
+			document.documentElement.lang =
+				settings.uiLanguage === 'hinglish' ? 'en' : settings.uiLanguage;
+			configureTts(settings.ttsVoice, settings.audioSpeed);
 			await syncTheme();
 			cleanup = watchSystemTheme(() => void syncTheme());
 		})();
 
-		return () => cleanup?.();
+		const onVisibility = () => void maybeNotifyRevision();
+		document.addEventListener('visibilitychange', onVisibility);
+
+		return () => {
+			cleanup?.();
+			document.removeEventListener('visibilitychange', onVisibility);
+		};
 	});
 
 	function tabActive(href: string): boolean {
@@ -117,7 +141,7 @@
 
 		<!-- Mobile bottom nav (< lg) -->
 		<nav
-			class="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-nav/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
+			class="fp-mobile-nav fixed inset-x-0 bottom-0 z-10 border-t border-border bg-nav pb-[env(safe-area-inset-bottom)] lg:hidden"
 			aria-label="Primary"
 		>
 			<ul class="mx-auto flex max-w-xl">

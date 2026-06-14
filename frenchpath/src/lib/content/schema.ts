@@ -15,29 +15,49 @@ export const skillSchema = z.enum([
 /** French nouns carry grammatical gender; other words use 'none'. */
 export const genderSchema = z.enum(['masculine', 'feminine', 'none']);
 
+export const nativeLangSchema = z.enum(['hi', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'en']);
+
+export const glossesSchema = z.object({
+	hi: z.string().min(1),
+	bn: z.string().min(1),
+	ta: z.string().min(1),
+	te: z.string().min(1),
+	kn: z.string().min(1),
+	mr: z.string().min(1),
+	gu: z.string().min(1),
+	pa: z.string().min(1),
+	en: z.string().min(1)
+});
+
 /** A worked example sentence, always in an Indian context. */
 export const exampleSchema = z.object({
 	french: z.string().min(1),
 	englishGloss: z.string().optional(),
-	hindiGloss: z.string().optional()
+	hindiGloss: z.string().optional(),
+	glosses: glossesSchema.optional()
 });
 
 /** A vocabulary / grammar card — the unit of spaced repetition. */
-export const cardSchema = z.object({
-	id: z.string().min(1),
-	french: z.string().min(1),
-	gender: genderSchema.default('none'),
-	ipa: z.string().optional(),
-	/** Path to a native-speaker clip under /audio (optional; TTS is the fallback). */
-	audioRef: z.string().optional(),
-	hindiGloss: z.string().min(1),
-	englishGloss: z.string().min(1),
-	example: exampleSchema.optional(),
-	/** True for false-friends (e.g. librairie = bookshop, not library). */
-	fauxAmi: z.boolean().default(false),
-	cefrLevel: cefrLevelSchema,
-	skills: z.array(skillSchema).default([])
-});
+export const cardSchema = z
+	.object({
+		id: z.string().min(1),
+		french: z.string().min(1),
+		gender: genderSchema.default('none'),
+		ipa: z.string().optional(),
+		audioRef: z.string().optional(),
+		hindiGloss: z.string().min(1).optional(),
+		englishGloss: z.string().min(1).optional(),
+		glosses: glossesSchema.optional(),
+		/** Common inflected forms for tap-to-gloss lookup (e.g. conjugations). */
+		forms: z.array(z.string().min(1)).optional(),
+		example: exampleSchema.optional(),
+		fauxAmi: z.boolean().default(false),
+		cefrLevel: cefrLevelSchema,
+		skills: z.array(skillSchema).default([])
+	})
+	.refine((c) => c.glosses || (c.hindiGloss && c.englishGloss), {
+		message: 'Card must have glosses{} or legacy hindiGloss + englishGloss'
+	});
 export type Card = z.infer<typeof cardSchema>;
 
 // --- Exercises (discriminated on `type`) ---
@@ -45,7 +65,11 @@ export type Card = z.infer<typeof cardSchema>;
 const exerciseBase = {
 	id: z.string().min(1),
 	/** Optional link to the card this exercise practises (for SRS crediting). */
-	cardId: z.string().optional()
+	cardId: z.string().optional(),
+	hint: z.string().optional(),
+	coachNote: z.string().optional(),
+	/** French tokens in the prompt to always make tappable (even if not in lexicon). */
+	promptGlosses: z.array(z.string().min(1)).optional()
 };
 
 export const mcqExerciseSchema = z.object({
@@ -64,8 +88,7 @@ export const clozeExerciseSchema = z.object({
 	text: z.string().includes('{{}}'),
 	answer: z.string().min(1),
 	/** Additional accepted answers (matched case-/accent-insensitively). */
-	accept: z.array(z.string()).default([]),
-	hint: z.string().optional()
+	accept: z.array(z.string()).default([])
 });
 
 export const matchingExerciseSchema = z.object({
@@ -82,8 +105,7 @@ export const dictationExerciseSchema = z.object({
 	/** The French sentence spoken aloud and to be transcribed. */
 	audioText: z.string().min(1),
 	answer: z.string().min(1),
-	accept: z.array(z.string()).default([]),
-	hint: z.string().optional()
+	accept: z.array(z.string()).default([])
 });
 
 /** Translate a prompt in the given direction. */
@@ -125,6 +147,40 @@ export const genderExerciseSchema = z.object({
 	articleStyle: z.enum(['definite', 'indefinite']).default('definite')
 });
 
+const readingQuestionSchema = z.object({
+	prompt: z.string().min(1),
+	options: z.array(z.string().min(1)).min(2),
+	answerIndex: z.number().int().nonnegative()
+});
+
+/** Long-form reading with comprehension questions (C1). */
+export const readingExerciseSchema = z.object({
+	type: z.literal('reading'),
+	...exerciseBase,
+	passage: z.string().min(1),
+	questions: z.array(readingQuestionSchema).min(1)
+});
+
+/** Extended listening passage + dictation-style answer. */
+export const listeningExerciseSchema = z.object({
+	type: z.literal('listening'),
+	...exerciseBase,
+	audioText: z.string().min(1),
+	passage: z.string().optional(),
+	answer: z.string().min(1),
+	accept: z.array(z.string()).default([])
+});
+
+/** Self-assessed productive task with rubric (writing/speaking). */
+export const productiveExerciseSchema = z.object({
+	type: z.literal('productive'),
+	...exerciseBase,
+	prompt: z.string().min(1),
+	modelAnswer: z.string().min(1),
+	rubric: z.array(z.string().min(1)).min(1),
+	minChecks: z.number().int().min(1).default(2)
+});
+
 export const exerciseSchema = z.discriminatedUnion('type', [
 	mcqExerciseSchema,
 	clozeExerciseSchema,
@@ -133,15 +189,29 @@ export const exerciseSchema = z.discriminatedUnion('type', [
 	translationExerciseSchema,
 	reorderExerciseSchema,
 	conjugationExerciseSchema,
-	genderExerciseSchema
+	genderExerciseSchema,
+	readingExerciseSchema,
+	listeningExerciseSchema,
+	productiveExerciseSchema
 ]);
 export type Exercise = z.infer<typeof exerciseSchema>;
 export type ExerciseType = Exercise['type'];
 
 /** The "Bridge from Hindi/English" contrastive note shown before exercises. */
+export const bridgeQuizSchema = z.object({
+	prompt: z.string().min(1),
+	options: z.array(z.string().min(1)).min(2),
+	answerIndex: z.number().int().nonnegative()
+});
+
 export const bridgeBoxSchema = z.object({
 	title: z.string().min(1),
-	body: z.string().min(1)
+	body: z.string().min(1),
+	/** Per-language bridge copy (optional; legacy title/body used as fallback). */
+	titleByLang: z.record(nativeLangSchema, z.string()).optional(),
+	bodyByLang: z.record(nativeLangSchema, z.string()).optional(),
+	/** Optional micro-quiz before exercises. */
+	quiz: bridgeQuizSchema.optional()
 });
 export type BridgeBox = z.infer<typeof bridgeBoxSchema>;
 

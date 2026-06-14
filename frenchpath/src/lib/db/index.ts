@@ -8,3 +8,4 @@ export * as settingsRepo from './repositories/settings';
 export * as streakRepo from './repositories/streak';
 export * as statsRepo from './repositories/stats';
 export * as skillProfileRepo from './repositories/skillProfile';
+export * as assessmentsRepo from './repositories/assessments';

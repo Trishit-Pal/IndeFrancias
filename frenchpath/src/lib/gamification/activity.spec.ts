@@ -4,6 +4,9 @@ import * as statsRepo from '../db/repositories/stats';
 import * as settingsRepo from '../db/repositories/settings';
 import * as streakRepo from '../db/repositories/streak';
 import { recordDailyActivity, dailyGoalProgress } from './activity';
+import { recordReview } from '../srs/review';
+import { createSrsCard } from '../srs/fsrs';
+import * as srsRepo from '../db/repositories/srs';
 import { todayKey } from '../utils/date';
 
 beforeEach(async () => {
@@ -22,6 +25,21 @@ describe('recordDailyActivity', () => {
 		await recordDailyActivity(now);
 		expect((await streakRepo.getStreak()).currentStreak).toBe(1);
 	});
+
+	it('keeps streak at 1 when review follows lesson on the same day', async () => {
+		const now = new Date('2026-04-01T09:00:00');
+		await recordDailyActivity(now);
+		const card = createSrsCard({
+			cardId: 'u:1',
+			contentId: '1',
+			cefrLevel: 'A1',
+			skill: 'reading',
+			now
+		});
+		await srsRepo.putCard(card);
+		await recordReview(card, 'good', { now });
+		expect((await streakRepo.getStreak()).currentStreak).toBe(1);
+	});
 });
 
 describe('dailyGoalProgress', () => {
@@ -33,6 +51,25 @@ describe('dailyGoalProgress', () => {
 		expect(goal).toMatchObject({ xp: 20, goal: 30, met: false });
 		await statsRepo.addStats(todayKey(now), { xp: 10 });
 		goal = await dailyGoalProgress(now);
+		expect(goal.met).toBe(true);
+	});
+
+	it('met goal via reviews only when XP from reviews reaches threshold', async () => {
+		const now = new Date('2026-04-01T09:00:00');
+		await settingsRepo.saveSettings({ dailyGoalXp: 10 });
+		for (let i = 0; i < 2; i++) {
+			const card = createSrsCard({
+				cardId: `u:${i}`,
+				contentId: `${i}`,
+				cefrLevel: 'A1',
+				skill: 'reading',
+				now
+			});
+			await srsRepo.putCard(card);
+			await recordReview(card, 'good', { now });
+		}
+		const goal = await dailyGoalProgress(now);
+		expect(goal.xp).toBeGreaterThanOrEqual(10);
 		expect(goal.met).toBe(true);
 	});
 });

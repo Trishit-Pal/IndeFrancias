@@ -16,6 +16,11 @@ There is **no runtime backend**. This skill covers the build-time "backend": con
 2. Draft via `ANTHROPIC_API_KEY=... npm run content:generate [unit-id]`
 3. Curate draft from `src/content/drafts/` → move to `src/content/packs/<level>/`
 4. Validate: `npm run content:validate` (updates `manifest.json`, runs zod + CI spec)
+5. Proofread:
+   - **Launch gate:** `npm run content:proofread:launch` (A1/A2 only; `--launch` in `proofread-report.ts`)
+   - **Full tree:** `npm run content:proofread` (all 52 units; B1+ expected to flag until curated)
+
+See [docs/content-curation.md](../../docs/content-curation.md) for launch vs full scope and curation batches.
 
 ## Schema
 
@@ -31,6 +36,8 @@ Single source of truth: `src/lib/content/schema.ts` (zod).
 - Model: `claude-sonnet-4-6` via `@anthropic-ai/sdk`
 - **Never ship drafts without human curation**
 - Run `scripts/proofread-report.ts` for automated French QA flags
+  - `npm run content:proofread:launch` — CI gate (A1/A2)
+  - `npm run content:proofread` — full report after curation batches
 
 ## Conventions
 
@@ -43,7 +50,8 @@ Single source of truth: `src/lib/content/schema.ts` (zod).
 
 ```bash
 npm run content:validate
-npm run content:proofread   # if script exists
+npm run content:proofread:launch   # before release
+npm run content:proofread          # after B1+ curation batches
 npm run test:unit -- --run src/lib/content/content.spec.ts
 ```
 

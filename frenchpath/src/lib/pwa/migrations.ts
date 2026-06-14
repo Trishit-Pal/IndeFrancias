@@ -1,7 +1,6 @@
 // src/lib/pwa/migrations.ts
 // Backup-file format migrations. Each step upgrades one version to the next;
-// migrateBackup runs the chain up to CURRENT_BACKUP_VERSION. This is the single
-// place the cross-version backup story lives — extend it when the format changes.
+// migrateBackup runs the chain up to CURRENT_BACKUP_VERSION.
 import { sha256Hex } from './checksum';
 import { CURRENT_BACKUP_VERSION } from './backupSchema';
 
@@ -17,8 +16,23 @@ interface LegacyV1Backup {
 	skillProfile: unknown[];
 }
 
+interface V2Backup {
+	schemaVersion: 2;
+	exportedAt: string;
+	checksum: string;
+	payload: {
+		settings: unknown;
+		progress: unknown[];
+		srsCards: unknown[];
+		reviewLog: unknown[];
+		streak: unknown[];
+		stats: unknown[];
+		skillProfile: unknown[];
+	};
+}
+
 /** Reshapes the flat v1 backup into the v2 { schemaVersion, checksum, payload } wrapper. */
-async function v1ToV2(old: LegacyV1Backup): Promise<unknown> {
+async function v1ToV2(old: LegacyV1Backup): Promise<V2Backup> {
 	const payload = {
 		settings: old.settings ?? null,
 		progress: old.progress ?? [],
@@ -29,8 +43,22 @@ async function v1ToV2(old: LegacyV1Backup): Promise<unknown> {
 		skillProfile: old.skillProfile ?? []
 	};
 	return {
-		schemaVersion: CURRENT_BACKUP_VERSION,
+		schemaVersion: 2,
 		exportedAt: old.exportedAt ?? '1970-01-01T00:00:00.000Z',
+		checksum: await sha256Hex(JSON.stringify(payload)),
+		payload
+	};
+}
+
+/** Adds assessments array for learner profile / checkpoint data (v3). */
+async function v2ToV3(old: V2Backup): Promise<unknown> {
+	const payload = {
+		...old.payload,
+		assessments: [] as unknown[]
+	};
+	return {
+		schemaVersion: CURRENT_BACKUP_VERSION,
+		exportedAt: old.exportedAt,
 		checksum: await sha256Hex(JSON.stringify(payload)),
 		payload
 	};
@@ -40,8 +68,17 @@ async function v1ToV2(old: LegacyV1Backup): Promise<unknown> {
 export async function migrateBackup(
 	raw: { version?: number; schemaVersion?: number } & Record<string, unknown>
 ): Promise<unknown> {
-	const version = raw.schemaVersion ?? raw.version;
-	if (version === CURRENT_BACKUP_VERSION) return raw;
-	if (version === 1) return v1ToV2(raw as unknown as LegacyV1Backup);
+	let version = raw.schemaVersion ?? raw.version;
+	let current: unknown = raw;
+
+	if (version === 1) {
+		current = await v1ToV2(raw as unknown as LegacyV1Backup);
+		version = 2;
+	}
+	if (version === 2) {
+		current = await v2ToV3(current as V2Backup);
+		version = CURRENT_BACKUP_VERSION;
+	}
+	if (version === CURRENT_BACKUP_VERSION) return current;
 	throw new Error(`Unsupported backup version: ${String(version)}`);
 }

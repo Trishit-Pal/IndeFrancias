@@ -6,7 +6,16 @@
 	"objective": "Locate places and give simple directions (A1: can ask for and give directions using a map or in the street).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: « à + le = au » and « il y a »",
-		"body": "“To/at the” contracts: **à + le → au**, **à + les → aux** (but **à la** and **à l'** stay). So *je vais au marché* (to the market). **Il y a** = “there is / there are” (one phrase for both): *Il y a une gare ici.* Hindi यहाँ एक स्टेशन है works similarly — location word + है. Watch the contraction; learners often wrongly say ✗ *à le marché*."
+		"body": "“To/at the” contracts: **à + le → au**, **à + les → aux** (but **à la** and **à l'** stay). So *je vais au marché* (to the market). **Il y a** = “there is / there are” (one phrase for both): *Il y a une gare ici.* Hindi यहाँ एक स्टेशन है works similarly — location word + है. Watch the contraction; learners often wrongly say ✗ *à le marché*.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"En ville — Places & directions\"?",
+			"options": [
+				"Focus on: « à + le = au » and « il y a »",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,10 +25,33 @@
 			"ipa": "la ɡaʁ",
 			"hindiGloss": "रेलवे स्टेशन",
 			"englishGloss": "the train station",
+			"glosses": {
+				"hi": "रेलवे स्टेशन",
+				"en": "the train station",
+				"bn": "রেল঵ে স্টেশন",
+				"mr": "रेलवे स्टेशन",
+				"gu": "રેલવે સ્ટેશન",
+				"pa": "ਰੇਲਵੇ ਸ੍ਟੇਸ਼ਨ",
+				"ta": "ரயில் நிலையம்",
+				"te": "రైలు స్టేషన్",
+				"kn": "ರೈಲು ನಿಲ್ದಾಣ"
+			},
 			"example": {
 				"french": "La gare est près du marché.",
-				"englishGloss": "The station is near the market."
+				"englishGloss": "The station is near the market.",
+				"glosses": {
+					"hi": "रेलवे स्टेशन",
+					"en": "The station is near the market.",
+					"bn": "রেল঵ে স্টেশন",
+					"mr": "रेलवे स्टेशन",
+					"gu": "રેલવે સ્ટેશન",
+					"pa": "ਰੇਲਵੇ ਸ੍ਟੇਸ਼ਨ",
+					"ta": "ரயில் நிலையம் சந்தைக்கு அருகில் இருக்கிறது.",
+					"te": "రైలు స్టేషన్ మార్కెట్‌కు దగ్గరలో ఉంది.",
+					"kn": "ರೈಲು ನಿಲ್ದಾಣ ಮಾರುಕಟ್ಟೆಯ ಹತ್ತಿರ ಇದೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -30,10 +62,33 @@
 			"ipa": "lə maʁ.ʃe",
 			"hindiGloss": "बाज़ार",
 			"englishGloss": "the market",
+			"glosses": {
+				"hi": "बाज़ार",
+				"en": "the market",
+				"bn": "বাজ়ার",
+				"mr": "बाज़ार",
+				"gu": "બાજ઼ાર",
+				"pa": "ਬਾਜ़ਾਰ",
+				"ta": "சந்தை",
+				"te": "మార్కెట్ / సంత",
+				"kn": "ಮಾರುಕಟ್ಟೆ / ಸಂತೆ"
+			},
 			"example": {
 				"french": "Je vais au marché à Delhi.",
-				"englishGloss": "I'm going to the market in Delhi."
+				"englishGloss": "I'm going to the market in Delhi.",
+				"glosses": {
+					"hi": "बाज़ार",
+					"en": "I'm going to the market in Delhi.",
+					"bn": "বাজ়ার",
+					"mr": "बाज़ार",
+					"gu": "બાજ઼ાર",
+					"pa": "ਬਾਜ़ਾਰ",
+					"ta": "நான் Delhi சந்தைக்குப் போகிறேன்.",
+					"te": "నేను Delhi మార్కెట్‌కు వెళ్తున్నాను.",
+					"kn": "ನಾನು Delhi ಮಾರುಕಟ್ಟೆಗೆ ಹೋಗುತ್ತಿದ್ದೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -44,7 +99,33 @@
 			"ipa": "a dʁwat",
 			"hindiGloss": "दाईं ओर",
 			"englishGloss": "on/to the right",
-			"example": { "french": "Tournez à droite.", "englishGloss": "Turn right." },
+			"glosses": {
+				"hi": "दाईं ओर",
+				"en": "on/to the right",
+				"bn": "দাঈং ওর",
+				"mr": "दाईं ओर",
+				"gu": "દાઈં ઓર",
+				"pa": "ਦਾਈਂ ਓਰ",
+				"ta": "வலது பக்கம்",
+				"te": "కుడి వైపు",
+				"kn": "ಬಲ ಬದಿ"
+			},
+			"example": {
+				"french": "Tournez à droite.",
+				"englishGloss": "Turn right.",
+				"glosses": {
+					"hi": "दाईं ओर",
+					"en": "Turn right.",
+					"bn": "দাঈং ওর",
+					"mr": "दाईं ओर",
+					"gu": "દાઈં ઓર",
+					"pa": "ਦਾਈਂ ਓਰ",
+					"ta": "வலதுபுறம் திரும்புங்கள்.",
+					"te": "కుడి వైపు తిరగండి.",
+					"kn": "ಬಲ ಬದಿಗೆ ತಿರುಗಿ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["listening"]
 		},
@@ -55,10 +136,33 @@
 			"ipa": "a ɡoʃ",
 			"hindiGloss": "बाईं ओर",
 			"englishGloss": "on/to the left",
+			"glosses": {
+				"hi": "बाईं ओर",
+				"en": "on/to the left",
+				"bn": "বাঈং ওর",
+				"mr": "बाईं ओर",
+				"gu": "બાઈં ઓર",
+				"pa": "ਬਾਈਂ ਓਰ",
+				"ta": "இடது பக்கம்",
+				"te": "ఎడమ వైపు",
+				"kn": "ಎಡ ಬದಿ"
+			},
 			"example": {
 				"french": "Le temple est à gauche.",
-				"englishGloss": "The temple is on the left."
+				"englishGloss": "The temple is on the left.",
+				"glosses": {
+					"hi": "बाईं ओर",
+					"en": "The temple is on the left.",
+					"bn": "বাঈং ওর",
+					"mr": "बाईं ओर",
+					"gu": "બાઈં ઓર",
+					"pa": "ਬਾਈਂ ਓਰ",
+					"ta": "கோயில் இடது பக்கத்தில் இருக்கிறது.",
+					"te": "ఆలయం ఎడమ వైపున ఉంది.",
+					"kn": "ದೇವಾಲಯ ಎಡ ಬದಿಯಲ್ಲಿ ಇದೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["listening"]
 		},
@@ -69,7 +173,33 @@
 			"ipa": "tu dʁwa",
 			"hindiGloss": "सीधे",
 			"englishGloss": "straight ahead",
-			"example": { "french": "Allez tout droit.", "englishGloss": "Go straight ahead." },
+			"glosses": {
+				"hi": "सीधे",
+				"en": "straight ahead",
+				"bn": "সীধে",
+				"mr": "सीधे",
+				"gu": "સીધે",
+				"pa": "ਸੀਧੇ",
+				"ta": "நேராக",
+				"te": "నేరుగా",
+				"kn": "ನೇರವಾಗಿ"
+			},
+			"example": {
+				"french": "Allez tout droit.",
+				"englishGloss": "Go straight ahead.",
+				"glosses": {
+					"hi": "सीधे",
+					"en": "Go straight ahead.",
+					"bn": "সীধে",
+					"mr": "सीधे",
+					"gu": "સીધે",
+					"pa": "ਸੀਧੇ",
+					"ta": "நேராக போங்கள்.",
+					"te": "నేరుగా వెళ్ళండి.",
+					"kn": "ನೇರವಾಗಿ ಹೋಗಿ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["listening"]
 		},
@@ -80,10 +210,33 @@
 			"ipa": "il.i.a",
 			"hindiGloss": "है / हैं (मौजूद)",
 			"englishGloss": "there is / there are",
+			"glosses": {
+				"hi": "है / हैं (मौजूद)",
+				"en": "there is / there are",
+				"bn": "হৈ / হৈং (মৌজূদ)",
+				"mr": "है / हैं (मौजूद)",
+				"gu": "હૈ / હૈં (મૌજૂદ)",
+				"pa": "ਹੈ / ਹੈਂ (ਮੌਜੂਦ)",
+				"ta": "உள்ளது / இருக்கிறது",
+				"te": "ఉంది / ఉన్నాయి",
+				"kn": "ಇದೆ / ಇವೆ"
+			},
 			"example": {
 				"french": "Il y a un temple à Jaipur.",
-				"englishGloss": "There is a temple in Jaipur."
+				"englishGloss": "There is a temple in Jaipur.",
+				"glosses": {
+					"hi": "है / हैं (मौजूद)",
+					"en": "There is a temple in Jaipur.",
+					"bn": "হৈ / হৈং (মৌজূদ)",
+					"mr": "है / हैं (मौजूद)",
+					"gu": "હૈ / હૈં (મૌજૂદ)",
+					"pa": "ਹੈ / ਹੈਂ (ਮੌਜੂਦ)",
+					"ta": "Jaipur-இல் ஒரு கோயில் இருக்கிறது.",
+					"te": "Jaipur-లో ఒక ఆలయం ఉంది.",
+					"kn": "Jaipur-ನಲ್ಲಿ ಒಂದು ದೇವಾಲಯ ಇದೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		}
@@ -93,6 +246,8 @@
 			"type": "gender",
 			"id": "a1-u8-ex1",
 			"cardId": "a1-city-marche",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Locate places and give simple directions (A1: can ask for and give directions using a map or in the street).",
 			"noun": "marché",
 			"answer": "masculine",
 			"articleStyle": "definite"
@@ -101,40 +256,57 @@
 			"type": "cloze",
 			"id": "a1-u8-ex2",
 			"cardId": "a1-city-marche",
+			"hint": "à + le contracts to one word.",
+			"coachNote": "Locate places and give simple directions (A1: can ask for and give directions using a map or in the street).",
 			"text": "Use the contraction: « Je vais {{}} marché. » (à + le)",
 			"answer": "au",
-			"accept": ["au"],
-			"hint": "à + le contracts to one word."
+			"accept": ["au"]
 		},
 		{
 			"type": "dictation",
 			"id": "a1-u8-ex3",
 			"cardId": "a1-city-toutdroit",
+			"hint": "A direction: go straight.",
+			"coachNote": "Locate places and give simple directions (A1: can ask for and give directions using a map or in the street).",
 			"audioText": "Allez tout droit.",
 			"answer": "Allez tout droit",
-			"accept": ["allez tout droit"],
-			"hint": "A direction: go straight."
+			"accept": ["allez tout droit"]
 		},
 		{
 			"type": "reorder",
 			"id": "a1-u8-ex4",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Locate places and give simple directions (A1: can ask for and give directions using a map or in the street).",
 			"prompt": "Build: “There is a station here.”",
 			"words": ["Il", "y", "a", "une", "gare", "ici"]
 		},
 		{
 			"type": "matching",
 			"id": "a1-u8-ex5",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Locate places and give simple directions (A1: can ask for and give directions using a map or in the street).",
 			"prompt": "Match directions to English.",
 			"pairs": [
-				{ "left": "à droite", "right": "to the right" },
-				{ "left": "à gauche", "right": "to the left" },
-				{ "left": "tout droit", "right": "straight ahead" }
+				{
+					"left": "à droite",
+					"right": "to the right"
+				},
+				{
+					"left": "à gauche",
+					"right": "to the left"
+				},
+				{
+					"left": "tout droit",
+					"right": "straight ahead"
+				}
 			]
 		},
 		{
 			"type": "translation",
 			"id": "a1-u8-ex6",
 			"cardId": "a1-city-gare",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Locate places and give simple directions (A1: can ask for and give directions using a map or in the street).",
 			"prompt": "the train station",
 			"direction": "fr-en",
 			"answer": "the train station",

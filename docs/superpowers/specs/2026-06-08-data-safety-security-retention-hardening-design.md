@@ -242,3 +242,26 @@ Each phase ends green (unit tests + types + lint) before the next begins.
 
 None blocking. The practice-XP floor decision is resolved (skipped). Host-headers target can be
 finalised at deploy time; the portable meta-CSP works regardless.
+
+---
+
+## 12. Implementation status (June 2026)
+
+The core hardening items from this spec are **implemented and regression-tested**. A follow-on
+**regression test expansion** added 31 unit tests and 16 E2E scenarios, backup size limits,
+strict schema, import preview UX, and header CI gates.
+
+| Spec item | Status | Tests |
+|-----------|--------|-------|
+| Validate-before-destroy backup | Done | `backup.spec.ts` (12), `backup.e2e.ts` (4) |
+| SHA-256 checksum | Done | `checksum.spec.ts`, round-trip in `backup.spec.ts` |
+| Backup file v1 → v2 migration | Done | `migrations.spec.ts`, legacy restore in `backup.spec.ts` |
+| Strict Zod + bounds | Done | `backupSchema.spec.ts` (strict, score 0–100, `dailyGoalXp ≥ 0`) |
+| `MAX_BACKUP_BYTES` (5 MB) | Done | `backup.spec.ts`, settings file-size pre-check |
+| Import preview modal | Done | `settings/+page.svelte`, E2E backup flows |
+| CSP hash mode | Done | E2E on 6 routes in `app.e2e.ts` |
+| Security headers | Done | `headers.spec.ts` (`vercel.json` + `static/_headers`) |
+| XP improvement-delta / anti-farm | Done | `complete.spec.ts`, replay E2E |
+| Review log append-only | Done | `reviewLog.spec.ts` |
+
+**Full documentation:** [docs/testing.md](../../testing.md) — user workflows, E2E inventory, security matrix, and how to add tests.

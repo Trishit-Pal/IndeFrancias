@@ -22,7 +22,7 @@ Offline-first French-learning PWA for Indian learners. All UI lives under `frenc
 - **Responsive:** mobile-first; bottom nav below `lg`; sidebar nav at `lg+` (≥1024px). Main content uses responsive max-width (`max-w-xl md:max-w-2xl lg:max-w-4xl` patterns). Home unit cards: 2-col grid at `md+`.
 - **Theme:** semantic tokens in `layout.css` (`bg-background`, `bg-card`, `text-foreground`, etc.). Apply via `src/lib/theme/apply.ts` — settings `theme`: `system` | `light` | `dark`. Dark mode is **high-contrast OLED** (near-black bg). Never hardcode `bg-white`/`text-slate-900` without a `dark:` pair or token.
 - Imports: `$lib/...`, `$app/paths` `resolve()` for internal links
-- Add `data-testid` on interactive elements targeted by Playwright (`e2e/app.e2e.ts`)
+- Add `data-testid` on interactive elements targeted by Playwright — see `docs/testing.md` §3.1
 - Exercise components live in `src/lib/lesson/exercises/`; orchestrated by `Exercise.svelte`
 - Never add runtime API calls — app is fully offline
 
@@ -49,8 +49,12 @@ From `frenchpath/`:
 ```bash
 npm run check
 npm run lint
-npm run test:e2e   # if routes/exercises changed
+npm run test:e2e   # if routes/exercises/settings changed
 ```
+
+E2E files: `e2e/app.e2e.ts`, `backup.e2e.ts`, `progression.e2e.ts`, `settings.e2e.ts`, `review.e2e.ts`, `accessibility.e2e.ts`. Helpers: `e2e/helpers.ts`.
+
+Accessibility E2E: keyboard MCQ + review grade focus (`accessibility.e2e.ts`).
 
 ## Key files
 
@@ -60,7 +64,7 @@ npm run test:e2e   # if routes/exercises changed
 | Lesson player | `src/routes/learn/[unitId]/+page.svelte` |
 | Review | `src/routes/review/+page.svelte` |
 | Progress | `src/routes/progress/+page.svelte` |
-| Settings | `src/routes/settings/+page.svelte` |
+| Settings | `src/routes/settings/+page.svelte` (backup preview, `data-testid` contract) |
 | Onboarding | `src/lib/components/Onboarding.svelte` |
 | Theme apply | `src/lib/theme/apply.ts` |
 | Design tokens | `src/routes/layout.css` |

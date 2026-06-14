@@ -6,7 +6,16 @@
 	"objective": "Count, ask and tell the time, and name the days of the week (A1: can handle numbers, quantities and time).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: telling time with « il est … heures »",
-		"body": "French tells the time impersonally: **Il est trois heures** = “It is three o’clock” (literally “It is three hours”). English uses “o’clock”; Hindi uses तीन बजे (teen baje). Numbers 1–16 are unique words to memorise (like Hindi एक, दो, तीन…), then they become regular. Don’t forget the silent letters: **deux** sounds like /dø/ (the x is silent)."
+		"body": "French tells the time impersonally: **Il est trois heures** = “It is three o’clock” (literally “It is three hours”). English uses “o’clock”; Hindi uses तीन बजे (teen baje). Numbers 1–16 are unique words to memorise (like Hindi एक, दो, तीन…), then they become regular. Don’t forget the silent letters: **deux** sounds like /dø/ (the x is silent).",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Les nombres et l'heure — Numbers, days & time\"?",
+			"options": [
+				"Focus on: telling time with « il est … heures »",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,7 +25,33 @@
 			"ipa": "dø",
 			"hindiGloss": "दो (2)",
 			"englishGloss": "two",
-			"example": { "french": "J'ai deux frères.", "englishGloss": "I have two brothers." },
+			"glosses": {
+				"hi": "दो (2)",
+				"en": "two",
+				"bn": "দো (2)",
+				"mr": "दो (2)",
+				"gu": "દો (2)",
+				"pa": "ਦੋ (2)",
+				"ta": "இரண்டு (2)",
+				"te": "రెండు (2)",
+				"kn": "ಎರಡು (2)"
+			},
+			"example": {
+				"french": "J'ai deux frères.",
+				"englishGloss": "I have two brothers.",
+				"glosses": {
+					"hi": "दो (2)",
+					"en": "I have two brothers.",
+					"bn": "দো (2)",
+					"mr": "दो (2)",
+					"gu": "દો (2)",
+					"pa": "ਦੋ (2)",
+					"ta": "எனக்கு இரண்டு சகோதரர்கள்.",
+					"te": "నాకు రెండు సోదరులు.",
+					"kn": "ನನಗೆ ಎರಡು ಸಹೋದರರು."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["listening"]
 		},
@@ -27,10 +62,33 @@
 			"ipa": "sɛ̃k",
 			"hindiGloss": "पाँच (5)",
 			"englishGloss": "five",
+			"glosses": {
+				"hi": "पाँच (5)",
+				"en": "five",
+				"bn": "পাঁচ (5)",
+				"mr": "पाँच (5)",
+				"gu": "પાઁચ (5)",
+				"pa": "ਪਾँਚ (5)",
+				"ta": "ஐந்து (5)",
+				"te": "ఐదు (5)",
+				"kn": "ಐದು (5)"
+			},
 			"example": {
 				"french": "Le thé coûte cinq roupies.",
-				"englishGloss": "The tea costs five rupees."
+				"englishGloss": "The tea costs five rupees.",
+				"glosses": {
+					"hi": "पाँच (5)",
+					"en": "The tea costs five rupees.",
+					"bn": "পাঁচ (5)",
+					"mr": "पाँच (5)",
+					"gu": "પાઁચ (5)",
+					"pa": "ਪਾँਚ (5)",
+					"ta": "தேநீர் ஐந்து ரூபாய்.",
+					"te": "టీ ఐదు రూపాయలు.",
+					"kn": "ಟೀ ಐದು ರೂಪಾಯಿ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["listening"]
 		},
@@ -41,7 +99,33 @@
 			"ipa": "dis",
 			"hindiGloss": "दस (10)",
 			"englishGloss": "ten",
-			"example": { "french": "Il est dix heures.", "englishGloss": "It is ten o'clock." },
+			"glosses": {
+				"hi": "दस (10)",
+				"en": "ten",
+				"bn": "দস (10)",
+				"mr": "दस (10)",
+				"gu": "દસ (10)",
+				"pa": "ਦਸ (10)",
+				"ta": "பத்து (10)",
+				"te": "పది (10)",
+				"kn": "ಹತ್ತು (10)"
+			},
+			"example": {
+				"french": "Il est dix heures.",
+				"englishGloss": "It is ten o'clock.",
+				"glosses": {
+					"hi": "दस (10)",
+					"en": "It is ten o'clock.",
+					"bn": "দস (10)",
+					"mr": "दस (10)",
+					"gu": "દસ (10)",
+					"pa": "ਦਸ (10)",
+					"ta": "பத்து மணி.",
+					"te": "పది గంటలు.",
+					"kn": "ಹತ್ತು ಗಂಟೆ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["listening"]
 		},
@@ -52,7 +136,33 @@
 			"ipa": "lœʁ",
 			"hindiGloss": "घंटा / समय",
 			"englishGloss": "the hour / time",
-			"example": { "french": "Quelle heure est-il ?", "englishGloss": "What time is it?" },
+			"glosses": {
+				"hi": "घंटा / समय",
+				"en": "the hour / time",
+				"bn": "ঘংটা / সময",
+				"mr": "घंटा / समय",
+				"gu": "ઘંટા / સમય",
+				"pa": "ਘਂਟਾ / ਸਮਯ",
+				"ta": "மணி / நேரம்",
+				"te": "గంట / సమయం",
+				"kn": "ಗಂಟೆ / ಸಮಯ"
+			},
+			"example": {
+				"french": "Quelle heure est-il ?",
+				"englishGloss": "What time is it?",
+				"glosses": {
+					"hi": "घंटा / समय",
+					"en": "What time is it?",
+					"bn": "ঘংটা / সময",
+					"mr": "घंटा / समय",
+					"gu": "ઘંટા / સમય",
+					"pa": "ਘਂਟਾ / ਸਮਯ",
+					"ta": "என்ன நேரம்?",
+					"te": "ఎంత సమయం?",
+					"kn": "ಎಷ್ಟು ಗಂಟೆ?"
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenInteraction"]
 		},
@@ -63,7 +173,33 @@
 			"ipa": "mi.di",
 			"hindiGloss": "दोपहर (12 बजे)",
 			"englishGloss": "noon / midday",
-			"example": { "french": "On déjeune à midi.", "englishGloss": "We have lunch at noon." },
+			"glosses": {
+				"hi": "दोपहर (12 बजे)",
+				"en": "noon / midday",
+				"bn": "দোপহর (12 বজে)",
+				"mr": "दोपहर (12 बजे)",
+				"gu": "દોપહર (12 બજે)",
+				"pa": "ਦੋਪਹਰ (12 ਬਜੇ)",
+				"ta": "மத்தியானம் (12 மணி)",
+				"te": "మధ్యాహ్నం (12 గంటలు)",
+				"kn": "ಮಧ್ಯಾಹ್ನ (12 ಗಂಟೆ)"
+			},
+			"example": {
+				"french": "On déjeune à midi.",
+				"englishGloss": "We have lunch at noon.",
+				"glosses": {
+					"hi": "दोपहर (12 बजे)",
+					"en": "We have lunch at noon.",
+					"bn": "দোপহর (12 বজে)",
+					"mr": "दोपहर (12 बजे)",
+					"gu": "દોપહર (12 બજે)",
+					"pa": "ਦੋਪਹਰ (12 ਬਜੇ)",
+					"ta": "மத்தியானம் நாங்கள் மதிய உணவு சாப்பிடுகிறோம்.",
+					"te": "మధ్యాహ్నం మేము మధ్యాహ్న భోజనం చేస్తాం.",
+					"kn": "ಮಧ್ಯಾಹ್ನ ನಾವು ಮಧ್ಯಾಹ್ನ ಊಟ ಮಾಡುತ್ತೇವೆ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -74,10 +210,33 @@
 			"ipa": "lœ̃.di",
 			"hindiGloss": "सोमवार",
 			"englishGloss": "Monday",
+			"glosses": {
+				"hi": "सोमवार",
+				"en": "Monday",
+				"bn": "সোম঵ার",
+				"mr": "सोमवार",
+				"gu": "સોમવાર",
+				"pa": "ਸੋਮਵਾਰ",
+				"ta": "திங்கள்",
+				"te": "సోమవారం",
+				"kn": "ಸೋಮವಾರ"
+			},
 			"example": {
 				"french": "Lundi, je vais au bureau à Bangalore.",
-				"englishGloss": "On Monday, I go to the office in Bangalore."
+				"englishGloss": "On Monday, I go to the office in Bangalore.",
+				"glosses": {
+					"hi": "सोमवार",
+					"en": "On Monday, I go to the office in Bangalore.",
+					"bn": "সোম঵ার",
+					"mr": "सोमवार",
+					"gu": "સોમવાર",
+					"pa": "ਸੋਮਵਾਰ",
+					"ta": "திங்கட்கிழமை, நான் Bangalore அலுவலகத்திற்குப் போகிறேன்.",
+					"te": "సోమవారం, నేను Bangalore ఆఫీస్‌కు వెళ్తాను.",
+					"kn": "ಸೋಮವಾರ, ನಾನು Bangalore ಆಫೀಸಿಗೆ ಹೋಗುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		}
@@ -87,14 +246,17 @@
 			"type": "dictation",
 			"id": "a1-u3-ex1",
 			"cardId": "a1-num-dix",
+			"hint": "A number between 9 and 11.",
+			"coachNote": "Count, ask and tell the time, and name the days of the week (A1: can handle numbers, quantities and time).",
 			"audioText": "dix",
 			"answer": "dix",
-			"accept": [],
-			"hint": "A number between 9 and 11."
+			"accept": []
 		},
 		{
 			"type": "mcq",
 			"id": "a1-u3-ex2",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Count, ask and tell the time, and name the days of the week (A1: can handle numbers, quantities and time).",
 			"prompt": "How do you ask « What time is it? » in French?",
 			"options": [
 				"Quelle heure est-il ?",
@@ -109,25 +271,39 @@
 			"type": "cloze",
 			"id": "a1-u3-ex3",
 			"cardId": "a1-time-heure",
+			"hint": "Plural of l'heure after a number > 1.",
+			"coachNote": "Count, ask and tell the time, and name the days of the week (A1: can handle numbers, quantities and time).",
 			"text": "It is two o'clock: « Il est deux {{}}. »",
 			"answer": "heures",
-			"accept": ["heures"],
-			"hint": "Plural of l'heure after a number > 1."
+			"accept": ["heures"]
 		},
 		{
 			"type": "matching",
 			"id": "a1-u3-ex4",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Count, ask and tell the time, and name the days of the week (A1: can handle numbers, quantities and time).",
 			"prompt": "Match each French number to its digit.",
 			"pairs": [
-				{ "left": "deux", "right": "2" },
-				{ "left": "cinq", "right": "5" },
-				{ "left": "dix", "right": "10" }
+				{
+					"left": "deux",
+					"right": "2"
+				},
+				{
+					"left": "cinq",
+					"right": "5"
+				},
+				{
+					"left": "dix",
+					"right": "10"
+				}
 			]
 		},
 		{
 			"type": "translation",
 			"id": "a1-u3-ex5",
 			"cardId": "a1-day-lundi",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Count, ask and tell the time, and name the days of the week (A1: can handle numbers, quantities and time).",
 			"prompt": "Monday",
 			"direction": "en-fr",
 			"answer": "lundi",
@@ -137,6 +313,8 @@
 			"type": "mcq",
 			"id": "a1-u3-ex6",
 			"cardId": "a1-time-midi",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Count, ask and tell the time, and name the days of the week (A1: can handle numbers, quantities and time).",
 			"prompt": "« On déjeune à midi » — at what time is lunch?",
 			"options": ["At noon", "At midnight", "In the morning", "In the evening"],
 			"answerIndex": 0,

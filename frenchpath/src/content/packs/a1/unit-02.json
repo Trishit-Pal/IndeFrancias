@@ -6,7 +6,16 @@
 	"objective": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: possessives agree with the THING, not the owner",
-		"body": "In French, **mon** / **ma** match the gender of the noun owned, not the speaker: a girl still says **mon livre** (my book, masc.) and **ma sœur** (my sister, fem.). English “his/her” works the opposite way. Good news — Hindi already agrees like French: मेरा भाई (mera bhai, masc.) vs मेरी बहन (meri behen, fem.). Lean on that instinct. ⚠️ Note: **un parent** often means “a relative”, not only “a parent”."
+		"body": "In French, **mon** / **ma** match the gender of the noun owned, not the speaker: a girl still says **mon livre** (my book, masc.) and **ma sœur** (my sister, fem.). English “his/her” works the opposite way. Good news — Hindi already agrees like French: मेरा भाई (mera bhai, masc.) vs मेरी बहन (meri behen, fem.). Lean on that instinct. ⚠️ Note: **un parent** often means “a relative”, not only “a parent”.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Ma famille — Family & possessives\"?",
+			"options": [
+				"Focus on: possessives agree with the THING, not the owner",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,10 +25,33 @@
 			"ipa": "la fa.mij",
 			"hindiGloss": "परिवार",
 			"englishGloss": "the family",
+			"glosses": {
+				"hi": "परिवार",
+				"en": "the family",
+				"bn": "পরি঵ার",
+				"mr": "परिवार",
+				"gu": "પરિવાર",
+				"pa": "ਪਰਿਵਾਰ",
+				"ta": "குடும்பம்",
+				"te": "కుటుంబం",
+				"kn": "ಕುಟುಂಬ"
+			},
 			"example": {
 				"french": "Pendant Diwali, ma famille se réunit à Jaipur.",
-				"englishGloss": "During Diwali, my family gathers in Jaipur."
+				"englishGloss": "During Diwali, my family gathers in Jaipur.",
+				"glosses": {
+					"hi": "परिवार",
+					"en": "During Diwali, my family gathers in Jaipur.",
+					"bn": "পরি঵ার",
+					"mr": "परिवार",
+					"gu": "પરિવાર",
+					"pa": "ਪਰਿਵਾਰ",
+					"ta": "தீபாவளி போது, என் குடும்பம் Jaipur-இல் கூடுகிறது.",
+					"te": "దీపావళి సమయంలో, నా కుటుంబం Jaipur-లో కలుస్తుంది.",
+					"kn": "ದೀಪಾವಳಿ ಸಮಯದಲ್ಲಿ, ನನ್ನ ಕುಟುಂಬ Jaipur-ನಲ್ಲಿ ಸೇರುತ್ತದೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading", "spokenProduction"]
 		},
@@ -30,10 +62,33 @@
 			"ipa": "lə pɛʁ",
 			"hindiGloss": "पिता / पापा",
 			"englishGloss": "the father",
+			"glosses": {
+				"hi": "पिता / पापा",
+				"en": "the father",
+				"bn": "পিতা / পাপা",
+				"mr": "पिता / पापा",
+				"gu": "પિતા / પાપા",
+				"pa": "ਪਿਤਾ / ਪਾਪਾ",
+				"ta": "அப்பா / தந்தை",
+				"te": "తండ్రి / నాన్న",
+				"kn": "ತಂದೆ / ಅಪ್ಪ"
+			},
 			"example": {
 				"french": "Mon père travaille à Pune.",
-				"englishGloss": "My father works in Pune."
+				"englishGloss": "My father works in Pune.",
+				"glosses": {
+					"hi": "पिता / पापा",
+					"en": "My father works in Pune.",
+					"bn": "পিতা / পাপা",
+					"mr": "पिता / पापा",
+					"gu": "પિતા / પાપા",
+					"pa": "ਪਿਤਾ / ਪਾਪਾ",
+					"ta": "என் அப்பா Pune-இல் வேலை செய்கிறார்.",
+					"te": "నా తండ్రి Pune-లో పని చేస్తాడు.",
+					"kn": "ನನ್ನ ಅಪ್ಪ Pune-ನಲ್ಲಿ ಕೆಲಸ ಮಾಡುತ್ತಾರೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -44,10 +99,33 @@
 			"ipa": "la mɛʁ",
 			"hindiGloss": "माता / माँ",
 			"englishGloss": "the mother",
+			"glosses": {
+				"hi": "माता / माँ",
+				"en": "the mother",
+				"bn": "মাতা / মাঁ",
+				"mr": "माता / माँ",
+				"gu": "માતા / માઁ",
+				"pa": "ਮਾਤਾ / ਮਾँ",
+				"ta": "அம்மா / தாய்",
+				"te": "తల్లి / అమ్మ",
+				"kn": "ತಾಯಿ / ಅಮ್ಮ"
+			},
 			"example": {
 				"french": "Ma mère prépare le dîner.",
-				"englishGloss": "My mother makes dinner."
+				"englishGloss": "My mother makes dinner.",
+				"glosses": {
+					"hi": "माता / माँ",
+					"en": "My mother makes dinner.",
+					"bn": "মাতা / মাঁ",
+					"mr": "माता / माँ",
+					"gu": "માતા / માઁ",
+					"pa": "ਮਾਤਾ / ਮਾँ",
+					"ta": "என் அம்மா இரவு உணவை சமைக்கிறாள்.",
+					"te": "నా అమ్మ రాత్రి భోజనం చేస్తుంది.",
+					"kn": "ನನ್ನ ಅಮ್ಮ ರಾತ್ರಿ ಊಟ ಮಾಡುತ್ತಾಳೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -58,7 +136,33 @@
 			"ipa": "lə fʁɛʁ",
 			"hindiGloss": "भाई",
 			"englishGloss": "the brother",
-			"example": { "french": "Arjun est mon frère.", "englishGloss": "Arjun is my brother." },
+			"glosses": {
+				"hi": "भाई",
+				"en": "the brother",
+				"bn": "ভাঈ",
+				"mr": "भाई",
+				"gu": "ભાઈ",
+				"pa": "ਭਾਈ",
+				"ta": "சகோதரன்",
+				"te": "సోదరుడు",
+				"kn": "ಸಹೋದರ"
+			},
+			"example": {
+				"french": "Arjun est mon frère.",
+				"englishGloss": "Arjun is my brother.",
+				"glosses": {
+					"hi": "भाई",
+					"en": "Arjun is my brother.",
+					"bn": "ভাঈ",
+					"mr": "भाई",
+					"gu": "ભાઈ",
+					"pa": "ਭਾਈ",
+					"ta": "அர்ஜுன் என் சகோதரன்.",
+					"te": "Arjun నా సోదరుడు.",
+					"kn": "Arjun ನನ್ನ ಸಹೋದರ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -69,10 +173,33 @@
 			"ipa": "la sœʁ",
 			"hindiGloss": "बहन",
 			"englishGloss": "the sister",
+			"glosses": {
+				"hi": "बहन",
+				"en": "the sister",
+				"bn": "বহন",
+				"mr": "बहन",
+				"gu": "બહન",
+				"pa": "ਬਹਨ",
+				"ta": "சகோதரி",
+				"te": "సోదరి",
+				"kn": "ಸಹೋದರಿ"
+			},
 			"example": {
 				"french": "J'ai une sœur, Ananya.",
-				"englishGloss": "I have one sister, Ananya."
+				"englishGloss": "I have one sister, Ananya.",
+				"glosses": {
+					"hi": "बहन",
+					"en": "I have one sister, Ananya.",
+					"bn": "বহন",
+					"mr": "बहन",
+					"gu": "બહન",
+					"pa": "ਬਹਨ",
+					"ta": "எனக்கு ஒரு சகோதரி Ananya.",
+					"te": "నాకు ఒక సోదరి Ananya.",
+					"kn": "ನನಗೆ ಒಬ್ಬ ಸಹೋದರಿ Ananya."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		},
@@ -83,9 +210,31 @@
 			"ipa": "le pa.ʁɑ̃",
 			"hindiGloss": "माता-पिता / रिश्तेदार",
 			"englishGloss": "parents (also: relatives)",
+			"glosses": {
+				"hi": "माता-पिता / रिश्तेदार",
+				"en": "parents (also: relatives)",
+				"bn": "মাতা-পিতা / রিশ্তেদার",
+				"mr": "माता-पिता / रिश्तेदार",
+				"gu": "માતા-પિતા / રિશ્તેદાર",
+				"pa": "ਮਾਤਾ-ਪਿਤਾ / ਰਿਸ਼੍ਤੇਦਾਰ",
+				"ta": "பெற்றோர் / உறவினர்",
+				"te": "తల్లిదండ్రులు / బంధువులు",
+				"kn": "ತಂದೆತಾಯಂದಿರು / ಬಂಧುಗಳು"
+			},
 			"example": {
 				"french": "Mes parents habitent à Chennai.",
-				"englishGloss": "My parents live in Chennai."
+				"englishGloss": "My parents live in Chennai.",
+				"glosses": {
+					"hi": "माता-पिता / रिश्तेदार",
+					"en": "My parents live in Chennai.",
+					"bn": "মাতা-পিতা / রিশ্তেদার",
+					"mr": "माता-पिता / रिश्तेदार",
+					"gu": "માતા-પિતા / રિશ્તેદાર",
+					"pa": "ਮਾਤਾ-ਪਿਤਾ / ਰਿਸ਼੍ਤੇਦਾਰ",
+					"ta": "என் பெற்றோர் Chennai-இல் வாழ்கிறார்கள்.",
+					"te": "నా తల్లిదండ్రులు Chennai-లో ఉంటారు.",
+					"kn": "ನನ್ನ ತಂದೆತಾಯಂದಿರು Chennai-ನಲ್ಲಿ ವಾಸಿಸುತ್ತಾರೆ."
+				}
 			},
 			"fauxAmi": true,
 			"cefrLevel": "A1",
@@ -97,6 +246,8 @@
 			"type": "gender",
 			"id": "a1-u2-ex1",
 			"cardId": "a1-fam-pere",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
 			"noun": "père",
 			"answer": "masculine",
 			"articleStyle": "definite"
@@ -105,6 +256,8 @@
 			"type": "gender",
 			"id": "a1-u2-ex2",
 			"cardId": "a1-fam-soeur",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
 			"noun": "sœur",
 			"answer": "feminine",
 			"articleStyle": "definite"
@@ -112,6 +265,8 @@
 		{
 			"type": "conjugation",
 			"id": "a1-u2-ex3",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
 			"verb": "avoir",
 			"pronoun": "j'",
 			"prompt": "Conjugate « avoir »: j'___ une sœur.",
@@ -122,14 +277,17 @@
 			"type": "cloze",
 			"id": "a1-u2-ex4",
 			"cardId": "a1-fam-mere",
+			"hint": "Feminine possessive (mère is feminine).",
+			"coachNote": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
 			"text": "Priya parle de sa maman : « Voici {{}} mère. »",
 			"answer": "ma",
-			"accept": ["ma"],
-			"hint": "Feminine possessive (mère is feminine)."
+			"accept": ["ma"]
 		},
 		{
 			"type": "mcq",
 			"id": "a1-u2-ex5",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
 			"prompt": "What does « J'ai deux frères » mean?",
 			"options": [
 				"I have two brothers",
@@ -144,6 +302,8 @@
 			"type": "translation",
 			"id": "a1-u2-ex6",
 			"cardId": "a1-fam-famille",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
 			"prompt": "ma famille",
 			"direction": "fr-en",
 			"answer": "my family",
@@ -152,12 +312,26 @@
 		{
 			"type": "matching",
 			"id": "a1-u2-ex7",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
 			"prompt": "Match the French family words to English.",
 			"pairs": [
-				{ "left": "le père", "right": "father" },
-				{ "left": "la mère", "right": "mother" },
-				{ "left": "le frère", "right": "brother" },
-				{ "left": "la sœur", "right": "sister" }
+				{
+					"left": "le père",
+					"right": "father"
+				},
+				{
+					"left": "la mère",
+					"right": "mother"
+				},
+				{
+					"left": "le frère",
+					"right": "brother"
+				},
+				{
+					"left": "la sœur",
+					"right": "sister"
+				}
 			]
 		}
 	]

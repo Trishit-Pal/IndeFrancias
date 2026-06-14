@@ -6,7 +6,16 @@
 	"objective": "Shop, ask quantities, and compare items (A2: can handle shopping and make simple comparisons).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: plus / moins / aussi … que",
-		"body": "Compare with **plus … que** (more … than), **moins … que** (less … than), **aussi … que** (as … as): *Les mangues sont plus chères que les pommes.* The adjective still agrees (chère/chères). Hindi uses से ज़्यादा / से कम (… than) — same idea, different position. For quantities use **de**: *un kilo **de** légumes*, *beaucoup **de** thé*."
+		"body": "Compare with **plus … que** (more … than), **moins … que** (less … than), **aussi … que** (as … as): *Les mangues sont plus chères que les pommes.* The adjective still agrees (chère/chères). Hindi uses से ज़्यादा / से कम (… than) — same idea, different position. For quantities use **de**: *un kilo **de** légumes*, *beaucoup **de** thé*.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Faire les courses — Shopping & comparatives\"?",
+			"options": [
+				"Focus on: plus / moins / aussi … que",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,10 +25,33 @@
 			"ipa": "lə ma.ɡa.zɛ̃",
 			"hindiGloss": "दुकान",
 			"englishGloss": "the shop / store",
+			"glosses": {
+				"hi": "दुकान",
+				"en": "the shop / store",
+				"bn": "দুকান",
+				"mr": "दुकान",
+				"gu": "દુકાન",
+				"pa": "ਦੁਕਾਨ",
+				"ta": "கடை",
+				"te": "దుకాణం / షాప్",
+				"kn": "ಅಂಗಡಿ / ಶಾಪ್"
+			},
 			"example": {
 				"french": "Le magasin ouvre à neuf heures.",
-				"englishGloss": "The shop opens at nine."
+				"englishGloss": "The shop opens at nine.",
+				"glosses": {
+					"hi": "दुकान",
+					"en": "The shop opens at nine.",
+					"bn": "দুকান",
+					"mr": "दुकान",
+					"gu": "દુકાન",
+					"pa": "ਦੁਕਾਨ",
+					"ta": "கடை ஒன்பது மணிக்கு திறக்கிறது.",
+					"te": "షాప్ తొమ్మిది గంటలకు తెరుచుకుంటుంది.",
+					"kn": "ಅಂಗಡಿ ಒಂಬತ್ತು ಗಂಟೆಗೆ ತೆರೆಯುತ್ತದೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -30,10 +62,33 @@
 			"ipa": "œ̃ ki.lo",
 			"hindiGloss": "एक किलो",
 			"englishGloss": "a kilo",
+			"glosses": {
+				"hi": "एक किलो",
+				"en": "a kilo",
+				"bn": "এক কিলো",
+				"mr": "एक किलो",
+				"gu": "એક કિલો",
+				"pa": "ਏਕ ਕਿਲੋ",
+				"ta": "ஒரு கிலோ",
+				"te": "ఒక కిలో",
+				"kn": "ಒಂದು ಕಿಲೋ"
+			},
 			"example": {
 				"french": "Je voudrais un kilo de tomates.",
-				"englishGloss": "I'd like a kilo of tomatoes."
+				"englishGloss": "I'd like a kilo of tomatoes.",
+				"glosses": {
+					"hi": "एक किलो",
+					"en": "I'd like a kilo of tomatoes.",
+					"bn": "এক কিলো",
+					"mr": "एक किलो",
+					"gu": "એક કિલો",
+					"pa": "ਏਕ ਕਿਲੋ",
+					"ta": "நான் ஒரு கிலோ தக்காளி வேண்டும்.",
+					"te": "నాకు ఒక కిలో టమాటాలు కావాలి.",
+					"kn": "ನನಗೆ ಒಂದು ಕಿಲೋ ಟೊಮಾಟೊ ಬೇಕು."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["spokenInteraction"]
 		},
@@ -44,10 +99,33 @@
 			"ipa": "ʃɛʁ",
 			"hindiGloss": "महँगा",
 			"englishGloss": "expensive (fem: chère)",
+			"glosses": {
+				"hi": "महँगा",
+				"en": "expensive (fem: chère)",
+				"bn": "মহঁগা",
+				"mr": "महँगा",
+				"gu": "મહઁગા",
+				"pa": "ਮਹँਗਾ",
+				"ta": "விலை உயர்ந்த (பெண்: chère)",
+				"te": "ఖరీదు (స్త్రీ: chère)",
+				"kn": "ದುಬಾರಿ (ಸ್ತ್ರೀ: chère)"
+			},
 			"example": {
 				"french": "Les épices ne sont pas chères ici.",
-				"englishGloss": "Spices are not expensive here."
+				"englishGloss": "Spices are not expensive here.",
+				"glosses": {
+					"hi": "महँगा",
+					"en": "Spices are not expensive here.",
+					"bn": "মহঁগা",
+					"mr": "महँगा",
+					"gu": "મહઁગા",
+					"pa": "ਮਹँਗਾ",
+					"ta": "இங்கே மசாலாக்கள் விலை உயர்ந்ததில்லை.",
+					"te": "ఇక్కడ మసాలాలు ఖరీదు కావు.",
+					"kn": "ಇಲ್ಲಿ ಮಸಾಲೆಗಳು ದುಬಾರಿ ಅಲ್ಲ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -58,10 +136,33 @@
 			"ipa": "le le.ɡym",
 			"hindiGloss": "सब्ज़ियाँ",
 			"englishGloss": "vegetables",
+			"glosses": {
+				"hi": "सब्ज़ियाँ",
+				"en": "vegetables",
+				"bn": "সব্জ়িযাঁ",
+				"mr": "सब्ज़ियाँ",
+				"gu": "સબ્જ઼િયાઁ",
+				"pa": "ਸਬ੍ਜ़ਿਯਾँ",
+				"ta": "காய்கறிகள்",
+				"te": "కూరగాయలు",
+				"kn": "ತರಕಾರಿಗಳು"
+			},
 			"example": {
 				"french": "J'achète les légumes au marché.",
-				"englishGloss": "I buy vegetables at the market."
+				"englishGloss": "I buy vegetables at the market.",
+				"glosses": {
+					"hi": "सब्ज़ियाँ",
+					"en": "I buy vegetables at the market.",
+					"bn": "সব্জ়িযাঁ",
+					"mr": "सब्ज़ियाँ",
+					"gu": "સબ્જ઼િયાઁ",
+					"pa": "ਸਬ੍ਜ़ਿਯਾँ",
+					"ta": "நான் சந்தையில் காய்கறிகள் வாங்குகிறேன்.",
+					"te": "నేను మార్కెట్‌లో కూరగాయలు కొనుగోలు చేస్తాను.",
+					"kn": "ನಾನು ಮಾರುಕಟ್ಟೆಯಲ್ಲಿ ತರಕಾರಿಗಳು ಕೊಳ್ಳುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -72,10 +173,33 @@
 			"ipa": "le.z‿e.pis",
 			"hindiGloss": "मसाले",
 			"englishGloss": "spices",
+			"glosses": {
+				"hi": "मसाले",
+				"en": "spices",
+				"bn": "মসালে",
+				"mr": "मसाले",
+				"gu": "મસાલે",
+				"pa": "ਮਸਾਲੇ",
+				"ta": "மசாலா / கறிப்பொருட்கள்",
+				"te": "మసాలాలు",
+				"kn": "ಮಸಾಲೆಗಳು"
+			},
 			"example": {
 				"french": "Les épices indiennes sont parfumées.",
-				"englishGloss": "Indian spices are fragrant."
+				"englishGloss": "Indian spices are fragrant.",
+				"glosses": {
+					"hi": "मसाले",
+					"en": "Indian spices are fragrant.",
+					"bn": "মসালে",
+					"mr": "मसाले",
+					"gu": "મસાલે",
+					"pa": "ਮਸਾਲੇ",
+					"ta": "இந்திய மசாலாக்கள் நறுமணமானவை.",
+					"te": "భారతీయ మసాలాలు సువాసనగా ఉంటాయి.",
+					"kn": "ಭಾರತೀಯ ಮಸಾಲೆಗಳು ಸುಗಂಧವಾಗಿವೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -86,9 +210,31 @@
 			"ipa": "laʁ.ʒɑ̃",
 			"hindiGloss": "पैसा",
 			"englishGloss": "money (also: silver)",
+			"glosses": {
+				"hi": "पैसा",
+				"en": "money (also: silver)",
+				"bn": "পৈসা",
+				"mr": "पैसा",
+				"gu": "પૈસા",
+				"pa": "ਪੈਸਾ",
+				"ta": "பணம் (வெள்ளியும்)",
+				"te": "డబ్బు (వెండి కూడా)",
+				"kn": "ಹಣ (ಬೆಳ್ಳಿ ಕೂಡ)"
+			},
 			"example": {
 				"french": "Je n'ai pas beaucoup d'argent.",
-				"englishGloss": "I don't have much money."
+				"englishGloss": "I don't have much money.",
+				"glosses": {
+					"hi": "पैसा",
+					"en": "I don't have much money.",
+					"bn": "পৈসা",
+					"mr": "पैसा",
+					"gu": "પૈસા",
+					"pa": "ਪੈਸਾ",
+					"ta": "என்னிடம் பணம் அதிகம் இல்லை.",
+					"te": "నా దగ్గర డబ్బు ఎక్కువ లేదు.",
+					"kn": "ನನ್ನ ಬಳಿ ಹಣ ಹೆಚ್ಚು ಇಲ್ಲ."
+				}
 			},
 			"fauxAmi": true,
 			"cefrLevel": "A2",
@@ -99,14 +245,17 @@
 		{
 			"type": "cloze",
 			"id": "a2-u5-ex1",
+			"hint": "“more … than” = plus … que.",
+			"coachNote": "Shop, ask quantities, and compare items (A2: can handle shopping and make simple comparisons).",
 			"text": "Comparison (more … than): « Les mangues sont {{}} chères que les pommes. »",
 			"answer": "plus",
-			"accept": ["plus"],
-			"hint": "“more … than” = plus … que."
+			"accept": ["plus"]
 		},
 		{
 			"type": "mcq",
 			"id": "a2-u5-ex2",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Shop, ask quantities, and compare items (A2: can handle shopping and make simple comparisons).",
 			"prompt": "« Le thé est moins cher que le café » means…",
 			"options": [
 				"Tea is less expensive than coffee",
@@ -121,6 +270,8 @@
 			"type": "translation",
 			"id": "a2-u5-ex3",
 			"cardId": "a2-shop-kilo",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Shop, ask quantities, and compare items (A2: can handle shopping and make simple comparisons).",
 			"prompt": "a kilo of vegetables",
 			"direction": "en-fr",
 			"answer": "un kilo de légumes",
@@ -129,23 +280,38 @@
 		{
 			"type": "reorder",
 			"id": "a2-u5-ex4",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Shop, ask quantities, and compare items (A2: can handle shopping and make simple comparisons).",
 			"prompt": "Build: “Tea is less expensive than coffee.”",
 			"words": ["Le", "thé", "est", "moins", "cher", "que", "le", "café"]
 		},
 		{
 			"type": "matching",
 			"id": "a2-u5-ex5",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Shop, ask quantities, and compare items (A2: can handle shopping and make simple comparisons).",
 			"prompt": "Match the comparison words to English.",
 			"pairs": [
-				{ "left": "plus … que", "right": "more … than" },
-				{ "left": "moins … que", "right": "less … than" },
-				{ "left": "aussi … que", "right": "as … as" }
+				{
+					"left": "plus … que",
+					"right": "more … than"
+				},
+				{
+					"left": "moins … que",
+					"right": "less … than"
+				},
+				{
+					"left": "aussi … que",
+					"right": "as … as"
+				}
 			]
 		},
 		{
 			"type": "gender",
 			"id": "a2-u5-ex6",
 			"cardId": "a2-shop-magasin",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Shop, ask quantities, and compare items (A2: can handle shopping and make simple comparisons).",
 			"noun": "magasin",
 			"answer": "masculine",
 			"articleStyle": "definite"

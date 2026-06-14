@@ -6,7 +6,16 @@
 	"objective": "Use the four essential irregular verbs in the present (A1: can use high-frequency verbs to handle basic needs).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: French says “I HAVE hunger”, not “I am hungry”",
-		"body": "For states like hunger, thirst and age, French uses **avoir**, not **être**: **j'ai faim** (lit. “I have hunger”), **j'ai 20 ans** (lit. “I have 20 years”). English uses “to be”, which trips up learners — ✗ *je suis faim*, ✗ *je suis 20 ans*. Hindi actually helps here: मुझे भूख है (“to me there is hunger”) and मेरी उम्र 20 साल है both avoid “I am”, just like French. Memorise the four verbs — they appear everywhere."
+		"body": "For states like hunger, thirst and age, French uses **avoir**, not **être**: **j'ai faim** (lit. “I have hunger”), **j'ai 20 ans** (lit. “I have 20 years”). English uses “to be”, which trips up learners — ✗ *je suis faim*, ✗ *je suis 20 ans*. Hindi actually helps here: मुझे भूख है (“to me there is hunger”) and मेरी उम्र 20 साल है both avoid “I am”, just like French. Memorise the four verbs — they appear everywhere.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Être, avoir, aller, faire — Key irregular verbs\"?",
+			"options": [
+				"Focus on: French says “I HAVE hunger”, not “I am hungry”",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,7 +25,33 @@
 			"ipa": "ɛtʁ",
 			"hindiGloss": "होना",
 			"englishGloss": "to be",
-			"example": { "french": "Je suis indien.", "englishGloss": "I am Indian." },
+			"glosses": {
+				"hi": "होना",
+				"en": "to be",
+				"bn": "হোনা",
+				"mr": "होना",
+				"gu": "હોના",
+				"pa": "ਹੋਨਾ",
+				"ta": "இருத்தல்",
+				"te": "ఉండటం",
+				"kn": "ಇರುವುದು"
+			},
+			"example": {
+				"french": "Je suis indien.",
+				"englishGloss": "I am Indian.",
+				"glosses": {
+					"hi": "होना",
+					"en": "I am Indian.",
+					"bn": "হোনা",
+					"mr": "होना",
+					"gu": "હોના",
+					"pa": "ਹੋਨਾ",
+					"ta": "நான் இந்தியர்.",
+					"te": "నేను భారతీయుడు.",
+					"kn": "ನಾನು ಭಾರತೀಯ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenProduction"]
 		},
@@ -27,7 +62,33 @@
 			"ipa": "a.vwaʁ",
 			"hindiGloss": "होना (पास होना)",
 			"englishGloss": "to have",
-			"example": { "french": "J'ai faim.", "englishGloss": "I am hungry (lit. I have hunger)." },
+			"glosses": {
+				"hi": "होना (पास होना)",
+				"en": "to have",
+				"bn": "হোনা (পাস হোনা)",
+				"mr": "होना (पास होना)",
+				"gu": "હોના (પાસ હોના)",
+				"pa": "ਹੋਨਾ (ਪਾਸ ਹੋਨਾ)",
+				"ta": "உடையதாக இருத்தல்",
+				"te": "కలిగి ఉండటం",
+				"kn": "ಹೊಂದಿರುವುದು"
+			},
+			"example": {
+				"french": "J'ai faim.",
+				"englishGloss": "I am hungry (lit. I have hunger).",
+				"glosses": {
+					"hi": "होना (पास होना)",
+					"en": "I am hungry (lit. I have hunger).",
+					"bn": "হোনা (পাস হোনা)",
+					"mr": "होना (पास होना)",
+					"gu": "હોના (પાસ હોના)",
+					"pa": "ਹੋਨਾ (ਪਾਸ ਹੋਨਾ)",
+					"ta": "எனக்கு பசிக்கிறது (எனக்கு பசி இருக்கிறது).",
+					"te": "నాకు ఆకలి (నాకు ఆకలి ఉంది).",
+					"kn": "ನನಗೆ ಹಸಿವಾಗಿದೆ (ನನಗೆ ಹಸಿವು ಇದೆ)."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenProduction"]
 		},
@@ -38,7 +99,33 @@
 			"ipa": "a.le",
 			"hindiGloss": "जाना",
 			"englishGloss": "to go",
-			"example": { "french": "Je vais au marché.", "englishGloss": "I am going to the market." },
+			"glosses": {
+				"hi": "जाना",
+				"en": "to go",
+				"bn": "জানা",
+				"mr": "जाना",
+				"gu": "જાના",
+				"pa": "ਜਾਨਾ",
+				"ta": "போவுதல்",
+				"te": "వెళ్ళడం",
+				"kn": "ಹೋಗುವುದು"
+			},
+			"example": {
+				"french": "Je vais au marché.",
+				"englishGloss": "I am going to the market.",
+				"glosses": {
+					"hi": "जाना",
+					"en": "I am going to the market.",
+					"bn": "জানা",
+					"mr": "जाना",
+					"gu": "જાના",
+					"pa": "ਜਾਨਾ",
+					"ta": "நான் சந்தைக்குப் போகிறேன்.",
+					"te": "నేను మార్కెట్‌కు వెళ్తున్నాను.",
+					"kn": "ನಾನು ಮಾರುಕಟ್ಟೆಗೆ ಹೋಗುತ್ತಿದ್ದೇನೆ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenProduction"]
 		},
@@ -49,7 +136,33 @@
 			"ipa": "fɛʁ",
 			"hindiGloss": "करना / बनाना",
 			"englishGloss": "to do / to make",
-			"example": { "french": "Nous faisons la cuisine.", "englishGloss": "We do the cooking." },
+			"glosses": {
+				"hi": "करना / बनाना",
+				"en": "to do / to make",
+				"bn": "করনা / বনানা",
+				"mr": "करना / बनाना",
+				"gu": "કરના / બનાના",
+				"pa": "ਕਰਨਾ / ਬਨਾਨਾ",
+				"ta": "செய்தல் / சமைத்தல்",
+				"te": "చేయడం",
+				"kn": "ಮಾಡುವುದು"
+			},
+			"example": {
+				"french": "Nous faisons la cuisine.",
+				"englishGloss": "We do the cooking.",
+				"glosses": {
+					"hi": "करना / बनाना",
+					"en": "We do the cooking.",
+					"bn": "করনা / বনানা",
+					"mr": "करना / बनाना",
+					"gu": "કરના / બનાના",
+					"pa": "ਕਰਨਾ / ਬਨਾਨਾ",
+					"ta": "நாங்கள் சமையல் செய்கிறோம்.",
+					"te": "మేము వంట చేస్తాం.",
+					"kn": "ನಾವು ಅಡುಗೆ ಮಾಡುತ್ತೇವೆ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
 		}
@@ -58,6 +171,8 @@
 		{
 			"type": "conjugation",
 			"id": "a1-u6-ex1",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Use the four essential irregular verbs in the present (A1: can use high-frequency verbs to handle basic needs).",
 			"verb": "être",
 			"pronoun": "je",
 			"prompt": "Conjugate « être »: Je ___ étudiant.",
@@ -67,6 +182,8 @@
 		{
 			"type": "conjugation",
 			"id": "a1-u6-ex2",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Use the four essential irregular verbs in the present (A1: can use high-frequency verbs to handle basic needs).",
 			"verb": "aller",
 			"pronoun": "nous",
 			"prompt": "Conjugate « aller »: Nous ___ à Goa.",
@@ -76,6 +193,8 @@
 		{
 			"type": "mcq",
 			"id": "a1-u6-ex3",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Use the four essential irregular verbs in the present (A1: can use high-frequency verbs to handle basic needs).",
 			"prompt": "How do you say “I am hungry” in French?",
 			"options": ["J'ai faim", "Je suis faim", "Je fais faim", "Je vais faim"],
 			"answerIndex": 0,
@@ -85,15 +204,18 @@
 			"type": "cloze",
 			"id": "a1-u6-ex4",
 			"cardId": "a1-irr-avoir",
+			"hint": "Age uses avoir (il/elle form), not être.",
+			"coachNote": "Use the four essential irregular verbs in the present (A1: can use high-frequency verbs to handle basic needs).",
 			"text": "Priya is 20 years old: « Elle {{}} vingt ans. »",
 			"answer": "a",
-			"accept": ["a"],
-			"hint": "Age uses avoir (il/elle form), not être."
+			"accept": ["a"]
 		},
 		{
 			"type": "translation",
 			"id": "a1-u6-ex5",
 			"cardId": "a1-irr-aller",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Use the four essential irregular verbs in the present (A1: can use high-frequency verbs to handle basic needs).",
 			"prompt": "I am going to the market.",
 			"direction": "en-fr",
 			"answer": "Je vais au marché",
@@ -102,12 +224,26 @@
 		{
 			"type": "matching",
 			"id": "a1-u6-ex6",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Use the four essential irregular verbs in the present (A1: can use high-frequency verbs to handle basic needs).",
 			"prompt": "Match each verb to its meaning.",
 			"pairs": [
-				{ "left": "être", "right": "to be" },
-				{ "left": "avoir", "right": "to have" },
-				{ "left": "aller", "right": "to go" },
-				{ "left": "faire", "right": "to do/make" }
+				{
+					"left": "être",
+					"right": "to be"
+				},
+				{
+					"left": "avoir",
+					"right": "to have"
+				},
+				{
+					"left": "aller",
+					"right": "to go"
+				},
+				{
+					"left": "faire",
+					"right": "to do/make"
+				}
 			]
 		}
 	]

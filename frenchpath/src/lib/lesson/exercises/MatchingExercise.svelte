@@ -1,16 +1,20 @@
 <script lang="ts">
 	import type { Exercise } from '$lib/content/schema';
 	import type { ExerciseResponse } from '$lib/lesson/engine';
+	import type { Lexicon } from '$lib/content/lexicon';
+	import GlossText from '$lib/components/GlossText.svelte';
 
 	let {
 		exercise,
 		// eslint-disable-next-line no-useless-assignment -- write-only $bindable prop
 		response = $bindable(),
-		submitted
+		submitted,
+		lexicon
 	}: {
 		exercise: Extract<Exercise, { type: 'matching' }>;
 		response: ExerciseResponse | null;
 		submitted: boolean;
+		lexicon: Lexicon;
 	} = $props();
 
 	function shuffle<T>(arr: readonly T[]): T[] {
@@ -45,12 +49,16 @@
 
 <div class="space-y-3">
 	{#if exercise.prompt}
-		<p class="text-lg font-semibold text-foreground">{exercise.prompt}</p>
+		<p class="text-lg font-semibold text-foreground">
+			<GlossText text={exercise.prompt} {lexicon} frenchOnly={false} />
+		</p>
 	{/if}
 	<ul class="space-y-2">
 		{#each exercise.pairs as pair (pair.left)}
 			<li class="flex items-center gap-3">
-				<span class="w-28 shrink-0 font-medium text-foreground">{pair.left}</span>
+				<span class="w-28 shrink-0 font-medium text-foreground">
+					<GlossText text={pair.left} {lexicon} />
+				</span>
 				<select
 					class={selectClass(pair.left)}
 					bind:value={choices[pair.left]}

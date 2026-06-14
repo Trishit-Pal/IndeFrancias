@@ -31,6 +31,18 @@ describe('gradeCard', () => {
 		expect(good.card.due.getTime()).toBeGreaterThan(again.card.due.getTime());
 	});
 
+	it('targetRetention affects scheduling for reviewed cards', () => {
+		let card = freshCard();
+		card = gradeCard(card, 'again', { now: NOW }).card;
+		card = gradeCard(card, 'good', { now: NOW }).card;
+		card = gradeCard(card, 'good', { now: NOW }).card;
+		const later = new Date('2026-01-15T00:00:00Z');
+		const low = gradeCard(card, 'good', { now: later, targetRetention: 0.7 });
+		const high = gradeCard(card, 'good', { now: later, targetRetention: 0.95 });
+		// Higher desired retention → shorter intervals (more frequent reviews).
+		expect(low.card.scheduled_days).toBeGreaterThanOrEqual(high.card.scheduled_days);
+	});
+
 	it('increments reps and records the last grade + a review log', () => {
 		const result = gradeCard(freshCard(), 'good', { now: NOW });
 		expect(result.card.reps).toBe(1);

@@ -36,8 +36,12 @@ jobs:
       - name: Content validate
         run: npm run content:validate
 
-      - name: Content proofread
+      - name: Content proofread (A1/A2 launch gate)
+        run: npm run content:proofread:launch
+
+      - name: Content proofread (B1–C1 report)
         run: npm run content:proofread
+        continue-on-error: true
 
       - name: Build
         run: npm run build

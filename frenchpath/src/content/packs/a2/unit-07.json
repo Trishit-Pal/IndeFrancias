@@ -6,7 +6,16 @@
 	"objective": "Talk about future plans and intentions (A2: can describe plans, hopes and intentions).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: « going to » vs « will »",
-		"body": "Two futures: **futur proche** = aller + infinitive (a near, planned “going to”): *Je vais étudier.* And **futur simple** = one word for “will”, formed from the infinitive + **-ai, -as, -a, -ons, -ez, -ont**: *J'étudierai.* Hindi marks the future with verb endings (पढ़ूँगा), so the futur simple’s single-word form will feel natural."
+		"body": "Two futures: **futur proche** = aller + infinitive (a near, planned “going to”): *Je vais étudier.* And **futur simple** = one word for “will”, formed from the infinitive + **-ai, -as, -a, -ons, -ez, -ont**: *J'étudierai.* Hindi marks the future with verb endings (पढ़ूँगा), so the futur simple’s single-word form will feel natural.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Les projets — Plans & the future\"?",
+			"options": [
+				"Focus on: « going to » vs « will »",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,10 +25,33 @@
 			"ipa": "lav.niʁ",
 			"hindiGloss": "भविष्य",
 			"englishGloss": "the future",
+			"glosses": {
+				"hi": "भविष्य",
+				"en": "the future",
+				"bn": "ভ঵িষ্য",
+				"mr": "भविष्य",
+				"gu": "ભવિષ્ય",
+				"pa": "ਭਵਿ਷੍ਯ",
+				"ta": "எதிர்காலம்",
+				"te": "భవిష్యత్తు",
+				"kn": "ಭವಿಷ್ಯ"
+			},
 			"example": {
 				"french": "À l'avenir, je veux travailler en France.",
-				"englishGloss": "In the future, I want to work in France."
+				"englishGloss": "In the future, I want to work in France.",
+				"glosses": {
+					"hi": "भविष्य",
+					"en": "In the future, I want to work in France.",
+					"bn": "ভ঵িষ্য",
+					"mr": "भविष्य",
+					"gu": "ભવિષ્ય",
+					"pa": "ਭਵਿ਷੍ਯ",
+					"ta": "எதிர்காலத்தில், நான் France-இல் வேலை செய்ய விரும்புகிறேன்.",
+					"te": "భవిష్యత్తులో, నేను France-లో పని చేయాలనుకుంటున్నాను.",
+					"kn": "ಭವಿಷ್ಯದಲ್ಲಿ, ನಾನು France-ನಲ್ಲಿ ಕೆಲಸ ಮಾಡಲು ಬಯಸುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -30,10 +62,33 @@
 			"ipa": "lə pʁɔ.ʒɛ",
 			"hindiGloss": "योजना / प्रोजेक्ट",
 			"englishGloss": "the plan / project",
+			"glosses": {
+				"hi": "योजना / प्रोजेक्ट",
+				"en": "the plan / project",
+				"bn": "যোজনা / প্রোজেক্ট",
+				"mr": "योजना / प्रोजेक्ट",
+				"gu": "યોજના / પ્રોજેક્ટ",
+				"pa": "ਯੋਜਨਾ / ਪ੍ਰੋਜੇਕ੍ਟ",
+				"ta": "திட்டம் / ப்ராஜெக்ட்",
+				"te": "ప్లాన్ / ప్రాజెక్ట్",
+				"kn": "ಯೋಜನೆ / ಪ್ರಾಜೆಕ್ಟ್"
+			},
 			"example": {
 				"french": "Mon projet est d'étudier à l'étranger.",
-				"englishGloss": "My plan is to study abroad."
+				"englishGloss": "My plan is to study abroad.",
+				"glosses": {
+					"hi": "योजना / प्रोजेक्ट",
+					"en": "My plan is to study abroad.",
+					"bn": "যোজনা / প্রোজেক্ট",
+					"mr": "योजना / प्रोजेक्ट",
+					"gu": "યોજના / પ્રોજેક્ટ",
+					"pa": "ਯੋਜਨਾ / ਪ੍ਰੋਜੇਕ੍ਟ",
+					"ta": "என் திட்டம் வெளிநாட்டில் படிப்பது.",
+					"te": "నా ప్లాన్ విదేశాల్లో చదువుకోవడం.",
+					"kn": "ನನ್ನ ಯೋಜನೆ ವಿದೇಶದಲ್ಲಿ ಓದುವುದು."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -44,10 +99,33 @@
 			"ipa": "e.ty.dje",
 			"hindiGloss": "पढ़ाई करना",
 			"englishGloss": "to study (futur: j'étudierai)",
+			"glosses": {
+				"hi": "पढ़ाई करना",
+				"en": "to study (futur: j'étudierai)",
+				"bn": "পঢ়াঈ করনা",
+				"mr": "पढ़ाई करना",
+				"gu": "પઢ઼ાઈ કરના",
+				"pa": "ਪਢ़ਾਈ ਕਰਨਾ",
+				"ta": "படித்தல்",
+				"te": "చదువుకోవడం",
+				"kn": "ಓದುವುದು"
+			},
 			"example": {
 				"french": "L'année prochaine, j'étudierai à Paris.",
-				"englishGloss": "Next year, I will study in Paris."
+				"englishGloss": "Next year, I will study in Paris.",
+				"glosses": {
+					"hi": "पढ़ाई करना",
+					"en": "Next year, I will study in Paris.",
+					"bn": "পঢ়াঈ করনা",
+					"mr": "पढ़ाई करना",
+					"gu": "પઢ઼ાઈ કરના",
+					"pa": "ਪਢ़ਾਈ ਕਰਨਾ",
+					"ta": "அடுத்த ஆண்டு, நான் Paris-இல் படிப்பேன்.",
+					"te": "మరుసంవత్సరం, నేను Paris-లో చదువుతాను.",
+					"kn": "ಮುಂದಿನ ವರ್ಷ, ನಾನು Paris-ನಲ್ಲಿ ಓದುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["spokenProduction"]
 		},
@@ -58,10 +136,33 @@
 			"ipa": "e.kɔ.nɔ.mi.ze",
 			"hindiGloss": "बचत करना / पैसे बचाना",
 			"englishGloss": "to save (money) (futur: j'économiserai)",
+			"glosses": {
+				"hi": "बचत करना / पैसे बचाना",
+				"en": "to save (money) (futur: j'économiserai)",
+				"bn": "বচত করনা / পৈসে বচানা",
+				"mr": "बचत करना / पैसे बचाना",
+				"gu": "બચત કરના / પૈસે બચાના",
+				"pa": "ਬਚਤ ਕਰਨਾ / ਪੈਸੇ ਬਚਾਨਾ",
+				"ta": "பணம் சேமித்தல்",
+				"te": "డబ్బు సేవ్ చేయడం",
+				"kn": "ಹಣ ಉಳಿಸುವುದು"
+			},
 			"example": {
 				"french": "Je vais économiser pour le voyage.",
-				"englishGloss": "I'm going to save for the trip."
+				"englishGloss": "I'm going to save for the trip.",
+				"glosses": {
+					"hi": "बचत करना / पैसे बचाना",
+					"en": "I'm going to save for the trip.",
+					"bn": "বচত করনা / পৈসে বচানা",
+					"mr": "बचत करना / पैसे बचाना",
+					"gu": "બચત કરના / પૈસે બચાના",
+					"pa": "ਬਚਤ ਕਰਨਾ / ਪੈਸੇ ਬਚਾਨਾ",
+					"ta": "பயணத்திற்காக பணம் சேமிக்கப் போகிறேன்.",
+					"te": "ప్రయాణం కోసం డబ్బు సేవ్ చేస్తాను.",
+					"kn": "ಪ್ರಯಾಣಕ್ಕೆ ಹಣ ಉಳಿಸುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -72,10 +173,33 @@
 			"ipa": "le.tʁɑ̃.ʒe",
 			"hindiGloss": "विदेश",
 			"englishGloss": "abroad (à l'étranger) / a foreigner",
+			"glosses": {
+				"hi": "विदेश",
+				"en": "abroad (à l'étranger) / a foreigner",
+				"bn": "঵িদেশ",
+				"mr": "विदेश",
+				"gu": "વિદેશ",
+				"pa": "ਵਿਦੇਸ਼",
+				"ta": "வெளிநாடு (à l'étranger) / வெளிநாட்டினர்",
+				"te": "విదేశం (à l'étranger) / విదేశీయుడు",
+				"kn": "ವಿದೇಶ (à l'étranger) / ವಿದೇಶೀಯ"
+			},
 			"example": {
 				"french": "Beaucoup d'étudiants indiens partent à l'étranger.",
-				"englishGloss": "Many Indian students go abroad."
+				"englishGloss": "Many Indian students go abroad.",
+				"glosses": {
+					"hi": "विदेश",
+					"en": "Many Indian students go abroad.",
+					"bn": "঵িদেশ",
+					"mr": "विदेश",
+					"gu": "વિદેશ",
+					"pa": "ਵਿਦੇਸ਼",
+					"ta": "பல இந்திய மாணவர்கள் வெளிநாடு செல்கிறார்கள்.",
+					"te": "చాలా భారతీయ విద్యార్థులు విదేశాలకు వెళ్తారు.",
+					"kn": "ಬಹಳಷ್ಟು ಭಾರತೀಯ ವಿದ್ಯಾರ್ಥಿಗಳು ವಿದೇಶಕ್ಕೆ ಹೋಗುತ್ತಾರೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -86,10 +210,33 @@
 			"ipa": "la.ne pʁɔ.ʃɛn",
 			"hindiGloss": "अगले साल",
 			"englishGloss": "next year",
+			"glosses": {
+				"hi": "अगले साल",
+				"en": "next year",
+				"bn": "অগলে সাল",
+				"mr": "अगले साल",
+				"gu": "અગલે સાલ",
+				"pa": "ਅਗਲੇ ਸਾਲ",
+				"ta": "அடுத்த ஆண்டு",
+				"te": "మరుసంవత్సరం",
+				"kn": "ಮುಂದಿನ ವರ್ಷ"
+			},
 			"example": {
 				"french": "L'année prochaine, je vais voyager.",
-				"englishGloss": "Next year, I'm going to travel."
+				"englishGloss": "Next year, I'm going to travel.",
+				"glosses": {
+					"hi": "अगले साल",
+					"en": "Next year, I'm going to travel.",
+					"bn": "অগলে সাল",
+					"mr": "अगले साल",
+					"gu": "અગલે સાલ",
+					"pa": "ਅਗਲੇ ਸਾਲ",
+					"ta": "அடுத்த ஆண்டு, நான் பயணம் செய்யப் போகிறேன்.",
+					"te": "మరుసంవత్సరం, నేను ప్రయాణం చేస్తాను.",
+					"kn": "ಮುಂದಿನ ವರ್ಷ, ನಾನು ಪ್ರಯಾಣ ಮಾಡುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		}
@@ -98,6 +245,8 @@
 		{
 			"type": "conjugation",
 			"id": "a2-u7-ex1",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Talk about future plans and intentions (A2: can describe plans, hopes and intentions).",
 			"verb": "étudier",
 			"pronoun": "je",
 			"prompt": "Futur simple: L'année prochaine, j'___ à Paris. (I will study)",
@@ -107,14 +256,17 @@
 		{
 			"type": "cloze",
 			"id": "a2-u7-ex2",
+			"hint": "aller (present, je) + infinitive.",
+			"coachNote": "Talk about future plans and intentions (A2: can describe plans, hopes and intentions).",
 			"text": "Futur proche: « Demain, je {{}} voyager à Goa. » (aller)",
 			"answer": "vais",
-			"accept": ["vais"],
-			"hint": "aller (present, je) + infinitive."
+			"accept": ["vais"]
 		},
 		{
 			"type": "mcq",
 			"id": "a2-u7-ex3",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Talk about future plans and intentions (A2: can describe plans, hopes and intentions).",
 			"prompt": "« Je vais étudier ce soir » expresses…",
 			"options": ["a near-future plan", "a past habit", "a finished action", "a description"],
 			"answerIndex": 0,
@@ -124,6 +276,8 @@
 			"type": "translation",
 			"id": "a2-u7-ex4",
 			"cardId": "a2-fut-etudier",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Talk about future plans and intentions (A2: can describe plans, hopes and intentions).",
 			"prompt": "I will travel.",
 			"direction": "en-fr",
 			"answer": "Je voyagerai",
@@ -132,6 +286,8 @@
 		{
 			"type": "reorder",
 			"id": "a2-u7-ex5",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Talk about future plans and intentions (A2: can describe plans, hopes and intentions).",
 			"prompt": "Build: “Next year, I will work in Mumbai.”",
 			"words": ["L'année", "prochaine", "je", "travaillerai", "à", "Mumbai"]
 		},
@@ -139,6 +295,8 @@
 			"type": "gender",
 			"id": "a2-u7-ex6",
 			"cardId": "a2-fut-projet",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Talk about future plans and intentions (A2: can describe plans, hopes and intentions).",
 			"noun": "projet",
 			"answer": "masculine",
 			"articleStyle": "definite"

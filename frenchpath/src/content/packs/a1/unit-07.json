@@ -6,7 +6,16 @@
 	"objective": "Ask simple questions and make negative statements (A1: can ask and answer simple questions on familiar topics).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: negation wraps the verb (ne … pas)",
-		"body": "French negation has TWO parts around the verb: **ne** + verb + **pas**. *Je ne parle pas anglais* = “I don’t speak English.” In speech, the **ne** is often dropped (*je parle pas*), but write both. To ask a yes/no question, just add **est-ce que** at the front: *Est-ce que tu parles français ?* Hindi puts नहीं after the verb and questions often use क्या at the front — similar instincts, different words."
+		"body": "French negation has TWO parts around the verb: **ne** + verb + **pas**. *Je ne parle pas anglais* = “I don’t speak English.” In speech, the **ne** is often dropped (*je parle pas*), but write both. To ask a yes/no question, just add **est-ce que** at the front: *Est-ce que tu parles français ?* Hindi puts नहीं after the verb and questions often use क्या at the front — similar instincts, different words.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Questions et négation — Asking & saying no\"?",
+			"options": [
+				"Focus on: negation wraps the verb (ne … pas)",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,7 +25,33 @@
 			"ipa": "ɛs.kə",
 			"hindiGloss": "क्या (प्रश्न के लिए)",
 			"englishGloss": "(question marker, yes/no)",
-			"example": { "french": "Est-ce que tu aimes le thé ?", "englishGloss": "Do you like tea?" },
+			"glosses": {
+				"hi": "क्या (प्रश्न के लिए)",
+				"en": "(question marker, yes/no)",
+				"bn": "ক্যা (প্রশ্ন কে লিএ)",
+				"mr": "क्या (प्रश्न के लिए)",
+				"gu": "ક્યા (પ્રશ્ન કે લિએ)",
+				"pa": "ਕ੍ਯਾ (ਪ੍ਰਸ਼੍ਨ ਕੇ ਲਿਏ)",
+				"ta": "ஆ/இல்லை (கேள்வி குறி)",
+				"te": "ఆ/లేదు (ప్రశ్న మార్కర్)",
+				"kn": "ಹೌ/ಇಲ್ಲ (ಪ್ರಶ್ನೆ ಗುರುತು)"
+			},
+			"example": {
+				"french": "Est-ce que tu aimes le thé ?",
+				"englishGloss": "Do you like tea?",
+				"glosses": {
+					"hi": "क्या (प्रश्न के लिए)",
+					"en": "Do you like tea?",
+					"bn": "ক্যা (প্রশ্ন কে লিএ)",
+					"mr": "क्या (प्रश्न के लिए)",
+					"gu": "ક્યા (પ્રશ્ન કે લિએ)",
+					"pa": "ਕ੍ਯਾ (ਪ੍ਰਸ਼੍ਨ ਕੇ ਲਿਏ)",
+					"ta": "உங்களுக்கு தேநீர் பிடிக்கிறதா?",
+					"te": "మీకు టీ ఇష్టమా?",
+					"kn": "ನಿಮಗೆ ಟೀ ಇಷ್ಟವಾಗುತ್ತದೆಯೇ?"
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenInteraction"]
 		},
@@ -27,7 +62,33 @@
 			"ipa": "kɛs.kə",
 			"hindiGloss": "क्या (वस्तु पूछना)",
 			"englishGloss": "what",
-			"example": { "french": "Qu'est-ce que tu manges ?", "englishGloss": "What are you eating?" },
+			"glosses": {
+				"hi": "क्या (वस्तु पूछना)",
+				"en": "what",
+				"bn": "ক্যা (঵স্তু পূছনা)",
+				"mr": "क्या (वस्तु पूछना)",
+				"gu": "ક્યા (વસ્તુ પૂછના)",
+				"pa": "ਕ੍ਯਾ (ਵਸ੍ਤੁ ਪੂਛਨਾ)",
+				"ta": "என்ன",
+				"te": "ఏమి / ఏదు",
+				"kn": "ಏನು"
+			},
+			"example": {
+				"french": "Qu'est-ce que tu manges ?",
+				"englishGloss": "What are you eating?",
+				"glosses": {
+					"hi": "क्या (वस्तु पूछना)",
+					"en": "What are you eating?",
+					"bn": "ক্যা (঵স্তু পূছনা)",
+					"mr": "क्या (वस्तु पूछना)",
+					"gu": "ક્યા (વસ્તુ પૂછના)",
+					"pa": "ਕ੍ਯਾ (ਵਸ੍ਤੁ ਪੂਛਨਾ)",
+					"ta": "என்ன சாப்பிடுகிறீர்கள்?",
+					"te": "ఏమి తింటున్నారు?",
+					"kn": "ಏನು ತಿನ್ನುತ್ತಿದ್ದೀರಿ?"
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenInteraction"]
 		},
@@ -38,7 +99,33 @@
 			"ipa": "u",
 			"hindiGloss": "कहाँ",
 			"englishGloss": "where",
-			"example": { "french": "Où habites-tu ?", "englishGloss": "Where do you live?" },
+			"glosses": {
+				"hi": "कहाँ",
+				"en": "where",
+				"bn": "কহাঁ",
+				"mr": "कहाँ",
+				"gu": "કહાઁ",
+				"pa": "ਕਹਾँ",
+				"ta": "எங்கே",
+				"te": "ఎక్కడ",
+				"kn": "ಎಲ್ಲಿ"
+			},
+			"example": {
+				"french": "Où habites-tu ?",
+				"englishGloss": "Where do you live?",
+				"glosses": {
+					"hi": "कहाँ",
+					"en": "Where do you live?",
+					"bn": "কহাঁ",
+					"mr": "कहाँ",
+					"gu": "કહાઁ",
+					"pa": "ਕਹਾँ",
+					"ta": "எங்கே வாழ்கிறீர்கள்?",
+					"te": "ఎక్కడ ఉంటారు?",
+					"kn": "ಎಲ್ಲಿ ವಾಸಿಸುತ್ತಿದ್ದೀರಿ?"
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenInteraction"]
 		},
@@ -49,7 +136,33 @@
 			"ipa": "kɔ.mɑ̃",
 			"hindiGloss": "कैसे",
 			"englishGloss": "how",
-			"example": { "french": "Comment ça va ?", "englishGloss": "How are you?" },
+			"glosses": {
+				"hi": "कैसे",
+				"en": "how",
+				"bn": "কৈসে",
+				"mr": "कैसे",
+				"gu": "કૈસે",
+				"pa": "ਕੈਸੇ",
+				"ta": "எப்படி",
+				"te": "ఎలా",
+				"kn": "ಹೇಗೆ"
+			},
+			"example": {
+				"french": "Comment ça va ?",
+				"englishGloss": "How are you?",
+				"glosses": {
+					"hi": "कैसे",
+					"en": "How are you?",
+					"bn": "কৈসে",
+					"mr": "कैसे",
+					"gu": "કૈસે",
+					"pa": "ਕੈਸੇ",
+					"ta": "எப்படி இருக்கிறீர்கள்?",
+					"te": "ఎలా ఉన్నారు?",
+					"kn": "ಹೇಗಿದ್ದೀರಿ?"
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenInteraction"]
 		},
@@ -60,7 +173,33 @@
 			"ipa": "puʁ.kwa",
 			"hindiGloss": "क्यों",
 			"englishGloss": "why",
-			"example": { "french": "Pourquoi pas ?", "englishGloss": "Why not?" },
+			"glosses": {
+				"hi": "क्यों",
+				"en": "why",
+				"bn": "ক্যোং",
+				"mr": "क्यों",
+				"gu": "ક્યોં",
+				"pa": "ਕ੍ਯੋਂ",
+				"ta": "ஏன்",
+				"te": "ఎందుకు",
+				"kn": "ಏಕೆ"
+			},
+			"example": {
+				"french": "Pourquoi pas ?",
+				"englishGloss": "Why not?",
+				"glosses": {
+					"hi": "क्यों",
+					"en": "Why not?",
+					"bn": "ক্যোং",
+					"mr": "क्यों",
+					"gu": "ક્યોં",
+					"pa": "ਕ੍ਯੋਂ",
+					"ta": "ஏன் இல்லை?",
+					"te": "ఎందుకు కాదు?",
+					"kn": "ಏಕೆ ಇಲ್ಲ?"
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["spokenInteraction"]
 		},
@@ -71,10 +210,33 @@
 			"ipa": "nə … pa",
 			"hindiGloss": "नहीं (निषेध)",
 			"englishGloss": "not (negation)",
+			"glosses": {
+				"hi": "नहीं (निषेध)",
+				"en": "not (negation)",
+				"bn": "নহীং (নিষেধ)",
+				"mr": "नहीं (निषेध)",
+				"gu": "નહીં (નિષેધ)",
+				"pa": "ਨਹੀਂ (ਨਿ਷ੇਧ)",
+				"ta": "இல்லை (நிராகரிப்பு)",
+				"te": "లేదు (నిరాకరణ)",
+				"kn": "ಇಲ್ಲ (ನಿರಾಕರಣೆ)"
+			},
 			"example": {
 				"french": "Je ne parle pas espagnol.",
-				"englishGloss": "I don't speak Spanish."
+				"englishGloss": "I don't speak Spanish.",
+				"glosses": {
+					"hi": "नहीं (निषेध)",
+					"en": "I don't speak Spanish.",
+					"bn": "নহীং (নিষেধ)",
+					"mr": "नहीं (निषेध)",
+					"gu": "નહીં (નિષેધ)",
+					"pa": "ਨਹੀਂ (ਨਿ਷ੇਧ)",
+					"ta": "நான் ஸ்பானிஷ் பேசுவதில்லை.",
+					"te": "నేను స్పానిష్ మాట్లాడను.",
+					"kn": "ನಾನು ಸ್ಪ್ಯಾನಿಷ್ ಮಾತನಾಡುವುದಿಲ್ಲ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["writing"]
 		}
@@ -83,6 +245,8 @@
 		{
 			"type": "reorder",
 			"id": "a1-u7-ex1",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Ask simple questions and make negative statements (A1: can ask and answer simple questions on familiar topics).",
 			"prompt": "Build the question: “Do you speak French?”",
 			"words": ["Est-ce", "que", "tu", "parles", "français"]
 		},
@@ -90,15 +254,18 @@
 			"type": "cloze",
 			"id": "a1-u7-ex2",
 			"cardId": "a1-q-nepas",
+			"hint": "First part of the ne … pas sandwich.",
+			"coachNote": "Ask simple questions and make negative statements (A1: can ask and answer simple questions on familiar topics).",
 			"text": "Make it negative: « Je {{}} mange pas de viande. »",
 			"answer": "ne",
-			"accept": ["ne", "n'"],
-			"hint": "First part of the ne … pas sandwich."
+			"accept": ["ne", "n'"]
 		},
 		{
 			"type": "mcq",
 			"id": "a1-u7-ex3",
 			"cardId": "a1-q-ou",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Ask simple questions and make negative statements (A1: can ask and answer simple questions on familiar topics).",
 			"prompt": "Which word means « where »?",
 			"options": ["où", "comment", "pourquoi", "qui"],
 			"answerIndex": 0,
@@ -108,6 +275,8 @@
 			"type": "translation",
 			"id": "a1-u7-ex4",
 			"cardId": "a1-q-quest",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Ask simple questions and make negative statements (A1: can ask and answer simple questions on familiar topics).",
 			"prompt": "What are you eating?",
 			"direction": "en-fr",
 			"answer": "Qu'est-ce que tu manges",
@@ -116,17 +285,33 @@
 		{
 			"type": "matching",
 			"id": "a1-u7-ex5",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Ask simple questions and make negative statements (A1: can ask and answer simple questions on familiar topics).",
 			"prompt": "Match each question word to English.",
 			"pairs": [
-				{ "left": "où", "right": "where" },
-				{ "left": "comment", "right": "how" },
-				{ "left": "pourquoi", "right": "why" },
-				{ "left": "qu'est-ce que", "right": "what" }
+				{
+					"left": "où",
+					"right": "where"
+				},
+				{
+					"left": "comment",
+					"right": "how"
+				},
+				{
+					"left": "pourquoi",
+					"right": "why"
+				},
+				{
+					"left": "qu'est-ce que",
+					"right": "what"
+				}
 			]
 		},
 		{
 			"type": "mcq",
 			"id": "a1-u7-ex6",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Ask simple questions and make negative statements (A1: can ask and answer simple questions on familiar topics).",
 			"prompt": "How do you say “I don't speak Spanish”?",
 			"options": [
 				"Je ne parle pas espagnol",

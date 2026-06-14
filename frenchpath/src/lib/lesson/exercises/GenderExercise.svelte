@@ -1,17 +1,21 @@
 <script lang="ts">
 	import type { Exercise } from '$lib/content/schema';
 	import type { ExerciseResponse } from '$lib/lesson/engine';
+	import type { Lexicon } from '$lib/content/lexicon';
+	import GlossText from '$lib/components/GlossText.svelte';
 
 	type Gender = 'masculine' | 'feminine';
 
 	let {
 		exercise,
 		response = $bindable(),
-		submitted
+		submitted,
+		lexicon
 	}: {
 		exercise: Extract<Exercise, { type: 'gender' }>;
 		response: ExerciseResponse | null;
 		submitted: boolean;
+		lexicon: Lexicon;
 	} = $props();
 
 	const choice = $derived(response?.type === 'gender' ? response.choice : null);
@@ -44,7 +48,7 @@
 
 <fieldset class="space-y-3" disabled={submitted}>
 	<legend class="mb-1 text-lg font-semibold text-foreground">
-		Choose the correct article for « {exercise.noun} »
+		Choose the correct article for « <GlossText text={exercise.noun} {lexicon} class="inline" /> »
 	</legend>
 	<div class="grid grid-cols-2 gap-3">
 		{#each options as opt (opt.value)}
@@ -56,7 +60,7 @@
 				onclick={() => pick(opt.value)}
 			>
 				{opt.label}
-				{exercise.noun}
+				<GlossText text={exercise.noun} {lexicon} class="inline" />
 			</button>
 		{/each}
 	</div>

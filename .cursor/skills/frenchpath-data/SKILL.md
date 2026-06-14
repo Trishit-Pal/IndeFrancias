@@ -36,11 +36,12 @@ Before backup, migration, or schema changes, read and follow:
 
 ## Invariants
 
-1. **Backup import**: validate (Zod) → verify checksum → migrate payload → then clear+write
+1. **Backup import**: size cap → parse → checksum → migrate → Zod (strict) → then clear+write
 2. **XP anti-farming**: `completeLesson` awards XP only on improvement delta via `bestCorrect`
 3. **Streak**: `recordDailyActivity` only when `goalXp > 0` from lessons; reviews always count
-4. **Review log**: append-only; never mutate historical entries
+4. **Review log**: append-only; `reviewLog.spec.ts` asserts no update/delete repo APIs
 5. **Migrations**: additive first; backup file version registry in `src/lib/pwa/migrations.ts`
+6. **Import mutex**: concurrent `importBackup()` calls rejected while one is in flight
 
 ## FSRS
 
@@ -52,9 +53,14 @@ Before backup, migration, or schema changes, read and follow:
 
 ```bash
 npm run test:unit -- --run src/lib/db src/lib/pwa src/lib/srs src/lib/gamification
+npm run test:e2e -- --grep "backup|progress persists|replay"
 ```
 
 Use `fake-indexeddb` in tests; call `idb` transactions with `await tx.done`.
+
+Key specs: `backup.spec.ts` (12 cases), `complete.spec.ts` (XP/skill profiles), `reviewLog.spec.ts`.
+
+Full workflows: `docs/testing.md`.
 
 ## Review gate
 

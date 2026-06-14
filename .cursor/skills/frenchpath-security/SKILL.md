@@ -14,7 +14,7 @@ Offline-first PWA with no accounts. Security focus: XSS prevention, safe backup 
 
 - Configured in `svelte.config.js` → `kit.csp` (hash mode)
 - Strict `script-src 'self'` — no inline scripts except hashed
-- E2E verifies no CSP violations on core routes
+- E2E verifies no CSP violations on **six routes**: `/`, `/review`, `/progress`, `/settings`, `/learn/a1-unit-01`, `/exam/delf-a2`
 
 ## Security headers
 
@@ -25,7 +25,7 @@ Portable across static hosts:
 | `vercel.json` | Vercel |
 | `static/_headers` | Netlify / Cloudflare Pages |
 
-Required headers:
+Required headers (asserted in `src/lib/security/headers.spec.ts`):
 
 - `X-Content-Type-Options: nosniff`
 - `Referrer-Policy: no-referrer`
@@ -38,13 +38,23 @@ Required headers:
 
 `importBackup()` receives **untrusted** user JSON:
 
-1. `JSON.parse` → catch syntax errors
-2. `backupFileSchema.safeParse` (Zod)
-3. Recompute SHA-256 checksum via `checksum.ts`
-4. Run payload migrations
-5. Only then: transaction clear + put
+1. `assertBackupSize` — reject files &gt; `MAX_BACKUP_BYTES` (5 MB)
+2. `JSON.parse` → catch syntax / empty errors
+3. Version check (`1` or `2`)
+4. Recompute SHA-256 checksum (v2) via `checksum.ts`
+5. `migrateBackup()` for legacy v1
+6. `backupFileSchema.safeParse()` — **strict** Zod (unknown keys rejected)
+7. Only then: transaction clear + put
+
+`previewBackup()` runs steps 1–4 (+ counts) for the settings UI **without** mutating the DB.
 
 Invalid input must **never** reach `clear()`.
+
+## Settings import UX
+
+- File size checked in UI before `file.text()`
+- Preview modal: export date, lesson count, card count → user confirms
+- `localStorage` key `frenchpath:lastExportAt` on export
 
 ## Content rendering
 
@@ -60,8 +70,8 @@ Invalid input must **never** reach `clear()`.
 ## Verification
 
 ```bash
-npm run test:unit -- --run src/lib/pwa/backup.spec.ts
-npm run test:e2e -- --grep "CSP"
+npm run test:unit -- --run src/lib/pwa/backup.spec.ts src/lib/security/headers.spec.ts
+npm run test:e2e -- --grep "CSP|backup"
 ```
 
-For header/backup changes, run **security-review** subagent before merge.
+Full matrix: `docs/testing.md`. For header/backup changes, run **security-review** subagent before merge.

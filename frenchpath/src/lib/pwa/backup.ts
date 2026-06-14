@@ -11,11 +11,15 @@ import {
 	type ReviewLogRecord,
 	type StreakRecord,
 	type DailyStats,
-	type SkillProfileRecord
+	type SkillProfileRecord,
+	type AssessmentRecord
 } from '../db/schema';
 import { backupFileSchema, CURRENT_BACKUP_VERSION, type BackupPayload } from './backupSchema';
 import { sha256Hex } from './checksum';
 import { migrateBackup } from './migrations';
+
+/** Reject imports larger than this before JSON.parse (DoS guard). */
+export const MAX_BACKUP_BYTES = 5 * 1024 * 1024;
 
 const STORES = [
 	'settings',
@@ -24,8 +28,78 @@ const STORES = [
 	'reviewLog',
 	'streak',
 	'stats',
-	'skillProfile'
+	'skillProfile',
+	'assessments'
 ] as const;
+
+let importInFlight = false;
+
+export interface BackupPreview {
+	exportedAt: string;
+	lessonCount: number;
+	cardCount: number;
+}
+
+/** Lightweight parse for the import confirmation UI — does not mutate the database. */
+export async function previewBackup(json: string): Promise<BackupPreview> {
+	assertBackupSize(json);
+	const raw = parseBackupJson(json);
+	const version = raw.schemaVersion ?? raw.version;
+	if (version !== 1 && version !== 2 && version !== CURRENT_BACKUP_VERSION) {
+		throw new Error(`Unsupported backup version: ${String(version)}`);
+	}
+	if (version === 2 || version === CURRENT_BACKUP_VERSION) {
+		const expected = await sha256Hex(JSON.stringify(raw.payload ?? null));
+		if (expected !== raw.checksum) {
+			throw new Error(
+				'Backup integrity check failed: checksum mismatch (corrupted or edited file).'
+			);
+		}
+	}
+	const migrated = await migrateBackup(raw);
+	const parsed = backupFileSchema.safeParse(migrated);
+	if (!parsed.success) {
+		throw new Error(`Invalid backup file: ${parsed.error.issues[0]?.message ?? 'schema mismatch'}`);
+	}
+	const p = parsed.data.payload;
+	return {
+		exportedAt: String(raw.exportedAt ?? 'unknown'),
+		lessonCount: p.progress.length,
+		cardCount: p.srsCards.length
+	};
+}
+
+function assertBackupSize(json: string): void {
+	const bytes = new TextEncoder().encode(json).byteLength;
+	if (bytes > MAX_BACKUP_BYTES) {
+		throw new Error(
+			`Backup file is too large (${Math.round(bytes / 1024)} KB). Maximum is ${Math.round(MAX_BACKUP_BYTES / 1024 / 1024)} MB.`
+		);
+	}
+}
+
+function parseBackupJson(json: string): {
+	version?: number;
+	schemaVersion?: number;
+	checksum?: string;
+	exportedAt?: string;
+	payload?: unknown;
+} {
+	if (!json.trim()) {
+		throw new Error('Backup file is empty.');
+	}
+	try {
+		return JSON.parse(json) as {
+			version?: number;
+			schemaVersion?: number;
+			checksum?: string;
+			exportedAt?: string;
+			payload?: unknown;
+		};
+	} catch {
+		throw new Error('Backup file is not valid JSON.');
+	}
+}
 
 /** Serialises the whole database to a JSON string with an integrity checksum. */
 export async function exportBackup(): Promise<string> {
@@ -37,7 +111,8 @@ export async function exportBackup(): Promise<string> {
 		reviewLog: await db.getAll('reviewLog'),
 		streak: await db.getAll('streak'),
 		stats: await db.getAll('stats'),
-		skillProfile: await db.getAll('skillProfile')
+		skillProfile: await db.getAll('skillProfile'),
+		assessments: await db.getAll('assessments')
 	};
 	const file = {
 		schemaVersion: CURRENT_BACKUP_VERSION,
@@ -59,20 +134,28 @@ function reviveCard(c: BackupPayload['srsCards'][number]): SrsCard {
 
 /** Replaces all data with a previously exported backup, after full validation. */
 export async function importBackup(json: string): Promise<void> {
-	const raw = JSON.parse(json) as {
-		version?: number;
-		schemaVersion?: number;
-		checksum?: string;
-		payload?: unknown;
-	};
+	if (importInFlight) {
+		throw new Error('Another backup import is already in progress.');
+	}
+	importInFlight = true;
+	try {
+		await importBackupInner(json);
+	} finally {
+		importInFlight = false;
+	}
+}
+
+async function importBackupInner(json: string): Promise<void> {
+	assertBackupSize(json);
+	const raw = parseBackupJson(json);
 	const version = raw.schemaVersion ?? raw.version;
-	if (version !== 1 && version !== CURRENT_BACKUP_VERSION) {
+	if (version !== 1 && version !== 2 && version !== CURRENT_BACKUP_VERSION) {
 		throw new Error(`Unsupported backup version: ${String(version)}`);
 	}
 
 	// For natively-v2 files, verify integrity over the RAW payload (stable key
 	// order matches what exportBackup hashed). v1 files have no checksum to check.
-	if (version === CURRENT_BACKUP_VERSION) {
+	if (version === 2 || version === CURRENT_BACKUP_VERSION) {
 		const expected = await sha256Hex(JSON.stringify(raw.payload ?? null));
 		if (expected !== raw.checksum) {
 			throw new Error(
@@ -100,6 +183,8 @@ export async function importBackup(json: string): Promise<void> {
 	for (const r of p.streak) await tx.objectStore('streak').put(r as StreakRecord);
 	for (const r of p.stats) await tx.objectStore('stats').put(r as DailyStats);
 	for (const r of p.skillProfile) await tx.objectStore('skillProfile').put(r as SkillProfileRecord);
+	for (const r of p.assessments ?? [])
+		await tx.objectStore('assessments').put(r as AssessmentRecord);
 
 	await tx.done;
 }

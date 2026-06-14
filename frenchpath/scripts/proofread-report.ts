@@ -2,15 +2,31 @@
  * Automated French content QA flags for human proof-readers.
  * Exits non-zero when any issue is found.
  *
- *   npm run content:proofread
+ *   npm run content:proofread              # all 52 units (B1+ may fail until curated)
+ *   npm run content:proofread:launch       # A1/A2 only — CI launch gate (--launch)
+ *
+ * See docs/content-curation.md for launch vs full scope.
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { unitSchema, type Unit, type Exercise } from '../src/lib/content/schema';
+import { validateGlossScripts } from './lib/regionalGloss';
 
 const PACKS_DIR = resolve('src/content/packs');
 /** English function words that should not appear in French vocabulary fields. */
 const ENGLISH_IN_FRENCH = /\b(the|hello|goodbye)\b/i;
+/** Indic scripts must not appear in French vocabulary / answer fields. */
+function hasIndicInFrenchText(text: string): boolean {
+	return (
+		/[\u0900-\u097F]/.test(text) ||
+		/[\u0980-\u09FF]/.test(text) ||
+		/[\u0A00-\u0A7F]/.test(text) ||
+		/[\u0B00-\u0B7F]/.test(text) ||
+		/[\u0C00-\u0C7F]/.test(text) ||
+		/[\u0D00-\u0D7F]/.test(text) ||
+		/[\u0A80-\u0AFF]/.test(text)
+	);
+}
 
 function packFiles(): string[] {
 	return readdirSync(PACKS_DIR, { recursive: true })
@@ -56,6 +72,17 @@ function checkUnit(unit: Unit, file: string): string[] {
 		if (ENGLISH_IN_FRENCH.test(card.french)) {
 			issues.push(`${file}: card ${card.id} — English in french field: "${card.french}"`);
 		}
+		if (hasIndicInFrenchText(card.french)) {
+			issues.push(`${file}: card ${card.id} — Indic script in french field: "${card.french}"`);
+		}
+		if (card.glosses) {
+			issues.push(...validateGlossScripts(card.glosses, `${file}: card ${card.id}`));
+		}
+		if (card.example?.glosses) {
+			issues.push(
+				...validateGlossScripts(card.example.glosses, `${file}: card ${card.id} example`)
+			);
+		}
 	}
 
 	for (const [id, count] of cardIds) {
@@ -69,6 +96,11 @@ function checkUnit(unit: Unit, file: string): string[] {
 					`${file}: exercise ${ex.id} — English in French answer/content: "${field.slice(0, 60)}"`
 				);
 			}
+			if (hasIndicInFrenchText(field)) {
+				issues.push(
+					`${file}: exercise ${ex.id} — Indic script in French field: "${field.slice(0, 60)}"`
+				);
+			}
 		}
 	}
 
@@ -76,7 +108,11 @@ function checkUnit(unit: Unit, file: string): string[] {
 }
 
 function main() {
-	const files = packFiles();
+	const launchOnly = process.argv.includes('--launch');
+	const files = packFiles().filter((file) => {
+		if (!launchOnly) return true;
+		return /[\\/]packs[\\/](a1|a2)[\\/]/i.test(file);
+	});
 	const allIssues: string[] = [];
 
 	for (const file of files) {
@@ -89,7 +125,8 @@ function main() {
 	}
 
 	if (allIssues.length > 0) {
-		console.error(`Proofread report: ${allIssues.length} flag(s)\n`);
+		const scope = launchOnly ? 'launch (A1/A2)' : 'full';
+		console.error(`Proofread report (${scope}): ${allIssues.length} flag(s)\n`);
 		for (const issue of allIssues) console.error(`  • ${issue}`);
 		process.exit(1);
 	}

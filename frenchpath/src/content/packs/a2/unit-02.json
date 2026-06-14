@@ -6,7 +6,16 @@
 	"objective": "Narrate past events involving movement, with correct agreement (A2: can recount a journey or trip).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: with être, the participle agrees with the subject",
-		"body": "A small set of movement/state verbs (aller, venir, partir, rester…) form the passé composé with **être**, and the past participle then **agrees** with the subject: *il est allé*, *elle est allé**e***, *ils sont allé**s***, *elles sont allé**es***. English has no such agreement, but Hindi does — वह गया (he went) vs वह गई (she went). Lean on that instinct; just add -e (feminine) and -s (plural) to the participle."
+		"body": "A small set of movement/state verbs (aller, venir, partir, rester…) form the passé composé with **être**, and the past participle then **agrees** with the subject: *il est allé*, *elle est allé**e***, *ils sont allé**s***, *elles sont allé**es***. English has no such agreement, but Hindi does — वह गया (he went) vs वह गई (she went). Lean on that instinct; just add -e (feminine) and -s (plural) to the participle.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Le passé composé (être) — Movement verbs\"?",
+			"options": [
+				"Focus on: with être, the participle agrees with the subject",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,10 +25,33 @@
 			"ipa": "a.le",
 			"hindiGloss": "जाना",
 			"englishGloss": "to go (past participle: allé)",
+			"glosses": {
+				"hi": "जाना",
+				"en": "to go (past participle: allé)",
+				"bn": "জানা",
+				"mr": "जाना",
+				"gu": "જાના",
+				"pa": "ਜਾਨਾ",
+				"ta": "போவுதல்",
+				"te": "వెళ్ళడం",
+				"kn": "ಹೋಗುವುದು"
+			},
 			"example": {
 				"french": "Je suis allé à Goa en train.",
-				"englishGloss": "I went to Goa by train."
+				"englishGloss": "I went to Goa by train.",
+				"glosses": {
+					"hi": "जाना",
+					"en": "I went to Goa by train.",
+					"bn": "জানা",
+					"mr": "जाना",
+					"gu": "જાના",
+					"pa": "ਜਾਨਾ",
+					"ta": "நான் ரயிலில் Goa சென்றேன்.",
+					"te": "నేను రైలులో Goa వెళ్ళాను.",
+					"kn": "ನಾನು ರೈಲಿನಲ್ಲಿ Goa ಹೋದೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["spokenProduction"]
 		},
@@ -30,10 +62,33 @@
 			"ipa": "və.niʁ",
 			"hindiGloss": "आना",
 			"englishGloss": "to come (past participle: venu)",
+			"glosses": {
+				"hi": "आना",
+				"en": "to come (past participle: venu)",
+				"bn": "আনা",
+				"mr": "आना",
+				"gu": "આના",
+				"pa": "ਆਨਾ",
+				"ta": "வருதல்",
+				"te": "రావడం",
+				"kn": "ಬರುವುದು"
+			},
 			"example": {
 				"french": "Elle est venue de Chennai.",
-				"englishGloss": "She came from Chennai."
+				"englishGloss": "She came from Chennai.",
+				"glosses": {
+					"hi": "आना",
+					"en": "She came from Chennai.",
+					"bn": "আনা",
+					"mr": "आना",
+					"gu": "આના",
+					"pa": "ਆਨਾ",
+					"ta": "அவள் Chennai-இல் இருந்து வந்தாள்.",
+					"te": "ఆమె Chennai నుండి వచ్చింది.",
+					"kn": "ಅವಳು Chennai-ನಿಂದ ಬಂದಿದ್ದಾಳೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -44,10 +99,33 @@
 			"ipa": "paʁ.tiʁ",
 			"hindiGloss": "रवाना होना",
 			"englishGloss": "to leave (past participle: parti)",
+			"glosses": {
+				"hi": "रवाना होना",
+				"en": "to leave (past participle: parti)",
+				"bn": "র঵ানা হোনা",
+				"mr": "रवाना होना",
+				"gu": "રવાના હોના",
+				"pa": "ਰਵਾਨਾ ਹੋਨਾ",
+				"ta": "புறப்படுதல்",
+				"te": "బయలుదేరడం",
+				"kn": "ಹೊರಟುವುದು"
+			},
 			"example": {
 				"french": "Ils sont partis à six heures.",
-				"englishGloss": "They left at six o'clock."
+				"englishGloss": "They left at six o'clock.",
+				"glosses": {
+					"hi": "रवाना होना",
+					"en": "They left at six o'clock.",
+					"bn": "র঵ানা হোনা",
+					"mr": "रवाना होना",
+					"gu": "રવાના હોના",
+					"pa": "ਰਵਾਨਾ ਹੋਨਾ",
+					"ta": "அவர்கள் ஆறு மணிக்கு புறப்பட்டார்கள்.",
+					"te": "వారు ఆరు గంటలకు బయలుదేరారు.",
+					"kn": "ಅವರು ಆರು ಗಂಟೆಗೆ ಹೊರಟರು."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -58,10 +136,33 @@
 			"ipa": "ʁɑ̃.tʁe",
 			"hindiGloss": "घर लौटना",
 			"englishGloss": "to return home (past participle: rentré)",
+			"glosses": {
+				"hi": "घर लौटना",
+				"en": "to return home (past participle: rentré)",
+				"bn": "ঘর লৌটনা",
+				"mr": "घर लौटना",
+				"gu": "ઘર લૌટના",
+				"pa": "ਘਰ ਲੌਟਨਾ",
+				"ta": "வீடு திரும்புதல்",
+				"te": "ఇంటికి తిరిగి వెళ్ళడం",
+				"kn": "ಮನೆಗೆ ಹಿಂತಿರುಗುವುದು"
+			},
 			"example": {
 				"french": "Pour Diwali, Arjun est rentré à Jaipur.",
-				"englishGloss": "For Diwali, Arjun returned home to Jaipur."
+				"englishGloss": "For Diwali, Arjun returned home to Jaipur.",
+				"glosses": {
+					"hi": "घर लौटना",
+					"en": "For Diwali, Arjun returned home to Jaipur.",
+					"bn": "ঘর লৌটনা",
+					"mr": "घर लौटना",
+					"gu": "ઘર લૌટના",
+					"pa": "ਘਰ ਲੌਟਨਾ",
+					"ta": "தீபாவளிக்காக, அர்ஜுன் Jaipur வீடு திரும்பினான்.",
+					"te": "దీపావళి కోసం, Arjun Jaipur ఇంటికి తిరిగి వచ్చాడు.",
+					"kn": "ದೀಪಾವಳಿಗೆ, Arjun Jaipur ಮನೆಗೆ ಹಿಂತಿರುಗಿದ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -72,9 +173,31 @@
 			"ipa": "ʁɛs.te",
 			"hindiGloss": "रुकना / ठहरना",
 			"englishGloss": "to stay (NOT to rest) — past participle: resté",
+			"glosses": {
+				"hi": "रुकना / ठहरना",
+				"en": "to stay (NOT to rest) — past participle: resté",
+				"bn": "রুকনা / ঠহরনা",
+				"mr": "रुकना / ठहरना",
+				"gu": "રુકના / ઠહરના",
+				"pa": "ਰੁਕਨਾ / ਠਹਰਨਾ",
+				"ta": "தங்குதல் (ஓய்வு அல்ல)",
+				"te": "ఉండడం (విశ్రాంతి కాదు)",
+				"kn": "ತಂಗುವುದು (ವಿಶ್ರಾಂತಿ ಅಲ್ಲ)"
+			},
 			"example": {
 				"french": "Nous sommes restés à l'hôtel.",
-				"englishGloss": "We stayed at the hotel."
+				"englishGloss": "We stayed at the hotel.",
+				"glosses": {
+					"hi": "रुकना / ठहरना",
+					"en": "We stayed at the hotel.",
+					"bn": "রুকনা / ঠহরনা",
+					"mr": "रुकना / ठहरना",
+					"gu": "રુકના / ઠહરના",
+					"pa": "ਰੁਕਨਾ / ਠਹਰਨਾ",
+					"ta": "நாங்கள் ஹோட்டலில் தங்கினோம்.",
+					"te": "మేము హోటల్‌లో ఉండాం.",
+					"kn": "ನಾವು ಹೋಟೆಲ್‌ನಲ್ಲಿ ತಂಗಿದ್ದೆವು."
+				}
 			},
 			"fauxAmi": true,
 			"cefrLevel": "A2",
@@ -87,10 +210,33 @@
 			"ipa": "lə vwa.jaʒ",
 			"hindiGloss": "यात्रा / सफ़र",
 			"englishGloss": "the trip / journey",
+			"glosses": {
+				"hi": "यात्रा / सफ़र",
+				"en": "the trip / journey",
+				"bn": "যাত্রা / সফ়র",
+				"mr": "यात्रा / सफ़र",
+				"gu": "યાત્રા / સફ઼ર",
+				"pa": "ਯਾਤ੍ਰਾ / ਸਫ़ਰ",
+				"ta": "பயணம்",
+				"te": "ప్రయాణం / యాత్ర",
+				"kn": "ಪ್ರಯಾಣ / ಯಾತ್ರೆ"
+			},
 			"example": {
 				"french": "Le voyage à Goa était long.",
-				"englishGloss": "The trip to Goa was long."
+				"englishGloss": "The trip to Goa was long.",
+				"glosses": {
+					"hi": "यात्रा / सफ़र",
+					"en": "The trip to Goa was long.",
+					"bn": "যাত্রা / সফ়র",
+					"mr": "यात्रा / सफ़र",
+					"gu": "યાત્રા / સફ઼ર",
+					"pa": "ਯਾਤ੍ਰਾ / ਸਫ़ਰ",
+					"ta": "Goa பயணம் நீளமாக இருந்தது.",
+					"te": "Goa ప్రయాణం పొడవుగా ఉంది.",
+					"kn": "Goa ಪ್ರಯಾಣ ದೀರ್ಘವಾಗಿತ್ತು."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		}
@@ -100,14 +246,17 @@
 			"type": "cloze",
 			"id": "a2-u2-ex1",
 			"cardId": "a2-pce-venir",
+			"hint": "être verb → participle agrees: feminine adds -e.",
+			"coachNote": "Narrate past events involving movement, with correct agreement (A2: can recount a journey or trip).",
 			"text": "Agreement (feminine): « Priya est {{}} de Chennai. » (venir)",
 			"answer": "venue",
-			"accept": ["venue"],
-			"hint": "être verb → participle agrees: feminine adds -e."
+			"accept": ["venue"]
 		},
 		{
 			"type": "mcq",
 			"id": "a2-u2-ex2",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Narrate past events involving movement, with correct agreement (A2: can recount a journey or trip).",
 			"prompt": "Which auxiliary do movement verbs like « aller » use in the passé composé?",
 			"options": ["être", "avoir", "aller", "faire"],
 			"answerIndex": 0,
@@ -116,6 +265,8 @@
 		{
 			"type": "conjugation",
 			"id": "a2-u2-ex3",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Narrate past events involving movement, with correct agreement (A2: can recount a journey or trip).",
 			"verb": "aller",
 			"pronoun": "nous",
 			"prompt": "Passé composé of « aller »: Nous ___ à Delhi. (two words)",
@@ -125,6 +276,8 @@
 		{
 			"type": "reorder",
 			"id": "a2-u2-ex4",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Narrate past events involving movement, with correct agreement (A2: can recount a journey or trip).",
 			"prompt": "Build: “They left at six o'clock.”",
 			"words": ["Ils", "sont", "partis", "à", "six", "heures"]
 		},
@@ -132,6 +285,8 @@
 			"type": "translation",
 			"id": "a2-u2-ex5",
 			"cardId": "a2-pce-rester",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Narrate past events involving movement, with correct agreement (A2: can recount a journey or trip).",
 			"prompt": "We stayed at the hotel.",
 			"direction": "en-fr",
 			"answer": "Nous sommes restés à l'hôtel",
@@ -141,6 +296,8 @@
 			"type": "gender",
 			"id": "a2-u2-ex6",
 			"cardId": "a2-pce-voyage",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Narrate past events involving movement, with correct agreement (A2: can recount a journey or trip).",
 			"noun": "voyage",
 			"answer": "masculine",
 			"articleStyle": "definite"

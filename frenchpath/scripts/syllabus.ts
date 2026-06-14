@@ -1,8 +1,8 @@
-// The A1–A2 syllabus the content generator targets, mapped from the CEFR
-// "can-do" descriptors. Each brief drives one generated unit. Add B1+ here later.
+// The A1–C1 syllabus the content generator targets. B1+ briefs live in
+// scripts/syllabus-b1-c1.ts (seeded via scripts/seed-b1-c1.ts).
 export interface UnitBrief {
 	id: string;
-	cefrLevel: 'A1' | 'A2';
+	cefrLevel: 'A1' | 'A2' | 'B1' | 'B2' | 'C1';
 	order: number;
 	title: string;
 	objective: string; // CEFR can-do, paraphrased

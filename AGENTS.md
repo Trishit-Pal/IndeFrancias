@@ -20,6 +20,7 @@ npm run test:e2e
 | Lesson JSON, syllabus, content generation | `frenchpath-pipeline` | — |
 | IndexedDB, backup, FSRS, streaks, XP | `frenchpath-data` | `pwa-data-reviewer` |
 | CSP, headers, backup import safety | `frenchpath-security` | `security-review` |
+| Tests, E2E journeys, regression | `docs/testing.md` | domain reviewer per area |
 | Multi-layer feature | `subagent-driven-development` | domain reviewer + `code-reviewer` |
 
 ## Architecture (one line)
@@ -36,9 +37,10 @@ Static SvelteKit PWA → client IndexedDB → pure domain logic (Node-tested) �
 ## Key docs
 
 - Product README: `frenchpath/README.md`
+- **Testing & regression:** `docs/testing.md` (119 unit + 24 E2E, workflows, security matrix)
 - Data hardening spec: `docs/superpowers/specs/2026-06-08-data-safety-security-retention-hardening-design.md`
 - ML roadmap (post-launch): `docs/ml-roadmap.md`
 
 ## Commit conventions
 
-Conventional commits from `frenchpath/` changes. Run `npm run check && npm run lint && npm run test:unit -- --run` before committing.
+Conventional commits from `frenchpath/` changes. Run `npm run check && npm run lint && npm run test:unit -- --run` before committing; run `npm run test:e2e` when routes, backup, or E2E helpers change.

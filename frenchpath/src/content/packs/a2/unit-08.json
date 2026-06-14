@@ -6,7 +6,16 @@
 	"objective": "Express and justify simple opinions (A2: can give and explain opinions on familiar topics).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: « je pense que … » + a reason with « parce que »",
-		"body": "Open an opinion with **je pense que** / **je crois que** / **à mon avis**, then a full sentence: *Je pense que ce film est intéressant.* Give a reason with **parce que** (because) and link ideas with **mais** (but), **donc** (so), **aussi** (also). It mirrors English “I think that …” and Hindi मुझे लगता है कि … — same shape, just learn the connectors."
+		"body": "Open an opinion with **je pense que** / **je crois que** / **à mon avis**, then a full sentence: *Je pense que ce film est intéressant.* Give a reason with **parce que** (because) and link ideas with **mais** (but), **donc** (so), **aussi** (also). It mirrors English “I think that …” and Hindi मुझे लगता है कि … — same shape, just learn the connectors.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Donner son opinion — Giving opinions\"?",
+			"options": [
+				"Focus on: « je pense que … » + a reason with « parce que »",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,10 +25,33 @@
 			"ipa": "pɑ̃.se",
 			"hindiGloss": "सोचना / लगना",
 			"englishGloss": "to think (je pense que…)",
+			"glosses": {
+				"hi": "सोचना / लगना",
+				"en": "to think (je pense que…)",
+				"bn": "সোচনা / লগনা",
+				"mr": "सोचना / लगना",
+				"gu": "સોચના / લગના",
+				"pa": "ਸੋਚਨਾ / ਲਗਨਾ",
+				"ta": "நினைத்தல் / தோன்றுதல்",
+				"te": "అనుకోవడం / అనిపించడం",
+				"kn": "ಭಾವಿಸುವುದು / ಅನಿಸುವುದು"
+			},
 			"example": {
 				"french": "Je pense que le biryani est délicieux.",
-				"englishGloss": "I think biryani is delicious."
+				"englishGloss": "I think biryani is delicious.",
+				"glosses": {
+					"hi": "सोचना / लगना",
+					"en": "I think biryani is delicious.",
+					"bn": "সোচনা / লগনা",
+					"mr": "सोचना / लगना",
+					"gu": "સોચના / લગના",
+					"pa": "ਸੋਚਨਾ / ਲਗਨਾ",
+					"ta": "பிரியாணி சுவையானது என்று நான் நினைக்கிறேன்.",
+					"te": "బిర్యానీ రుచికరమైనది అని నేను అనుకుంటాను.",
+					"kn": "ಬಿರಿಯಾನಿ ರುಚಿಕರವಾಗಿದೆ ಎಂದು ನಾನು ಭಾವಿಸುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["spokenProduction"]
 		},
@@ -30,10 +62,33 @@
 			"ipa": "la.vi",
 			"hindiGloss": "राय",
 			"englishGloss": "opinion (à mon avis = in my opinion)",
+			"glosses": {
+				"hi": "राय",
+				"en": "opinion (à mon avis = in my opinion)",
+				"bn": "রায",
+				"mr": "राय",
+				"gu": "રાય",
+				"pa": "ਰਾਯ",
+				"ta": "கருத்து (à mon avis = என் கருத்தில்)",
+				"te": "అభిప్రాయం (à mon avis = నా అభిప్రాయంలో)",
+				"kn": "ಅಭಿಪ್ರಾಯ (à mon avis = ನನ್ನ ಅಭಿಪ್ರಾಯದಲ್ಲಿ)"
+			},
 			"example": {
 				"french": "À mon avis, le cricket est passionnant.",
-				"englishGloss": "In my opinion, cricket is exciting."
+				"englishGloss": "In my opinion, cricket is exciting.",
+				"glosses": {
+					"hi": "राय",
+					"en": "In my opinion, cricket is exciting.",
+					"bn": "রায",
+					"mr": "राय",
+					"gu": "રાય",
+					"pa": "ਰਾਯ",
+					"ta": "என் கருத்தில், கிரிக்கெட் சுவாரஸ்யமானது.",
+					"te": "నా అభిప్రాయంలో, క్రికెట్ ఆసక్తికరమైనది.",
+					"kn": "ನನ್ನ ಅಭಿಪ್ರಾಯದಲ್ಲಿ, ಕ್ರಿಕೆಟ್ ಆಸಕ್ತಿದಾಯಕ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -44,10 +99,33 @@
 			"ipa": "ɛ̃.te.ʁɛ.sɑ̃",
 			"hindiGloss": "दिलचस्प",
 			"englishGloss": "interesting",
+			"glosses": {
+				"hi": "दिलचस्प",
+				"en": "interesting",
+				"bn": "দিলচস্প",
+				"mr": "दिलचस्प",
+				"gu": "દિલચસ્પ",
+				"pa": "ਦਿਲਚਸ੍ਪ",
+				"ta": "சுவாரஸ்யமான",
+				"te": "ఆసక్తికరమైన",
+				"kn": "ಆಸಕ್ತಿದಾಯಕ"
+			},
 			"example": {
 				"french": "Ce livre est très intéressant.",
-				"englishGloss": "This book is very interesting."
+				"englishGloss": "This book is very interesting.",
+				"glosses": {
+					"hi": "दिलचस्प",
+					"en": "This book is very interesting.",
+					"bn": "দিলচস্প",
+					"mr": "दिलचस्प",
+					"gu": "દિલચસ્પ",
+					"pa": "ਦਿਲਚਸ੍ਪ",
+					"ta": "இந்தப் புத்தகம் மிகவும் சுவாரஸ்யமானது.",
+					"te": "ఈ పుస్తకం చాలా ఆసక్తికరమైనది.",
+					"kn": "ಈ ಪುಸ್ತಕ ತುಂಬ ಆಸಕ್ತಿದಾಯಕ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -58,10 +136,33 @@
 			"ipa": "ɑ̃.nɥi.jø",
 			"hindiGloss": "उबाऊ / बोरिंग",
 			"englishGloss": "boring",
+			"glosses": {
+				"hi": "उबाऊ / बोरिंग",
+				"en": "boring",
+				"bn": "উবাঊ / বোরিংগ",
+				"mr": "उबाऊ / बोरिंग",
+				"gu": "ઉબાઊ / બોરિંગ",
+				"pa": "ਉਬਾਊ / ਬੋਰਿਂਗ",
+				"ta": "சலிப்பான / போரான",
+				"te": "బోరు / నిరస",
+				"kn": "ಬೇಸರ / ನಿರಸ"
+			},
 			"example": {
 				"french": "Je trouve ce film ennuyeux.",
-				"englishGloss": "I find this film boring."
+				"englishGloss": "I find this film boring.",
+				"glosses": {
+					"hi": "उबाऊ / बोरिंग",
+					"en": "I find this film boring.",
+					"bn": "উবাঊ / বোরিংগ",
+					"mr": "उबाऊ / बोरिंग",
+					"gu": "ઉબાઊ / બોરિંગ",
+					"pa": "ਉਬਾਊ / ਬੋਰਿਂਗ",
+					"ta": "இந்தத் திரைப்படம் சலிப்பானதாகத் தோன்றுகிறது.",
+					"te": "ఈ సినిమా నాకు బోరు అనిపిస్తుంది.",
+					"kn": "ಈ ಚಿತ್ರ ನನಗೆ ಬೇಸರವಾಗುತ್ತದೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -72,10 +173,33 @@
 			"ipa": "lə film",
 			"hindiGloss": "फ़िल्म",
 			"englishGloss": "the film / movie",
+			"glosses": {
+				"hi": "फ़िल्म",
+				"en": "the film / movie",
+				"bn": "ফ়িল্ম",
+				"mr": "फ़िल्म",
+				"gu": "ફ઼િલ્મ",
+				"pa": "ਫ़ਿਲ੍ਮ",
+				"ta": "திரைப்படம்",
+				"te": "సినిమా / చిత్రం",
+				"kn": "ಚಿತ್ರ / ಸಿನಿಮಾ"
+			},
 			"example": {
 				"french": "Le film de Bollywood était long.",
-				"englishGloss": "The Bollywood film was long."
+				"englishGloss": "The Bollywood film was long.",
+				"glosses": {
+					"hi": "फ़िल्म",
+					"en": "The Bollywood film was long.",
+					"bn": "ফ়িল্ম",
+					"mr": "फ़िल्म",
+					"gu": "ફ઼િલ્મ",
+					"pa": "ਫ़ਿਲ੍ਮ",
+					"ta": "பாலிவுட் திரைப்படம் நீளமானது.",
+					"te": "బాలీవుడ్ సినిమా పొడవుగా ఉంది.",
+					"kn": "ಬಾಲಿವುಡ್ ಚಿತ್ರ ದೀರ್ಘವಾಗಿತ್ತು."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -86,10 +210,33 @@
 			"ipa": "paʁs kə",
 			"hindiGloss": "क्योंकि",
 			"englishGloss": "because",
+			"glosses": {
+				"hi": "क्योंकि",
+				"en": "because",
+				"bn": "ক্যোংকি",
+				"mr": "क्योंकि",
+				"gu": "ક્યોંકિ",
+				"pa": "ਕ੍ਯੋਂਕਿ",
+				"ta": "ஏனெனில்",
+				"te": "ఎందుకంటే",
+				"kn": "ಏಕೆಂದರೆ"
+			},
 			"example": {
 				"french": "J'aime le thé parce que c'est chaud.",
-				"englishGloss": "I like tea because it's hot."
+				"englishGloss": "I like tea because it's hot.",
+				"glosses": {
+					"hi": "क्योंकि",
+					"en": "I like tea because it's hot.",
+					"bn": "ক্যোংকি",
+					"mr": "क्योंकि",
+					"gu": "ક્યોંકિ",
+					"pa": "ਕ੍ਯੋਂਕਿ",
+					"ta": "தேநீர் சூடானது என்பதால் நான் விரும்புகிறேன்.",
+					"te": "టీ వేడిగా ఉంటుంది కాబట్టి నేను ఇష్టపడతాను.",
+					"kn": "ಟೀ ಬಿಸಿಯಾಗಿರುವುದರಿಂದ ನಾನು ಇಷ್ಟಪಡುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["writing"]
 		}
@@ -99,15 +246,18 @@
 			"type": "cloze",
 			"id": "a2-u8-ex1",
 			"cardId": "a2-op-penser",
+			"hint": "penser, je form.",
+			"coachNote": "Express and justify simple opinions (A2: can give and explain opinions on familiar topics).",
 			"text": "Give an opinion: « Je {{}} que ce film est bien. » (penser)",
 			"answer": "pense",
-			"accept": ["pense"],
-			"hint": "penser, je form."
+			"accept": ["pense"]
 		},
 		{
 			"type": "mcq",
 			"id": "a2-u8-ex2",
 			"cardId": "a2-op-parceque",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Express and justify simple opinions (A2: can give and explain opinions on familiar topics).",
 			"prompt": "« parce que » means…",
 			"options": ["because", "but", "so", "also"],
 			"answerIndex": 0,
@@ -117,6 +267,8 @@
 			"type": "translation",
 			"id": "a2-u8-ex3",
 			"cardId": "a2-op-avis",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Express and justify simple opinions (A2: can give and explain opinions on familiar topics).",
 			"prompt": "in my opinion",
 			"direction": "en-fr",
 			"answer": "à mon avis",
@@ -125,24 +277,42 @@
 		{
 			"type": "reorder",
 			"id": "a2-u8-ex4",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Express and justify simple opinions (A2: can give and explain opinions on familiar topics).",
 			"prompt": "Build: “I think that the film is interesting.”",
 			"words": ["Je", "pense", "que", "le", "film", "est", "intéressant"]
 		},
 		{
 			"type": "matching",
 			"id": "a2-u8-ex5",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Express and justify simple opinions (A2: can give and explain opinions on familiar topics).",
 			"prompt": "Match each connector/phrase to English.",
 			"pairs": [
-				{ "left": "à mon avis", "right": "in my opinion" },
-				{ "left": "parce que", "right": "because" },
-				{ "left": "mais", "right": "but" },
-				{ "left": "donc", "right": "so" }
+				{
+					"left": "à mon avis",
+					"right": "in my opinion"
+				},
+				{
+					"left": "parce que",
+					"right": "because"
+				},
+				{
+					"left": "mais",
+					"right": "but"
+				},
+				{
+					"left": "donc",
+					"right": "so"
+				}
 			]
 		},
 		{
 			"type": "mcq",
 			"id": "a2-u8-ex6",
 			"cardId": "a2-op-ennuyeux",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Express and justify simple opinions (A2: can give and explain opinions on familiar topics).",
 			"prompt": "Which adjective means « boring »?",
 			"options": ["ennuyeux", "intéressant", "délicieux", "passionnant"],
 			"answerIndex": 0,

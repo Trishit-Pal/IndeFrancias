@@ -20,6 +20,16 @@ describe('authored content', () => {
 			for (const ex of unit.exercises) {
 				if (ex.cardId) expect(cardIds.has(ex.cardId)).toBe(true);
 			}
+
+			for (const card of unit.cards) {
+				expect(card.glosses).toBeDefined();
+				expect(card.glosses?.hi?.length).toBeGreaterThan(0);
+				expect(card.glosses?.en?.length).toBeGreaterThan(0);
+				if (card.example?.glosses) {
+					expect(card.example.glosses.hi?.length).toBeGreaterThan(0);
+					expect(card.example.glosses.en?.length).toBeGreaterThan(0);
+				}
+			}
 		}
 	});
 

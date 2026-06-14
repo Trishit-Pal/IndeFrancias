@@ -39,4 +39,17 @@ describe('scoreExam', () => {
 		expect(r.total).toBe(39);
 		expect(r.passed).toBe(false);
 	});
+
+	it('passes at exactly 50 total with every skill at least 5', () => {
+		const r = scoreExam({ listening: 13, reading: 13, writing: 12, speaking: 12 });
+		expect(r.total).toBe(50);
+		expect(r.passed).toBe(true);
+		expect(r.eliminated).toBe(false);
+	});
+
+	it('is not eliminated when a skill is exactly 5', () => {
+		const r = scoreExam({ listening: 20, reading: 20, writing: 20, speaking: 5 });
+		expect(r.eliminated).toBe(false);
+		expect(r.passed).toBe(true);
+	});
 });

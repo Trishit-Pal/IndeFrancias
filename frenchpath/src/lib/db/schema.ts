@@ -3,7 +3,7 @@
 import type { DBSchema } from 'idb';
 
 export const DB_NAME = 'frenchpath';
-export const DB_VERSION = 1;
+export const DB_VERSION = 2;
 
 export type CefrLevel = 'A1' | 'A2' | 'B1' | 'B2' | 'C1';
 
@@ -11,25 +11,47 @@ export type Skill = 'listening' | 'reading' | 'spokenInteraction' | 'spokenProdu
 
 export type LessonStatus = 'locked' | 'available' | 'completed';
 
-export type UiLanguage = 'en' | 'hi' | 'hinglish';
+export type UiLanguage = 'en' | 'hi' | 'hinglish' | 'bn' | 'ta' | 'te' | 'kn' | 'mr' | 'gu' | 'pa';
 
 export type Theme = 'light' | 'dark' | 'system';
+
+export type NativeLanguage = 'hi' | 'bn' | 'ta' | 'te' | 'kn' | 'mr' | 'gu' | 'pa' | 'en';
+export type LearningGoal = 'travel' | 'delf_a2' | 'delf_b2' | 'work' | 'heritage' | 'general';
+export type DailyGoalPreset = 'casual' | 'regular' | 'intense';
+export type CelebrationLevel = 'full' | 'minimal';
+export type DifficultyTier = 'easy' | 'regular' | 'hard';
+
+export type AssessmentKind = 'unit_checkpoint' | 'cefr_milestone' | 'delf_mock';
+
+export interface ConfidenceSnapshot {
+	unitId: string;
+	index: number;
+	choice: 'low' | 'ok' | 'high';
+}
 
 /** App settings — a single record stored under {@link SETTINGS_KEY}. */
 export interface Settings {
 	uiLanguage: UiLanguage;
-	/** FSRS desired retention (0–1). Spec default is 0.9. */
 	targetRetention: number;
 	dailyGoalXp: number;
-	/** Preferred SpeechSynthesis voice URI, or null to auto-pick a fr-FR voice. */
 	ttsVoice: string | null;
 	audioSpeed: number;
 	theme: Theme;
 	reduceMotion: boolean;
-	/** Whether navigator.storage.persist() has been granted. */
 	persistGranted: boolean;
-	/** Whether the learner has seen the first-run welcome. */
 	onboarded: boolean;
+	// --- learner profile (v2) ---
+	nativeLanguage: NativeLanguage;
+	learningGoal: LearningGoal;
+	targetExamDate: string | null;
+	dailyGoalPreset: DailyGoalPreset;
+	showFrenchTips: boolean;
+	celebrationLevel: CelebrationLevel;
+	syncEnabled: boolean;
+	revisionNotifications: boolean;
+	difficultyTier: DifficultyTier;
+	celebratedMilestones: number[];
+	confidenceSnapshots?: ConfidenceSnapshot[];
 }
 
 export const SETTINGS_KEY = 'app';
@@ -37,13 +59,24 @@ export const SETTINGS_KEY = 'app';
 export const DEFAULT_SETTINGS: Readonly<Settings> = {
 	uiLanguage: 'en',
 	targetRetention: 0.9,
-	dailyGoalXp: 30,
+	dailyGoalXp: 50,
 	ttsVoice: null,
 	audioSpeed: 1,
 	theme: 'system',
 	reduceMotion: false,
 	persistGranted: false,
-	onboarded: false
+	onboarded: false,
+	nativeLanguage: 'hi',
+	learningGoal: 'general',
+	targetExamDate: null,
+	dailyGoalPreset: 'regular',
+	showFrenchTips: true,
+	celebrationLevel: 'full',
+	syncEnabled: false,
+	revisionNotifications: false,
+	difficultyTier: 'regular',
+	celebratedMilestones: [],
+	confidenceSnapshots: []
 };
 
 /** Per-lesson completion state. */
@@ -141,6 +174,19 @@ export interface SkillProfileRecord {
 	updatedAt: number;
 }
 
+/** One-time assessment completion (checkpoints, milestones, exams). */
+export interface AssessmentRecord {
+	assessmentId: string;
+	kind: AssessmentKind;
+	/** e.g. unit id or `a1-milestone` */
+	refId: string;
+	score: number;
+	xpAwarded: number;
+	completedAt: number;
+	/** Epoch ms of most recent failed attempt (cooldown gate). */
+	lastFailedAt?: number;
+}
+
 export interface FrenchPathDB extends DBSchema {
 	settings: { key: string; value: Settings };
 	progress: { key: string; value: ProgressRecord };
@@ -157,4 +203,5 @@ export interface FrenchPathDB extends DBSchema {
 	streak: { key: string; value: StreakRecord };
 	stats: { key: string; value: DailyStats };
 	skillProfile: { key: string; value: SkillProfileRecord };
+	assessments: { key: string; value: AssessmentRecord };
 }

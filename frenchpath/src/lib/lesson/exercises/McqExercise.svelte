@@ -1,15 +1,21 @@
 <script lang="ts">
 	import type { Exercise } from '$lib/content/schema';
 	import type { ExerciseResponse } from '$lib/lesson/engine';
+	import type { Lexicon } from '$lib/content/lexicon';
+	import GlossText from '$lib/components/GlossText.svelte';
 
 	let {
 		exercise,
 		response = $bindable(),
-		submitted
+		submitted,
+		hiddenMcqIndices = [],
+		lexicon
 	}: {
 		exercise: Extract<Exercise, { type: 'mcq' }>;
 		response: ExerciseResponse | null;
 		submitted: boolean;
+		hiddenMcqIndices?: number[];
+		lexicon: Lexicon;
 	} = $props();
 
 	const selected = $derived(response?.type === 'mcq' ? response.selectedIndex : -1);
@@ -30,16 +36,20 @@
 </script>
 
 <fieldset class="space-y-3" disabled={submitted}>
-	<legend class="mb-2 text-lg font-semibold text-foreground">{exercise.prompt}</legend>
+	<legend class="mb-2 text-lg font-semibold text-foreground">
+		<GlossText text={exercise.prompt} {lexicon} forceGlossWords={exercise.promptGlosses ?? []} />
+	</legend>
 	{#each exercise.options as option, i (i)}
-		<button
-			type="button"
-			class={optionClass(i)}
-			aria-pressed={i === selected}
-			data-testid="mcq-option"
-			onclick={() => choose(i)}
-		>
-			{option}
-		</button>
+		{#if !hiddenMcqIndices.includes(i)}
+			<button
+				type="button"
+				class={optionClass(i)}
+				aria-pressed={i === selected}
+				data-testid="mcq-option"
+				onclick={() => choose(i)}
+			>
+				<GlossText text={option} {lexicon} />
+			</button>
+		{/if}
 	{/each}
 </fieldset>

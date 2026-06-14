@@ -15,8 +15,8 @@ Privacy-first, offline-only. No user accounts. All inference on-device unless no
 
 | Feature | Data source | Approach |
 |---------|-------------|----------|
-| FSRS parameter optimization | `reviewLog` store (≥500 reviews) | Port open-spaced-repetition optimizer to Web Worker; store custom weights in `settings` |
-| Adaptive unit suggestions | `skillProfile` store | Heuristic: recommend units targeting lowest estimated skill level |
+| FSRS parameter optimization | `reviewLog` store (≥500 reviews) | `src/lib/srs/optimizer.ts` stub + Web Worker (V1); port open-spaced-repetition optimizer |
+| Adaptive unit suggestions | `skillProfile` store | `src/lib/gamification/adaptiveSuggestions.ts` on home CoachTip |
 | Retention forecast UI | `srsCards` FSRS state | Pure math via `ts-fsrs` — no ML |
 
 **Why not deep learning:** sparse per-user data; FSRS-6 already SOTA for SRS; mobile training cost is high.
@@ -74,4 +74,26 @@ speech input → Web Speech API (V1) → Whisper WASM (V2, optional)
 - Cloud sync for ML training
 - PostHog / third-party behavioral analytics
 - Server-side inference
-- B1+ content generation blocking launch (separate milestone)
+- B1+ content generation blocking launch (separate milestone — see [content-curation.md](./content-curation.md))
+
+## Deferred UI (post-launch)
+
+### PathScene3D / Threlte path ribbon
+
+**Status:** deferred. Launch uses CSS 2.5D perspective only in [`PathScene.svelte`](../frenchpath/src/lib/path/PathScene.svelte) (`fp-path-scene--3d` is CSS transforms, not WebGL).
+
+**Current stack:** Threlte is already used for celebration particles in [`CelebrationScene.svelte`](../frenchpath/src/lib/celebration/CelebrationScene.svelte). A full path ribbon in WebGL is a separate, heavier surface.
+
+**Rationale:**
+
+- 52-unit path scales acceptably with CSS perspective on mobile
+- WebGL ribbon adds bundle weight and GPU variance on low-end devices
+- Celebration 3D is optional and short-lived; the path is always visible
+
+**Future criteria to implement:**
+
+1. Lazy-loaded `PathScene3D.svelte` (code-split; not on critical path)
+2. `prefers-reduced-motion` and low-end GPU fallback to CSS `PathScene`
+3. Lighthouse performance budget check before enabling by default
+
+**Explicit non-goal at launch:** no `canUseWebGL()` probe or misleading “3D path” flag — removed from `PathScene` for honesty.

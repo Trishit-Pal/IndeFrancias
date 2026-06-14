@@ -21,9 +21,28 @@ describe('migrateBackup', () => {
 		expect(backupFileSchema.safeParse(migrated).success).toBe(true);
 	});
 
-	it('passes a v2 file through unchanged', async () => {
-		const v2 = { schemaVersion: 2, exportedAt: 'now', checksum: 'x', payload: {} };
-		expect(await migrateBackup(v2)).toBe(v2);
+	it('passes a v3 file through unchanged', async () => {
+		const v3 = { schemaVersion: 3, exportedAt: 'now', checksum: 'x', payload: {} };
+		expect(await migrateBackup(v3)).toBe(v3);
+	});
+
+	it('upgrades v2 to v3 with assessments array', async () => {
+		const payload = {
+			settings: null,
+			progress: [],
+			srsCards: [],
+			reviewLog: [],
+			streak: [],
+			stats: [],
+			skillProfile: []
+		};
+		const v2 = { schemaVersion: 2, exportedAt: 'now', checksum: 'old', payload };
+		const migrated = (await migrateBackup(v2)) as {
+			schemaVersion: number;
+			payload: { assessments: unknown[] };
+		};
+		expect(migrated.schemaVersion).toBe(3);
+		expect(migrated.payload.assessments).toEqual([]);
 	});
 
 	it('throws a version error for an unknown version', async () => {

@@ -6,7 +6,16 @@
 	"objective": "Describe your daily routine in detail using reflexive verbs (A2: can describe routines and habits).",
 	"bridge": {
 		"title": "Bridge from Hindi / English: the “self” pronoun comes before the verb",
-		"body": "Reflexive verbs carry a pronoun that refers back to the subject: **je me lève** (I get [myself] up), **il se lave** (he washes [himself]). English often hides this (“I get up”), so don’t forget the **me / te / se / nous / vous / se** — and it goes **before** the verb. Think of Hindi’s खुद / अपने को. Order: subject + reflexive pronoun + verb."
+		"body": "Reflexive verbs carry a pronoun that refers back to the subject: **je me lève** (I get [myself] up), **il se lave** (he washes [himself]). English often hides this (“I get up”), so don’t forget the **me / te / se / nous / vous / se** — and it goes **before** the verb. Think of Hindi’s खुद / अपने को. Order: subject + reflexive pronoun + verb.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Les verbes pronominaux — Reflexive verbs\"?",
+			"options": [
+				"Focus on: the “self” pronoun comes before the verb",
+				"Ignore grammar gender entirely",
+				"Only practise numbers, never verbs"
+			],
+			"answerIndex": 0
+		}
 	},
 	"cards": [
 		{
@@ -16,7 +25,33 @@
 			"ipa": "sə lə.ve",
 			"hindiGloss": "उठना",
 			"englishGloss": "to get up (je me lève)",
-			"example": { "french": "Je me lève à six heures.", "englishGloss": "I get up at six." },
+			"glosses": {
+				"hi": "उठना",
+				"en": "to get up (je me lève)",
+				"bn": "উঠনা",
+				"mr": "उठना",
+				"gu": "ઉઠના",
+				"pa": "ਉਠਨਾ",
+				"ta": "எழுந்திருத்தல்",
+				"te": "లేచి నిలబడడం",
+				"kn": "ಎದ್ದೇಳುವುದು"
+			},
+			"example": {
+				"french": "Je me lève à six heures.",
+				"englishGloss": "I get up at six.",
+				"glosses": {
+					"hi": "उठना",
+					"en": "I get up at six.",
+					"bn": "উঠনা",
+					"mr": "उठना",
+					"gu": "ઉઠના",
+					"pa": "ਉਠਨਾ",
+					"ta": "நான் ஆறு மணிக்கு எழுந்திருக்கிறேன்.",
+					"te": "నేను ఆరు గంటలకు లేచి నిలుస్తాను.",
+					"kn": "ನಾನು ಆರು ಗಂಟೆಗೆ ಎದ್ದೇಳುತ್ತೇನೆ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["spokenProduction"]
 		},
@@ -27,10 +62,33 @@
 			"ipa": "sə la.ve",
 			"hindiGloss": "नहाना / खुद को धोना",
 			"englishGloss": "to wash (oneself) (je me lave)",
+			"glosses": {
+				"hi": "नहाना / खुद को धोना",
+				"en": "to wash (oneself) (je me lave)",
+				"bn": "নহানা / খুদ কো ধোনা",
+				"mr": "नहाना / खुद को धोना",
+				"gu": "નહાના / ખુદ કો ધોના",
+				"pa": "ਨਹਾਨਾ / ਖੁਦ ਕੋ ਧੋਨਾ",
+				"ta": "குளித்தல் / கழுவுதல்",
+				"te": "స్నానం చేయడం / కడగడం",
+				"kn": "ಸ್ನಾನ ಮಾಡುವುದು / ತೊಳೆಯುವುದು"
+			},
 			"example": {
 				"french": "Elle se lave le matin.",
-				"englishGloss": "She washes in the morning."
+				"englishGloss": "She washes in the morning.",
+				"glosses": {
+					"hi": "नहाना / खुद को धोना",
+					"en": "She washes in the morning.",
+					"bn": "নহানা / খুদ কো ধোনা",
+					"mr": "नहाना / खुद को धोना",
+					"gu": "નહાના / ખુદ કો ધોના",
+					"pa": "ਨਹਾਨਾ / ਖੁਦ ਕੋ ਧੋਨਾ",
+					"ta": "காலையில் அவள் குளிக்கிறாள்.",
+					"te": "ఉదయం ఆమె స్నానం చేస్తుంది.",
+					"kn": "ಬೆಳಗ್ಗೆ ಅವಳು ಸ್ನಾನ ಮಾಡುತ್ತಾಳೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -41,10 +99,33 @@
 			"ipa": "sa.bi.je",
 			"hindiGloss": "कपड़े पहनना",
 			"englishGloss": "to get dressed (je m'habille)",
+			"glosses": {
+				"hi": "कपड़े पहनना",
+				"en": "to get dressed (je m'habille)",
+				"bn": "কপড়ে পহননা",
+				"mr": "कपड़े पहनना",
+				"gu": "કપડ઼ે પહનના",
+				"pa": "ਕਪਡ़ੇ ਪਹਨਨਾ",
+				"ta": "உடை உடுத்துதல்",
+				"te": "దుస్తులు ధరించడం",
+				"kn": "ಬಟ್ಟೆ ಧರಿಸುವುದು"
+			},
 			"example": {
 				"french": "Arjun s'habille vite.",
-				"englishGloss": "Arjun gets dressed quickly."
+				"englishGloss": "Arjun gets dressed quickly.",
+				"glosses": {
+					"hi": "कपड़े पहनना",
+					"en": "Arjun gets dressed quickly.",
+					"bn": "কপড়ে পহননা",
+					"mr": "कपड़े पहनना",
+					"gu": "કપડ઼ે પહનના",
+					"pa": "ਕਪਡ़ੇ ਪਹਨਨਾ",
+					"ta": "அர்ஜுன் விரைவில் உடை உடுத்துகிறான்.",
+					"te": "Arjun వేగంగా దుస్తులు ధరిస్తాడు.",
+					"kn": "Arjun ಬೇಗ ಬಟ್ಟೆ ಧರಿಸುತ್ತಾನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -55,10 +136,33 @@
 			"ipa": "sə bʁɔ.se le dɑ̃",
 			"hindiGloss": "दाँत साफ़ करना",
 			"englishGloss": "to brush one's teeth (je me brosse les dents)",
+			"glosses": {
+				"hi": "दाँत साफ़ करना",
+				"en": "to brush one's teeth (je me brosse les dents)",
+				"bn": "দাঁত সাফ় করনা",
+				"mr": "दाँत साफ़ करना",
+				"gu": "દાઁત સાફ઼ કરના",
+				"pa": "ਦਾँਤ ਸਾਫ़ ਕਰਨਾ",
+				"ta": "பற்கள் துலக்குதல்",
+				"te": "పళ్ళు తోమడం",
+				"kn": "ಹಲ್ಲುಜ್ಜುವುದು"
+			},
 			"example": {
 				"french": "Je me brosse les dents après le petit-déjeuner.",
-				"englishGloss": "I brush my teeth after breakfast."
+				"englishGloss": "I brush my teeth after breakfast.",
+				"glosses": {
+					"hi": "दाँत साफ़ करना",
+					"en": "I brush my teeth after breakfast.",
+					"bn": "দাঁত সাফ় করনা",
+					"mr": "दाँत साफ़ करना",
+					"gu": "દાઁત સાફ઼ કરના",
+					"pa": "ਦਾँਤ ਸਾਫ़ ਕਰਨਾ",
+					"ta": "காலை உணவுக்குப் பிறகு நான் பற்கள் துலக்குகிறேன்.",
+					"te": "అల్పాహారం తర్వాత నేను పళ్ళు తోముతాను.",
+					"kn": "ಉಪಹಾರದ ನಂತರ ನಾನು ಹಲ್ಲುಜ್ಜುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -69,7 +173,33 @@
 			"ipa": "sə ku.ʃe",
 			"hindiGloss": "सोने जाना",
 			"englishGloss": "to go to bed (je me couche)",
-			"example": { "french": "Nous nous couchons tard.", "englishGloss": "We go to bed late." },
+			"glosses": {
+				"hi": "सोने जाना",
+				"en": "to go to bed (je me couche)",
+				"bn": "সোনে জানা",
+				"mr": "सोने जाना",
+				"gu": "સોને જાના",
+				"pa": "ਸੋਨੇ ਜਾਨਾ",
+				"ta": "தூங்கப் போவுதல்",
+				"te": "నిద్రపోవడం",
+				"kn": "ಮಲಗಲು ಹೋಗುವುದು"
+			},
+			"example": {
+				"french": "Nous nous couchons tard.",
+				"englishGloss": "We go to bed late.",
+				"glosses": {
+					"hi": "सोने जाना",
+					"en": "We go to bed late.",
+					"bn": "সোনে জানা",
+					"mr": "सोने जाना",
+					"gu": "સોને જાના",
+					"pa": "ਸੋਨੇ ਜਾਨਾ",
+					"ta": "நாங்கள் தாமதமாகத் தூங்கப் போகிறோம்.",
+					"te": "మేము ఆలస్యంగా నిద్రపోతాం.",
+					"kn": "ನಾವು ತಡವಾಗಿ ಮಲಗುತ್ತೇವೆ."
+				}
+			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		},
@@ -80,10 +210,33 @@
 			"ipa": "la duʃ",
 			"hindiGloss": "शॉवर / नहाना",
 			"englishGloss": "the shower",
+			"glosses": {
+				"hi": "शॉवर / नहाना",
+				"en": "the shower",
+				"bn": "শ৉঵র / নহানা",
+				"mr": "शॉवर / नहाना",
+				"gu": "શૉવર / નહાના",
+				"pa": "ਸ਼੉ਵਰ / ਨਹਾਨਾ",
+				"ta": "குளியல் / ஷவர்",
+				"te": "స్నానం / షవర్",
+				"kn": "ಸ್ನಾನ / ಶವರ್"
+			},
 			"example": {
 				"french": "Je prends une douche le matin.",
-				"englishGloss": "I take a shower in the morning."
+				"englishGloss": "I take a shower in the morning.",
+				"glosses": {
+					"hi": "शॉवर / नहाना",
+					"en": "I take a shower in the morning.",
+					"bn": "শ৉঵র / নহানা",
+					"mr": "शॉवर / नहाना",
+					"gu": "શૉવર / નહાના",
+					"pa": "ਸ਼੉ਵਰ / ਨਹਾਨਾ",
+					"ta": "காலையில் நான் குளிக்கிறேன்.",
+					"te": "ఉదయం నేను స్నానం చేస్తాను.",
+					"kn": "ಬೆಳಗ್ಗೆ ನಾನು ಸ್ನಾನ ಮಾಡುತ್ತೇನೆ."
+				}
 			},
+			"fauxAmi": false,
 			"cefrLevel": "A2",
 			"skills": ["reading"]
 		}
@@ -92,6 +245,8 @@
 		{
 			"type": "conjugation",
 			"id": "a2-u4-ex1",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe your daily routine in detail using reflexive verbs (A2: can describe routines and habits).",
 			"verb": "se lever",
 			"pronoun": "je",
 			"prompt": "Reflexive present: Je ___ à six heures. (get up — two words)",
@@ -102,20 +257,25 @@
 			"type": "cloze",
 			"id": "a2-u4-ex2",
 			"cardId": "a2-ref-sebrosser",
+			"hint": "Reflexive pronoun for il/elle.",
+			"coachNote": "Describe your daily routine in detail using reflexive verbs (A2: can describe routines and habits).",
 			"text": "Le matin, il {{}} brosse les dents.",
 			"answer": "se",
-			"accept": ["se"],
-			"hint": "Reflexive pronoun for il/elle."
+			"accept": ["se"]
 		},
 		{
 			"type": "reorder",
 			"id": "a2-u4-ex3",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe your daily routine in detail using reflexive verbs (A2: can describe routines and habits).",
 			"prompt": "Build: “I wash in the morning.”",
 			"words": ["Je", "me", "lave", "le", "matin"]
 		},
 		{
 			"type": "mcq",
 			"id": "a2-u4-ex4",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe your daily routine in detail using reflexive verbs (A2: can describe routines and habits).",
 			"prompt": "Which reflexive pronoun goes with « je »?",
 			"options": ["me", "te", "se", "nous"],
 			"answerIndex": 0,
@@ -125,6 +285,8 @@
 			"type": "translation",
 			"id": "a2-u4-ex5",
 			"cardId": "a2-ref-shabiller",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe your daily routine in detail using reflexive verbs (A2: can describe routines and habits).",
 			"prompt": "I get dressed.",
 			"direction": "en-fr",
 			"answer": "Je m'habille",
@@ -134,6 +296,8 @@
 			"type": "gender",
 			"id": "a2-u4-ex6",
 			"cardId": "a2-ref-douche",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Describe your daily routine in detail using reflexive verbs (A2: can describe routines and habits).",
 			"noun": "douche",
 			"answer": "feminine",
 			"articleStyle": "definite"

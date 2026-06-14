@@ -107,4 +107,16 @@ describe('completeLesson', () => {
 		await completeLesson(unit, { correct: 2, total: 2, score: 100 }, { now: day2 });
 		expect((await streakRepo.getStreak()).currentStreak).toBe(2);
 	});
+
+	it('does not update skill profiles when score is below 60%', async () => {
+		const { skillProfileRepo } = await import('../db');
+		await completeLesson(unit, { correct: 1, total: 3, score: 33 });
+		expect(await skillProfileRepo.getSkillProfile('reading')).toBeUndefined();
+	});
+
+	it('updates skill profiles when score is at least 60%', async () => {
+		const { skillProfileRepo } = await import('../db');
+		await completeLesson(unit, { correct: 2, total: 3, score: 67 });
+		expect((await skillProfileRepo.getSkillProfile('reading'))?.estimatedLevel).toBe('A1');
+	});
 });

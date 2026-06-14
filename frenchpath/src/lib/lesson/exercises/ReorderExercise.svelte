@@ -1,16 +1,20 @@
 <script lang="ts">
 	import type { Exercise } from '$lib/content/schema';
 	import { gradeExercise, type ExerciseResponse } from '$lib/lesson/engine';
+	import type { Lexicon } from '$lib/content/lexicon';
+	import GlossText from '$lib/components/GlossText.svelte';
 	import { flip } from 'svelte/animate';
 
 	let {
 		exercise,
 		response = $bindable(),
-		submitted
+		submitted,
+		lexicon
 	}: {
 		exercise: Extract<Exercise, { type: 'reorder' }>;
 		response: ExerciseResponse | null;
 		submitted: boolean;
+		lexicon: Lexicon;
 	} = $props();
 
 	function shuffle<T>(arr: readonly T[]): T[] {
@@ -48,7 +52,9 @@
 
 <div class="space-y-4">
 	{#if exercise.prompt}
-		<p class="text-lg font-semibold text-foreground">{exercise.prompt}</p>
+		<p class="text-lg font-semibold text-foreground">
+			<GlossText text={exercise.prompt} {lexicon} frenchOnly={false} />
+		</p>
 	{/if}
 	<p class="text-sm text-muted">Tap the words to build the sentence:</p>
 

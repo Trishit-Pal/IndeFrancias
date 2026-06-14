@@ -14,17 +14,17 @@ repetition. All progress lives on-device in IndexedDB — there is no backend an
 
 ## Tech stack
 
-| Concern            | Choice                                                        |
-| ------------------ | ------------------------------------------------------------- |
-| Framework          | SvelteKit (Svelte 5, runes) + TypeScript                      |
-| Build / PWA        | Vite + `@vite-pwa/sveltekit` (Workbox `generateSW`)           |
-| Output             | `@sveltejs/adapter-static` (prerendered shell + SPA fallback) |
-| On-device storage  | IndexedDB via `idb`                                           |
-| Spaced repetition  | `ts-fsrs` (FSRS-6)                                            |
-| Content validation | `zod` (single source of truth)                                |
-| Styling            | Tailwind CSS v4                                               |
-| i18n               | `@inlang/paraglide-js` (en / hi)                              |
-| Tests              | Vitest + `fake-indexeddb` (unit) · Playwright (E2E)           |
+| Concern            | Choice                                                                              |
+| ------------------ | ----------------------------------------------------------------------------------- |
+| Framework          | SvelteKit (Svelte 5, runes) + TypeScript                                            |
+| Build / PWA        | Vite + `@vite-pwa/sveltekit` (Workbox `generateSW`)                                 |
+| Output             | `@sveltejs/adapter-static` (prerendered shell + SPA fallback)                       |
+| On-device storage  | IndexedDB via `idb`                                                                 |
+| Spaced repetition  | `ts-fsrs` (FSRS-6)                                                                  |
+| Content validation | `zod` (single source of truth)                                                      |
+| Styling            | Tailwind CSS v4                                                                     |
+| i18n               | `@inlang/paraglide-js` (en / hi)                                                    |
+| Tests              | Vitest (188 unit) + Playwright (35 E2E) — see [docs/testing.md](../docs/testing.md) |
 
 ## Getting started
 
@@ -41,9 +41,12 @@ npm run preview      # serve the production build on :4173
 npm run check        # svelte-check (types)
 npm run lint         # prettier --check + eslint
 npm run format       # prettier --write
-npm run test:unit    # vitest (add --coverage for a report)
-npm run test:e2e     # playwright (builds + previews, then runs e2e/)
+npm run test:unit    # vitest — 188 specs in Node + fake-indexeddb
+npm run test:e2e     # playwright — 35 journeys (build + preview on :4173)
+npm run test         # unit --run && e2e (full CI gate)
 ```
+
+Full test inventory, user workflows, and security matrix: **[docs/testing.md](../docs/testing.md)**.
 
 ## Architecture
 
@@ -69,7 +72,8 @@ src/lib/lesson/     grading engine, completion, exercise components
 src/lib/pwa/        persistence request + JSON backup export/import
 src/content/        manifest.json + packs/<level>/*.json (lessons)
 src/routes/         home (path map), learn/[unitId], review, progress, settings
-e2e/                Playwright tests
+e2e/                Playwright E2E (app, backup, progression, settings, review, a11y)
+src/lib/security/   header regression specs (vercel.json + _headers)
 ```
 
 ## Content pipeline
@@ -80,9 +84,13 @@ Lessons are JSON validated by the `zod` schema. To author at scale:
 ANTHROPIC_API_KEY=sk-ant-... npm run content:generate        # draft all syllabus units
 ANTHROPIC_API_KEY=sk-ant-... npm run content:generate a2-unit-03  # one unit
 # curate drafts in src/content/drafts/, move into src/content/packs/<level>/, then:
-npm run content:validate   # validates packs + regenerates the manifest
-npm run content:proofread  # flags English in French fields, duplicate card IDs
+npm run content:validate           # validates packs + regenerates the manifest
+npm run content:proofread:launch   # A1/A2 French QA — CI launch gate
+npm run content:proofread          # all 52 units; B1+ may flag until curated
 ```
+
+B1–C1 packs ship as **beta templates** (structurally valid, pedagogically generic). See
+[docs/content-curation.md](../docs/content-curation.md) for the curation workflow.
 
 ## Deploy (Vercel)
 
@@ -100,10 +108,19 @@ The A1–A2 syllabus (`scripts/syllabus.ts`) defines ~18 unit briefs; all **18 u
   loop (streaks/daily-goal/lesson unlock); onboarding; record-and-compare; maskable PNG icons;
   content pipeline; **complete A1 (10) + A2 (8) = 18 units**; mock DELF A2; **Hindi/English/Hinglish
   UI toggle across all screens** (Paraglide).
-- **Next:** native-speaker proof-read of the AI-authored French; generate B1+ via the pipeline;
-  deeper design pass.
+- **Shipped as beta templates:** B1–C1 JSON (34 units) — validate in CI; full proofread after human curation ([content-curation.md](../docs/content-curation.md)).
+- **Next:** native-speaker proof-read of the AI-authored French; B1+ curation batches.
 - **V1 (B1–B2):** reading/listening/shadowing, rubric writing feedback, optional Chromium ASR.
 - **V2 (C1):** DALF C1 module, adaptive sequencing, on-device FSRS optimisation.
+
+## Testing
+
+- **188 unit tests** across backup integrity, FSRS, grading, streaks/XP, CSP headers, and content schema.
+- **35 E2E scenarios** covering lesson completion, backup round-trip, unit unlock, settings, review queue, accessibility, and CSP on six routes.
+- Backup import uses **validate-before-destroy**: size cap → parse → checksum → Zod → only then `clear()` + write.
+- Settings import shows a **preview modal** (export date, lesson/card counts) before replacing on-device data.
+
+See **[docs/testing.md](../docs/testing.md)** for step-by-step user workflows, `data-testid` contract, and how to add tests.
 
 ## Notes / known follow-ups
 
@@ -114,3 +131,4 @@ The A1–A2 syllabus (`scripts/syllabus.ts`) defines ~18 unit briefs; all **18 u
 - **OneDrive + builds:** if `npm run build` fails on Windows with `EPERM` on `./build`, it's
   OneDrive locking the folder mid-sync — delete `build/` and retry (or pause OneDrive sync).
 - **Service worker** runs only in production (`build`/`preview`), not in `vite dev`.
+- **Path ribbon UI:** CSS 2.5D perspective in `PathScene.svelte` at launch; Threlte/WebGL ribbon deferred — see [docs/ml-roadmap.md](../docs/ml-roadmap.md#deferred-ui-post-launch).
