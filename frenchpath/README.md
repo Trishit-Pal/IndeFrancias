@@ -81,10 +81,18 @@ ANTHROPIC_API_KEY=sk-ant-... npm run content:generate        # draft all syllabu
 ANTHROPIC_API_KEY=sk-ant-... npm run content:generate a2-unit-03  # one unit
 # curate drafts in src/content/drafts/, move into src/content/packs/<level>/, then:
 npm run content:validate   # validates packs + regenerates the manifest
+npm run content:proofread  # flags English in French fields, duplicate card IDs
 ```
 
-The A1–A2 syllabus (`scripts/syllabus.ts`) defines ~18 unit briefs; 7 are authored and curated,
-the rest generate from the same briefs.
+## Deploy (Vercel)
+
+- **Root directory:** `frenchpath/`
+- **Build command:** `npm run build`
+- **Output directory:** `build/`
+- Security headers: `vercel.json` and `static/_headers` (Netlify/Cloudflare)
+- See [docs/launch-checklist.md](../docs/launch-checklist.md) before promoting to production.
+
+The A1–A2 syllabus (`scripts/syllabus.ts`) defines ~18 unit briefs; all **18 units** are authored, validated, and shipped in `src/content/packs/`.
 
 ## Roadmap
 

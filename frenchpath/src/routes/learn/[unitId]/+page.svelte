@@ -154,10 +154,7 @@
 
 		<div class="grid grid-cols-1 grid-rows-1">
 			{#key current.id}
-				<div
-					class="col-start-1 row-start-1"
-					in:fly={{ x: 20, duration: reducedMotion ? 0 : 300 }}
-				>
+				<div class="col-start-1 row-start-1" in:fly={{ x: 20, duration: reducedMotion ? 0 : 300 }}>
 					<Exercise exercise={current} bind:response {submitted} />
 				</div>
 			{/key}
@@ -171,6 +168,7 @@
 					: 'animate-shake bg-red-100 text-red-800'}"
 				data-testid="feedback"
 				role="status"
+				aria-live="polite"
 			>
 				{correct ? m.lesson_correct() : m.lesson_incorrect()}
 			</div>

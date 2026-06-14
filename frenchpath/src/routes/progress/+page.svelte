@@ -1,25 +1,52 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { progressRepo, statsRepo, streakRepo, srsRepo } from '$lib/db';
+	import { resolve } from '$app/paths';
+	import { progressRepo, statsRepo, streakRepo, srsRepo, skillProfileRepo } from '$lib/db';
+	import type { Skill, SkillProfileRecord } from '$lib/db/schema';
 	import { countDue } from '$lib/srs/queue';
-	import { todayKey } from '$lib/utils/date';
+	import { todayKey, lastNDayKeys } from '$lib/utils/date';
 	import * as m from '$lib/paraglide/messages';
 
 	let streak = $state(0);
+	let longestStreak = $state(0);
 	let todayXp = $state(0);
 	let completed = $state(0);
 	let totalCards = $state(0);
 	let due = $state(0);
+	let weekXp = $state<{ label: string; xp: number }[]>([]);
+	let skillProfiles = $state<SkillProfileRecord[]>([]);
+
+	const SKILL_LABELS: Record<Skill, string> = {
+		listening: 'Listening',
+		reading: 'Reading',
+		spokenInteraction: 'Speaking (interaction)',
+		spokenProduction: 'Speaking (production)',
+		writing: 'Writing'
+	};
 
 	onMount(async () => {
-		streak = (await streakRepo.getStreak()).currentStreak;
+		const streakRecord = await streakRepo.getStreak();
+		streak = streakRecord.currentStreak;
+		longestStreak = streakRecord.longestStreak;
 		todayXp = (await statsRepo.getStats(todayKey())).xp;
 		completed = (await progressRepo.getAllProgress()).filter(
 			(p) => p.status === 'completed'
 		).length;
 		totalCards = (await srsRepo.getAllCards()).length;
 		due = await countDue();
+
+		const keys = lastNDayKeys(7);
+		const statsByDate = new Map(
+			(await statsRepo.getAllStats()).map((s) => [s.date, s.xp] as const)
+		);
+		weekXp = keys.map((date) => ({
+			label: date.slice(5),
+			xp: statsByDate.get(date) ?? 0
+		}));
+		skillProfiles = await skillProfileRepo.getAllSkillProfiles();
 	});
+
+	const maxWeekXp = $derived(Math.max(1, ...weekXp.map((d) => d.xp)));
 
 	const stats = $derived([
 		{ label: m.stat_streak(), value: streak, icon: '🔥' },
@@ -36,6 +63,31 @@
 	<h1 class="text-2xl font-bold text-slate-900">{m.progress_title()}</h1>
 	<p class="text-sm text-slate-500">{m.progress_subtitle()}</p>
 
+	<section
+		class="mt-5 rounded-xl border border-slate-200 bg-white p-4"
+		aria-label={m.progress_xp_chart()}
+	>
+		<h2 class="text-sm font-semibold text-slate-700">{m.progress_xp_chart()}</h2>
+		<div
+			class="mt-4 flex items-end justify-between gap-1"
+			style="height: 5rem"
+			data-testid="xp-chart"
+		>
+			{#each weekXp as day (day.label)}
+				<div class="flex flex-1 flex-col items-center gap-1">
+					<div
+						class="w-full max-w-8 rounded-t bg-blue-500"
+						style="height: {Math.max(4, (day.xp / maxWeekXp) * 80)}px"
+						title="{day.xp} XP"
+						role="img"
+						aria-label="{day.label}: {day.xp} XP"
+					></div>
+					<span class="text-[10px] text-slate-400">{day.label}</span>
+				</div>
+			{/each}
+		</div>
+	</section>
+
 	<ul class="mt-5 grid grid-cols-2 gap-3">
 		{#each stats as stat (stat.label)}
 			<li class="rounded-xl border border-slate-200 bg-white p-4">
@@ -45,4 +97,54 @@
 			</li>
 		{/each}
 	</ul>
+
+	<section class="mt-5 grid gap-3 sm:grid-cols-2">
+		<div class="rounded-xl border border-slate-200 bg-white p-4">
+			<p class="text-sm text-slate-500">{m.progress_longest_streak()}</p>
+			<p class="mt-1 text-2xl font-bold text-orange-700" data-testid="longest-streak">
+				🔥 {longestStreak}
+			</p>
+		</div>
+		<div class="rounded-xl border border-slate-200 bg-white p-4">
+			<p class="text-sm text-slate-500">{m.progress_review_forecast()}</p>
+			<p class="mt-1 text-2xl font-bold text-blue-700" data-testid="review-forecast">
+				{due}
+			</p>
+			{#if due > 0}
+				<a
+					class="mt-2 inline-block text-sm font-medium text-blue-600 hover:underline"
+					href={resolve('/review')}
+				>
+					{m.nav_review()} →
+				</a>
+			{/if}
+		</div>
+	</section>
+
+	{#if skillProfiles.length > 0}
+		<section
+			class="mt-5 rounded-xl border border-slate-200 bg-white p-4"
+			data-testid="skill-profile"
+		>
+			<h2 class="text-sm font-semibold text-slate-700">{m.progress_skills()}</h2>
+			<ul class="mt-3 space-y-3">
+				{#each skillProfiles as profile (profile.skill)}
+					<li>
+						<div class="flex justify-between text-sm">
+							<span class="text-slate-700">{SKILL_LABELS[profile.skill]}</span>
+							<span class="font-medium text-blue-700">{profile.estimatedLevel}</span>
+						</div>
+						<div class="mt-1 h-2 overflow-hidden rounded-full bg-slate-200">
+							<div
+								class="h-full rounded-full bg-blue-500"
+								style="width: {(['A1', 'A2', 'B1', 'B2', 'C1'].indexOf(profile.estimatedLevel) +
+									1) *
+									20}%"
+							></div>
+						</div>
+					</li>
+				{/each}
+			</ul>
+		</section>
+	{/if}
 </main>

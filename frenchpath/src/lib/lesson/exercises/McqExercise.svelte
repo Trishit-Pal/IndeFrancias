@@ -21,7 +21,7 @@
 
 	function optionClass(i: number): string {
 		const base =
-			'w-full rounded-xl border px-4 py-3 text-left text-base transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500';
+			'min-h-11 w-full rounded-xl border px-4 py-3 text-left text-base transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2';
 		if (submitted && i === exercise.answerIndex)
 			return `${base} border-green-500 bg-green-50 text-green-900`;
 		if (submitted && i === selected) return `${base} border-red-500 bg-red-50 text-red-900`;

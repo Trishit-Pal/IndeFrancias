@@ -15,6 +15,7 @@
 	let progressById = $state<Record<string, ProgressRecord>>({});
 	let due = $state(0);
 	let streak = $state(0);
+	let freezesAvailable = $state(3);
 	let goal = $state<DailyGoal>({ xp: 0, goal: 30, met: false });
 	let loaded = $state(false);
 	let onboarded = $state(false);
@@ -33,7 +34,9 @@
 		const all = await progressRepo.getAllProgress();
 		progressById = Object.fromEntries(all.map((p) => [p.lessonId, p]));
 		due = await countDue();
-		streak = (await streakRepo.getStreak()).currentStreak;
+		const streakRecord = await streakRepo.getStreak();
+		streak = streakRecord.currentStreak;
+		freezesAvailable = streakRecord.freezesAvailable;
 		goal = await dailyGoalProgress();
 		loaded = true;
 	});
@@ -63,12 +66,24 @@
 					<p class="text-sm text-slate-500">{m.home_subtitle()}</p>
 				</div>
 			</div>
-			<div
-				class="flex items-center gap-1 rounded-full bg-orange-100 px-3 py-1 text-sm font-semibold text-orange-700"
-				title="Day streak"
-				data-testid="streak-badge"
-			>
-				🔥 {streak}
+			<div class="flex items-center gap-2">
+				<div
+					class="flex items-center gap-1 rounded-full bg-orange-100 px-3 py-1 text-sm font-semibold text-orange-800"
+					title={m.home_streak_freezes()}
+					data-testid="streak-badge"
+				>
+					<span aria-hidden="true">🔥</span>
+					<span>{streak}</span>
+				</div>
+				<div
+					class="flex items-center gap-1 rounded-full bg-sky-100 px-3 py-1 text-sm font-semibold text-sky-800"
+					title={m.home_streak_freezes()}
+					data-testid="freezes-badge"
+				>
+					<span aria-hidden="true">❄️</span>
+					<span>{freezesAvailable}</span>
+					<span class="sr-only">{m.home_streak_freezes()}</span>
+				</div>
 			</div>
 		</header>
 

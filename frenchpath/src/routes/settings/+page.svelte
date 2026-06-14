@@ -92,7 +92,7 @@
 				</label>
 				<select
 					id="language"
-					class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
+					class="mt-1 min-h-11 w-full rounded-lg border border-slate-300 px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
 					value={currentLocale}
 					onchange={changeLanguage}
 					data-testid="language-select"

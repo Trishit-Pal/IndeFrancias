@@ -7,7 +7,8 @@
 		{ icon: '🌉', text: m.onb_p1 },
 		{ icon: '📴', text: m.onb_p2 },
 		{ icon: '🧠', text: m.onb_p3 },
-		{ icon: '🇮🇳', text: m.onb_p4 }
+		{ icon: '🇮🇳', text: m.onb_p4 },
+		{ icon: '❄️', text: m.onb_p5 }
 	];
 </script>
 
@@ -27,11 +28,17 @@
 
 	<button
 		type="button"
-		class="mt-8 w-full rounded-xl bg-blue-600 px-4 py-3 text-lg font-semibold text-white hover:bg-blue-700"
+		class="mt-8 min-h-11 w-full rounded-xl bg-blue-600 px-4 py-3 text-lg font-semibold text-white hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
 		data-testid="onboarding-start"
 		onclick={onComplete}
 	>
 		{m.onb_cta()}
 	</button>
+	<p
+		class="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"
+		role="note"
+	>
+		{m.onb_beta()}
+	</p>
 	<p class="mt-3 text-xs text-slate-400">{m.onb_footnote()}</p>
 </section>

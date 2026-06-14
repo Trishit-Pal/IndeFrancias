@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+html {
+	font-family: system-ui, 'Segoe UI', 'Noto Sans Devanagari', 'Roboto', sans-serif;
+}
+
 /* Honour the OS reduce-motion preference. */
 @media (prefers-reduced-motion: reduce) {
 	*,

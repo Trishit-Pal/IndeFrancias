@@ -3,6 +3,7 @@ import type { Unit } from '../content/schema';
 import { progressRepo, srsRepo, statsRepo } from '../db';
 import { createSrsCard } from '../srs/fsrs';
 import { recordDailyActivity } from '../gamification/activity';
+import { updateSkillProfilesFromLesson } from '../gamification/skillProfileUpdate';
 import { todayKey } from '../utils/date';
 
 export interface LessonResult {
@@ -79,6 +80,8 @@ export async function completeLesson(
 	} else {
 		await statsRepo.addStats(todayKey(now), { lessonsCompleted: 1 });
 	}
+
+	await updateSkillProfilesFromLesson(unit, bestScore, now);
 
 	return { goalXp, isNewBest: result.correct > previousBest, bestScore };
 }

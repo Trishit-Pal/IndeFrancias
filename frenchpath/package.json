@@ -16,7 +16,8 @@
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright install && playwright test",
 		"content:generate": "tsx scripts/generate-content.ts",
-		"content:validate": "tsx scripts/validate-content.ts"
+		"content:validate": "tsx scripts/validate-content.ts",
+		"content:proofread": "tsx scripts/proofread-report.ts"
 	},
 	"devDependencies": {
 		"@anthropic-ai/sdk": "^0.100.1",

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { todayKey, daysBetween } from './date';
+import { todayKey, daysBetween, lastNDayKeys } from './date';
 
 describe('todayKey', () => {
 	it('formats a date as YYYY-MM-DD with zero padding', () => {
@@ -13,5 +13,15 @@ describe('daysBetween', () => {
 		expect(daysBetween('2026-01-01', '2026-01-04')).toBe(3);
 		expect(daysBetween('2026-01-10', '2026-01-09')).toBe(-1);
 		expect(daysBetween('2026-01-01', '2026-01-01')).toBe(0);
+	});
+});
+
+describe('lastNDayKeys', () => {
+	it('returns N keys ending on the given date, oldest first', () => {
+		expect(lastNDayKeys(3, new Date('2026-03-05T12:00:00'))).toEqual([
+			'2026-03-03',
+			'2026-03-04',
+			'2026-03-05'
+		]);
 	});
 });
