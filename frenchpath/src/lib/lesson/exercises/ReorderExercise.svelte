@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Exercise } from '$lib/content/schema';
 	import { gradeExercise, type ExerciseResponse } from '$lib/lesson/engine';
+	import { flip } from 'svelte/motion';
 
 	let {
 		exercise,
@@ -59,21 +60,21 @@
 	>
 		{#each placed as id, pos (id)}
 			<button
+				animate:flip
 				type="button"
 				class="rounded-lg bg-blue-100 px-3 py-1 text-blue-900"
-				onclick={() => removeAt(pos)}>{exercise.words[id]}</button
-			>
+				onclick={() => removeAt(pos)}>{exercise.words[id]}</button>
 		{/each}
 	</div>
 
 	<div class="flex flex-wrap gap-2">
 		{#each available as token (token.id)}
 			<button
+				animate:flip
 				type="button"
 				class="rounded-lg border border-slate-300 px-3 py-1 hover:border-blue-400"
 				data-testid="reorder-word"
-				onclick={() => add(token.id)}>{token.word}</button
-			>
+				onclick={() => add(token.id)}>{token.word}</button>
 		{/each}
 	</div>
 
