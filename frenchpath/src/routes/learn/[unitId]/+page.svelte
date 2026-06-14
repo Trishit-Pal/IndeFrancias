@@ -12,7 +12,7 @@
 	import { ensurePersistence } from '$lib/pwa/persist';
 	import RecordCompare from '$lib/audio/RecordCompare.svelte';
 	import Exercise from '$lib/lesson/exercises/Exercise.svelte';
-import { fly, fade } from 'svelte/transition';
+	import { fly, fade } from 'svelte/transition';
 	import * as m from '$lib/paraglide/messages';
 
 	type Phase = 'loading' | 'intro' | 'exercise' | 'finished' | 'error' | 'locked';
@@ -21,6 +21,7 @@ import { fly, fade } from 'svelte/transition';
 	let phase = $state<Phase>('loading');
 	let errorMessage = $state('');
 
+	let reducedMotion = $state(false);
 	let index = $state(0);
 	let response = $state<ExerciseResponse | null>(null);
 	let submitted = $state(false);
@@ -34,6 +35,7 @@ import { fly, fade } from 'svelte/transition';
 	const progress = $derived(total === 0 ? 0 : Math.round((index / total) * 100));
 
 	onMount(async () => {
+		reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		try {
 			const unitId = page.params.unitId ?? '';
 			const all = await progressRepo.getAllProgress();
@@ -82,7 +84,7 @@ import { fly, fade } from 'svelte/transition';
 			<p class="font-semibold">Could not load the lesson</p>
 			<p class="text-sm">{errorMessage}</p>
 			<a class="mt-3 inline-block text-blue-700 underline" href={resolve('/')}>Back to home</a>
-		</div>
+		</div
 	{:else if phase === 'locked'}
 		<div
 			class="rounded-xl border border-slate-300 bg-slate-50 p-6 text-center"
@@ -94,7 +96,7 @@ import { fly, fade } from 'svelte/transition';
 			<a
 				class="mt-4 inline-block rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white"
 				href={resolve('/')}>{m.common_back_to_path()}</a>
-		</div>
+		</div
 	{:else if phase === 'intro' && unit}
 		<a class="text-sm text-slate-500 hover:underline" href={resolve('/')}>{m.common_home()}</a>
 		<span class="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-800">
@@ -146,20 +148,20 @@ import { fly, fade } from 'svelte/transition';
 	{:else if phase === 'exercise' && current}
 		<div class="mb-4 h-2 overflow-hidden rounded-full bg-slate-200">
 			<div class="h-full bg-blue-500 transition-all" style="width: {progress}%"></div>
-		</div>
+		</div
 		<p class="mb-4 text-sm text-slate-500">Question {index + 1} of {total}</p>
 
 		<div class="grid grid-cols-1 grid-rows-1">
-    {#key current.id}
-			        <div class="col-start-1 row-start-1" in:fly={{ x: 20, duration: 300 }} out:fly={{ x: -20, duration: 300 }}>
-            <Exercise exercise={current} bind:response {submitted} />
-        </div>
-		{/key}
-</div>
+			{#key current.id}
+				<div class="col-start-1 row-start-1" in:fly={{ x: 20, duration: reducedMotion ? 0 : 300 }} out:fly={{ x: -20, duration: reducedMotion ? 0 : 300 }}>
+					<Exercise exercise={current} bind:response {submitted} />
+				</div>
+			{/key}
+		</div>
 
 		{#if submitted}
 			<div
-				transition:fade={{ duration: 200 }}
+				transition:fade={{ duration: reducedMotion ? 0 : 200 }}
 				class="mt-5 rounded-xl p-3 text-sm font-medium {correct
 					? 'bg-green-100 text-green-800 animate-spring-in'
 					: 'bg-red-100 text-red-800 animate-shake'}"
@@ -202,7 +204,7 @@ import { fly, fade } from 'svelte/transition';
 			{:else}
 				<p class="mt-1 text-sm text-slate-500" data-testid="practice-note">
 					Practice complete — no new XP (best: {outcome?.bestScore ?? score}%).
-					<a class="text-blue-700 underline" href={resolve('/review')}>Review due cards</a>>
+					<a class="text-blue-700 underline" href={resolve('/review')}>Review due cards</a>
 					to keep your streak.
 				</p>
 			{/if}
@@ -217,34 +219,33 @@ import { fly, fade } from 'svelte/transition';
 			</div>
 		</div>
 	{/if}
-	</main>
+</main>
 
-	<style>
-		@keyframes shake {
-			0%, 100% { transform: translateX(0); }
-			25% { transform: translateX(-4px); }
-			75% { transform: translateX(4px); }
+<style>
+	@keyframes shake {
+		0%, 100% { transform: translateX(0); }
+		25% { transform: translateX(-4px); }
+		75% { transform: translateX(4px); }
+	}
+
+	@keyframes spring-in {
+		0% { transform: scale(0.9); opacity: 0; }
+		60% { transform: scale(1.05); opacity: 1; }
+		100% { transform: scale(1); opacity: 1; }
+	}
+
+	.animate-shake {
+		animation: shake 0.3s ease-in-out;
+	}
+
+	.animate-spring-in {
+		animation: spring-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.animate-shake, .animate-spring-in {
+			animation: none !important;
+			transform: none !important;
 		}
-
-		@keyframes spring-in {
-			0% { transform: scale(0.9); opacity: 0; }
-			60% { transform: scale(1.05); opacity: 1; }
-			100% { transform: scale(1); opacity: 1; }
-		}
-
-		.animate-shake {
-			animation: shake 0.3s ease-in-out;
-		}
-
-		.animate-spring-in {
-			animation: spring-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-		}
-
-		@media (prefers-reduced-motion: reduce) {
-			.animate-shake, .animate-spring-in {
-				animation: none !important;
-				transform: none !important;
-			}
-		}
-	</style>
-
+	}
+</style>
