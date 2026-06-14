@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { settingsRepo, resetDatabase, type Settings, type UiLanguage } from '$lib/db';
+	import { settingsRepo, resetDatabase, type Settings, type Theme, type UiLanguage } from '$lib/db';
 	import { exportBackup, importBackup } from '$lib/pwa/backup';
 	import { ensurePersistence, isPersisted } from '$lib/pwa/persist';
+	import { applyTheme } from '$lib/theme/apply';
 	import * as m from '$lib/paraglide/messages';
 	import { getLocale, setLocale } from '$lib/paraglide/runtime';
 
@@ -16,12 +17,19 @@
 		{ value: 'hi', label: 'हिन्दी' },
 		{ value: 'hinglish', label: 'Hinglish' }
 	];
+
+	const themeOptions: { value: Theme; label: () => string }[] = [
+		{ value: 'system', label: m.settings_theme_system },
+		{ value: 'light', label: m.settings_theme_light },
+		{ value: 'dark', label: m.settings_theme_dark }
+	];
+
 	const currentLocale = getLocale() as UiLanguage;
 
 	async function changeLanguage(event: Event) {
 		const value = (event.currentTarget as HTMLSelectElement).value as UiLanguage;
 		await settingsRepo.saveSettings({ uiLanguage: value });
-		setLocale(value); // persists locally + reloads to apply everywhere
+		setLocale(value);
 	}
 
 	onMount(async () => {
@@ -32,6 +40,7 @@
 	async function update(patch: Partial<Settings>) {
 		settings = await settingsRepo.saveSettings(patch);
 		document.documentElement.classList.toggle('reduce-motion', settings.reduceMotion);
+		if (patch.theme !== undefined) applyTheme(settings.theme);
 	}
 
 	async function requestPersist() {
@@ -80,19 +89,19 @@
 
 <svelte:head><title>Settings · FrenchPath</title></svelte:head>
 
-<main class="mx-auto min-h-dvh max-w-xl px-4 py-6">
-	<h1 class="text-2xl font-bold text-slate-900">{m.settings_title()}</h1>
+<main class="page-shell">
+	<h1 class="text-2xl font-bold text-foreground md:text-3xl">{m.settings_title()}</h1>
 
 	{#if settings}
 		<div class="mt-5 space-y-6">
-			<section class="rounded-xl border border-slate-200 bg-white p-4">
-				<h2 class="font-semibold text-slate-900">{m.settings_language()}</h2>
-				<label class="mt-3 block text-sm text-slate-600" for="language">
+			<section class="surface-card p-4">
+				<h2 class="font-semibold text-foreground">{m.settings_language()}</h2>
+				<label class="mt-3 block text-sm text-muted" for="language">
 					Interface language (Hindi / English / Hinglish)
 				</label>
 				<select
 					id="language"
-					class="mt-1 min-h-11 w-full rounded-lg border border-slate-300 px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+					class="field-input mt-1"
 					value={currentLocale}
 					onchange={changeLanguage}
 					data-testid="language-select"
@@ -103,14 +112,32 @@
 				</select>
 			</section>
 
-			<section class="rounded-xl border border-slate-200 bg-white p-4">
-				<h2 class="font-semibold text-slate-900">Review</h2>
-				<label class="mt-3 block text-sm text-slate-600" for="retention">
+			<section class="surface-card p-4">
+				<h2 class="font-semibold text-foreground">{m.settings_theme()}</h2>
+				<label class="mt-3 block text-sm text-muted" for="theme">
+					{m.settings_theme()}
+				</label>
+				<select
+					id="theme"
+					class="field-input mt-1"
+					value={settings.theme}
+					onchange={(e) => update({ theme: e.currentTarget.value as Theme })}
+					data-testid="theme-select"
+				>
+					{#each themeOptions as opt (opt.value)}
+						<option value={opt.value}>{opt.label()}</option>
+					{/each}
+				</select>
+			</section>
+
+			<section class="surface-card p-4">
+				<h2 class="font-semibold text-foreground">Review</h2>
+				<label class="mt-3 block text-sm text-muted" for="retention">
 					Desired retention (FSRS)
 				</label>
 				<select
 					id="retention"
-					class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
+					class="field-input mt-1"
 					value={settings.targetRetention}
 					onchange={(e) => update({ targetRetention: Number(e.currentTarget.value) })}
 				>
@@ -119,10 +146,10 @@
 					{/each}
 				</select>
 
-				<label class="mt-4 block text-sm text-slate-600" for="goal">Daily goal (XP)</label>
+				<label class="mt-4 block text-sm text-muted" for="goal">Daily goal (XP)</label>
 				<select
 					id="goal"
-					class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
+					class="field-input mt-1"
 					value={settings.dailyGoalXp}
 					onchange={(e) => update({ dailyGoalXp: Number(e.currentTarget.value) })}
 				>
@@ -132,75 +159,74 @@
 				</select>
 			</section>
 
-			<section class="rounded-xl border border-slate-200 bg-white p-4">
-				<h2 class="font-semibold text-slate-900">Accessibility</h2>
+			<section class="surface-card p-4">
+				<h2 class="font-semibold text-foreground">Accessibility</h2>
 				<label class="mt-3 flex items-center justify-between">
-					<span class="text-sm text-slate-600">Reduce motion</span>
+					<span class="text-sm text-muted">Reduce motion</span>
 					<input
 						type="checkbox"
-						class="h-5 w-5"
+						class="h-5 w-5 accent-primary"
 						checked={settings.reduceMotion}
 						onchange={(e) => update({ reduceMotion: e.currentTarget.checked })}
 					/>
 				</label>
 			</section>
 
-			<section class="rounded-xl border border-slate-200 bg-white p-4">
-				<h2 class="font-semibold text-slate-900">Storage & backup</h2>
-				<p class="mt-2 text-sm text-slate-600">
-					Persistent storage: <span class="font-medium">{persisted ? 'on' : 'best-effort'}</span>
+			<section class="surface-card p-4">
+				<h2 class="font-semibold text-foreground">Storage & backup</h2>
+				<p class="mt-2 text-sm text-muted">
+					Persistent storage: <span class="font-medium text-foreground"
+						>{persisted ? 'on' : 'best-effort'}</span
+					>
 				</p>
 				{#if !persisted}
-					<button
-						type="button"
-						class="mt-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium hover:border-blue-400"
-						onclick={requestPersist}>Request persistent storage</button
-					>
+					<button type="button" class="btn-secondary mt-2 text-sm" onclick={requestPersist}>
+						Request persistent storage
+					</button>
 				{/if}
 				<div class="mt-3 flex flex-wrap gap-2">
-					<button
-						type="button"
-						class="rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-						onclick={download}>Export backup</button
+					<button type="button" class="btn-primary text-sm" onclick={download}>Export backup</button
 					>
-					<label
-						class="cursor-pointer rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold hover:border-blue-400"
-					>
+					<label class="btn-secondary cursor-pointer text-sm">
 						Import backup
 						<input type="file" accept="application/json" class="hidden" onchange={onFile} />
 					</label>
 				</div>
 			</section>
 
-			<section class="rounded-xl border border-red-200 bg-red-50 p-4">
-				<h2 class="font-semibold text-red-900">Danger zone</h2>
+			<section
+				class="rounded-xl border border-red-300 bg-red-50 p-4 dark:border-red-800 dark:bg-red-950"
+			>
+				<h2 class="font-semibold text-red-900 dark:text-red-200">Danger zone</h2>
 				{#if confirmingReset}
-					<p class="mt-2 text-sm text-red-800">
+					<p class="mt-2 text-sm text-red-800 dark:text-red-300">
 						Erase all progress on this device? This cannot be undone.
 					</p>
 					<div class="mt-2 flex gap-2">
 						<button
 							type="button"
-							class="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white"
+							class="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white dark:bg-red-500 dark:text-black"
 							onclick={reset}>Yes, erase everything</button
 						>
 						<button
 							type="button"
-							class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold"
-							onclick={() => (confirmingReset = false)}>Cancel</button
+							class="btn-secondary text-sm"
+							onclick={() => (confirmingReset = false)}
 						>
+							Cancel
+						</button>
 					</div>
 				{:else}
 					<button
 						type="button"
-						class="mt-2 rounded-lg border border-red-300 px-3 py-2 text-sm font-semibold text-red-700"
+						class="mt-2 rounded-lg border border-red-300 px-3 py-2 text-sm font-semibold text-red-700 dark:border-red-700 dark:text-red-300"
 						onclick={() => (confirmingReset = true)}>Reset all progress</button
 					>
 				{/if}
 			</section>
 
 			{#if message}
-				<p class="text-sm text-slate-600" role="status">{message}</p>
+				<p class="text-sm text-muted" role="status">{message}</p>
 			{/if}
 		</div>
 	{/if}

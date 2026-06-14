@@ -25,18 +25,17 @@
 </script>
 
 <div class="space-y-3">
-	<p class="text-lg font-semibold text-slate-900">Listen and type what you hear</p>
+	<p class="text-lg font-semibold text-foreground">Listen and type what you hear</p>
 	{#if canSpeak}
 		<button
 			type="button"
-			class="rounded-full border border-slate-300 px-4 py-2 hover:border-blue-400"
+			class="rounded-full border border-border px-4 py-2 hover:border-primary"
 			onclick={() => speakFrench(exercise.audioText)}>🔊 Play</button
 		>
 	{:else}
-		<!-- No speech synthesis: show the text so the exercise stays doable. -->
-		<p class="rounded-lg bg-slate-100 px-3 py-2 text-slate-700">{exercise.audioText}</p>
+		<p class="rounded-lg bg-subtle px-3 py-2 text-foreground">{exercise.audioText}</p>
 	{/if}
-	{#if exercise.hint}<p class="text-sm text-slate-500">Hint: {exercise.hint}</p>{/if}
+	{#if exercise.hint}<p class="text-sm text-muted">Hint: {exercise.hint}</p>{/if}
 	<input
 		type="text"
 		class={answerInputClass(submitted, isCorrect)}
@@ -50,6 +49,8 @@
 		oninput={onInput}
 	/>
 	{#if submitted && !isCorrect}
-		<p class="text-sm">Correct answer: <span class="text-green-700">{exercise.answer}</span></p>
+		<p class="text-sm">
+			Correct answer: <span class="text-green-700 dark:text-green-400">{exercise.answer}</span>
+		</p>
 	{/if}
 </div>

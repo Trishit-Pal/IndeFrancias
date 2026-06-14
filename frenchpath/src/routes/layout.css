@@ -1,7 +1,106 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root,
+.light {
+	--fp-background: #f8fafc;
+	--fp-foreground: #0f172a;
+	--fp-card: #ffffff;
+	--fp-muted: #64748b;
+	--fp-border: #e2e8f0;
+	--fp-subtle: #f1f5f9;
+	--fp-primary: #2563eb;
+	--fp-primary-hover: #1d4ed8;
+	--fp-primary-foreground: #ffffff;
+	--fp-nav: rgb(255 255 255 / 0.95);
+	--fp-disabled: #cbd5e1;
+	--fp-input: #f8fafc;
+	--fp-ring-offset: #ffffff;
+}
+
+.dark {
+	--fp-background: #000000;
+	--fp-foreground: #ffffff;
+	--fp-card: #111111;
+	--fp-muted: #a3a3a3;
+	--fp-border: #2a2a2a;
+	--fp-subtle: #1a1a1a;
+	--fp-primary: #60a5fa;
+	--fp-primary-hover: #93c5fd;
+	--fp-primary-foreground: #000000;
+	--fp-nav: rgb(0 0 0 / 0.95);
+	--fp-disabled: #404040;
+	--fp-input: #141414;
+	--fp-ring-offset: #000000;
+}
+
+@theme inline {
+	--color-background: var(--fp-background);
+	--color-foreground: var(--fp-foreground);
+	--color-card: var(--fp-card);
+	--color-muted: var(--fp-muted);
+	--color-border: var(--fp-border);
+	--color-subtle: var(--fp-subtle);
+	--color-primary: var(--fp-primary);
+	--color-primary-hover: var(--fp-primary-hover);
+	--color-primary-foreground: var(--fp-primary-foreground);
+	--color-nav: var(--fp-nav);
+	--color-disabled: var(--fp-disabled);
+	--color-input: var(--fp-input);
+	--color-ring-offset: var(--fp-ring-offset);
+}
+
 html {
 	font-family: system-ui, 'Segoe UI', 'Noto Sans Devanagari', 'Roboto', sans-serif;
+	background-color: var(--fp-background);
+	color: var(--fp-foreground);
+}
+
+@layer components {
+	.page-shell {
+		@apply mx-auto min-h-dvh w-full max-w-xl px-4 py-6 md:max-w-2xl md:px-6 lg:max-w-4xl lg:px-8 xl:max-w-5xl;
+	}
+
+	.surface-card {
+		@apply rounded-xl border border-border bg-card;
+	}
+
+	.btn-primary {
+		@apply min-h-11 rounded-xl bg-primary px-4 py-3 font-semibold text-primary-foreground hover:bg-primary-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:bg-disabled;
+	}
+
+	.btn-secondary {
+		@apply min-h-11 rounded-xl border border-border px-4 py-3 font-semibold text-foreground hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+	}
+
+	.field-input {
+		@apply min-h-11 w-full rounded-lg border border-border bg-card px-3 py-2 text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+	}
+
+	.feedback-correct {
+		@apply bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-200;
+	}
+
+	.feedback-incorrect {
+		@apply bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-200;
+	}
+
+	.option-correct {
+		@apply border-green-500 bg-green-50 text-green-900 dark:bg-green-950 dark:text-green-200;
+	}
+
+	.option-incorrect {
+		@apply border-red-500 bg-red-50 text-red-900 dark:bg-red-950 dark:text-red-200;
+	}
+
+	.option-selected {
+		@apply border-primary bg-blue-50 dark:bg-blue-950/60 dark:text-foreground;
+	}
+
+	.option-default {
+		@apply border-border bg-card hover:border-primary;
+	}
 }
 
 /* Honour the OS reduce-motion preference. */

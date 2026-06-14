@@ -26,8 +26,8 @@
 </script>
 
 <div class="space-y-3">
-	<p class="text-sm font-semibold tracking-wide text-slate-500 uppercase">{directionLabel}</p>
-	<p class="text-xl text-slate-900">{exercise.prompt}</p>
+	<p class="text-sm font-semibold tracking-wide text-muted uppercase">{directionLabel}</p>
+	<p class="text-xl text-foreground">{exercise.prompt}</p>
 	<input
 		type="text"
 		class={answerInputClass(submitted, isCorrect)}
@@ -39,6 +39,8 @@
 		oninput={onInput}
 	/>
 	{#if submitted && !isCorrect}
-		<p class="text-sm">Suggested answer: <span class="text-green-700">{exercise.answer}</span></p>
+		<p class="text-sm">
+			Suggested answer: <span class="text-green-700 dark:text-green-400">{exercise.answer}</span>
+		</p>
 	{/if}
 </div>

@@ -23,16 +23,17 @@
 
 	function inputClass(): string {
 		const base =
-			'inline-block min-w-32 rounded-lg border-b-2 bg-slate-50 px-2 py-1 text-center text-base focus:outline-none';
-		if (submitted && isCorrect) return `${base} border-green-500 text-green-900`;
-		if (submitted) return `${base} border-red-500 text-red-900`;
-		return `${base} border-blue-400`;
+			'inline-block min-w-32 rounded-lg border-b-2 bg-input px-2 py-1 text-center text-base text-foreground focus:outline-none';
+		if (submitted && isCorrect)
+			return `${base} border-green-500 text-green-900 dark:text-green-200`;
+		if (submitted) return `${base} border-red-500 text-red-900 dark:text-red-200`;
+		return `${base} border-primary`;
 	}
 </script>
 
-<div class="space-y-3 text-lg leading-relaxed text-slate-900">
+<div class="space-y-3 text-lg leading-relaxed text-foreground">
 	{#if exercise.hint}
-		<p class="text-sm text-slate-500">Hint: {exercise.hint}</p>
+		<p class="text-sm text-muted">Hint: {exercise.hint}</p>
 	{/if}
 	<p>
 		{parts[0]}<input
@@ -49,8 +50,8 @@
 		/>{parts[1] ?? ''}
 	</p>
 	{#if submitted && !isCorrect}
-		<p class="text-sm font-medium text-slate-700">
-			Correct answer: <span class="text-green-700">{exercise.answer}</span>
+		<p class="text-sm font-medium text-foreground">
+			Correct answer: <span class="text-green-700 dark:text-green-400">{exercise.answer}</span>
 		</p>
 	{/if}
 </div>

@@ -23,11 +23,11 @@
 </script>
 
 <div class="space-y-3">
-	<p class="text-lg font-semibold text-slate-900">
+	<p class="text-lg font-semibold text-foreground">
 		{exercise.prompt ?? `Conjugate « ${exercise.verb} »`}
 	</p>
-	<p class="text-xl text-slate-900">
-		<span class="text-slate-500">{exercise.pronoun}</span>
+	<p class="text-xl text-foreground">
+		<span class="text-muted">{exercise.pronoun}</span>
 		<input
 			type="text"
 			class="ml-2 inline-block w-40 {answerInputClass(submitted, isCorrect)}"
@@ -42,6 +42,8 @@
 		/>
 	</p>
 	{#if submitted && !isCorrect}
-		<p class="text-sm">Correct form: <span class="text-green-700">{exercise.answer}</span></p>
+		<p class="text-sm">
+			Correct form: <span class="text-green-700 dark:text-green-400">{exercise.answer}</span>
+		</p>
 	{/if}
 </div>

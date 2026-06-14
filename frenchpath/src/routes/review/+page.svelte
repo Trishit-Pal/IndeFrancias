@@ -26,18 +26,28 @@
 	const canSpeak = ttsAvailable();
 
 	const grades: { grade: ReviewGrade; label: () => string; classes: string }[] = [
-		{ grade: 'again', label: m.grade_again, classes: 'bg-red-100 text-red-800 hover:bg-red-200' },
+		{
+			grade: 'again',
+			label: m.grade_again,
+			classes: 'bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-950 dark:text-red-200'
+		},
 		{
 			grade: 'hard',
 			label: m.grade_hard,
-			classes: 'bg-orange-100 text-orange-800 hover:bg-orange-200'
+			classes:
+				'bg-orange-100 text-orange-800 hover:bg-orange-200 dark:bg-orange-950 dark:text-orange-200'
 		},
 		{
 			grade: 'good',
 			label: m.grade_good,
-			classes: 'bg-green-100 text-green-800 hover:bg-green-200'
+			classes:
+				'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-950 dark:text-green-200'
 		},
-		{ grade: 'easy', label: m.grade_easy, classes: 'bg-blue-100 text-blue-800 hover:bg-blue-200' }
+		{
+			grade: 'easy',
+			label: m.grade_easy,
+			classes: 'bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-950 dark:text-blue-200'
+		}
 	];
 
 	onMount(async () => {
@@ -83,37 +93,37 @@
 
 <svelte:head><title>Review · FrenchPath</title></svelte:head>
 
-<main class="mx-auto min-h-dvh max-w-xl px-4 py-6">
-	<a class="text-sm text-slate-500 hover:underline" href={resolve('/')}>{m.common_home()}</a>
+<main class="page-shell">
+	<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
 
 	{#if phase === 'loading'}
-		<p class="mt-6 text-slate-500">Loading your review queue…</p>
+		<p class="mt-6 text-muted">Loading your review queue…</p>
 	{:else if phase === 'reviewing' && currentItem}
-		<p class="mt-2 text-sm text-slate-500">{index + 1} / {queue.length} due</p>
+		<p class="mt-2 text-sm text-muted">{index + 1} / {queue.length} due</p>
 
-		<section class="mt-4 rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm">
+		<section class="surface-card mt-4 p-6 text-center shadow-sm lg:mx-auto lg:max-w-2xl">
 			<div class="flex items-center justify-center gap-2">
-				<h1 class="text-3xl font-bold text-slate-900">{currentItem.content.french}</h1>
+				<h1 class="text-3xl font-bold text-foreground md:text-4xl">{currentItem.content.french}</h1>
 				{#if canSpeak}
 					<button
 						type="button"
-						class="rounded-full border border-slate-300 px-3 py-1 text-base hover:border-blue-400"
+						class="rounded-full border border-border px-3 py-1 text-base hover:border-primary"
 						aria-label="Listen"
 						onclick={() => speakFrench(currentItem.content.french)}>🔊</button
 					>
 				{/if}
 			</div>
 			{#if currentItem.content.gender !== 'none'}
-				<p class="mt-1 text-xs text-slate-400">{currentItem.content.gender}</p>
+				<p class="mt-1 text-xs text-muted">{currentItem.content.gender}</p>
 			{/if}
 
 			{#if revealed}
-				<div class="mt-4 border-t border-slate-100 pt-4 text-left" data-testid="card-back">
-					<p class="text-slate-900">{currentItem.content.englishGloss}</p>
-					<p class="text-slate-600">{currentItem.content.hindiGloss}</p>
+				<div class="mt-4 border-t border-border pt-4 text-left" data-testid="card-back">
+					<p class="text-foreground">{currentItem.content.englishGloss}</p>
+					<p class="text-muted">{currentItem.content.hindiGloss}</p>
 					{#if currentItem.content.example}
-						<p class="mt-3 text-sm text-slate-500 italic">
-							“{currentItem.content.example.french}”
+						<p class="mt-3 text-sm text-muted italic">
+							"{currentItem.content.example.french}"
 						</p>
 					{/if}
 				</div>
@@ -121,11 +131,11 @@
 		</section>
 
 		{#if revealed}
-			<div class="mt-5 grid grid-cols-4 gap-2" data-testid="grade-buttons">
+			<div class="mt-5 grid grid-cols-4 gap-2 lg:mx-auto lg:max-w-2xl" data-testid="grade-buttons">
 				{#each grades as g (g.grade)}
 					<button
 						type="button"
-						class="rounded-xl px-2 py-3 text-sm font-semibold {g.classes}"
+						class="min-h-11 rounded-xl px-2 py-3 text-sm font-semibold {g.classes}"
 						data-grade={g.grade}
 						onclick={() => grade(g.grade)}>{g.label()}</button
 					>
@@ -134,7 +144,7 @@
 		{:else}
 			<button
 				type="button"
-				class="mt-5 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700"
+				class="btn-primary mt-5 w-full lg:mx-auto lg:block lg:max-w-2xl"
 				data-testid="reveal"
 				onclick={() => (revealed = true)}>{m.review_show_answer()}</button
 			>
@@ -142,24 +152,18 @@
 	{:else if phase === 'reviewing'}
 		<div class="mt-10 text-center" data-testid="no-reviews">
 			<p class="text-5xl">✅</p>
-			<h1 class="mt-3 text-2xl font-bold text-slate-900">{m.review_nothing_title()}</h1>
-			<p class="mt-1 text-slate-600">{m.review_nothing_desc()}</p>
-			<a
-				class="mt-6 inline-block rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white"
-				href={resolve('/')}>{m.common_back_to_path()}</a
-			>
+			<h1 class="mt-3 text-2xl font-bold text-foreground">{m.review_nothing_title()}</h1>
+			<p class="mt-1 text-muted">{m.review_nothing_desc()}</p>
+			<a class="btn-primary mt-6 inline-block" href={resolve('/')}>{m.common_back_to_path()}</a>
 		</div>
 	{:else if phase === 'done'}
 		<div class="mt-10 text-center" data-testid="review-done">
 			<p class="text-5xl">🎉</p>
-			<h1 class="mt-3 text-2xl font-bold text-slate-900">{m.review_complete()}</h1>
-			<p class="mt-1 text-slate-600">
+			<h1 class="mt-3 text-2xl font-bold text-foreground">{m.review_complete()}</h1>
+			<p class="mt-1 text-muted">
 				You reviewed {reviewedCount} card{reviewedCount === 1 ? '' : 's'}.
 			</p>
-			<a
-				class="mt-6 inline-block rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white"
-				href={resolve('/')}>{m.common_back_to_path()}</a
-			>
+			<a class="btn-primary mt-6 inline-block" href={resolve('/')}>{m.common_back_to_path()}</a>
 		</div>
 	{/if}
 </main>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable svelte/no-at-html-tags -- bridge body uses escaped markdown renderer */
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
@@ -76,60 +77,61 @@
 
 <svelte:head><title>{unit ? unit.title : 'Lesson'} · FrenchPath</title></svelte:head>
 
-<main class="mx-auto min-h-dvh max-w-xl px-4 py-6">
+<main class="page-shell">
 	{#if phase === 'loading'}
-		<p class="text-slate-500">{m.lesson_loading()}</p>
+		<p class="text-muted">{m.lesson_loading()}</p>
 	{:else if phase === 'error'}
-		<div class="rounded-xl border border-red-300 bg-red-50 p-4 text-red-800">
+		<div
+			class="rounded-xl border border-red-300 bg-red-50 p-4 text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200"
+		>
 			<p class="font-semibold">Could not load the lesson</p>
 			<p class="text-sm">{errorMessage}</p>
-			<a class="mt-3 inline-block text-blue-700 underline" href={resolve('/')}>Back to home</a>
+			<a class="mt-3 inline-block text-primary underline" href={resolve('/')}>Back to home</a>
 		</div>
 	{:else if phase === 'locked'}
-		<div
-			class="rounded-xl border border-slate-300 bg-slate-50 p-6 text-center"
-			data-testid="locked"
-		>
+		<div class="surface-card p-6 text-center" data-testid="locked">
 			<p class="text-4xl">🔒</p>
-			<p class="mt-2 font-semibold text-slate-800">{m.lesson_locked_title()}</p>
-			<p class="text-sm text-slate-500">{m.lesson_locked_desc()}</p>
-			<a
-				class="mt-4 inline-block rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white"
-				href={resolve('/')}>{m.common_back_to_path()}</a
-			>
+			<p class="mt-2 font-semibold text-foreground">{m.lesson_locked_title()}</p>
+			<p class="text-sm text-muted">{m.lesson_locked_desc()}</p>
+			<a class="btn-primary mt-4 inline-block" href={resolve('/')}>{m.common_back_to_path()}</a>
 		</div>
 	{:else if phase === 'intro' && unit}
-		<a class="text-sm text-slate-500 hover:underline" href={resolve('/')}>{m.common_home()}</a>
-		<span class="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-800">
+		<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
+		<span
+			class="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-800 dark:bg-blue-950 dark:text-blue-200"
+		>
 			{unit.cefrLevel}
 		</span>
-		<h1 class="mt-2 text-2xl font-bold text-slate-900">{unit.title}</h1>
-		<p class="mt-2 text-slate-600">{unit.objective}</p>
+		<h1 class="mt-2 text-2xl font-bold text-foreground md:text-3xl">{unit.title}</h1>
+		<p class="mt-2 text-muted">{unit.objective}</p>
 
 		{#if unit.bridge}
-			<section class="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4">
-				<h2 class="font-semibold text-amber-900">🌉 {unit.bridge.title}</h2>
-				<!-- eslint-disable-next-line svelte/no-at-html-tags -- escaped + trusted bridge content -->
-				<p class="mt-1 text-sm text-amber-900">{@html renderInlineMarkdown(unit.bridge.body)}</p>
+			<section
+				class="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4 dark:border-amber-700 dark:bg-amber-950"
+			>
+				<h2 class="font-semibold text-amber-900 dark:text-amber-200">🌉 {unit.bridge.title}</h2>
+				<p class="mt-1 text-sm text-amber-900 dark:text-amber-200">
+					{@html renderInlineMarkdown(unit.bridge.body)}
+				</p>
 			</section>
 		{/if}
 
 		{#if unit.cards.length}
 			<section class="mt-5">
-				<h2 class="mb-2 text-sm font-semibold tracking-wide text-slate-500 uppercase">
+				<h2 class="mb-2 text-sm font-semibold tracking-wide text-muted uppercase">
 					{m.lesson_new_words()}
 				</h2>
-				<ul class="divide-y divide-slate-100 rounded-xl border border-slate-200">
+				<ul class="surface-card divide-y divide-border">
 					{#each unit.cards as card (card.id)}
 						<li class="flex items-center justify-between gap-3 px-4 py-3">
 							<div>
-								<p class="font-medium text-slate-900">
+								<p class="font-medium text-foreground">
 									{card.french}
 									{#if card.gender !== 'none'}
-										<span class="text-xs text-slate-400">({card.gender})</span>
+										<span class="text-xs text-muted">({card.gender})</span>
 									{/if}
 								</p>
-								<p class="text-sm text-slate-500">{card.englishGloss} · {card.hindiGloss}</p>
+								<p class="text-sm text-muted">{card.englishGloss} · {card.hindiGloss}</p>
 							</div>
 							<RecordCompare text={card.french} label={card.french} />
 						</li>
@@ -140,17 +142,17 @@
 
 		<button
 			type="button"
-			class="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700"
+			class="btn-primary mt-6 w-full"
 			data-testid="start-lesson"
 			onclick={() => (phase = 'exercise')}
 		>
 			Start ({total} questions)
 		</button>
 	{:else if phase === 'exercise' && current}
-		<div class="mb-4 h-2 overflow-hidden rounded-full bg-slate-200">
-			<div class="h-full bg-blue-500 transition-all" style="width: {progress}%"></div>
+		<div class="mb-4 h-2 overflow-hidden rounded-full bg-subtle">
+			<div class="h-full bg-primary transition-all" style="width: {progress}%"></div>
 		</div>
-		<p class="mb-4 text-sm text-slate-500">Question {index + 1} of {total}</p>
+		<p class="mb-4 text-sm text-muted">Question {index + 1} of {total}</p>
 
 		<div class="grid grid-cols-1 grid-rows-1">
 			{#key current.id}
@@ -164,8 +166,8 @@
 			<div
 				transition:fade={{ duration: reducedMotion ? 0 : 200 }}
 				class="mt-5 rounded-xl p-3 text-sm font-medium {correct
-					? 'animate-spring-in bg-green-100 text-green-800'
-					: 'animate-shake bg-red-100 text-red-800'}"
+					? 'feedback-correct animate-spring-in'
+					: 'feedback-incorrect animate-shake'}"
 				data-testid="feedback"
 				role="status"
 				aria-live="polite"
@@ -174,7 +176,7 @@
 			</div>
 			<button
 				type="button"
-				class="mt-4 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700"
+				class="btn-primary mt-4 w-full"
 				data-testid="continue"
 				onclick={advance}
 			>
@@ -183,7 +185,7 @@
 		{:else}
 			<button
 				type="button"
-				class="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+				class="btn-primary mt-6 w-full"
 				data-testid="check"
 				disabled={response === null}
 				onclick={check}
@@ -192,34 +194,34 @@
 			</button>
 		{/if}
 	{:else if phase === 'finished'}
-		<div class="rounded-2xl border border-slate-200 bg-white p-6 text-center" data-testid="summary">
+		<div
+			class="surface-card rounded-2xl p-6 text-center lg:mx-auto lg:max-w-lg"
+			data-testid="summary"
+		>
 			<p class="text-5xl">{score >= 80 ? '🎉' : '💪'}</p>
-			<h1 class="mt-3 text-2xl font-bold text-slate-900">{m.lesson_complete()}</h1>
-			<p class="mt-1 text-slate-600">
-				You scored <span class="font-semibold text-slate-900">{score}%</span>
+			<h1 class="mt-3 text-2xl font-bold text-foreground">{m.lesson_complete()}</h1>
+			<p class="mt-1 text-muted">
+				You scored <span class="font-semibold text-foreground">{score}%</span>
 				({correctCount}/{total}).
 			</p>
 			{#if outcome && outcome.goalXp > 0}
-				<p class="mt-1 text-sm font-medium text-green-700" data-testid="xp-awarded">
+				<p
+					class="mt-1 text-sm font-medium text-green-700 dark:text-green-400"
+					data-testid="xp-awarded"
+				>
 					{outcome.isNewBest ? 'New best!' : ''} +{outcome.goalXp} XP
 				</p>
 			{:else}
-				<p class="mt-1 text-sm text-slate-500" data-testid="practice-note">
+				<p class="mt-1 text-sm text-muted" data-testid="practice-note">
 					Practice complete — no new XP (best: {outcome?.bestScore ?? score}%).
-					<a class="text-blue-700 underline" href={resolve('/review')}>Review due cards</a>
+					<a class="text-primary underline" href={resolve('/review')}>Review due cards</a>
 					to keep your streak.
 				</p>
 			{/if}
-			<p class="mt-1 text-sm text-slate-500">{m.lesson_srs_note()}</p>
+			<p class="mt-1 text-sm text-muted">{m.lesson_srs_note()}</p>
 			<div class="mt-6 grid gap-3">
-				<a
-					class="rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700"
-					href={resolve('/review')}>{m.lesson_review_now()}</a
-				>
-				<a
-					class="rounded-xl border border-slate-300 px-4 py-3 font-semibold text-slate-700"
-					href={resolve('/')}>{m.common_back_to_path()}</a
-				>
+				<a class="btn-primary block" href={resolve('/review')}>{m.lesson_review_now()}</a>
+				<a class="btn-secondary block" href={resolve('/')}>{m.common_back_to_path()}</a>
 			</div>
 		</div>
 	{/if}
