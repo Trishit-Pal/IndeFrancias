@@ -84,7 +84,7 @@
 			<p class="font-semibold">Could not load the lesson</p>
 			<p class="text-sm">{errorMessage}</p>
 			<a class="mt-3 inline-block text-blue-700 underline" href={resolve('/')}>Back to home</a>
-		</div
+		</div>
 	{:else if phase === 'locked'}
 		<div
 			class="rounded-xl border border-slate-300 bg-slate-50 p-6 text-center"
@@ -95,8 +95,9 @@
 			<p class="text-sm text-slate-500">{m.lesson_locked_desc()}</p>
 			<a
 				class="mt-4 inline-block rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white"
-				href={resolve('/')}>{m.common_back_to_path()}</a>
-		</div
+				href={resolve('/')}>{m.common_back_to_path()}</a
+			>
+		</div>
 	{:else if phase === 'intro' && unit}
 		<a class="text-sm text-slate-500 hover:underline" href={resolve('/')}>{m.common_home()}</a>
 		<span class="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-800">
@@ -148,12 +149,15 @@
 	{:else if phase === 'exercise' && current}
 		<div class="mb-4 h-2 overflow-hidden rounded-full bg-slate-200">
 			<div class="h-full bg-blue-500 transition-all" style="width: {progress}%"></div>
-		</div
+		</div>
 		<p class="mb-4 text-sm text-slate-500">Question {index + 1} of {total}</p>
 
 		<div class="grid grid-cols-1 grid-rows-1">
 			{#key current.id}
-				<div class="col-start-1 row-start-1" in:fly={{ x: 20, duration: reducedMotion ? 0 : 300 }} out:fly={{ x: -20, duration: reducedMotion ? 0 : 300 }}>
+				<div
+					class="col-start-1 row-start-1"
+					in:fly={{ x: 20, duration: reducedMotion ? 0 : 300 }}
+				>
 					<Exercise exercise={current} bind:response {submitted} />
 				</div>
 			{/key}
@@ -163,8 +167,8 @@
 			<div
 				transition:fade={{ duration: reducedMotion ? 0 : 200 }}
 				class="mt-5 rounded-xl p-3 text-sm font-medium {correct
-					? 'bg-green-100 text-green-800 animate-spring-in'
-					: 'bg-red-100 text-red-800 animate-shake'}"
+					? 'animate-spring-in bg-green-100 text-green-800'
+					: 'animate-shake bg-red-100 text-red-800'}"
 				data-testid="feedback"
 				role="status"
 			>
@@ -212,10 +216,12 @@
 			<div class="mt-6 grid gap-3">
 				<a
 					class="rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700"
-					href={resolve('/review')}>{m.lesson_review_now()}</a>
+					href={resolve('/review')}>{m.lesson_review_now()}</a
+				>
 				<a
 					class="rounded-xl border border-slate-300 px-4 py-3 font-semibold text-slate-700"
-					href={resolve('/')}>{m.common_back_to_path()}</a>
+					href={resolve('/')}>{m.common_back_to_path()}</a
+				>
 			</div>
 		</div>
 	{/if}
@@ -223,15 +229,31 @@
 
 <style>
 	@keyframes shake {
-		0%, 100% { transform: translateX(0); }
-		25% { transform: translateX(-4px); }
-		75% { transform: translateX(4px); }
+		0%,
+		100% {
+			transform: translateX(0);
+		}
+		25% {
+			transform: translateX(-4px);
+		}
+		75% {
+			transform: translateX(4px);
+		}
 	}
 
 	@keyframes spring-in {
-		0% { transform: scale(0.9); opacity: 0; }
-		60% { transform: scale(1.05); opacity: 1; }
-		100% { transform: scale(1); opacity: 1; }
+		0% {
+			transform: scale(0.9);
+			opacity: 0;
+		}
+		60% {
+			transform: scale(1.05);
+			opacity: 1;
+		}
+		100% {
+			transform: scale(1);
+			opacity: 1;
+		}
 	}
 
 	.animate-shake {
@@ -243,7 +265,8 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.animate-shake, .animate-spring-in {
+		.animate-shake,
+		.animate-spring-in {
 			animation: none !important;
 			transform: none !important;
 		}

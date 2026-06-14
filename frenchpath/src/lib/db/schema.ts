@@ -52,6 +52,8 @@ export interface ProgressRecord {
 	status: LessonStatus;
 	/** Best score achieved, 0–100. */
 	score: number;
+	/** Best correct-answer count achieved (drives improvement-delta XP). */
+	bestCorrect?: number;
 	attempts: number;
 	/** Epoch milliseconds. */
 	lastVisited: number;

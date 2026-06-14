@@ -83,7 +83,14 @@ describe('backup export/import', () => {
 			exportedAt: '2026-01-01T00:00:00.000Z',
 			settings: null,
 			progress: [
-				{ lessonId: 'old', status: 'completed', score: 70, attempts: 1, lastVisited: 1, cefrLevel: 'A1' }
+				{
+					lessonId: 'old',
+					status: 'completed',
+					score: 70,
+					attempts: 1,
+					lastVisited: 1,
+					cefrLevel: 'A1'
+				}
 			],
 			srsCards: [],
 			reviewLog: [],

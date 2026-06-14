@@ -75,7 +75,9 @@ export async function importBackup(json: string): Promise<void> {
 	if (version === CURRENT_BACKUP_VERSION) {
 		const expected = await sha256Hex(JSON.stringify(raw.payload ?? null));
 		if (expected !== raw.checksum) {
-			throw new Error('Backup integrity check failed: checksum mismatch (corrupted or edited file).');
+			throw new Error(
+				'Backup integrity check failed: checksum mismatch (corrupted or edited file).'
+			);
 		}
 	}
 

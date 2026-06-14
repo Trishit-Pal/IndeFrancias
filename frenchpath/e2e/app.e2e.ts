@@ -21,12 +21,12 @@ async function completeLesson(page: Page) {
 	await expect(check.or(summary).first()).toBeVisible();
 
 	while (!(await summary.isVisible().catch(() => false))) {
-		const cloze = page.getByTestId('cloze-input');
-		const text = page.getByTestId('text-answer');
-		const selects = page.getByTestId('matching-select');
-		const mcq = page.getByTestId('mcq-option');
-		const reorderWord = page.getByTestId('reorder-word');
-		const genderOption = page.getByTestId('gender-option');
+		const cloze = page.locator('[data-testid="cloze-input"]:enabled');
+		const text = page.locator('[data-testid="text-answer"]:enabled');
+		const selects = page.locator('[data-testid="matching-select"]:enabled');
+		const mcq = page.locator('[data-testid="mcq-option"]:enabled');
+		const reorderWord = page.locator('[data-testid="reorder-word"]:enabled');
+		const genderOption = page.locator('[data-testid="gender-option"]:enabled');
 
 		// Wait for the (possibly just-remounted) exercise input to mount.
 		await expect(
@@ -164,6 +164,20 @@ test('mock DELF A2 runs through all sections and shows a scored result', async (
 
 	await expect(result).toBeVisible();
 	await expect(result).toContainText('/ 100');
+});
+
+test('no CSP violations on the core routes', async ({ page }) => {
+	const violations: string[] = [];
+	page.on('console', (msg) => {
+		if (msg.type() === 'error' && /content security policy/i.test(msg.text())) {
+			violations.push(msg.text());
+		}
+	});
+	for (const path of ['/', '/review', '/progress', '/settings']) {
+		await page.goto(path);
+		await page.waitForLoadState('networkidle');
+	}
+	expect(violations).toEqual([]);
 });
 
 test('UI language toggle switches the interface to Hindi', async ({ page }) => {
