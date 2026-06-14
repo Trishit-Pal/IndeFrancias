@@ -19,7 +19,8 @@ Offline-first French-learning PWA for Indian learners. All UI lives under `frenc
 
 ## Conventions
 
-- Mobile-first layout: `max-w-xl mx-auto px-4 py-6`
+- **Responsive:** mobile-first; bottom nav below `lg`; sidebar nav at `lg+` (≥1024px). Main content uses responsive max-width (`max-w-xl md:max-w-2xl lg:max-w-4xl` patterns). Home unit cards: 2-col grid at `md+`.
+- **Theme:** semantic tokens in `layout.css` (`bg-background`, `bg-card`, `text-foreground`, etc.). Apply via `src/lib/theme/apply.ts` — settings `theme`: `system` | `light` | `dark`. Dark mode is **high-contrast OLED** (near-black bg). Never hardcode `bg-white`/`text-slate-900` without a `dark:` pair or token.
 - Imports: `$lib/...`, `$app/paths` `resolve()` for internal links
 - Add `data-testid` on interactive elements targeted by Playwright (`e2e/app.e2e.ts`)
 - Exercise components live in `src/lib/lesson/exercises/`; orchestrated by `Exercise.svelte`
@@ -61,3 +62,5 @@ npm run test:e2e   # if routes/exercises changed
 | Progress | `src/routes/progress/+page.svelte` |
 | Settings | `src/routes/settings/+page.svelte` |
 | Onboarding | `src/lib/components/Onboarding.svelte` |
+| Theme apply | `src/lib/theme/apply.ts` |
+| Design tokens | `src/routes/layout.css` |
