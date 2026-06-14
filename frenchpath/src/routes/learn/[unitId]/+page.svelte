@@ -12,6 +12,7 @@
 	import { ensurePersistence } from '$lib/pwa/persist';
 	import RecordCompare from '$lib/audio/RecordCompare.svelte';
 	import Exercise from '$lib/lesson/exercises/Exercise.svelte';
+import { fly, fade } from 'svelte/transition';
 	import * as m from '$lib/paraglide/messages';
 
 	type Phase = 'loading' | 'intro' | 'exercise' | 'finished' | 'error' | 'locked';
@@ -148,12 +149,17 @@
 		</div>
 		<p class="mb-4 text-sm text-slate-500">Question {index + 1} of {total}</p>
 
-		{#key current.id}
-			<Exercise exercise={current} bind:response {submitted} />
+		<div class="grid grid-cols-1 grid-rows-1">
+    {#key current.id}
+			        <div class="col-start-1 row-start-1" in:fly={{ x: 20, duration: 300 }} out:fly={{ x: -20, duration: 300 }}>
+            <Exercise exercise={current} bind:response {submitted} />
+        </div>
 		{/key}
+</div>
 
 		{#if submitted}
 			<div
+				transition:fade={{ duration: 200 }}
 				class="mt-5 rounded-xl p-3 text-sm font-medium {correct
 					? 'bg-green-100 text-green-800 animate-spring-in'
 					: 'bg-red-100 text-red-800 animate-shake'}"
