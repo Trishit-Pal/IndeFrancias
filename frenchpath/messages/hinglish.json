@@ -114,5 +114,6 @@
 	"hint_button": "Hint",
 	"hint_remaining": "{count} hints bache",
 	"exercise_coach_note": "Tip",
-	"lesson_shell_progress": "Exercise {current} of {total}"
+	"lesson_shell_progress": "Exercise {current} of {total}",
+	"review_fsrs_tip": "Be honest — \"Again\" isn't failure; it's how FSRS learns your memory curve."
 }

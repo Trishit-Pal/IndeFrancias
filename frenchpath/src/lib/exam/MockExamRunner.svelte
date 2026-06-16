@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { resolve } from '$app/paths';
 	import * as m from '$lib/paraglide/messages';
 	import type { MockExam, ExamSkill } from '$lib/exam/types';
@@ -17,6 +17,7 @@
 	import type { CelebrationRequest } from '$lib/celebration/orchestrator';
 	import { shareProgress } from '$lib/share/shareCard';
 	import Exercise from '$lib/lesson/exercises/Exercise.svelte';
+	import ExamTimer from '$lib/exam/ExamTimer.svelte';
 
 	let {
 		exam,
@@ -29,6 +30,11 @@
 	} = $props();
 
 	const sections = $derived(exam.sections);
+
+	// Formal exam identity for the header (DELF/DALF + CEFR level).
+	const examName = $derived(assessmentSlug.startsWith('dalf') ? 'DALF' : 'DELF');
+	const examLevel = $derived(assessmentSlug.replace(/^d[ae]lf-/, '').toUpperCase());
+	const EXAM_SECONDS = 45 * 60;
 
 	let phase = $state<'intro' | 'section' | 'result'>('intro');
 	let sectionIndex = $state(0);
@@ -57,9 +63,13 @@
 	const objItem = $derived(section && 'items' in section ? section.items[itemIndex] : null);
 
 	onMount(async () => {
+		document.body.classList.add('fp-exam-mode');
 		const settings = await settingsRepo.getSettings();
 		reduceMotion = settings.reduceMotion;
 		celebrationLevel = settings.celebrationLevel;
+	});
+	onDestroy(() => {
+		if (typeof document !== 'undefined') document.body.classList.remove('fp-exam-mode');
 	});
 
 	function resetSubState() {
@@ -133,9 +143,23 @@
 <main class="page-shell lg:max-w-3xl">
 	<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
 
+	<header class="fp-exam-header mt-3">
+		<div>
+			<p class="fp-exam-eyebrow">Diplôme d'études en langue française</p>
+			<h1 class="fp-exam-title">{examName} {examLevel} — Épreuve blanche</h1>
+		</div>
+		{#if phase === 'section'}
+			<ExamTimer totalSeconds={EXAM_SECONDS} onExpire={() => void finishExam()} />
+		{:else}
+			<div class="fp-exam-badge">
+				<span>{examLevel}</span>
+				<small>CEFR</small>
+			</div>
+		{/if}
+	</header>
+
 	{#if phase === 'intro'}
-		<h1 class="mt-2 text-2xl font-bold text-foreground md:text-3xl">{exam.title}</h1>
-		<p class="mt-2 text-muted">{m.exam_intro_desc()}</p>
+		<p class="mt-4 text-muted">{m.exam_intro_desc()}</p>
 		<ul class="mt-4 space-y-1 text-sm text-muted">
 			{#each sections as s (s.skill)}
 				<li>• {s.title}</li>
@@ -231,6 +255,13 @@
 			<h1 class="mt-2 text-center text-2xl font-bold text-foreground">
 				{result.total} / 100 — {result.passed ? m.exam_pass() : m.exam_not_yet()}
 			</h1>
+			<div class="mt-3 flex justify-center">
+				{#if result.passed}
+					<span class="fp-admis-stamp">ADMIS</span>
+				{:else}
+					<span class="fp-recale-stamp">RECALÉ</span>
+				{/if}
+			</div>
 			{#if result.passed && xpAwarded > 0}
 				<p class="mt-1 text-center text-sm font-medium text-primary">+{xpAwarded} XP</p>
 			{/if}
@@ -248,8 +279,10 @@
 						</div>
 						<div class="mt-1 h-2 overflow-hidden rounded-full bg-subtle">
 							<div
-								class="h-full rounded-full {score < 5 ? 'bg-red-500' : 'bg-primary'}"
-								style="width: {(score / 25) * 100}%"
+								class="h-full rounded-full"
+								style="width: {(score / 25) * 100}%; background: {score < 5
+									? '#b23232'
+									: 'var(--fp-navy)'}"
 							></div>
 						</div>
 					</li>

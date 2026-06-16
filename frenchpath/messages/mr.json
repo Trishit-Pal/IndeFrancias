@@ -103,5 +103,6 @@
 	"exam_submit_section": "Submit section",
 	"exam_pass": "Pass",
 	"exam_not_yet": "Not yet",
-	"exam_eliminated": "Failed on the note éliminatoire: a skill scored below 5/25."
+	"exam_eliminated": "Failed on the note éliminatoire: a skill scored below 5/25.",
+	"review_fsrs_tip": "Be honest — \"Again\" isn't failure; it's how FSRS learns your memory curve."
 }

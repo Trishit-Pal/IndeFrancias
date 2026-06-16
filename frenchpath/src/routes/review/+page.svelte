@@ -12,6 +12,9 @@
 	import { getGloss } from '$lib/content/gloss';
 	import { buildLexicon } from '$lib/content/lexicon';
 	import GlossText from '$lib/components/GlossText.svelte';
+	import CharacterMira from '$lib/components/CharacterMira.svelte';
+	import { isNativePlatform } from '$lib/platform';
+	import { tapHaptic } from '$lib/platform/haptics';
 	import type { NativeLanguage } from '$lib/db/schema';
 	import { speakFrench, ttsAvailable } from '$lib/audio/tts';
 	import { shareProgress } from '$lib/share/shareCard';
@@ -42,29 +45,11 @@
 		reviewedCount === 0 ? 0 : Math.round((goodCount / reviewedCount) * 100)
 	);
 
-	const grades: { grade: ReviewGrade; label: () => string; classes: string }[] = [
-		{
-			grade: 'again',
-			label: m.grade_again,
-			classes: 'bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-950 dark:text-red-200'
-		},
-		{
-			grade: 'hard',
-			label: m.grade_hard,
-			classes:
-				'bg-orange-100 text-orange-800 hover:bg-orange-200 dark:bg-orange-950 dark:text-orange-200'
-		},
-		{
-			grade: 'good',
-			label: m.grade_good,
-			classes:
-				'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-950 dark:text-green-200'
-		},
-		{
-			grade: 'easy',
-			label: m.grade_easy,
-			classes: 'bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-950 dark:text-blue-200'
-		}
+	const grades: { grade: ReviewGrade; label: () => string }[] = [
+		{ grade: 'again', label: m.grade_again },
+		{ grade: 'hard', label: m.grade_hard },
+		{ grade: 'good', label: m.grade_good },
+		{ grade: 'easy', label: m.grade_easy }
 	];
 
 	function formatDuration(ms: number): string {
@@ -107,7 +92,8 @@
 	async function grade(grade: ReviewGrade) {
 		const item = currentItem;
 		if (!item) return;
-		if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
+		if (isNativePlatform()) void tapHaptic();
+		else if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
 		await recordReview(item.srs, grade, {
 			targetRetention,
 			durationMs: Date.now() - cardStartedAt
@@ -144,7 +130,10 @@
 						</p>
 					{:else}
 						<div class="flex items-center justify-center gap-2">
-							<h1 class="text-3xl font-bold text-foreground md:text-4xl">
+							<h1
+								class="text-3xl font-bold text-foreground md:text-4xl"
+								style="font-family: var(--fp-font-display)"
+							>
 								<GlossText text={currentItem.content.french} lexicon={reviewLexicon} />
 							</h1>
 							{#if canSpeak}
@@ -174,7 +163,10 @@
 					{#if currentItem}
 						{@const gloss = getGloss(currentItem.content, nativeLanguage)}
 						<div class="flex items-center justify-center gap-2">
-							<h1 class="text-3xl font-bold text-foreground md:text-4xl">
+							<h1
+								class="text-3xl font-bold text-foreground md:text-4xl"
+								style="font-family: var(--fp-font-display)"
+							>
 								<GlossText text={currentItem.content.french} lexicon={reviewLexicon} />
 							</h1>
 							{#if canSpeak}
@@ -190,7 +182,12 @@
 							<p class="mt-1 text-xs text-muted">{currentItem.content.gender}</p>
 						{/if}
 						<div class="mt-4 border-t border-border pt-4 text-left">
-							<p class="text-foreground">{gloss.primary}</p>
+							<p
+								class="text-foreground"
+								style="font-family: var(--fp-font-hindi); color: var(--fp-terracotta)"
+							>
+								{gloss.primary}
+							</p>
 							{#if gloss.secondary}
 								<p class="text-muted">{gloss.secondary}</p>
 							{/if}
@@ -210,7 +207,7 @@
 				{#each grades as g (g.grade)}
 					<button
 						type="button"
-						class="min-h-11 rounded-xl px-2 py-3 text-sm font-semibold {g.classes}"
+						class="fp-grade-btn fp-grade-btn--{g.grade}"
 						data-grade={g.grade}
 						onclick={() => grade(g.grade)}>{g.label()}</button
 					>
@@ -224,6 +221,11 @@
 				onclick={() => (revealed = true)}>{m.review_show_answer()}</button
 			>
 		{/if}
+
+		<div class="mt-5 flex items-center gap-2 lg:mx-auto lg:max-w-2xl">
+			<CharacterMira size="xs" animate={false} />
+			<p class="text-xs" style="color: var(--fp-muted)">{m.review_fsrs_tip()}</p>
+		</div>
 	{:else if phase === 'reviewing'}
 		<div class="mt-10 text-center" data-testid="no-reviews">
 			<p class="text-5xl">✅</p>

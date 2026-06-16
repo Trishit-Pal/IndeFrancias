@@ -12,6 +12,8 @@
 	import { LEARNING_GOAL_LABELS } from '$lib/profile/goalCopy';
 	import type { Settings, DifficultyTier } from '$lib/db/schema';
 	import { setLocale } from '$lib/paraglide/runtime';
+	import CharacterMira from './CharacterMira.svelte';
+	import CharacterCoco from './CharacterCoco.svelte';
 
 	let {
 		onComplete,
@@ -115,12 +117,15 @@
 		<div class="mx-auto w-full max-w-lg">
 			{#if step === 'welcome'}
 				<div class="text-center">
-					<img
-						src="/icon.svg"
-						alt=""
-						class="fp-motion-safe-bounce-in mx-auto h-20 w-20 rounded-2xl shadow-sm"
-					/>
-					<h1 class="mt-5 text-3xl font-bold text-foreground">{m.onb_title()}</h1>
+					<div class="flex justify-center">
+						<CharacterMira size="xl" animate={!reduceMotion} />
+					</div>
+					<h1
+						class="mt-4 text-foreground"
+						style="font-family: var(--fp-font-display); font-size: 40px; font-weight: 400; line-height: 1.05"
+					>
+						{m.onb_title()}
+					</h1>
 					<p class="mt-2 text-muted md:text-lg">{m.onb_subtitle()}</p>
 					<ul class="mt-8 space-y-3 text-left">
 						{#each points as point, i (point.icon)}
@@ -291,8 +296,15 @@
 				</div>
 			{:else if step === 'ready'}
 				<div class="text-center">
-					<p class="text-4xl {reduceMotion ? '' : 'fp-confetti-lite'}" aria-hidden="true">🎉</p>
-					<h2 class="mt-4 text-2xl font-bold text-foreground">{m.onb_ready_title()}</h2>
+					<div class="flex justify-center {reduceMotion ? '' : 'fp-confetti-lite'}">
+						<CharacterCoco size="xl" animate={!reduceMotion} level={1} />
+					</div>
+					<h2
+						class="mt-4 text-foreground"
+						style="font-family: var(--fp-font-display); font-size: 30px; font-weight: 400"
+					>
+						{m.onb_ready_title()}
+					</h2>
 					<p class="mt-2 text-muted">{m.onb_ready_desc()}</p>
 					<button
 						type="button"

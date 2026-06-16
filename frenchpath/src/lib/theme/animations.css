@@ -1,0 +1,227 @@
+/* FrenchPath Animations — @keyframes + utility classes */
+/* Import after tokens.css                                */
+
+@keyframes fp-bob {
+	0%,
+	100% {
+		transform: translateY(0) rotate(-1deg);
+	}
+	50% {
+		transform: translateY(-5px) rotate(1deg);
+	}
+}
+@keyframes fp-flutter {
+	0%,
+	100% {
+		transform: translateY(0) rotate(2deg);
+	}
+	50% {
+		transform: translateY(-7px) rotate(-3deg);
+	}
+}
+@keyframes fp-blink {
+	0%,
+	92%,
+	100% {
+		transform: scaleY(1);
+	}
+	96% {
+		transform: scaleY(0.05);
+	}
+}
+@keyframes fp-flame {
+	0%,
+	100% {
+		transform: scale(1) rotate(-3deg);
+		filter: hue-rotate(-4deg);
+	}
+	50% {
+		transform: scale(1.08) rotate(4deg);
+		filter: hue-rotate(8deg);
+	}
+}
+@keyframes fp-stamp {
+	0% {
+		transform: scale(0.3) rotate(-12deg);
+		opacity: 0;
+	}
+	60% {
+		transform: scale(1.15) rotate(-6deg);
+		opacity: 1;
+	}
+	100% {
+		transform: scale(1) rotate(-4deg);
+		opacity: 1;
+	}
+}
+@keyframes fp-sparkle {
+	0% {
+		opacity: 0;
+		transform: scale(0.3);
+	}
+	50% {
+		opacity: 1;
+		transform: scale(1);
+	}
+	100% {
+		opacity: 0;
+		transform: scale(0.5) translateY(-8px);
+	}
+}
+@keyframes fp-rise {
+	0% {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+@keyframes fp-pulse {
+	0%,
+	100% {
+		transform: scale(1);
+		box-shadow: 0 0 0 0 rgba(233, 79, 100, 0.5);
+	}
+	50% {
+		transform: scale(1.04);
+		box-shadow: 0 0 0 14px rgba(233, 79, 100, 0);
+	}
+}
+@keyframes fp-steam {
+	0% {
+		opacity: 0;
+		transform: translateY(0) scaleX(0.8);
+	}
+	40% {
+		opacity: 0.7;
+	}
+	100% {
+		opacity: 0;
+		transform: translateY(-18px) scaleX(1.4);
+	}
+}
+@keyframes fp-confetti {
+	0% {
+		transform: translateY(-20px) rotate(0);
+		opacity: 0;
+	}
+	10% {
+		opacity: 1;
+	}
+	100% {
+		transform: translateY(400px) rotate(720deg);
+		opacity: 0;
+	}
+}
+@keyframes fp-march {
+	to {
+		background-position: 24px 0;
+	}
+}
+@keyframes fp-march-v {
+	to {
+		background-position: 50% 24px;
+	}
+}
+@keyframes fp-shimmer {
+	0% {
+		background-position: -200% 0;
+	}
+	100% {
+		background-position: 200% 0;
+	}
+}
+@keyframes fp-tail {
+	0%,
+	100% {
+		transform: rotate(-6deg);
+	}
+	50% {
+		transform: rotate(8deg);
+	}
+}
+
+/* ── Utility animation classes ── */
+.fp-bob {
+	animation: fp-bob 4s ease-in-out infinite;
+}
+.fp-flutter {
+	animation: fp-flutter 2.6s ease-in-out infinite;
+}
+.fp-flame {
+	animation: fp-flame 1.4s ease-in-out infinite;
+	transform-origin: 50% 90%;
+}
+.fp-blink {
+	animation: fp-blink 5s infinite;
+	transform-origin: 50% 50%;
+}
+.fp-pulse {
+	animation: fp-pulse 1.8s ease-in-out infinite;
+}
+.fp-ember {
+	filter: drop-shadow(0 0 12px rgba(233, 79, 100, 0.55));
+}
+
+/* ── Dashed marching route lines ── */
+.fp-route {
+	background-image: repeating-linear-gradient(90deg, var(--fp-ink) 0 6px, transparent 6px 12px);
+	background-size: 24px 2px;
+	background-repeat: repeat-x;
+	background-position: 0 50%;
+	animation: fp-march 1.4s linear infinite;
+}
+.fp-route-v {
+	background-image: repeating-linear-gradient(0deg, var(--fp-ink) 0 6px, transparent 6px 12px);
+	background-size: 2px 24px;
+	background-repeat: repeat-y;
+	background-position: 50% 0;
+	animation: fp-march-v 1.6s linear infinite;
+}
+
+/* ── Paper grain texture overlay ── */
+.fp-paper-grain {
+	background-image: radial-gradient(rgba(43, 27, 23, 0.045) 1px, transparent 1px);
+	background-size: 3px 3px;
+}
+
+/* ── Postcard hover ── */
+.fp-postcard {
+	transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.3, 1.3);
+}
+.fp-postcard:hover {
+	transform: translateY(-6px) rotate(-2deg) scale(1.03);
+}
+
+/* ── Shimmer badge ── */
+.fp-badge-earned {
+	background: linear-gradient(120deg, #f4d5c2 0%, #fcefd8 50%, #f4d5c2 100%);
+	background-size: 200% 100%;
+	animation: fp-shimmer 3s linear infinite;
+}
+
+/* ── Reduce-motion override ── */
+@media (prefers-reduced-motion: reduce) {
+	.fp-bob,
+	.fp-flutter,
+	.fp-flame,
+	.fp-blink,
+	.fp-pulse,
+	.fp-route,
+	.fp-route-v,
+	.fp-badge-earned {
+		animation: none !important;
+	}
+	.fp-postcard:hover {
+		transform: none;
+	}
+}
+.reduce-motion .fp-bob,
+.reduce-motion .fp-flutter,
+.reduce-motion .fp-flame,
+.reduce-motion .fp-route,
+.reduce-motion .fp-badge-earned {
+	animation: none !important;
+}
