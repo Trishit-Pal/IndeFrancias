@@ -150,23 +150,29 @@
 	}
 
 	async function download() {
-		const json = await exportBackup();
-		const filename = `frenchpath-backup-${new Date().toISOString().slice(0, 10)}.json`;
-		if (isNativePlatform()) {
-			await exportBackupNative(json, filename);
-		} else {
-			const blob = new Blob([json], { type: 'application/json' });
-			const url = URL.createObjectURL(blob);
-			const link = document.createElement('a');
-			link.href = url;
-			link.download = filename;
-			link.click();
-			URL.revokeObjectURL(url);
+		try {
+			const json = await exportBackup();
+			const filename = `frenchpath-backup-${new Date().toISOString().slice(0, 10)}.json`;
+			if (isNativePlatform()) {
+				await exportBackupNative(json, filename);
+			} else {
+				const blob = new Blob([json], { type: 'application/json' });
+				const url = URL.createObjectURL(blob);
+				const link = document.createElement('a');
+				link.href = url;
+				link.download = filename;
+				link.click();
+				URL.revokeObjectURL(url);
+			}
+			const exportedAt = new Date().toISOString();
+			localStorage.setItem(LAST_EXPORT_KEY, exportedAt);
+			lastExportAt = exportedAt;
+			message = 'Backup downloaded.';
+		} catch (error) {
+			// Surface native (share/filesystem) or web failures instead of
+			// throwing unhandled — backup is the only data-recovery path.
+			message = error instanceof Error ? error.message : 'Backup export failed.';
 		}
-		const exportedAt = new Date().toISOString();
-		localStorage.setItem(LAST_EXPORT_KEY, exportedAt);
-		lastExportAt = exportedAt;
-		message = 'Backup downloaded.';
 	}
 
 	async function onFile(event: Event) {

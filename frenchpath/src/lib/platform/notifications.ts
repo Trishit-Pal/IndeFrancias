@@ -2,6 +2,11 @@
 // permission on first use; schedules a near-immediate local notification
 // (the native analogue of the web Notification used on the layout).
 
+// Fixed id so a new reminder REPLACES the pending one — mirroring the web
+// path's stable `tag: 'frenchpath-revision'` de-dupe (avoids stacking).
+const REVISION_NOTIFICATION_ID = 1;
+const SCHEDULE_DELAY_MS = 1500;
+
 export async function showRevisionNotification(title: string, body: string): Promise<void> {
 	try {
 		const { LocalNotifications } = await import('@capacitor/local-notifications');
@@ -11,10 +16,10 @@ export async function showRevisionNotification(title: string, body: string): Pro
 		await LocalNotifications.schedule({
 			notifications: [
 				{
-					id: Math.floor(Date.now() % 100000),
+					id: REVISION_NOTIFICATION_ID,
 					title,
 					body,
-					schedule: { at: new Date(Date.now() + 1500) }
+					schedule: { at: new Date(Date.now() + SCHEDULE_DELAY_MS) }
 				}
 			]
 		});
