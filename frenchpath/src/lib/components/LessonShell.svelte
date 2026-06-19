@@ -37,8 +37,14 @@
 			<p class="text-sm font-medium text-foreground">
 				{m.lesson_shell_progress({ current: String(current), total: String(total) })}
 			</p>
-			<div class="mt-2 h-2 overflow-hidden rounded-full bg-subtle">
-				<div class="fp-progress-fill h-full bg-primary" style="width: {progress}%"></div>
+			<div
+				class="mt-2 h-3 overflow-hidden rounded-full"
+				style="border: 1.5px solid var(--fp-ink); background: var(--fp-paper)"
+			>
+				<div
+					class="fp-progress-fill h-full"
+					style="width: {progress}%; background: var(--fp-jaipur)"
+				></div>
 			</div>
 		</div>
 	</div>

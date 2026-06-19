@@ -10,6 +10,23 @@
 	import { shouldNotify, revisionNotificationBody } from '$lib/pwa/revisionNotify';
 	import { applyTheme, watchSystemTheme } from '$lib/theme/apply';
 	import { configureTts } from '$lib/audio/tts';
+	import { isNativePlatform } from '$lib/platform';
+	import { initNativeShell } from '$lib/platform/shell';
+	import { showRevisionNotification } from '$lib/platform/notifications';
+	// Self-hosted fonts — served from origin to satisfy the strict
+	// `default-src 'self'` CSP and keep the app fully offline-capable.
+	// (Loading them from Google's CDN is blocked by CSP and breaks offline.)
+	import '@fontsource/instrument-serif/400.css';
+	import '@fontsource/instrument-serif/400-italic.css';
+	import '@fontsource/manrope/400.css';
+	import '@fontsource/manrope/500.css';
+	import '@fontsource/manrope/600.css';
+	import '@fontsource/manrope/700.css';
+	import '@fontsource/manrope/800.css';
+	import '@fontsource/dm-mono/400.css';
+	import '@fontsource/dm-mono/500.css';
+	import '@fontsource/tiro-devanagari-hindi/400.css';
+	import '@fontsource/tiro-devanagari-hindi/400-italic.css';
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 
@@ -35,19 +52,28 @@
 
 		async function maybeNotifyRevision() {
 			if (typeof document === 'undefined' || document.visibilityState !== 'visible') return;
-			if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
 			const settings = await settingsRepo.getSettings();
 			const due = await countDue();
 			if (!shouldNotify(due, settings)) return;
-			new Notification(m.revision_notify_title(), {
-				body: revisionNotificationBody(due),
-				tag: 'frenchpath-revision'
-			});
+			if (isNativePlatform()) {
+				await showRevisionNotification(m.revision_notify_title(), revisionNotificationBody(due));
+			} else if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+				new Notification(m.revision_notify_title(), {
+					body: revisionNotificationBody(due),
+					tag: 'frenchpath-revision'
+				});
+			}
 		}
 
 		void (async () => {
-			const { registerSW } = await import('virtual:pwa-register');
-			registerSW({ immediate: true });
+			if (isNativePlatform()) void initNativeShell();
+			// In the Capacitor native shell the WebView bundle IS the offline cache,
+			// and the SW's navigateFallback fights local serving — so skip it on
+			// native and keep it on web. (mobile-architecture.md R3)
+			if (!isNativePlatform()) {
+				const { registerSW } = await import('virtual:pwa-register');
+				registerSW({ immediate: true });
+			}
 
 			const settings = await settingsRepo.getSettings();
 			document.documentElement.classList.toggle('reduce-motion', settings.reduceMotion);

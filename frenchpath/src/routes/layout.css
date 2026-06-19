@@ -1,4 +1,7 @@
 @import 'tailwindcss';
+@import '../lib/theme/tokens.css';
+@import '../lib/theme/animations.css';
+@import '../lib/theme/characters.css';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -69,6 +72,14 @@ html {
 	font-family: system-ui, 'Segoe UI', 'Noto Sans Devanagari', 'Roboto', sans-serif;
 	background-color: var(--fp-background);
 	color: var(--fp-foreground);
+}
+
+/* Le Grand Voyage page surface (warm cream canvas). */
+body {
+	background: var(--fp-canvas);
+	color: var(--fp-ink);
+	font-family: var(--fp-font-ui);
+	-webkit-font-smoothing: antialiased;
 }
 
 html[lang='bn'] {
@@ -330,19 +341,256 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	color: transparent;
 }
 
+/* ── Le Grand Voyage — home stat widgets ── */
+.fp-goal-ring {
+	position: relative;
+	width: 64px;
+	height: 64px;
+	flex-shrink: 0;
+	border-radius: 50%;
+	background: conic-gradient(var(--fp-jaipur) 0% var(--pct), var(--fp-paper) var(--pct) 100%);
+	border: 2px solid var(--fp-ink);
+}
+.fp-goal-ring::after {
+	content: '';
+	position: absolute;
+	inset: 7px;
+	background: var(--fp-paper);
+	border-radius: 50%;
+}
+.fp-goal-ring-value {
+	position: absolute;
+	z-index: 1;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 18px;
+	line-height: 1;
+	color: var(--fp-ink);
+}
+.fp-stat-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 5px 10px;
+	border-radius: var(--fp-r-pill);
+	font-size: 12px;
+	font-weight: 700;
+	border: 1.5px solid var(--fp-ink);
+}
+.fp-stat-badge--fire {
+	background: #fce3c4;
+	color: var(--fp-terracotta);
+}
+.fp-stat-badge--ice {
+	background: #dcf0fc;
+	color: #2456b0;
+}
+
+/* XP progress bar (Coco companion, Atelier). Scoped fill keeps the standalone
+   .fp-progress-fill utility (daily-goal animation) untouched. */
+.fp-progress-bar {
+	height: 8px;
+	background: var(--fp-paper-warm);
+	border: 1.5px solid var(--fp-ink);
+	border-radius: var(--fp-r-pill);
+	overflow: hidden;
+}
+.fp-progress-bar .fp-progress-fill {
+	height: 100%;
+	background: var(--fp-saffron);
+	border-radius: var(--fp-r-pill);
+}
+
+/* ── Settings data-sovereignty card ── */
+.fp-data-card {
+	background: var(--fp-ink);
+	color: var(--fp-paper);
+	border-radius: var(--fp-r-md);
+	padding: 14px 16px;
+}
+
+/* ── Atelier (progress) stat cards + heatmap ── */
+.fp-stat-card {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	background: var(--fp-paper);
+	border: 1.5px solid var(--fp-ink);
+	border-radius: 16px;
+	padding: 16px;
+	box-shadow: var(--fp-shadow-card);
+}
+.fp-stat-num {
+	font-size: 32px;
+	line-height: 1;
+	color: var(--fp-ink);
+}
+.fp-stat-lbl {
+	font-family: var(--fp-font-mono);
+	font-size: 10px;
+	text-transform: uppercase;
+	letter-spacing: 0.18em;
+	color: var(--fp-muted);
+}
+.fp-heatmap {
+	display: grid;
+	grid-template-rows: repeat(7, 1fr);
+	grid-auto-flow: column;
+	grid-auto-columns: 1fr;
+	gap: 3px;
+}
+.fp-heat-cell {
+	aspect-ratio: 1;
+	border-radius: 2px;
+	border: 1px solid rgba(43, 27, 23, 0.08);
+}
+
+/* ── Review grade buttons ── */
+.fp-grade-btn {
+	min-height: 44px;
+	padding: 12px 6px;
+	text-align: center;
+	border: 2px solid var(--fp-ink);
+	border-radius: 14px;
+	box-shadow: var(--fp-shadow-card);
+	cursor: pointer;
+	font-weight: 800;
+	font-size: 14px;
+	color: var(--fp-ink);
+	transition:
+		transform 0.1s ease,
+		box-shadow 0.1s ease;
+}
+.fp-grade-btn:focus-visible {
+	outline: 2px solid var(--fp-ink);
+	outline-offset: 2px;
+}
+.fp-grade-btn:active {
+	transform: translate(2px, 2px);
+	box-shadow: 2px 2px 0 var(--fp-ink);
+}
+.fp-grade-btn--again {
+	background: #fbe3e3;
+}
+.fp-grade-btn--hard {
+	background: #fcefd8;
+}
+.fp-grade-btn--good {
+	background: #e7f0e1;
+}
+.fp-grade-btn--easy {
+	background: #dceaf6;
+}
+
+/* ── Exam mode (formal DELF/DALF) ── */
+.fp-exam-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 16px;
+	background: var(--fp-navy);
+	color: var(--fp-paper);
+	border: 2px solid var(--fp-ink);
+	border-radius: var(--fp-r-lg);
+	padding: 16px 22px;
+}
+.fp-exam-eyebrow {
+	font-family: var(--fp-font-mono);
+	font-size: 11px;
+	letter-spacing: 0.24em;
+	text-transform: uppercase;
+	opacity: 0.7;
+	margin: 0;
+}
+.fp-exam-title {
+	font-family: var(--fp-font-display);
+	font-size: 24px;
+	line-height: 1.1;
+	margin: 2px 0 0;
+	color: var(--fp-paper);
+}
+.fp-exam-badge {
+	width: 54px;
+	height: 54px;
+	flex-shrink: 0;
+	border: 2px solid var(--fp-paper);
+	border-radius: 50%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-family: var(--fp-font-display);
+	font-size: 18px;
+	line-height: 1;
+}
+.fp-exam-badge small {
+	font-family: var(--fp-font-mono);
+	font-size: 7px;
+	letter-spacing: 0.14em;
+	opacity: 0.7;
+}
+.fp-admis-stamp,
+.fp-recale-stamp {
+	display: inline-block;
+	border-radius: 8px;
+	padding: 6px 18px;
+	font-family: var(--fp-font-display);
+	font-size: 32px;
+	letter-spacing: 0.05em;
+	transform: rotate(-12deg);
+	animation: fp-stamp 0.8s ease-out both;
+}
+.fp-admis-stamp {
+	border: 3px solid #2e7d4f;
+	color: #2e7d4f;
+}
+.fp-recale-stamp {
+	border: 3px solid #b23232;
+	color: #b23232;
+}
+
 @layer components {
 	.page-shell {
 		@apply mx-auto min-h-dvh w-full max-w-xl px-4 py-6 md:max-w-2xl md:px-6 lg:max-w-4xl lg:px-8 xl:max-w-5xl;
 	}
 
 	.surface-card {
-		@apply rounded-xl border border-border bg-card;
-		box-shadow: var(--fp-elevation-1);
+		background: var(--fp-paper);
+		border: 1.5px solid var(--fp-ink);
+		border-radius: var(--fp-r-xl);
+		box-shadow: var(--fp-shadow-card);
 	}
 
 	.btn-primary {
-		@apply min-h-11 rounded-xl bg-primary px-4 py-3 font-semibold text-primary-foreground hover:bg-primary-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:bg-disabled;
-		background-image: linear-gradient(135deg, var(--fp-primary) 0%, var(--fp-primary-hover) 100%);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 44px;
+		background: var(--fp-jaipur);
+		color: var(--fp-paper);
+		border: 2px solid var(--fp-ink);
+		border-radius: var(--fp-r-pill);
+		padding: 14px 24px;
+		font-weight: 800;
+		font-size: 15px;
+		box-shadow: var(--fp-shadow-card);
+		transition:
+			transform 0.1s ease,
+			box-shadow 0.1s ease;
+		cursor: pointer;
+	}
+	.btn-primary:focus-visible {
+		outline: 2px solid var(--fp-ink);
+		outline-offset: 2px;
+	}
+	.btn-primary:active {
+		transform: translate(2px, 2px);
+		box-shadow: 2px 2px 0 var(--fp-ink);
+	}
+	.btn-primary:disabled {
+		cursor: not-allowed;
+		opacity: 0.6;
 	}
 
 	.btn-secondary {
@@ -350,7 +598,11 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	}
 
 	.field-input {
-		@apply min-h-11 w-full rounded-lg border border-border bg-card px-3 py-2 text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+		@apply min-h-11 w-full px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+		border: 1.5px solid var(--fp-ink);
+		border-radius: var(--fp-r-md);
+		background: var(--fp-paper);
+		color: var(--fp-ink);
 	}
 
 	.feedback-correct {

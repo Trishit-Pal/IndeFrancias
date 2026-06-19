@@ -2,7 +2,7 @@ import type { Settings } from '$lib/db/schema';
 
 /** Whether a revision reminder notification should fire. */
 export function shouldNotify(dueCount: number, settings: Settings): boolean {
-	return settings.revisionNotifications && dueCount > 0;
+	return (settings.revisionNotifications ?? false) && dueCount > 0;
 }
 
 export function revisionNotificationBody(dueCount: number): string {

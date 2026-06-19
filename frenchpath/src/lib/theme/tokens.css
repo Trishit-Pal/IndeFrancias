@@ -1,0 +1,58 @@
+/* FrenchPath Design Tokens — generated from Le Grand Voyage redesign */
+/* Imported via src/routes/layout.css.                                       */
+/* NOTE: Google Fonts are loaded once via <link> tags in src/app.html        */
+/* (preconnect + display=swap), so this file intentionally omits the         */
+/* runtime @import url() the source package shipped — it would double-fetch   */
+/* and an @import after :root is invalid CSS placement.                       */
+
+:root {
+	/* ── Palette ── */
+	--fp-cream: #f7efe3; /* page background         */
+	--fp-paper: #fffbf3; /* card / surface          */
+	--fp-paper-warm: #f4ead9; /* inset / stripe          */
+	--fp-ink: #2b1b17; /* primary text / borders  */
+	--fp-ink-soft: #4a352d; /* body text               */
+	--fp-muted: #7a5d52; /* secondary labels        */
+
+	--fp-jaipur: #e94f64; /* primary accent (Jaipur pink)   */
+	--fp-jaipur-light: #f4d5c2; /* tinted surface                 */
+	--fp-terracotta: #c75b3d; /* Mira / warm accent             */
+	--fp-saffron: #d4a24c; /* gold / XP / postcard           */
+	--fp-sage: #8aa67a; /* success / complete             */
+	--fp-seine: #2d6cdf; /* Léo / French blue accent       */
+	--fp-seine-light: #a8c5f0; /* light blue surface             */
+	--fp-navy: #1f2a44; /* exam mode / formal             */
+	--fp-midnight: #3a3258; /* evening ritual bg start        */
+
+	/* ── Canvas ── */
+	--fp-canvas: #e5dacf; /* outermost page BG              */
+
+	/* ── Typography ── */
+	--fp-font-display: 'Instrument Serif', Georgia, serif;
+	--fp-font-hindi: 'Tiro Devanagari Hindi', serif;
+	--fp-font-ui: 'Manrope', system-ui, sans-serif;
+	--fp-font-mono: 'DM Mono', 'Courier New', monospace;
+
+	/* ── Spacing scale ── */
+	--fp-r-sm: 12px;
+	--fp-r-md: 16px;
+	--fp-r-lg: 20px;
+	--fp-r-xl: 24px;
+	--fp-r-2xl: 32px;
+	--fp-r-pill: 999px;
+
+	/* ── Shadows ── */
+	--fp-shadow-card: 4px 4px 0 var(--fp-ink);
+	--fp-shadow-float: 0 30px 50px -20px rgba(43, 27, 23, 0.35);
+}
+
+/* ── Exam-mode overrides ──                                                  */
+/* Phase 7 toggles `.fp-exam-mode` on <body>; defining the vars on a          */
+/* standalone class (not :root&) lets them cascade from <body> to the         */
+/* exam subtree. The original `:root { &.fp-exam-mode }` compiled to          */
+/* `html.fp-exam-mode` and would never match the body-level class.            */
+.fp-exam-mode {
+	--fp-jaipur: #1f2a44;
+	--fp-paper: #fbf7ee;
+	--fp-font-display: 'Instrument Serif', Georgia, serif;
+}

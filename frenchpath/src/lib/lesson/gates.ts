@@ -211,14 +211,16 @@ function gatePassed(gateId: string, passedAssessmentIds: Set<string>): boolean {
 	return passedAssessmentIds.has(assessmentIdForGate(gateId));
 }
 
-/** First gate blocking progression after completing `afterUnitId`, if any. */
+/** First gate blocking progression after completing `afterUnitId`, if any.
+ * Multiple gates can share the same afterUnitId (e.g. checkpoint then milestone);
+ * returns the first unpassed one so they are surfaced in array-order. */
 export function pendingGateAfterUnit(
 	unitId: string,
 	passedAssessmentIds: Set<string>
 ): GateDefinition | undefined {
-	const gate = CHECKPOINT_GATES.find((g) => g.afterUnitId === unitId);
-	if (!gate) return undefined;
-	return gatePassed(gate.id, passedAssessmentIds) ? undefined : gate;
+	const gates = CHECKPOINT_GATES.filter((g) => g.afterUnitId === unitId);
+	if (!gates.length) return undefined;
+	return gates.find((g) => !gatePassed(g.id, passedAssessmentIds));
 }
 
 /** All gates that are unlocked (prereq units done) but not yet passed. */
@@ -331,7 +333,7 @@ export function delfB2Unlocked(passedAssessmentIds: Set<string>): boolean {
 }
 
 export function dalfC1Unlocked(passedAssessmentIds: Set<string>): boolean {
-	return passedAssessmentIds.has('milestone:B2');
+	return passedAssessmentIds.has('milestone:C1');
 }
 
 export function cefrLevelForUnit(unitId: string): CefrLevel {

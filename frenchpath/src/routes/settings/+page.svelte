@@ -27,6 +27,8 @@
 		type BackupPreview
 	} from '$lib/pwa/backup';
 	import { ensurePersistence, isPersisted } from '$lib/pwa/persist';
+	import { isNativePlatform } from '$lib/platform';
+	import { exportBackupNative } from '$lib/platform/backup';
 	import { applyTheme } from '$lib/theme/apply';
 	import { configureTts, listFrenchVoices, voicesReady } from '$lib/audio/tts';
 	import { revisionNotificationBody } from '$lib/pwa/revisionNotify';
@@ -148,17 +150,29 @@
 	}
 
 	async function download() {
-		const blob = new Blob([await exportBackup()], { type: 'application/json' });
-		const url = URL.createObjectURL(blob);
-		const link = document.createElement('a');
-		link.href = url;
-		link.download = `frenchpath-backup-${new Date().toISOString().slice(0, 10)}.json`;
-		link.click();
-		URL.revokeObjectURL(url);
-		const exportedAt = new Date().toISOString();
-		localStorage.setItem(LAST_EXPORT_KEY, exportedAt);
-		lastExportAt = exportedAt;
-		message = 'Backup downloaded.';
+		try {
+			const json = await exportBackup();
+			const filename = `frenchpath-backup-${new Date().toISOString().slice(0, 10)}.json`;
+			if (isNativePlatform()) {
+				await exportBackupNative(json, filename);
+			} else {
+				const blob = new Blob([json], { type: 'application/json' });
+				const url = URL.createObjectURL(blob);
+				const link = document.createElement('a');
+				link.href = url;
+				link.download = filename;
+				link.click();
+				URL.revokeObjectURL(url);
+			}
+			const exportedAt = new Date().toISOString();
+			localStorage.setItem(LAST_EXPORT_KEY, exportedAt);
+			lastExportAt = exportedAt;
+			message = 'Backup downloaded.';
+		} catch (error) {
+			// Surface native (share/filesystem) or web failures instead of
+			// throwing unhandled — backup is the only data-recovery path.
+			message = error instanceof Error ? error.message : 'Backup export failed.';
+		}
 	}
 
 	async function onFile(event: Event) {
@@ -222,7 +236,12 @@
 <svelte:head><title>Settings · FrenchPath</title></svelte:head>
 
 <main class="page-shell">
-	<h1 class="text-2xl font-bold text-foreground md:text-3xl">{m.settings_title()}</h1>
+	<h1
+		class="text-foreground"
+		style="font-family: var(--fp-font-display); font-size: 38px; font-weight: 400; line-height: 1.1"
+	>
+		{m.settings_title()}
+	</h1>
 
 	{#if settings}
 		<div class="mt-5 space-y-6">
@@ -493,9 +512,12 @@
 
 			<section class="surface-card p-4">
 				<h2 class="font-semibold text-foreground">Storage & backup</h2>
-				<p class="mt-2 text-sm text-muted" data-testid="data-local-notice">
-					Your learning data exists only on this device. Export regularly to avoid losing progress.
-				</p>
+				<div class="fp-data-card mt-2" data-testid="data-local-notice">
+					<p class="text-sm font-medium">
+						No account, no cloud — your learning data lives only on this device. Export regularly to
+						avoid losing progress.
+					</p>
+				</div>
 				<p class="mt-1 text-sm text-muted">
 					Persistent storage: <span class="font-medium text-foreground"
 						>{persisted ? 'on' : 'best-effort'}</span

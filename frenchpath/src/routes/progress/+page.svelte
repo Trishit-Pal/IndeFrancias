@@ -14,6 +14,7 @@
 	import { countDue } from '$lib/srs/queue';
 	import { todayKey, lastNDayKeys } from '$lib/utils/date';
 	import { shareProgress } from '$lib/share/shareCard';
+	import CharacterCoco from '$lib/components/CharacterCoco.svelte';
 	import * as m from '$lib/paraglide/messages';
 
 	let streak = $state(0);
@@ -27,6 +28,8 @@
 	let assessments = $state<AssessmentRecord[]>([]);
 	let targetExamDate = $state<string | null>(null);
 	let weekReviewed = $state(0);
+	let totalXp = $state(0);
+	let heatmap = $state<{ date: string; xp: number }[]>([]);
 
 	const SKILL_LABELS: Record<Skill, string> = {
 		listening: 'Listening',
@@ -35,6 +38,28 @@
 		spokenProduction: 'Speaking (production)',
 		writing: 'Writing'
 	};
+
+	const SKILL_COLORS: Record<Skill, string> = {
+		listening: 'var(--fp-seine)',
+		reading: 'var(--fp-sage)',
+		spokenInteraction: 'var(--fp-jaipur)',
+		spokenProduction: 'var(--fp-terracotta)',
+		writing: 'var(--fp-saffron)'
+	};
+
+	// 12-week practice heatmap (GitHub-style) shading thresholds.
+	const HEAT_COLORS = ['#ede1cf', '#cfe0c2', '#9dbe85', '#5f8c46'];
+	function heatLevel(xp: number): number {
+		if (xp <= 0) return 0;
+		if (xp < 20) return 1;
+		if (xp < 50) return 2;
+		return 3;
+	}
+
+	// Coco companion grows with cumulative XP (chef hat at Niveau 5).
+	const cocoLevel = $derived(Math.min(10, Math.floor(totalXp / 250) + 1));
+	const cocoXpPercent = $derived(((totalXp % 250) / 250) * 100);
+	const xpToNextLevel = $derived(cocoLevel >= 10 ? 0 : 250 - (totalXp % 250));
 
 	const weakestSkill = $derived(
 		[...skillProfiles].sort(
@@ -68,13 +93,16 @@
 			(a, b) => b.completedAt - a.completedAt
 		);
 
+		const allStats = await statsRepo.getAllStats();
+		const statsByDate = new Map(allStats.map((s) => [s.date, s] as const));
 		const keys = lastNDayKeys(7);
-		const statsByDate = new Map((await statsRepo.getAllStats()).map((s) => [s.date, s] as const));
 		weekXp = keys.map((date) => ({
 			label: date.slice(5),
 			xp: statsByDate.get(date)?.xp ?? 0
 		}));
 		weekReviewed = keys.reduce((sum, date) => sum + (statsByDate.get(date)?.reviewsDone ?? 0), 0);
+		totalXp = allStats.reduce((sum, s) => sum + (s.xp ?? 0), 0);
+		heatmap = lastNDayKeys(84).map((date) => ({ date, xp: statsByDate.get(date)?.xp ?? 0 }));
 		skillProfiles = await skillProfileRepo.getAllSkillProfiles();
 	});
 
@@ -100,11 +128,16 @@
 	}
 </script>
 
-<svelte:head><title>Progress · FrenchPath</title></svelte:head>
+<svelte:head><title>L'Atelier · FrenchPath</title></svelte:head>
 
 <main class="page-shell">
-	<h1 class="text-2xl font-bold text-foreground md:text-3xl">{m.progress_title()}</h1>
-	<p class="text-sm text-muted">{m.progress_subtitle()}</p>
+	<h1
+		class="text-foreground"
+		style="font-family: var(--fp-font-display); font-size: 38px; font-weight: 400; line-height: 1.1"
+	>
+		L'Atelier
+	</h1>
+	<p class="text-sm" style="color: var(--fp-muted)">{m.progress_subtitle()}</p>
 
 	{#if examCountdown() !== null}
 		<p class="mt-2 text-sm font-medium text-primary" data-testid="exam-countdown">
@@ -181,10 +214,10 @@
 
 	<ul class="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
 		{#each stats as stat (stat.label)}
-			<li class="surface-card p-4">
-				<p class="text-xl md:text-2xl">{stat.icon}</p>
-				<p class="mt-1 text-2xl font-bold text-foreground md:text-3xl">{stat.value}</p>
-				<p class="text-sm text-muted">{stat.label}</p>
+			<li class="fp-stat-card">
+				<span class="text-xl md:text-2xl">{stat.icon}</span>
+				<span class="fp-stat-num" style="font-family: var(--fp-font-display)">{stat.value}</span>
+				<span class="fp-stat-lbl">{stat.label}</span>
 			</li>
 		{/each}
 	</ul>
@@ -206,12 +239,15 @@
 								<span class="text-foreground">{SKILL_LABELS[profile.skill]}</span>
 								<span class="font-medium text-primary">{profile.estimatedLevel}</span>
 							</div>
-							<div class="mt-1 h-2 overflow-hidden rounded-full bg-subtle">
+							<div
+								class="mt-1 h-2.5 overflow-hidden rounded-full"
+								style="border: 1.5px solid var(--fp-ink); background: var(--fp-paper-warm)"
+							>
 								<div
-									class="fp-progress-fill h-full rounded-full bg-primary"
+									class="fp-progress-fill h-full rounded-full"
 									style="width: {(['A1', 'A2', 'B1', 'B2', 'C1'].indexOf(profile.estimatedLevel) +
 										1) *
-										20}%"
+										20}%; background: {SKILL_COLORS[profile.skill]}"
 								></div>
 							</div>
 						</li>
@@ -233,5 +269,33 @@
 				</ul>
 			</div>
 		{/if}
+	</section>
+
+	<section class="mt-5 grid gap-5 lg:grid-cols-3">
+		<div class="surface-card p-4 lg:col-span-2">
+			<h2 style="font-family: var(--fp-font-display); font-size: 18px">Activité · 12 semaines</h2>
+			<div class="fp-heatmap mt-3" role="img" aria-label="Practice activity, last 84 days">
+				{#each heatmap as cell (cell.date)}
+					<span
+						class="fp-heat-cell"
+						style="background: {HEAT_COLORS[heatLevel(cell.xp)]}"
+						title="{cell.date}: {cell.xp} XP"
+					></span>
+				{/each}
+			</div>
+		</div>
+
+		<div class="surface-card p-4 text-center">
+			<CharacterCoco size="lg" level={cocoLevel} animate={true} />
+			<p style="font-family: var(--fp-font-display); font-size: 18px">Coco · Niveau {cocoLevel}</p>
+			<div class="fp-progress-bar mt-2">
+				<div class="fp-progress-fill" style="width: {cocoXpPercent}%"></div>
+			</div>
+			<p
+				style="font-family: var(--fp-font-mono); font-size: 10px; color: var(--fp-muted); margin-top: 6px"
+			>
+				{#if cocoLevel < 10}{xpToNextLevel} XP → Niveau {cocoLevel + 1}{:else}Niveau max ⭐{/if}
+			</p>
+		</div>
 	</section>
 </main>

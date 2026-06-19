@@ -24,6 +24,8 @@
 	import GlossText from '$lib/components/GlossText.svelte';
 	import LessonShell from '$lib/components/LessonShell.svelte';
 	import ExerciseChrome from '$lib/components/ExerciseChrome.svelte';
+	import CharacterLeo from '$lib/components/CharacterLeo.svelte';
+	import CharacterMira from '$lib/components/CharacterMira.svelte';
 	import { fly, fade } from 'svelte/transition';
 	import * as m from '$lib/paraglide/messages';
 
@@ -360,14 +362,20 @@
 			{#if submitted}
 				<div
 					transition:fade={{ duration: reducedMotion ? 0 : 200 }}
-					class="mt-5 rounded-xl p-3 text-sm font-medium {correct
+					class="mt-5 flex items-center gap-3 rounded-2xl p-3 text-sm font-medium {correct
 						? 'feedback-correct animate-spring-in fp-feedback-pulse'
 						: 'feedback-incorrect animate-shake'}"
+					style="border: 2px solid var(--fp-ink)"
 					data-testid="feedback"
 					role="status"
 					aria-live="polite"
 				>
-					{correct ? m.lesson_correct() : m.lesson_incorrect()}
+					{#if correct}
+						<CharacterLeo size="sm" animate={!reducedMotion} />
+					{:else}
+						<CharacterMira size="sm" animate={!reducedMotion} />
+					{/if}
+					<span>{correct ? m.lesson_correct() : m.lesson_incorrect()}</span>
 				</div>
 				<button
 					type="button"

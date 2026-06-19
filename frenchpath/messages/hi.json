@@ -143,5 +143,6 @@
 	"hint_button": "संकेत",
 	"hint_remaining": "{count} संकेत बचे",
 	"exercise_coach_note": "सुझाव",
-	"lesson_shell_progress": "अभ्यास {current} / {total}"
+	"lesson_shell_progress": "अभ्यास {current} / {total}",
+	"review_fsrs_tip": "ईमानदार रहें — \"फिर से\" असफलता नहीं है; इसी से FSRS आपकी याददाश्त की curve सीखता है।"
 }

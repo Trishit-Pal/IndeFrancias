@@ -1,4 +1,7 @@
 // French text-to-speech via Web Speech API. Always uses a French voice when available.
+// On the Capacitor native shell, speaking routes to the native TTS plugin.
+import { isNativePlatform } from '$lib/platform';
+import { nativeSpeakFrench } from '$lib/platform/tts';
 
 export interface SpeakOptions {
 	voiceUri?: string | null;
@@ -19,7 +22,7 @@ function clampRate(rate: number): number {
 }
 
 export function ttsAvailable(): boolean {
-	return typeof window !== 'undefined' && 'speechSynthesis' in window;
+	return isNativePlatform() || (typeof window !== 'undefined' && 'speechSynthesis' in window);
 }
 
 /** True when voice.lang starts with fr (fr-FR, fr-CA, etc.). */
@@ -95,7 +98,14 @@ export function resolveFrenchVoice(
 }
 
 export function speakFrench(text: string, options: SpeakOptions = {}): void {
-	if (!ttsAvailable() || !text.trim()) return;
+	if (!text.trim()) return;
+
+	if (isNativePlatform()) {
+		void nativeSpeakFrench(text, clampRate(options.rate ?? cachedRate));
+		return;
+	}
+
+	if (!ttsAvailable()) return;
 
 	const voices = getVoices();
 	const voiceUri = options.voiceUri !== undefined ? options.voiceUri : cachedVoiceUri;

@@ -7,6 +7,12 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig(({ mode }) => ({
 	build: {
+		// Never inline fonts as data: URIs — the strict `default-src 'self'` CSP
+		// blocks data: fonts. Emitting them as same-origin asset files keeps the
+		// self-hosted webfonts CSP-compliant and offline-cacheable (the workbox
+		// glob below precaches woff/woff2).
+		assetsInlineLimit: (filePath: string) =>
+			/\.(woff2?|ttf|otf|eot)(\?.*)?$/i.test(filePath) ? false : undefined,
 		rollupOptions: {
 			output: {
 				manualChunks(id) {

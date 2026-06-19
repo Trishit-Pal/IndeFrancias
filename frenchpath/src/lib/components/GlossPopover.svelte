@@ -31,7 +31,7 @@
 
 <div
 	bind:this={popoverEl}
-	class="fp-gloss-popover surface-card fp-neon-border z-50 max-w-xs min-w-[12rem] p-3 shadow-lg"
+	class="surface-card z-50 max-w-xs min-w-[12rem] p-3"
 	role="dialog"
 	aria-label={entry?.french ?? unknownWord}
 	tabindex="-1"

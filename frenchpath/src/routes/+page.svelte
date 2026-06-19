@@ -15,11 +15,14 @@
 		delfB2Unlocked,
 		dalfC1Unlocked
 	} from '$lib/lesson/progression';
-	import PathScene from '$lib/path/PathScene.svelte';
+	import VoyageMap from '$lib/path/VoyageMap.svelte';
+	import DailyRitual from '$lib/components/DailyRitual.svelte';
+	import CharacterMira from '$lib/components/CharacterMira.svelte';
+	import CharacterCoco from '$lib/components/CharacterCoco.svelte';
 	import GateBanner from '$lib/components/GateBanner.svelte';
 	import WeakSkillChips from '$lib/components/WeakSkillChips.svelte';
-	import CelebrationOverlay from '$lib/celebration/CelebrationOverlay.svelte';
-	import type { CelebrationRequest } from '$lib/celebration/orchestrator';
+	import AchievementToast from '$lib/components/AchievementToast.svelte';
+	import type { CelebrationRequest, CelebrationEvent } from '$lib/celebration/orchestrator';
 	import { getNextDueMs } from '$lib/srs/queue';
 	import { dailyGoalProgress, type DailyGoal } from '$lib/gamification/activity';
 	import { ensurePersistence } from '$lib/pwa/persist';
@@ -41,7 +44,6 @@
 	let learningGoal = $state<import('$lib/db/schema').LearningGoal>('general');
 	let targetExamDate = $state<string | null>(null);
 	let reduceMotion = $state(false);
-	let celebrationLevel = $state<'full' | 'minimal'>('full');
 	let passedIds = $state<Set<string>>(new Set());
 	let nextReviewIn = $state<string | null>(null);
 	let celebration = $state<CelebrationRequest | null>(null);
@@ -66,6 +68,63 @@
 	const adaptiveTip = $derived(
 		suggestUnitForWeakSkill(units, skillProfiles, states)?.reason ?? null
 	);
+
+	// ── Le Grand Voyage presentation state ──
+	type Ritual = 'morning' | 'afternoon' | 'evening';
+	function getRitual(): Ritual {
+		const h = new Date().getHours();
+		if (h < 12) return 'morning';
+		if (h < 18) return 'afternoon';
+		return 'evening';
+	}
+	// Time-of-day greeting is fixed for the session; no reactivity needed.
+	const ritual = getRitual();
+
+	// Coco companion level grows with the day's XP (chef hat at Lvl 5).
+	const cocoLevel = $derived(Math.min(10, Math.floor(goal.xp / 250) + 1));
+	const cocoXpPercent = $derived(((goal.xp % 250) / 250) * 100);
+
+	// Voyage city label for the current CEFR band.
+	const CITY_MAP: Record<string, string> = {
+		A1: 'Marseille',
+		A2: 'Lyon',
+		B1: 'Bordeaux',
+		B2: 'Strasbourg',
+		C1: 'Paris'
+	};
+	const currentCity = $derived.by(() => {
+		const level = units.find((u) => u.id === currentUnitId)?.cefrLevel;
+		return level ? (CITY_MAP[level] ?? '') : '';
+	});
+
+	// Map celebration events onto the AchievementToast's event vocabulary.
+	type AchievementEvent =
+		| 'level_up'
+		| 'postcard'
+		| 'streak_7'
+		| 'streak_30'
+		| 'lesson_complete'
+		| 'exam_pass';
+	function toAchievementEvent(e: CelebrationEvent | undefined): AchievementEvent | null {
+		switch (e) {
+			case 'streak_7':
+			case 'streak_30':
+			case 'lesson_complete':
+				return e;
+			case 'delf_pass':
+				return 'exam_pass';
+			case 'checkpoint_pass':
+			case 'milestone_a1':
+			case 'milestone_a2':
+			case 'milestone_b1':
+			case 'milestone_b2':
+			case 'milestone_c1':
+				return 'level_up';
+			default:
+				return null;
+		}
+	}
+	const achievementEvent = $derived(toAchievementEvent(celebration?.event));
 
 	async function checkStreakMilestones(
 		currentStreak: number,
@@ -106,7 +165,6 @@
 		learningGoal = s.learningGoal;
 		targetExamDate = s.targetExamDate;
 		reduceMotion = s.reduceMotion;
-		celebrationLevel = s.celebrationLevel;
 		progressById = Object.fromEntries(all.map((p) => [p.lessonId, p]));
 		due = dueCount;
 		streak = streakRecord.currentStreak;
@@ -142,7 +200,7 @@
 {:else if !onboarded && OnboardingWizard}
 	<OnboardingWizard onComplete={finishOnboarding} {reduceMotion} />
 {:else}
-	<main class="page-shell fp-parallax-bg">
+	<main class="page-shell">
 		<header class="flex flex-wrap items-center justify-between gap-4">
 			<div class="flex items-center gap-3">
 				<img src="/icon.svg" alt="" class="h-10 w-10 rounded-lg shadow-sm lg:hidden" />
@@ -151,46 +209,77 @@
 					<p class="text-sm text-muted lg:sr-only">{homeSubtitle}</p>
 				</div>
 			</div>
-			<div class="flex items-center gap-2">
-				<div
-					class="flex items-center gap-1 rounded-full bg-orange-100 px-3 py-1 text-sm font-semibold text-orange-800 dark:bg-orange-950 dark:text-orange-200"
-					title={m.home_streak_freezes()}
-					data-testid="streak-badge"
-				>
-					<span aria-hidden="true">🔥</span>
-					<span>{streak}</span>
-				</div>
-				<div
-					class="flex items-center gap-1 rounded-full bg-sky-100 px-3 py-1 text-sm font-semibold text-sky-800 dark:bg-sky-950 dark:text-sky-200"
-					title={m.home_streak_freezes()}
-					data-testid="freezes-badge"
-				>
-					<span aria-hidden="true">❄️</span>
-					<span>{freezesAvailable}</span>
-					<span class="sr-only">{m.home_streak_freezes()}</span>
-				</div>
-			</div>
 		</header>
 
 		<div class="mt-5 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-6">
 			<div class="space-y-4">
-				<section class="surface-card p-4">
-					<div class="flex items-center justify-between text-sm">
-						<span class="font-medium text-foreground">{m.home_daily_goal()}</span>
-						<span class="text-muted" data-testid="daily-goal">
-							{goal.xp} / {goal.goal} XP {goal.met ? '✓' : ''}
-						</span>
+				<!-- Time-of-day ritual greeting -->
+				<DailyRitual {ritual} />
+
+				<!-- Mira mentor + streak / freeze stats -->
+				<div class="surface-card flex items-center gap-3 p-4">
+					<CharacterMira size="sm" animate={!reduceMotion} />
+					<div class="flex-1">
+						<p
+							class="text-sm font-semibold"
+							style="font-family:var(--fp-font-display);font-style:italic"
+						>
+							{homeSubtitle}
+						</p>
+						<div class="mt-1 flex gap-2">
+							<span class="fp-stat-badge fp-stat-badge--fire" data-testid="streak-badge">
+								<span class="fp-flame" aria-hidden="true">🔥</span>
+								{streak}
+							</span>
+							<span
+								class="fp-stat-badge fp-stat-badge--ice"
+								title={m.home_streak_freezes()}
+								data-testid="freezes-badge"
+							>
+								<span aria-hidden="true">❄️</span>
+								{freezesAvailable}
+								<span class="sr-only">{m.home_streak_freezes()}</span>
+							</span>
+						</div>
 					</div>
-					<div class="mt-2 h-2 overflow-hidden rounded-full bg-subtle">
+				</div>
+
+				<!-- Daily goal ring -->
+				<section class="surface-card p-4" aria-label="Daily goal">
+					<div class="flex items-center gap-4">
 						<div
-							class="fp-progress-fill h-full rounded-full {goal.met
-								? 'bg-green-500'
-								: 'bg-primary'}"
-							style="width: {goalPercent}%"
-							data-testid="daily-goal-bar"
-						></div>
+							class="fp-goal-ring"
+							style="--pct:{goalPercent}%"
+							role="progressbar"
+							aria-valuenow={goal.xp}
+							aria-valuemin="0"
+							aria-valuemax={goal.goal}
+						>
+							<span class="fp-goal-ring-value" style="font-family:var(--fp-font-display)"
+								>{goal.xp}</span
+							>
+						</div>
+						<div>
+							<p class="font-semibold" style="font-family:var(--fp-font-display);font-size:17px">
+								{m.home_daily_goal()}
+							</p>
+							<p class="text-sm" style="color:var(--fp-muted)" data-testid="daily-goal">
+								{goal.xp} / {goal.goal} XP {goal.met ? '✓' : ''}
+							</p>
+						</div>
 					</div>
 				</section>
+
+				<!-- Coco companion -->
+				<div class="surface-card p-4 text-center">
+					<CharacterCoco size="md" animate={!reduceMotion} level={cocoLevel} />
+					<p style="font-family:var(--fp-font-display);font-size:14px;margin-top:6px">
+						Coco · Lvl {cocoLevel}
+					</p>
+					<div class="fp-progress-bar mt-2">
+						<div class="fp-progress-fill" style="width:{cocoXpPercent}%"></div>
+					</div>
+				</div>
 
 				{#if nextReviewIn}
 					<p class="text-sm text-muted" data-testid="next-review">
@@ -275,19 +364,29 @@
 				{/if}
 			</div>
 
-			<div>
-				<h2 class="mb-2 text-sm font-semibold tracking-wide text-muted uppercase">
-					{m.home_your_path()}
-				</h2>
-				<PathScene {units} {states} {progressById} {lockReasons} {currentUnitId} {reduceMotion} />
-			</div>
+			<section>
+				<div class="mb-2 flex items-baseline justify-between">
+					<h2 style="font-family:var(--fp-font-display);font-weight:400;font-size:32px">
+						Le Voyage
+					</h2>
+					{#if currentCity}
+						<span
+							style="font-family:var(--fp-font-mono);font-size:11px;color:var(--fp-muted);text-transform:uppercase;letter-spacing:.18em"
+						>
+							{currentCity}
+						</span>
+					{/if}
+				</div>
+				<VoyageMap {units} {states} {lockReasons} {currentUnitId} {reduceMotion} />
+			</section>
 		</div>
 	</main>
 {/if}
 
-<CelebrationOverlay
-	request={celebration}
-	{celebrationLevel}
-	{reduceMotion}
+<AchievementToast
+	event={achievementEvent}
+	title={celebration?.title ?? ''}
+	subtitle={celebration?.subtitle ?? ''}
+	{cocoLevel}
 	onDismiss={() => (celebration = null)}
 />
