@@ -159,6 +159,12 @@ This spec is kept honest by the `frenchpath-spec-sync` skill + `/spec-sync` comm
 - **Knowledge accrual:** learnings captured continuously (memory + per-skill `LEARNINGS.md`);
   folded into skill files with review at milestone boundaries.
 
+**Milestone distill checklist (run at each milestone close):**
+1. Review each skill's `LEARNINGS.md`; fold durable, repeatable learnings into the SKILL.md body.
+2. Prune folded entries from `LEARNINGS.md`.
+3. Update §8 (mark the milestone done, surface the next) and append a §11 row.
+4. Run `npm run spec:validate`.
+
 ## §11 Revision log
 
 | Date | Change | Sections | Severity |
