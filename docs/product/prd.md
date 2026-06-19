@@ -1,5 +1,8 @@
 # FrenchPath — Product Requirements Document (PRD)
 
+> ⬆️ **The authoritative spec is now [`docs/spec/SPEC.md`](../spec/SPEC.md).** This PRD is a
+> detailed product-requirements *appendix* to it. If the two disagree, SPEC.md wins.
+
 > Single source of truth for what FrenchPath is, who it's for, and what it must do.
 > Status: living document. Last revised 2026-06-16.
 

@@ -17,6 +17,7 @@
 		"test:e2e": "playwright install && playwright test",
 		"content:generate": "tsx scripts/generate-content.ts",
 		"content:validate": "tsx scripts/validate-content.ts",
+		"spec:validate": "tsx scripts/validate-spec.ts",
 		"content:proofread": "tsx scripts/proofread-report.ts",
 		"content:proofread:launch": "tsx scripts/proofread-report.ts --launch",
 		"content:translate-glosses": "tsx scripts/translate-glosses.ts",

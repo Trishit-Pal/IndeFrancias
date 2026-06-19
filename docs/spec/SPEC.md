@@ -95,6 +95,9 @@ CSP in `svelte.config.js`. Capacitor 8 wraps the same build for Android/iOS. **N
 
 Detail: appendix [architecture-map](../architecture-map.md), [mobile-architecture](../product/mobile-architecture.md).
 
+**Test baseline:** 188 unit + 35 e2e green (the authoritative count; supersedes any differing
+figure in other docs).
+
 ## §6 Domain module index
 
 `src/lib/` domains and their authoritative docs:
@@ -161,3 +164,4 @@ This spec is kept honest by the `frenchpath-spec-sync` skill + `/spec-sync` comm
 | Date | Change | Sections | Severity |
 |---|---|---|---|
 | 2026-06-18 | Spec created (mother book established) | all | — |
+| 2026-06-18 | Reconciled test-count drift to ground truth (188 unit + 35 e2e) | §5 | LOW |
