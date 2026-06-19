@@ -4,7 +4,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 // Run `npm run build:cap` (build + copy 200.html→index.html) before `npx cap sync`.
 // See docs/product/mobile-architecture.md.
 const config: CapacitorConfig = {
-	appId: 'app.frenchpath', // TODO confirm final bundle id
+	appId: 'app.frenchpath',
 	appName: 'FrenchPath',
 	webDir: 'build',
 	backgroundColor: '#E5DACF', // Grand Voyage canvas
