@@ -125,9 +125,13 @@ an ADR is **high-severity** (see §10).
 Milestone-based increments. Each milestone = a spec entry → a plan in
 `docs/superpowers/plans/` → a tested increment.
 
-- **M1 — Stabilise & merge** `feature/grand-voyage-and-capacitor` (finish Grand Voyage UI +
-  Capacitor shell, all gates green, merge to `main`). *Current priority.*
-- **M2 — Launch** web PWA + Android + iOS **simultaneously**.
+- **M1 — Stabilise & merge** `feature/grand-voyage-and-capacitor` (Grand Voyage UI +
+  Capacitor shell). ✅ Code review complete; CRITICAL/HIGH defects fixed (dalfC1 gate bug,
+  g6/mA2 afterUnitId collision, backup version-range check, IDB transaction try/catch,
+  assessments schema .default([]), revisionNotify type fix, frame-ancestors HTTP header,
+  .gitattributes LF enforcement). All automated gates green (188 unit + 35 e2e). *Merge pending.*
+- **M2 — Launch** web PWA (Vercel) + Android APK (GitHub Releases direct download)
+  **simultaneously**. iOS deferred (no macOS).
 - **M3 — Native-speaker proofread** A1–A2 (satisfies invariant 5 for launch levels).
 - **M4 — B1–C1 curation** (beta → production, level by level).
 - **Later** — on-device ASR (speaking core); optional E2EE sync (prepared, deferred,
@@ -171,3 +175,5 @@ This spec is kept honest by the `frenchpath-spec-sync` skill + `/spec-sync` comm
 |---|---|---|---|
 | 2026-06-18 | Spec created (mother book established) | all | — |
 | 2026-06-18 | Reconciled test-count drift to ground truth (188 unit + 35 e2e) | §5 | LOW |
+| 2026-06-19 | Phase 1 defect fixes: .gitattributes, frame-ancestors HTTP header, capacitor bundle ID confirmed | §8 | LOW |
+| 2026-06-19 | Code-review: CRITICAL dalfC1 gate bug (B2→C1), HIGH g6/mA2 afterUnitId collision, backup version range + IDB tx try/catch, assessments .default([]), notify type fix | §8 | MEDIUM |
