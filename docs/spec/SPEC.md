@@ -62,6 +62,29 @@ Enforced on every change. An edit that touches this section is **high-severity**
 
 | ID | Capability | Status | Key files | Proof (testids / specs) | Appendix |
 |----|-----------|--------|-----------|------------------------|----------|
+| CAP-ONB | Onboarding wizard | shipped | `frenchpath/src/lib/components/OnboardingWizard.svelte` | `onboarding-wizard`, `onboarding-next`, `native-lang-{lang}`, `goal-{goal}`; `e2e/onboarding.e2e.ts` | prd |
+| CAP-PATH | Voyage path / home map | shipped | `frenchpath/src/lib/path/VoyageMap.svelte`, `frenchpath/src/lib/path/PathScene.svelte`, `frenchpath/src/lib/components/PathNode.svelte`, `frenchpath/src/routes/+page.svelte` | `path-scene`, `unit-card`, `streak-badge`, `daily-goal`; `e2e/app.e2e.ts` | architecture-map |
+| CAP-LESSON | Lesson runner | shipped | `frenchpath/src/routes/learn/[unitId]/+page.svelte`, `frenchpath/src/lib/lesson/complete.ts` | `start-lesson`, `check`, `feedback`, `continue`, `summary`, `xp-awarded`; `e2e/progression.e2e.ts` | testing |
+| CAP-EX | Exercise engine (11 types) | shipped | `frenchpath/src/lib/lesson/engine.ts`, `frenchpath/src/lib/lesson/exercises/` | `mcq-option`, `cloze-input`, `text-answer`, `reorder-answer`, `gender-option`, `reading-option`, `matching-select`; `src/lib/lesson/engine.spec.ts` | testing |
+| CAP-GLOSS | Native-language gloss bridges | shipped | `frenchpath/src/lib/content/gloss.ts`, `frenchpath/src/lib/components/GlossPopover.svelte` | `gloss-popover`, `easy-gloss-hint`; `e2e/gloss.e2e.ts` | content-curation |
+| CAP-SRS | FSRS-6 spaced repetition | shipped | `frenchpath/src/lib/srs/fsrs.ts`, `frenchpath/src/lib/srs/queue.ts`, `frenchpath/src/lib/srs/review.ts`, `frenchpath/src/lib/srs/optimizer.ts` | `e2e/review.e2e.ts` | architecture-map |
+| CAP-REVIEW | Review session | shipped | `frenchpath/src/routes/review/+page.svelte` | `grade-buttons`, `reveal`, `review-done`, `review-summary-accuracy`; `e2e/review.e2e.ts` | testing |
+| CAP-CHECK | Checkpoints & gates | shipped | `frenchpath/src/lib/assessment/checkpoint.ts`, `frenchpath/src/lib/lesson/gates.ts`, `frenchpath/src/routes/checkpoint/[groupId]/+page.svelte` | `checkpoint-start`, `checkpoint-check`, `gate-banner`; `e2e/checkpoint.e2e.ts` | testing |
+| CAP-EXAM | DELF/DALF mock exams | shipped | `frenchpath/src/lib/exam/score.ts`, `frenchpath/src/lib/exam/MockExamRunner.svelte`, `frenchpath/src/routes/exam/` | `start-exam`, `exam-check`, `exam-result`, `delf-card`, `delf-b1-card`, `delf-b2-card`, `dalf-c1-card`; `e2e/exam-b1.e2e.ts` | prd |
+| CAP-GAME | Gamification (streak/XP/skills/badges) | shipped | `frenchpath/src/lib/gamification/streak.ts`, `frenchpath/src/lib/gamification/activity.ts`, `frenchpath/src/lib/gamification/skillProfileUpdate.ts`, `frenchpath/src/lib/gamification/adaptiveSuggestions.ts` | `streak-badge`, `freezes-badge`, `daily-goal`, `xp-float`, `weak-skill-chips` | prd |
+| CAP-CELEB | Celebrations | shipped | `frenchpath/src/lib/celebration/orchestrator.ts`, `frenchpath/src/lib/celebration/CelebrationOverlay.svelte` | `celebration-overlay`, `celebration-skip`; `e2e/celebration.e2e.ts` | prd |
+| CAP-TTS | TTS + record/compare | shipped | `frenchpath/src/lib/audio/tts.ts`, `frenchpath/src/lib/platform/tts.ts` | `tts-section`, `tts-voice-select`, `tts-speed-slider`; `e2e/tts.e2e.ts` | mobile-architecture |
+| CAP-BACKUP | Backup export/import (validate-before-destroy) | shipped | `frenchpath/src/lib/pwa/backup.ts`, `frenchpath/src/lib/pwa/backupSchema.ts`, `frenchpath/src/lib/pwa/checksum.ts`, `frenchpath/src/lib/pwa/migrations.ts`, `frenchpath/src/lib/platform/backup.ts` | `backup-export`, `backup-import`, `import-preview`, `import-confirm`; `e2e/backup.e2e.ts` | data-sovereignty |
+| CAP-PERSIST | Persistence guarantee | shipped | `frenchpath/src/lib/pwa/persist.ts` | `data-local-notice` | data-sovereignty |
+| CAP-NOTIFY | Revision reminders | shipped | `frenchpath/src/lib/pwa/revisionNotify.ts`, `frenchpath/src/lib/platform/notifications.ts` | `revision-notifications`, `test-notification`; `e2e/settings.e2e.ts` | mobile-architecture |
+| CAP-I18N | i18n (10 locales) + gloss | shipped | `frenchpath/messages/`, `frenchpath/project.inlang/settings.json` | `language-select`; `e2e/settings.e2e.ts` | prd |
+| CAP-SETTINGS | Settings + data-sovereignty panel | shipped | `frenchpath/src/routes/settings/+page.svelte` | `sovereignty-panel`, `reset-progress`, `theme-select`, `reduce-motion`; `e2e/settings.e2e.ts` | data-sovereignty |
+| CAP-PROGRESS | Progress / L'Atelier | shipped | `frenchpath/src/routes/progress/+page.svelte` | `xp-chart`, `skill-profile`, `review-forecast`, `assessment-history` | testing |
+| CAP-CONTENT | Content packs + schema (A1–C1) | beta (B1–C1) | `frenchpath/src/lib/content/schema.ts`, `frenchpath/src/lib/content/loader.ts`, `frenchpath/src/content/packs/` | `src/lib/content/content.spec.ts` | content-curation |
+| CAP-SHARE | Share cards | shipped | `frenchpath/src/lib/share/shareCard.ts` | `share-lesson`, `share-progress`, `share-exam`, `share-review` | prd |
+| CAP-PWA | PWA/offline shell + CSP | shipped | `frenchpath/svelte.config.js`, `frenchpath/src/lib/security/` | `offline-banner`; security specs | architecture-map |
+| CAP-MOBILE | Capacitor native shell | shipped | `frenchpath/src/lib/platform/shell.ts`, `frenchpath/src/lib/platform/haptics.ts`, `frenchpath/scripts/prepare-cap.mjs` | — | mobile-architecture |
+| CAP-SYNC | Optional E2EE sync (prepared) | planned | `frenchpath/src/lib/sync/types.ts` | — | data-sovereignty |
 
 ## §5 Architecture overview
 
