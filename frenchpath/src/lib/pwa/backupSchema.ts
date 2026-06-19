@@ -127,7 +127,7 @@ export const backupPayloadSchema = z.object({
 	streak: z.array(streakSchema),
 	stats: z.array(statsSchema),
 	skillProfile: z.array(skillProfileSchema),
-	assessments: z.array(assessmentSchema).optional()
+	assessments: z.array(assessmentSchema).default([])
 });
 export type BackupPayload = z.infer<typeof backupPayloadSchema>;
 

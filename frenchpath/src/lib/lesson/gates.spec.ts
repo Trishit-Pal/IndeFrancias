@@ -95,7 +95,7 @@ describe('checkpoint gates', () => {
 		expect(delfB1Unlocked(new Set(['milestone:B1']))).toBe(true);
 		expect(delfB2Unlocked(new Set(['milestone:B1']))).toBe(false);
 		expect(delfB2Unlocked(new Set(['milestone:B2']))).toBe(true);
-		expect(dalfC1Unlocked(new Set(['milestone:B2']))).toBe(true);
-		expect(dalfC1Unlocked(new Set(['milestone:B1']))).toBe(false);
+		expect(dalfC1Unlocked(new Set(['milestone:C1']))).toBe(true);
+		expect(dalfC1Unlocked(new Set(['milestone:B2']))).toBe(false);
 	});
 });

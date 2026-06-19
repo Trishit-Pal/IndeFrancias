@@ -45,10 +45,11 @@ export async function previewBackup(json: string): Promise<BackupPreview> {
 	assertBackupSize(json);
 	const raw = parseBackupJson(json);
 	const version = raw.schemaVersion ?? raw.version;
-	if (version !== 1 && version !== 2 && version !== CURRENT_BACKUP_VERSION) {
+	if (typeof version !== 'number' || version < 1 || version > CURRENT_BACKUP_VERSION) {
 		throw new Error(`Unsupported backup version: ${String(version)}`);
 	}
-	if (version === 2 || version === CURRENT_BACKUP_VERSION) {
+	// v2+ files carry a checksum; verify before any migration or mutation.
+	if (version >= 2) {
 		const expected = await sha256Hex(JSON.stringify(raw.payload ?? null));
 		if (expected !== raw.checksum) {
 			throw new Error(
@@ -149,13 +150,11 @@ async function importBackupInner(json: string): Promise<void> {
 	assertBackupSize(json);
 	const raw = parseBackupJson(json);
 	const version = raw.schemaVersion ?? raw.version;
-	if (version !== 1 && version !== 2 && version !== CURRENT_BACKUP_VERSION) {
+	if (typeof version !== 'number' || version < 1 || version > CURRENT_BACKUP_VERSION) {
 		throw new Error(`Unsupported backup version: ${String(version)}`);
 	}
-
-	// For natively-v2 files, verify integrity over the RAW payload (stable key
-	// order matches what exportBackup hashed). v1 files have no checksum to check.
-	if (version === 2 || version === CURRENT_BACKUP_VERSION) {
+	// v2+ files carry a checksum; verify before any migration or mutation.
+	if (version >= 2) {
 		const expected = await sha256Hex(JSON.stringify(raw.payload ?? null));
 		if (expected !== raw.checksum) {
 			throw new Error(
@@ -172,19 +171,26 @@ async function importBackupInner(json: string): Promise<void> {
 	const p = parsed.data.payload;
 
 	// Validation passed — only now mutate the database, atomically.
+	// All clears + puts are inside one transaction: if any put throws, IDB rolls
+	// back the entire transaction (including the clears), leaving data unchanged.
 	const db = await getDB();
 	const tx = db.transaction(STORES, 'readwrite');
-	await Promise.all(STORES.map((store) => tx.objectStore(store).clear()));
+	try {
+		await Promise.all(STORES.map((store) => tx.objectStore(store).clear()));
 
-	if (p.settings) await tx.objectStore('settings').put(p.settings as Settings, SETTINGS_KEY);
-	for (const r of p.progress) await tx.objectStore('progress').put(r as ProgressRecord);
-	for (const r of p.srsCards) await tx.objectStore('srsCards').put(reviveCard(r));
-	for (const r of p.reviewLog) await tx.objectStore('reviewLog').put(r as ReviewLogRecord);
-	for (const r of p.streak) await tx.objectStore('streak').put(r as StreakRecord);
-	for (const r of p.stats) await tx.objectStore('stats').put(r as DailyStats);
-	for (const r of p.skillProfile) await tx.objectStore('skillProfile').put(r as SkillProfileRecord);
-	for (const r of p.assessments ?? [])
-		await tx.objectStore('assessments').put(r as AssessmentRecord);
+		if (p.settings) await tx.objectStore('settings').put(p.settings as Settings, SETTINGS_KEY);
+		for (const r of p.progress) await tx.objectStore('progress').put(r as ProgressRecord);
+		for (const r of p.srsCards) await tx.objectStore('srsCards').put(reviveCard(r));
+		for (const r of p.reviewLog) await tx.objectStore('reviewLog').put(r as ReviewLogRecord);
+		for (const r of p.streak) await tx.objectStore('streak').put(r as StreakRecord);
+		for (const r of p.stats) await tx.objectStore('stats').put(r as DailyStats);
+		for (const r of p.skillProfile)
+			await tx.objectStore('skillProfile').put(r as SkillProfileRecord);
+		for (const r of p.assessments) await tx.objectStore('assessments').put(r as AssessmentRecord);
 
-	await tx.done;
+		await tx.done;
+	} catch (err) {
+		tx.abort();
+		throw new Error('Restore failed — your existing data is unchanged', { cause: err });
+	}
 }
