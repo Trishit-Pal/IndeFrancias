@@ -1,6 +1,6 @@
 # Living Spec System Implementation Plan
 
-> **✅ Status: COMPLETED & VERIFIED (2026-06-20).** All 6 tasks shipped in commits `fe19afc` → `221fd52`; `npm run spec:validate` passes (11 sections, 60 file anchors, 8 links verified). Checkboxes below are ticked to reflect the verified-done state.
+> **✅ Status: COMPLETED & VERIFIED (2026-06-20).** All 6 tasks shipped in commits `fe19afc` → `221fd52`; `npm run spec:validate` passes (11 sections, 66 file anchors, 8 links verified). Checkboxes below are ticked to reflect the verified-done state.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 

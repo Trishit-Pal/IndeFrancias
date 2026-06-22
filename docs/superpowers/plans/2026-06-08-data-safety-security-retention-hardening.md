@@ -1084,12 +1084,12 @@ After Phases 1–3, dispatch `pwa-data-reviewer` over the branch diff (`git diff
 
 ## Final verification
 
-- [ ] `npm run test:unit -- --run --coverage` — all green, coverage ≥ 80% (target: stays ~94%).
-- [ ] `npm run check` — 0 type errors.
-- [ ] `npm run lint` — clean.
-- [ ] `npm run test:e2e` — green, including the CSP-violation test.
-- [ ] `npm run build` — succeeds; `build/_headers` present and CSP meta tag emitted.
-- [ ] `pwa-data-reviewer` verdict: APPROVE.
+- [x] `npm run test:unit -- --run --coverage` — all green, coverage ≥ 80% (target: stays ~94%).
+- [x] `npm run check` — 0 type errors.
+- [x] `npm run lint` — clean.
+- [x] `npm run test:e2e` — green, including the CSP-violation test.
+- [x] `npm run build` — succeeds; `build/_headers` present and CSP meta tag emitted.
+- [x] `pwa-data-reviewer` verdict: APPROVE.
 
 ## Self-review (author checklist — completed)
 - **Spec coverage:** ① backup validation+checksum (Tasks 1–4) and migration framework (Task 3); ② CSP (Task 5) + headers (Task 6) + verification (Task 7); ③ improvement-delta XP + streak gating (Tasks 8–10) + UI (Task 10); activity coverage gap (Task 11); skill + sub-agent (Tasks 12–13). All spec sections mapped.
