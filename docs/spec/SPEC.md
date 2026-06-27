@@ -95,7 +95,7 @@ CSP in `svelte.config.js`. Capacitor 8 wraps the same build for Android/iOS. **N
 
 Detail: appendix [architecture-map](../architecture-map.md), [mobile-architecture](../product/mobile-architecture.md).
 
-**Test baseline:** 188 unit + 35 e2e green (the authoritative count; supersedes any differing
+**Test baseline:** 189 unit + 35 e2e green (the authoritative count; supersedes any differing
 figure in other docs).
 
 ## §6 Domain module index
@@ -129,7 +129,9 @@ Milestone-based increments. Each milestone = a spec entry → a plan in
   Capacitor shell). ✅ Code review complete; CRITICAL/HIGH defects fixed (dalfC1 gate bug,
   g6/mA2 afterUnitId collision, backup version-range check, IDB transaction try/catch,
   assessments schema .default([]), revisionNotify type fix, frame-ancestors HTTP header,
-  .gitattributes LF enforcement). All automated gates green (188 unit + 35 e2e). *Merge pending.*
+  .gitattributes LF enforcement). All automated gates green (189 unit + 35 e2e). ✅ **Merged to
+  `main`** (2026-06-27); the remote `feature/grand-voyage-and-capacitor` adds nothing to `main`
+  and can be pruned.
 - **M2 — Launch** web PWA (Vercel) + Android APK (GitHub Releases direct download)
   **simultaneously**. iOS deferred (no macOS).
 - **M3 — Native-speaker proofread** A1–A2 (satisfies invariant 5 for launch levels).
@@ -178,3 +180,5 @@ This spec is kept honest by the `frenchpath-spec-sync` skill + `/spec-sync` comm
 | 2026-06-19 | Phase 1 defect fixes: .gitattributes, frame-ancestors HTTP header, capacitor bundle ID confirmed | §8 | LOW |
 | 2026-06-19 | Code-review: CRITICAL dalfC1 gate bug (B2→C1), HIGH g6/mA2 afterUnitId collision, backup version range + IDB tx try/catch, assessments .default([]), notify type fix | §8 | MEDIUM |
 | 2026-06-20 | spec-sync: tied Le Grand Voyage UI components into §4 Key files — DailyRitual + Mira/Léo/Coco (CAP-PATH), ExamTimer (CAP-EXAM), AchievementToast (CAP-GAME) | §4 | MEDIUM |
+| 2026-06-27 | Reconciled M1: work confirmed on `main`, dropped stale "merge pending"; surfaced M2 as current | §8 | MEDIUM |
+| 2026-06-27 | CAP-CHECK: completed g6/mA2 collision fix — `buildLockReasonMap` now uses `pendingGateAfterUnit`, so a unit locked solely by the A2 milestone shows its reason (+1 regression test → 189 unit) | §5, §8 | MEDIUM |
