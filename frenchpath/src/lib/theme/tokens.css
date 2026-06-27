@@ -1,9 +1,9 @@
 /* FrenchPath Design Tokens — generated from Le Grand Voyage redesign */
 /* Imported via src/routes/layout.css.                                       */
-/* NOTE: Google Fonts are loaded once via <link> tags in src/app.html        */
-/* (preconnect + display=swap), so this file intentionally omits the         */
-/* runtime @import url() the source package shipped — it would double-fetch   */
-/* and an @import after :root is invalid CSS placement.                       */
+/* NOTE: Fonts are self-hosted via @fontsource imports in src/routes/         */
+/* +layout.svelte (NOT a CDN <link> or @import url()). The strict CSP         */
+/* (default-src 'self') blocks fonts.googleapis.com/gstatic.com, so any CDN   */
+/* font reference here would silently fail and fall back to the system stack. */
 
 :root {
 	/* ── Palette ── */
