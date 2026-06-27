@@ -293,8 +293,11 @@ export function buildLockReasonMap(
 			continue;
 		}
 
-		const gate = CHECKPOINT_GATES.find((g) => g.afterUnitId === prev.id);
-		if (gate && !gatePassed(gate.id, passedAssessmentIds)) {
+		// Use the collision-aware helper: when several gates share an afterUnitId
+		// (e.g. checkpoint g6 + milestone mA2 both after a2-unit-08), surface the
+		// first *unpassed* one, not just the first defined one.
+		const gate = pendingGateAfterUnit(prev.id, passedAssessmentIds);
+		if (gate) {
 			map.set(unit.id, `Pass ${gate.label} to unlock.`);
 			continue;
 		}
