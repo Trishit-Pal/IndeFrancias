@@ -81,6 +81,25 @@ describe('checkpoint gates', () => {
 		expect(CHECKPOINT_GATES.some((g) => g.id === 'mA1')).toBe(true);
 	});
 
+	it('surfaces the A2 milestone (not the already-passed checkpoint) as the lock reason', () => {
+		// g6 and mA2 share afterUnitId 'a2-unit-08'. Once g6 is passed but the A2
+		// milestone is not, the next unit must still explain *why* it is locked.
+		const a2Summaries: UnitSummary[] = [
+			...Array.from({ length: 8 }, (_, i) => ({
+				id: `a2-unit-${String(i + 1).padStart(2, '0')}`,
+				cefrLevel: 'A2' as const,
+				order: i + 1,
+				title: `A2 Unit ${i + 1}`,
+				objective: 'o'
+			})),
+			{ id: 'b1-unit-01', cefrLevel: 'B1' as const, order: 1, title: 'B1 Unit 1', objective: 'o' }
+		];
+		const progress = completed(...a2Summaries.slice(0, 8).map((u) => u.id));
+		const passed = new Set(['checkpoint:g6']);
+		const reason = lockReasonForUnit('b1-unit-01', a2Summaries, progress, passed);
+		expect(reason).toMatch(/A2 Milestone/);
+	});
+
 	it('buildLockReasonMap matches lockReasonForUnit for each unit', () => {
 		const progress = completed('a1-unit-01', 'a1-unit-02', 'a1-unit-03');
 		const passed = new Set<string>();

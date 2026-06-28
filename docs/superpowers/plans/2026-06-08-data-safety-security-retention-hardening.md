@@ -1,5 +1,7 @@
 # Data-Safety, Security & Retention-Integrity Hardening — Implementation Plan
 
+> **✅ Status: COMPLETED & VERIFIED (2026-06-20).** All tasks shipped via PR #1 (`2a4d992`, branch `hardening/data-safety-security-retention`) + follow-up fixes in `6095601`. Key artifacts confirmed on disk; CSP lives in `svelte.config.js` (SvelteKit native, not a separate file). Checkboxes below ticked to reflect verified-done state.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Harden FrenchPath's data layer (safe backup/restore + migration framework), add a defense-in-depth CSP, and close the XP/streak farming loophole — security and database first, UX second.
@@ -29,7 +31,7 @@
 - Create: `src/lib/pwa/checksum.ts`
 - Test: `src/lib/pwa/checksum.spec.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```ts
 // src/lib/pwa/checksum.spec.ts
@@ -51,12 +53,12 @@ describe('sha256Hex', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm run test:unit -- --run src/lib/pwa/checksum.spec.ts`
 Expected: FAIL — `sha256Hex` is not defined.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```ts
 // src/lib/pwa/checksum.ts
@@ -69,12 +71,12 @@ export async function sha256Hex(input: string): Promise<string> {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm run test:unit -- --run src/lib/pwa/checksum.spec.ts`
 Expected: PASS. (If `crypto` is undefined in the test env, add `import { webcrypto } from 'node:crypto'` and `globalThis.crypto ??= webcrypto as Crypto` to `src/tests/setup.ts`.)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/lib/pwa/checksum.ts src/lib/pwa/checksum.spec.ts
@@ -89,7 +91,7 @@ git commit -m "feat: add SHA-256 checksum util for backup integrity"
 - Create: `src/lib/pwa/backupSchema.ts`
 - Test: `src/lib/pwa/backupSchema.spec.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```ts
 // src/lib/pwa/backupSchema.spec.ts
@@ -124,12 +126,12 @@ describe('backupSchema', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm run test:unit -- --run src/lib/pwa/backupSchema.spec.ts`
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```ts
 // src/lib/pwa/backupSchema.ts
@@ -240,12 +242,12 @@ export const backupFileSchema = z.object({
 export type BackupFile = z.infer<typeof backupFileSchema>;
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm run test:unit -- --run src/lib/pwa/backupSchema.spec.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/lib/pwa/backupSchema.ts src/lib/pwa/backupSchema.spec.ts
@@ -260,7 +262,7 @@ git commit -m "feat: add zod schemas validating backup files at the import bound
 - Create: `src/lib/pwa/migrations.ts`
 - Test: `src/lib/pwa/migrations.spec.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```ts
 // src/lib/pwa/migrations.spec.ts
@@ -297,12 +299,12 @@ describe('migrateBackup', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm run test:unit -- --run src/lib/pwa/migrations.spec.ts`
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```ts
 // src/lib/pwa/migrations.ts
@@ -354,12 +356,12 @@ export async function migrateBackup(
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm run test:unit -- --run src/lib/pwa/migrations.spec.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/lib/pwa/migrations.ts src/lib/pwa/migrations.spec.ts
@@ -374,7 +376,7 @@ git commit -m "feat: add backup-file migration registry (v1->v2)"
 - Modify: `src/lib/pwa/backup.ts` (full rewrite)
 - Test: `src/lib/pwa/backup.spec.ts` (extend)
 
-- [ ] **Step 1: Write the failing tests** (append inside the existing `describe` block)
+- [x] **Step 1: Write the failing tests** (append inside the existing `describe` block)
 
 ```ts
 	it('rejects a tampered checksum and leaves existing data intact', async () => {
@@ -430,12 +432,12 @@ git commit -m "feat: add backup-file migration registry (v1->v2)"
 	});
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npm run test:unit -- --run src/lib/pwa/backup.spec.ts`
 Expected: FAIL — old import has no checksum/validation behavior.
 
-- [ ] **Step 3: Rewrite the implementation**
+- [x] **Step 3: Rewrite the implementation**
 
 ```ts
 // src/lib/pwa/backup.ts
@@ -543,17 +545,17 @@ export async function importBackup(json: string): Promise<void> {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npm run test:unit -- --run src/lib/pwa/backup.spec.ts`
 Expected: PASS — including the original round-trip and version-999 tests (version 999 → unsupported-version throw).
 
-- [ ] **Step 5: Run the full suite + types**
+- [x] **Step 5: Run the full suite + types**
 
 Run: `npm run test:unit -- --run && npm run check`
 Expected: all green, 0 type errors.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/lib/pwa/backup.ts src/lib/pwa/backup.spec.ts
@@ -569,7 +571,7 @@ git commit -m "feat: validate-before-destroy backup import with checksum + versi
 **Files:**
 - Modify: `svelte.config.js`
 
-- [ ] **Step 1: Add the `csp` block to `kit`**
+- [x] **Step 1: Add the `csp` block to `kit`**
 
 ```js
 // svelte.config.js — kit: { ... }
@@ -592,12 +594,12 @@ git commit -m "feat: validate-before-destroy backup import with checksum + versi
 
 (Insert as a sibling of `adapter` and `paths` inside the existing `kit: { ... }` object.)
 
-- [ ] **Step 2: Build to verify CSP is emitted**
+- [x] **Step 2: Build to verify CSP is emitted**
 
 Run: `npm run build`
 Expected: build succeeds; prerendered HTML in `build/` contains a `<meta http-equiv="content-security-policy" ...>` tag. (On OneDrive, if `EPERM` on `./build`, delete `build/` and retry.)
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add svelte.config.js
@@ -614,7 +616,7 @@ git commit -m "feat: add hash-mode Content-Security-Policy to the prerendered sh
 - Create: `static/_headers` (Cloudflare Pages / Netlify)
 - Create: `vercel.json` (Vercel; optional, documented)
 
-- [ ] **Step 1: Create `static/_headers`**
+- [x] **Step 1: Create `static/_headers`**
 
 ```
 /*
@@ -628,7 +630,7 @@ git commit -m "feat: add hash-mode Content-Security-Policy to the prerendered sh
 
 (`adapter-static` copies `static/` to the build root, so `_headers` lands where Cloudflare Pages / Netlify read it.)
 
-- [ ] **Step 2: Create `vercel.json`** (only used if deploying to Vercel)
+- [x] **Step 2: Create `vercel.json`** (only used if deploying to Vercel)
 
 ```json
 {
@@ -648,12 +650,12 @@ git commit -m "feat: add hash-mode Content-Security-Policy to the prerendered sh
 }
 ```
 
-- [ ] **Step 3: Verify `_headers` is copied into the build**
+- [x] **Step 3: Verify `_headers` is copied into the build**
 
 Run: `npm run build`
 Expected: `build/_headers` exists.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add static/_headers vercel.json
@@ -667,7 +669,7 @@ git commit -m "feat: add portable security headers for static hosts"
 **Files:**
 - Modify: `e2e/app.e2e.ts` (add one test)
 
-- [ ] **Step 1: Add the test**
+- [x] **Step 1: Add the test**
 
 ```ts
 test('no CSP violations on the core routes', async ({ page }) => {
@@ -685,12 +687,12 @@ test('no CSP violations on the core routes', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: Run e2e to verify it passes**
+- [x] **Step 2: Run e2e to verify it passes**
 
 Run: `npm run test:e2e`
 Expected: PASS with zero violations. If a violation appears, resolve it (see the Task 5 verification note — usually the SW register script or an inline style) before continuing.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add e2e/app.e2e.ts
@@ -706,7 +708,7 @@ git commit -m "test: assert zero CSP violations on core routes"
 **Files:**
 - Modify: `src/lib/db/schema.ts` (`ProgressRecord`)
 
-- [ ] **Step 1: Add the optional field**
+- [x] **Step 1: Add the optional field**
 
 In `ProgressRecord`, add below `score`:
 
@@ -715,12 +717,12 @@ In `ProgressRecord`, add below `score`:
 	bestCorrect?: number;
 ```
 
-- [ ] **Step 2: Verify types still compile**
+- [x] **Step 2: Verify types still compile**
 
 Run: `npm run check`
 Expected: 0 errors (field is optional, so existing writers stay valid).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/lib/db/schema.ts
@@ -735,7 +737,7 @@ git commit -m "feat: add optional bestCorrect to ProgressRecord"
 - Modify: `src/lib/lesson/complete.ts`
 - Test: `src/lib/lesson/complete.spec.ts` (extend)
 
-- [ ] **Step 1: Write the failing tests** (append to the `describe('completeLesson', ...)` block)
+- [x] **Step 1: Write the failing tests** (append to the `describe('completeLesson', ...)` block)
 
 ```ts
 	it('awards improvement-delta XP across replays and caps at one full completion', async () => {
@@ -771,12 +773,12 @@ git commit -m "feat: add optional bestCorrect to ProgressRecord"
 	});
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npm run test:unit -- --run src/lib/lesson/complete.spec.ts`
 Expected: FAIL — current code always grants `correct*10` and always credits the streak; also `opts.now` isn't a parameter yet.
 
-- [ ] **Step 3: Rewrite `completeLesson`**
+- [x] **Step 3: Rewrite `completeLesson`**
 
 ```ts
 // src/lib/lesson/complete.ts
@@ -865,12 +867,12 @@ export async function completeLesson(
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npm run test:unit -- --run src/lib/lesson/complete.spec.ts`
 Expected: PASS — including the three pre-existing tests (first-completion XP `20`, streak starts at `1`, best-score-kept-on-replay).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/lib/lesson/complete.ts src/lib/lesson/complete.spec.ts
@@ -884,7 +886,7 @@ git commit -m "feat: improvement-delta XP + streak gating to stop lesson-replay 
 **Files:**
 - Modify: `src/routes/learn/[unitId]/+page.svelte`
 
-- [ ] **Step 1: Capture the outcome in `advance()`**
+- [x] **Step 1: Capture the outcome in `advance()`**
 
 Add the import and state near the other lesson state (around lines 9 / 24):
 
@@ -906,7 +908,7 @@ Update the completion branch of `advance()`:
 		}
 ```
 
-- [ ] **Step 2: Show an honest message in the `finished` view**
+- [x] **Step 2: Show an honest message in the `finished` view**
 
 Replace the SRS-note line (`<p class="mt-1 text-sm text-slate-500">{m.lesson_srs_note()}</p>`) with:
 
@@ -924,12 +926,12 @@ Replace the SRS-note line (`<p class="mt-1 text-sm text-slate-500">{m.lesson_srs
 				<p class="mt-1 text-sm text-slate-500">{m.lesson_srs_note()}</p>
 ```
 
-- [ ] **Step 3: Verify types + build**
+- [x] **Step 3: Verify types + build**
 
 Run: `npm run check`
 Expected: 0 errors.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/routes/learn/[unitId]/+page.svelte
@@ -943,7 +945,7 @@ git commit -m "feat: honest XP/practice result on the lesson summary screen"
 **Files:**
 - Create: `src/lib/gamification/activity.spec.ts`
 
-- [ ] **Step 1: Write the tests**
+- [x] **Step 1: Write the tests**
 
 ```ts
 // src/lib/gamification/activity.spec.ts
@@ -987,12 +989,12 @@ describe('dailyGoalProgress', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests + coverage**
+- [x] **Step 2: Run tests + coverage**
 
 Run: `npm run test:unit -- --run --coverage`
 Expected: PASS; `gamification/activity.ts` coverage rises well above its prior ~60%.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/lib/gamification/activity.spec.ts
@@ -1008,7 +1010,7 @@ git commit -m "test: cover recordDailyActivity and dailyGoalProgress"
 **Files:**
 - Create: `~/.claude/skills/offline-data-safety/SKILL.md`
 
-- [ ] **Step 1: Write the skill**
+- [x] **Step 1: Write the skill**
 
 ```markdown
 ---
@@ -1043,7 +1045,7 @@ Invariants for any change touching on-device storage, backup/restore, or CSP.
 - [ ] CSP script-src stays locked; routes show zero violations.
 ```
 
-- [ ] **Step 2: Confirm discovery**
+- [x] **Step 2: Confirm discovery**
 
 Run: `ls ~/.claude/skills/offline-data-safety/` (the file exists). It will surface in future sessions via the skill list.
 
@@ -1054,7 +1056,7 @@ Run: `ls ~/.claude/skills/offline-data-safety/` (the file exists). It will surfa
 **Files:**
 - Create: `~/.claude/agents/pwa-data-reviewer.md`
 
-- [ ] **Step 1: Write the sub-agent**
+- [x] **Step 1: Write the sub-agent**
 
 ```markdown
 ---
@@ -1074,7 +1076,7 @@ Check specifically:
 Return: a findings list (file:line, severity, why, fix) and an overall verdict (APPROVE / CHANGES REQUESTED). Be concrete; cite the exact lines.
 ```
 
-- [ ] **Step 2: Use it as the phase gate**
+- [x] **Step 2: Use it as the phase gate**
 
 After Phases 1–3, dispatch `pwa-data-reviewer` over the branch diff (`git diff main...HEAD`). Address CRITICAL/HIGH findings before opening a PR.
 
@@ -1082,12 +1084,12 @@ After Phases 1–3, dispatch `pwa-data-reviewer` over the branch diff (`git diff
 
 ## Final verification
 
-- [ ] `npm run test:unit -- --run --coverage` — all green, coverage ≥ 80% (target: stays ~94%).
-- [ ] `npm run check` — 0 type errors.
-- [ ] `npm run lint` — clean.
-- [ ] `npm run test:e2e` — green, including the CSP-violation test.
-- [ ] `npm run build` — succeeds; `build/_headers` present and CSP meta tag emitted.
-- [ ] `pwa-data-reviewer` verdict: APPROVE.
+- [x] `npm run test:unit -- --run --coverage` — all green, coverage ≥ 80% (target: stays ~94%).
+- [x] `npm run check` — 0 type errors.
+- [x] `npm run lint` — clean.
+- [x] `npm run test:e2e` — green, including the CSP-violation test.
+- [x] `npm run build` — succeeds; `build/_headers` present and CSP meta tag emitted.
+- [x] `pwa-data-reviewer` verdict: APPROVE.
 
 ## Self-review (author checklist — completed)
 - **Spec coverage:** ① backup validation+checksum (Tasks 1–4) and migration framework (Task 3); ② CSP (Task 5) + headers (Task 6) + verification (Task 7); ③ improvement-delta XP + streak gating (Tasks 8–10) + UI (Task 10); activity coverage gap (Task 11); skill + sub-agent (Tasks 12–13). All spec sections mapped.

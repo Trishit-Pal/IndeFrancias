@@ -363,7 +363,7 @@
 				<div
 					transition:fade={{ duration: reducedMotion ? 0 : 200 }}
 					class="mt-5 flex items-center gap-3 rounded-2xl p-3 text-sm font-medium {correct
-						? 'feedback-correct animate-spring-in fp-feedback-pulse'
+						? 'feedback-correct animate-scale-in fp-feedback-pulse'
 						: 'feedback-incorrect animate-shake'}"
 					style="border: 2px solid var(--fp-ink)"
 					data-testid="feedback"
@@ -504,14 +504,10 @@
 		}
 	}
 
-	@keyframes spring-in {
+	@keyframes scale-in {
 		0% {
-			transform: scale(0.9);
+			transform: scale(0.96);
 			opacity: 0;
-		}
-		60% {
-			transform: scale(1.05);
-			opacity: 1;
 		}
 		100% {
 			transform: scale(1);
@@ -523,13 +519,13 @@
 		animation: shake 0.3s ease-in-out;
 	}
 
-	.animate-spring-in {
-		animation: spring-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	.animate-scale-in {
+		animation: scale-in 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.animate-shake,
-		.animate-spring-in {
+		.animate-scale-in {
 			animation: none !important;
 			transform: none !important;
 		}

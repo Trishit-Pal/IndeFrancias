@@ -63,15 +63,15 @@ Enforced on every change. An edit that touches this section is **high-severity**
 | ID | Capability | Status | Key files | Proof (testids / specs) | Appendix |
 |----|-----------|--------|-----------|------------------------|----------|
 | CAP-ONB | Onboarding wizard | shipped | `frenchpath/src/lib/components/OnboardingWizard.svelte` | `onboarding-wizard`, `onboarding-next`, `native-lang-{lang}`, `goal-{goal}`; `e2e/onboarding.e2e.ts` | prd |
-| CAP-PATH | Voyage path / home map | shipped | `frenchpath/src/lib/path/VoyageMap.svelte`, `frenchpath/src/lib/path/PathScene.svelte`, `frenchpath/src/lib/components/PathNode.svelte`, `frenchpath/src/routes/+page.svelte` | `path-scene`, `unit-card`, `streak-badge`, `daily-goal`; `e2e/app.e2e.ts` | architecture-map |
+| CAP-PATH | Voyage path / home map | shipped | `frenchpath/src/lib/path/VoyageMap.svelte`, `frenchpath/src/lib/path/PathScene.svelte`, `frenchpath/src/lib/components/PathNode.svelte`, `frenchpath/src/routes/+page.svelte`, `frenchpath/src/lib/components/DailyRitual.svelte`, `frenchpath/src/lib/components/CharacterMira.svelte`, `frenchpath/src/lib/components/CharacterLeo.svelte`, `frenchpath/src/lib/components/CharacterCoco.svelte` | `path-scene`, `unit-card`, `streak-badge`, `daily-goal`; `e2e/app.e2e.ts` | architecture-map |
 | CAP-LESSON | Lesson runner | shipped | `frenchpath/src/routes/learn/[unitId]/+page.svelte`, `frenchpath/src/lib/lesson/complete.ts` | `start-lesson`, `check`, `feedback`, `continue`, `summary`, `xp-awarded`; `e2e/progression.e2e.ts` | testing |
 | CAP-EX | Exercise engine (11 types) | shipped | `frenchpath/src/lib/lesson/engine.ts`, `frenchpath/src/lib/lesson/exercises/` | `mcq-option`, `cloze-input`, `text-answer`, `reorder-answer`, `gender-option`, `reading-option`, `matching-select`; `src/lib/lesson/engine.spec.ts` | testing |
 | CAP-GLOSS | Native-language gloss bridges | shipped | `frenchpath/src/lib/content/gloss.ts`, `frenchpath/src/lib/components/GlossPopover.svelte` | `gloss-popover`, `easy-gloss-hint`; `e2e/gloss.e2e.ts` | content-curation |
 | CAP-SRS | FSRS-6 spaced repetition | shipped | `frenchpath/src/lib/srs/fsrs.ts`, `frenchpath/src/lib/srs/queue.ts`, `frenchpath/src/lib/srs/review.ts`, `frenchpath/src/lib/srs/optimizer.ts` | `e2e/review.e2e.ts` | architecture-map |
 | CAP-REVIEW | Review session | shipped | `frenchpath/src/routes/review/+page.svelte` | `grade-buttons`, `reveal`, `review-done`, `review-summary-accuracy`; `e2e/review.e2e.ts` | testing |
 | CAP-CHECK | Checkpoints & gates | shipped | `frenchpath/src/lib/assessment/checkpoint.ts`, `frenchpath/src/lib/lesson/gates.ts`, `frenchpath/src/routes/checkpoint/[groupId]/+page.svelte` | `checkpoint-start`, `checkpoint-check`, `gate-banner`; `e2e/checkpoint.e2e.ts` | testing |
-| CAP-EXAM | DELF/DALF mock exams | shipped | `frenchpath/src/lib/exam/score.ts`, `frenchpath/src/lib/exam/MockExamRunner.svelte`, `frenchpath/src/routes/exam/` | `start-exam`, `exam-check`, `exam-result`, `delf-card`, `delf-b1-card`, `delf-b2-card`, `dalf-c1-card`; `e2e/exam-b1.e2e.ts` | prd |
-| CAP-GAME | Gamification (streak/XP/skills/badges) | shipped | `frenchpath/src/lib/gamification/streak.ts`, `frenchpath/src/lib/gamification/activity.ts`, `frenchpath/src/lib/gamification/skillProfileUpdate.ts`, `frenchpath/src/lib/gamification/adaptiveSuggestions.ts` | `streak-badge`, `freezes-badge`, `daily-goal`, `xp-float`, `weak-skill-chips` | prd |
+| CAP-EXAM | DELF/DALF mock exams | shipped | `frenchpath/src/lib/exam/score.ts`, `frenchpath/src/lib/exam/MockExamRunner.svelte`, `frenchpath/src/lib/exam/ExamTimer.svelte`, `frenchpath/src/routes/exam/` | `start-exam`, `exam-check`, `exam-result`, `delf-card`, `delf-b1-card`, `delf-b2-card`, `dalf-c1-card`; `e2e/exam-b1.e2e.ts` | prd |
+| CAP-GAME | Gamification (streak/XP/skills/badges) | shipped | `frenchpath/src/lib/gamification/streak.ts`, `frenchpath/src/lib/gamification/activity.ts`, `frenchpath/src/lib/gamification/skillProfileUpdate.ts`, `frenchpath/src/lib/gamification/adaptiveSuggestions.ts`, `frenchpath/src/lib/components/AchievementToast.svelte` | `streak-badge`, `freezes-badge`, `daily-goal`, `xp-float`, `weak-skill-chips` | prd |
 | CAP-CELEB | Celebrations | shipped | `frenchpath/src/lib/celebration/orchestrator.ts`, `frenchpath/src/lib/celebration/CelebrationOverlay.svelte` | `celebration-overlay`, `celebration-skip`; `e2e/celebration.e2e.ts` | prd |
 | CAP-TTS | TTS + record/compare | shipped | `frenchpath/src/lib/audio/tts.ts`, `frenchpath/src/lib/platform/tts.ts` | `tts-section`, `tts-voice-select`, `tts-speed-slider`; `e2e/tts.e2e.ts` | mobile-architecture |
 | CAP-BACKUP | Backup export/import (validate-before-destroy) | shipped | `frenchpath/src/lib/pwa/backup.ts`, `frenchpath/src/lib/pwa/backupSchema.ts`, `frenchpath/src/lib/pwa/checksum.ts`, `frenchpath/src/lib/pwa/migrations.ts`, `frenchpath/src/lib/platform/backup.ts` | `backup-export`, `backup-import`, `import-preview`, `import-confirm`; `e2e/backup.e2e.ts` | data-sovereignty |
@@ -95,7 +95,7 @@ CSP in `svelte.config.js`. Capacitor 8 wraps the same build for Android/iOS. **N
 
 Detail: appendix [architecture-map](../architecture-map.md), [mobile-architecture](../product/mobile-architecture.md).
 
-**Test baseline:** 188 unit + 35 e2e green (the authoritative count; supersedes any differing
+**Test baseline:** 189 unit + 35 e2e green (the authoritative count; supersedes any differing
 figure in other docs).
 
 ## §6 Domain module index
@@ -129,7 +129,9 @@ Milestone-based increments. Each milestone = a spec entry → a plan in
   Capacitor shell). ✅ Code review complete; CRITICAL/HIGH defects fixed (dalfC1 gate bug,
   g6/mA2 afterUnitId collision, backup version-range check, IDB transaction try/catch,
   assessments schema .default([]), revisionNotify type fix, frame-ancestors HTTP header,
-  .gitattributes LF enforcement). All automated gates green (188 unit + 35 e2e). *Merge pending.*
+  .gitattributes LF enforcement). All automated gates green (189 unit + 35 e2e). ✅ **Merged to
+  `main`** (2026-06-27); the remote `feature/grand-voyage-and-capacitor` adds nothing to `main`
+  and can be pruned.
 - **M2 — Launch** web PWA (Vercel) + Android APK (GitHub Releases direct download)
   **simultaneously**. iOS deferred (no macOS).
 - **M3 — Native-speaker proofread** A1–A2 (satisfies invariant 5 for launch levels).
@@ -177,3 +179,6 @@ This spec is kept honest by the `frenchpath-spec-sync` skill + `/spec-sync` comm
 | 2026-06-18 | Reconciled test-count drift to ground truth (188 unit + 35 e2e) | §5 | LOW |
 | 2026-06-19 | Phase 1 defect fixes: .gitattributes, frame-ancestors HTTP header, capacitor bundle ID confirmed | §8 | LOW |
 | 2026-06-19 | Code-review: CRITICAL dalfC1 gate bug (B2→C1), HIGH g6/mA2 afterUnitId collision, backup version range + IDB tx try/catch, assessments .default([]), notify type fix | §8 | MEDIUM |
+| 2026-06-20 | spec-sync: tied Le Grand Voyage UI components into §4 Key files — DailyRitual + Mira/Léo/Coco (CAP-PATH), ExamTimer (CAP-EXAM), AchievementToast (CAP-GAME) | §4 | MEDIUM |
+| 2026-06-27 | Reconciled M1: work confirmed on `main`, dropped stale "merge pending"; surfaced M2 as current | §8 | MEDIUM |
+| 2026-06-27 | CAP-CHECK: completed g6/mA2 collision fix — `buildLockReasonMap` now uses `pendingGateAfterUnit`, so a unit locked solely by the A2 milestone shows its reason (+1 regression test → 189 unit) | §5, §8 | MEDIUM |

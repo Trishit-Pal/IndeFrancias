@@ -211,8 +211,10 @@
 			</div>
 		</header>
 
-		<div class="mt-5 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-6">
-			<div class="space-y-4">
+		<div
+			class="mt-5 flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-6"
+		>
+			<div class="order-2 space-y-4 lg:order-1">
 				<!-- Time-of-day ritual greeting -->
 				<DailyRitual {ritual} />
 
@@ -319,59 +321,65 @@
 					</a>
 				{/if}
 
-				{#if a2Completed}
-					<a
-						href={resolve('/exam/delf-a2')}
-						class="block rounded-xl border border-primary/40 bg-blue-50 p-4 transition hover:border-primary dark:bg-blue-950/40"
-						data-testid="delf-card"
-					>
-						<span class="text-sm font-semibold text-primary">{m.delf_title()}</span>
-						<p class="mt-1 text-sm text-muted">{m.delf_desc()}</p>
-					</a>
-				{/if}
-
-				{#if b1Completed}
-					<a
-						href={resolve('/exam/delf-b1')}
-						class="block rounded-xl border border-primary/40 bg-blue-50 p-4 transition hover:border-primary dark:bg-blue-950/40"
-						data-testid="delf-b1-card"
-					>
-						<span class="text-sm font-semibold text-primary">Mock DELF B1</span>
-						<p class="mt-1 text-sm text-muted">Intermediate four-skill mock exam.</p>
-					</a>
-				{/if}
-
-				{#if b2Completed}
-					<a
-						href={resolve('/exam/delf-b2')}
-						class="block rounded-xl border border-primary/40 bg-blue-50 p-4 transition hover:border-primary dark:bg-blue-950/40"
-						data-testid="delf-b2-card"
-					>
-						<span class="text-sm font-semibold text-primary">Mock DELF B2</span>
-						<p class="mt-1 text-sm text-muted">Upper-intermediate mock with argumentation tasks.</p>
-					</a>
-				{/if}
-
-				{#if c1ExamUnlocked}
-					<a
-						href={resolve('/exam/dalf-c1')}
-						class="block rounded-xl border border-primary/40 bg-blue-50 p-4 transition hover:border-primary dark:bg-blue-950/40"
-						data-testid="dalf-c1-card"
-					>
-						<span class="text-sm font-semibold text-primary">Mock DALF C1</span>
-						<p class="mt-1 text-sm text-muted">Advanced synthesis, essay, and exposé practice.</p>
-					</a>
+				{#if a2Completed || b1Completed || b2Completed || c1ExamUnlocked}
+					<section class="surface-card p-4" aria-label="Mock exams">
+						<p class="mb-2 text-sm font-semibold" style="font-family:var(--fp-font-display)">
+							Examens blancs
+						</p>
+						<div class="space-y-2">
+							{#if a2Completed}
+								<a
+									href={resolve('/exam/delf-a2')}
+									class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+									data-testid="delf-card"
+								>
+									<span>{m.delf_title()}</span>
+									<span aria-hidden="true">→</span>
+								</a>
+							{/if}
+							{#if b1Completed}
+								<a
+									href={resolve('/exam/delf-b1')}
+									class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+									data-testid="delf-b1-card"
+								>
+									<span>Mock DELF B1</span>
+									<span aria-hidden="true">→</span>
+								</a>
+							{/if}
+							{#if b2Completed}
+								<a
+									href={resolve('/exam/delf-b2')}
+									class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+									data-testid="delf-b2-card"
+								>
+									<span>Mock DELF B2</span>
+									<span aria-hidden="true">→</span>
+								</a>
+							{/if}
+							{#if c1ExamUnlocked}
+								<a
+									href={resolve('/exam/dalf-c1')}
+									class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+									data-testid="dalf-c1-card"
+								>
+									<span>Mock DALF C1</span>
+									<span aria-hidden="true">→</span>
+								</a>
+							{/if}
+						</div>
+					</section>
 				{/if}
 			</div>
 
-			<section>
+			<section class="order-1 lg:order-2">
 				<div class="mb-2 flex items-baseline justify-between">
 					<h2 style="font-family:var(--fp-font-display);font-weight:400;font-size:32px">
 						Le Voyage
 					</h2>
 					{#if currentCity}
 						<span
-							style="font-family:var(--fp-font-mono);font-size:11px;color:var(--fp-muted);text-transform:uppercase;letter-spacing:.18em"
+							style="font-family:var(--fp-font-mono);font-size:12px;color:var(--fp-muted);text-transform:uppercase;letter-spacing:.18em"
 						>
 							{currentCity}
 						</span>
