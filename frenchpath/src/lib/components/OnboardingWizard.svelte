@@ -153,6 +153,9 @@
 					>
 						{m.onb_next()}
 					</button>
+					<button type="button" class="btn-ghost mt-2 w-full text-sm" onclick={finish}>
+						{m.onb_skip_defaults()}
+					</button>
 				</div>
 			{:else if step === 'language'}
 				<h2 class="text-xl font-bold text-foreground">{m.onb_native_title()}</h2>
@@ -163,18 +166,21 @@
 					aria-label={m.onb_native_title()}
 				>
 					{#each NATIVE_LANGUAGES as lang (lang)}
-						<button
-							type="button"
-							role="radio"
-							aria-checked={nativeLanguage === lang}
-							class="surface-card fp-pressable p-3 text-left transition {nativeLanguage === lang
+						<label
+							data-testid="native-lang-{lang}"
+							class="surface-card fp-pressable cursor-pointer p-3 text-left {nativeLanguage === lang
 								? 'border-primary ring-2 ring-primary/30'
 								: 'hover:border-primary/50'}"
-							data-testid="native-lang-{lang}"
-							onclick={() => (nativeLanguage = lang)}
 						>
+							<input
+								type="radio"
+								name="native-language"
+								value={lang}
+								bind:group={nativeLanguage}
+								class="sr-only"
+							/>
 							<span class="font-semibold text-foreground">{NATIVE_LANGUAGE_LABELS[lang]}</span>
-						</button>
+						</label>
 					{/each}
 				</div>
 				<div class="mt-6 flex gap-2">
@@ -191,18 +197,22 @@
 				<p class="mt-2 text-sm text-muted">{m.onb_goal_desc()}</p>
 				<div class="mt-4 space-y-2" role="radiogroup" aria-label={m.onb_goal_title()}>
 					{#each goals as goal (goal)}
-						<button
-							type="button"
-							role="radio"
-							aria-checked={learningGoal === goal}
-							class="surface-card fp-pressable w-full p-3 text-left {learningGoal === goal
+						<label
+							data-testid="goal-{goal}"
+							class="surface-card fp-pressable w-full cursor-pointer p-3 text-left {learningGoal ===
+							goal
 								? 'border-primary ring-2 ring-primary/30'
 								: ''}"
-							data-testid="goal-{goal}"
-							onclick={() => (learningGoal = goal)}
 						>
+							<input
+								type="radio"
+								name="learning-goal"
+								value={goal}
+								bind:group={learningGoal}
+								class="sr-only"
+							/>
 							<span class="font-semibold">{LEARNING_GOAL_LABELS[goal]}</span>
-						</button>
+						</label>
 					{/each}
 				</div>
 				{#if learningGoal === 'delf_a2' || learningGoal === 'delf_b2'}
@@ -231,19 +241,23 @@
 				<p class="mt-2 text-sm text-muted">{m.onb_difficulty_desc()}</p>
 				<div class="mt-4 space-y-2" role="radiogroup" aria-label={m.onb_difficulty_title()}>
 					{#each tiers as t (t.value)}
-						<button
-							type="button"
-							role="radio"
-							aria-checked={difficultyTier === t.value}
-							class="surface-card fp-pressable w-full p-3 text-left {difficultyTier === t.value
+						<label
+							data-testid="tier-{t.value}"
+							class="surface-card fp-pressable w-full cursor-pointer p-3 text-left {difficultyTier ===
+							t.value
 								? 'border-primary ring-2 ring-primary/30'
 								: ''}"
-							data-testid="tier-{t.value}"
-							onclick={() => (difficultyTier = t.value)}
 						>
+							<input
+								type="radio"
+								name="difficulty-tier"
+								value={t.value}
+								bind:group={difficultyTier}
+								class="sr-only"
+							/>
 							<span class="font-semibold">{t.label()}</span>
 							<span class="mt-1 block text-sm text-muted">{t.desc()}</span>
-						</button>
+						</label>
 					{/each}
 				</div>
 				<div class="mt-6 flex gap-2">
@@ -260,20 +274,23 @@
 				<p class="mt-2 text-sm text-muted">{m.onb_rhythm_desc()}</p>
 				<div class="mt-4 space-y-2" role="radiogroup" aria-label={m.onb_rhythm_title()}>
 					{#each presets as preset (preset.value)}
-						<button
-							type="button"
-							role="radio"
-							aria-checked={dailyGoalPreset === preset.value}
-							class="surface-card fp-pressable flex w-full items-center justify-between p-4 {dailyGoalPreset ===
+						<label
+							data-testid="preset-{preset.value}"
+							class="surface-card fp-pressable flex w-full cursor-pointer items-center justify-between p-4 {dailyGoalPreset ===
 							preset.value
 								? 'border-primary ring-2 ring-primary/30'
 								: ''}"
-							data-testid="preset-{preset.value}"
-							onclick={() => (dailyGoalPreset = preset.value)}
 						>
+							<input
+								type="radio"
+								name="daily-preset"
+								value={preset.value}
+								bind:group={dailyGoalPreset}
+								class="sr-only"
+							/>
 							<span class="font-semibold">{preset.label}</span>
 							<span class="text-sm text-muted">{preset.xp} {m.common_xp_per_day()}</span>
-						</button>
+						</label>
 					{/each}
 				</div>
 				<div class="mt-6 flex gap-2">

@@ -32,6 +32,7 @@
 	"onb_sovereignty_3": "Launch par koi telemetry nahi. Cloud sync baad mein optional aur encrypted hoga.",
 	"onb_ready_title": "Sab set hai!",
 	"onb_ready_desc": "Aapka personalised French path ready hai.",
+	"onb_skip_defaults": "Skip — defaults use karo",
 	"settings_my_learning": "Meri learning",
 	"settings_native_language": "Native language (lesson glosses)",
 	"settings_learning_goal": "Learning goal",

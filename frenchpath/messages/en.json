@@ -32,6 +32,7 @@
 	"onb_sovereignty_3": "No telemetry at launch. Optional cloud sync will be E2EE and opt-in only.",
 	"onb_ready_title": "You're all set!",
 	"onb_ready_desc": "Your personalised French path is ready.",
+	"onb_skip_defaults": "Skip — use defaults",
 	"settings_my_learning": "My learning",
 	"settings_native_language": "Native language (lesson glosses)",
 	"settings_learning_goal": "Learning goal",
