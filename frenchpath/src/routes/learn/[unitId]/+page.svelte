@@ -286,12 +286,12 @@
 				}
 			}}
 		>
-			Start ({total} questions)
+			{m.lesson_start({ count: total })}
 		</button>
 	{:else if phase === 'bridge-quiz' && unit?.bridge?.quiz}
 		{@const quiz = unit.bridge.quiz}
 		{@const bridgeCorrect = bridgeQuizIndex === quiz.answerIndex}
-		<h2 class="mt-4 text-lg font-semibold">Quick check</h2>
+		<h2 class="mt-4 text-lg font-semibold">{m.lesson_quick_check()}</h2>
 		<p class="mt-2 text-muted">{quiz.prompt}</p>
 		<ul class="mt-4 space-y-2">
 			{#each quiz.options as option, i (option)}
@@ -318,7 +318,7 @@
 			{/each}
 		</ul>
 		{#if bridgeQuizSubmitted && !bridgeCorrect}
-			<p class="mt-3 text-sm text-red-700 dark:text-red-300" role="alert">Not quite — try again.</p>
+			<p class="mt-3 text-sm text-red-700 dark:text-red-300" role="alert">{m.lesson_try_again()}</p>
 		{/if}
 		<button
 			type="button"
@@ -327,7 +327,7 @@
 			data-testid="bridge-quiz-continue"
 			onclick={() => (phase = 'exercise')}
 		>
-			Continue to exercises
+			{m.lesson_continue_exercises()}
 		</button>
 	{:else if phase === 'exercise' && current && unit}
 		<LessonShell {progress} {reducedMotion} current={index + 1} {total}>
@@ -413,12 +413,12 @@
 					class="mt-1 text-sm font-medium text-green-700 dark:text-green-400"
 					data-testid="xp-awarded"
 				>
-					{outcome.isNewBest ? 'New best!' : ''} +{outcome.goalXp} XP
+					{outcome.isNewBest ? m.lesson_new_best() : ''} +{outcome.goalXp} XP
 				</p>
 			{:else}
 				<p class="mt-1 text-sm text-muted" data-testid="practice-note">
 					Practice complete — no new XP (best: {outcome?.bestScore ?? score}%).
-					<a class="text-primary underline" href={resolve('/review')}>Review due cards</a>
+					<a class="text-primary underline" href={resolve('/review')}>{m.lesson_review_cards()}</a>
 					to keep your streak.
 				</p>
 			{/if}

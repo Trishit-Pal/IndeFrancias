@@ -272,7 +272,7 @@
 							onclick={() => (dailyGoalPreset = preset.value)}
 						>
 							<span class="font-semibold">{preset.label}</span>
-							<span class="text-sm text-muted">{preset.xp} XP / day</span>
+							<span class="text-sm text-muted">{preset.xp} {m.common_xp_per_day()}</span>
 						</button>
 					{/each}
 				</div>

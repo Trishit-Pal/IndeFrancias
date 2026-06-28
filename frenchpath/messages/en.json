@@ -144,5 +144,15 @@
 	"hint_remaining": "{count} hints left",
 	"exercise_coach_note": "Tip",
 	"lesson_shell_progress": "Exercise {current} of {total}",
-	"review_fsrs_tip": "Be honest — \"Again\" isn't failure; it's how FSRS learns your memory curve."
+	"review_fsrs_tip": "Be honest — \"Again\" isn't failure; it's how FSRS learns your memory curve.",
+	"lesson_start": "Start ({count} questions)",
+	"lesson_quick_check": "Quick check",
+	"lesson_try_again": "Not quite — try again.",
+	"lesson_continue_exercises": "Continue to exercises",
+	"lesson_new_best": "New best!",
+	"lesson_review_cards": "Review due cards",
+	"cloze_hint": "Hint: {hint}",
+	"cloze_fill_blank": "Fill in the blank",
+	"cloze_correct_answer": "Correct answer:",
+	"common_xp_per_day": "XP / day"
 }

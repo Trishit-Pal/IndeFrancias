@@ -3,6 +3,7 @@
 	import { gradeExercise, type ExerciseResponse } from '$lib/lesson/engine';
 	import type { Lexicon } from '$lib/content/lexicon';
 	import GlossText from '$lib/components/GlossText.svelte';
+	import * as m from '$lib/paraglide/messages';
 
 	let {
 		exercise,
@@ -37,7 +38,7 @@
 
 <div class="space-y-3 text-lg leading-relaxed text-foreground">
 	{#if exercise.hint}
-		<p class="text-sm text-muted">Hint: {exercise.hint}</p>
+		<p class="text-sm text-muted">{m.cloze_hint({ hint: exercise.hint })}</p>
 	{/if}
 	<p>
 		<GlossText text={parts[0] ?? ''} {lexicon} />
@@ -46,7 +47,7 @@
 			class={inputClass()}
 			{value}
 			disabled={submitted}
-			aria-label="Fill in the blank"
+			aria-label={m.cloze_fill_blank()}
 			data-testid="cloze-input"
 			autocomplete="off"
 			autocapitalize="off"
@@ -59,7 +60,8 @@
 	</p>
 	{#if submitted && !isCorrect}
 		<p class="text-sm font-medium text-foreground">
-			Correct answer: <span class="text-green-700 dark:text-green-400">{exercise.answer}</span>
+			{m.cloze_correct_answer()}
+			<span class="text-green-700 dark:text-green-400">{exercise.answer}</span>
 		</p>
 	{/if}
 </div>

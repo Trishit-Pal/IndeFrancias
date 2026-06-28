@@ -115,5 +115,15 @@
 	"hint_remaining": "{count} hints bache",
 	"exercise_coach_note": "Tip",
 	"lesson_shell_progress": "Exercise {current} of {total}",
-	"review_fsrs_tip": "Be honest — \"Again\" isn't failure; it's how FSRS learns your memory curve."
+	"review_fsrs_tip": "Be honest — \"Again\" isn't failure; it's how FSRS learns your memory curve.",
+	"lesson_start": "Shuru karo ({count} sawaal)",
+	"lesson_quick_check": "Quick check",
+	"lesson_try_again": "Bilkul sahi nahi — dobara try karo.",
+	"lesson_continue_exercises": "Exercises continue karo",
+	"lesson_new_best": "Naya record!",
+	"lesson_review_cards": "Review cards dekho",
+	"cloze_hint": "Hint: {hint}",
+	"cloze_fill_blank": "Blank fill karo",
+	"cloze_correct_answer": "Sahi jawab:",
+	"common_xp_per_day": "XP / din"
 }

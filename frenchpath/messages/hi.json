@@ -144,5 +144,15 @@
 	"hint_remaining": "{count} संकेत बचे",
 	"exercise_coach_note": "सुझाव",
 	"lesson_shell_progress": "अभ्यास {current} / {total}",
-	"review_fsrs_tip": "ईमानदार रहें — \"फिर से\" असफलता नहीं है; इसी से FSRS आपकी याददाश्त की curve सीखता है।"
+	"review_fsrs_tip": "ईमानदार रहें — \"फिर से\" असफलता नहीं है; इसी से FSRS आपकी याददाश्त की curve सीखता है।",
+	"lesson_start": "शुरू करें ({count} प्रश्न)",
+	"lesson_quick_check": "त्वरित जाँच",
+	"lesson_try_again": "सही नहीं — फिर कोशिश करें।",
+	"lesson_continue_exercises": "अभ्यास जारी रखें",
+	"lesson_new_best": "नया रिकॉर्ड!",
+	"lesson_review_cards": "समीक्षा कार्ड देखें",
+	"cloze_hint": "संकेत: {hint}",
+	"cloze_fill_blank": "रिक्त स्थान भरें",
+	"cloze_correct_answer": "सही उत्तर:",
+	"common_xp_per_day": "XP / दिन"
 }

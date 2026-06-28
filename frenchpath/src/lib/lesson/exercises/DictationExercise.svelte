@@ -5,6 +5,7 @@
 	import { answerInputClass } from './inputClass';
 	import type { Lexicon } from '$lib/content/lexicon';
 	import GlossText from '$lib/components/GlossText.svelte';
+	import * as m from '$lib/paraglide/messages';
 
 	let {
 		exercise,
@@ -65,7 +66,7 @@
 			<GlossText text={exercise.audioText} {lexicon} />
 		</p>
 	{/if}
-	{#if exercise.hint}<p class="text-sm text-muted">Hint: {exercise.hint}</p>{/if}
+	{#if exercise.hint}<p class="text-sm text-muted">{m.cloze_hint({ hint: exercise.hint })}</p>{/if}
 	<input
 		type="text"
 		class={answerInputClass(submitted, isCorrect)}
@@ -80,7 +81,8 @@
 	/>
 	{#if submitted && !isCorrect}
 		<p class="text-sm">
-			Correct answer: <span class="text-green-700 dark:text-green-400">{exercise.answer}</span>
+			{m.cloze_correct_answer()}
+			<span class="text-green-700 dark:text-green-400">{exercise.answer}</span>
 		</p>
 	{/if}
 </div>
