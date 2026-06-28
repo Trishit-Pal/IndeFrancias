@@ -155,5 +155,12 @@
 	"cloze_hint": "Hint: {hint}",
 	"cloze_fill_blank": "Fill in the blank",
 	"cloze_correct_answer": "Correct answer:",
-	"common_xp_per_day": "XP / day"
+	"common_xp_per_day": "XP / day",
+	"progress_weekly_reviews": "Weekly reviews: {count}",
+	"progress_assessment_history": "Assessment history",
+	"progress_focus_area": "Focus area",
+	"progress_exam_one_day": "Exam in 1 day",
+	"progress_exam_many_days": "Exam in {days} days",
+	"progress_assessment_milestone": "Milestone {id}",
+	"progress_assessment_checkpoint": "Checkpoint {id}"
 }

@@ -1,4 +1,4 @@
-{
+﻿{
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"nav_learn": "Seekho",
 	"nav_review": "Review",
@@ -126,5 +126,12 @@
 	"cloze_hint": "Hint: {hint}",
 	"cloze_fill_blank": "Blank fill karo",
 	"cloze_correct_answer": "Sahi jawab:",
-	"common_xp_per_day": "XP / din"
+	"common_xp_per_day": "XP / din",
+	"progress_weekly_reviews": "Weekly reviews: {count}",
+	"progress_assessment_history": "Assessment history",
+	"progress_focus_area": "Focus area",
+	"progress_exam_one_day": "Exam in 1 day",
+	"progress_exam_many_days": "Exam in {days} days",
+	"progress_assessment_milestone": "Milestone {id}",
+	"progress_assessment_checkpoint": "Checkpoint {id}"
 }

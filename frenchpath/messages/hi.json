@@ -155,5 +155,12 @@
 	"cloze_hint": "संकेत: {hint}",
 	"cloze_fill_blank": "रिक्त स्थान भरें",
 	"cloze_correct_answer": "सही उत्तर:",
-	"common_xp_per_day": "XP / दिन"
+	"common_xp_per_day": "XP / दिन",
+	"progress_weekly_reviews": "Weekly reviews: {count}",
+	"progress_assessment_history": "Assessment history",
+	"progress_focus_area": "Focus area",
+	"progress_exam_one_day": "Exam in 1 day",
+	"progress_exam_many_days": "Exam in {days} days",
+	"progress_assessment_milestone": "Milestone {id}",
+	"progress_assessment_checkpoint": "Checkpoint {id}"
 }
