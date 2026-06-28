@@ -27,7 +27,7 @@
 
 	function inputClass(): string {
 		const base =
-			'inline-block min-w-32 rounded-lg border-b-2 bg-input px-2 py-1 text-center text-base text-foreground focus:outline-none';
+			'inline-block min-w-32 rounded-lg border-2 bg-input px-2 py-1 text-center text-base text-foreground focus:outline-none';
 		if (submitted && isCorrect)
 			return `${base} border-green-500 text-green-900 dark:text-green-200`;
 		if (submitted) return `${base} border-red-500 text-red-900 dark:text-red-200`;
