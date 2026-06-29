@@ -162,5 +162,7 @@
 	"progress_exam_one_day": "Exam in 1 day",
 	"progress_exam_many_days": "Exam in {days} days",
 	"progress_assessment_milestone": "Milestone {id}",
-	"progress_assessment_checkpoint": "Checkpoint {id}"
+	"progress_assessment_checkpoint": "Checkpoint {id}",
+	"review_loading": "आपकी समीक्षा कतार लोड हो रही है…",
+	"review_queue_progress": "{current} / {total} बाकी"
 }

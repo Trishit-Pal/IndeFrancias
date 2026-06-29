@@ -111,15 +111,17 @@
 	}
 </script>
 
-<svelte:head><title>Review · FrenchPath</title></svelte:head>
+<svelte:head><title>{m.nav_review()} · FrenchPath</title></svelte:head>
 
 <main class="page-shell">
 	<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
 
 	{#if phase === 'loading'}
-		<p class="mt-6 text-muted">Loading your review queue…</p>
+		<p class="mt-6 text-muted">{m.review_loading()}</p>
 	{:else if phase === 'reviewing' && currentItem}
-		<p class="mt-2 text-sm text-muted">{index + 1} / {queue.length} due</p>
+		<p class="mt-2 text-sm text-muted">
+			{m.review_queue_progress({ current: index + 1, total: queue.length })}
+		</p>
 
 		<div class="fp-flip-card mt-4 lg:mx-auto lg:max-w-2xl">
 			<div class="fp-flip-inner" class:fp-flipped={revealed}>
@@ -131,7 +133,7 @@
 					{:else}
 						<div class="flex items-center justify-center gap-2">
 							<h1
-								class="text-3xl font-bold text-foreground md:text-4xl"
+								class="text-3xl font-bold text-balance text-foreground md:text-4xl"
 								style="font-family: var(--fp-font-display)"
 							>
 								<GlossText text={currentItem.content.french} lexicon={reviewLexicon} />
@@ -164,7 +166,7 @@
 						{@const gloss = getGloss(currentItem.content, nativeLanguage)}
 						<div class="flex items-center justify-center gap-2">
 							<h1
-								class="text-3xl font-bold text-foreground md:text-4xl"
+								class="text-3xl font-bold text-balance text-foreground md:text-4xl"
 								style="font-family: var(--fp-font-display)"
 							>
 								<GlossText text={currentItem.content.french} lexicon={reviewLexicon} />
@@ -224,19 +226,21 @@
 
 		<div class="mt-5 flex items-center gap-2 lg:mx-auto lg:max-w-2xl">
 			<CharacterMira size="xs" animate={false} />
-			<p class="text-xs" style="color: var(--fp-muted)">{m.review_fsrs_tip()}</p>
+			<p class="text-xs text-muted">{m.review_fsrs_tip()}</p>
 		</div>
 	{:else if phase === 'reviewing'}
 		<div class="mt-10 text-center" data-testid="no-reviews">
 			<p class="text-5xl">✅</p>
-			<h1 class="mt-3 text-2xl font-bold text-foreground">{m.review_nothing_title()}</h1>
+			<h1 class="mt-3 text-2xl font-bold text-balance text-foreground">
+				{m.review_nothing_title()}
+			</h1>
 			<p class="mt-1 text-muted">{m.review_nothing_desc()}</p>
 			<a class="btn-primary mt-6 inline-block" href={resolve('/')}>{m.common_back_to_path()}</a>
 		</div>
 	{:else if phase === 'done'}
 		<div class="mt-10 text-center" data-testid="review-done">
 			<p class="text-5xl">🎉</p>
-			<h1 class="mt-3 text-2xl font-bold text-foreground">{m.review_complete()}</h1>
+			<h1 class="mt-3 text-2xl font-bold text-balance text-foreground">{m.review_complete()}</h1>
 			<ul class="mt-3 space-y-1 text-sm text-muted">
 				<li data-testid="review-summary-accuracy">
 					{m.review_session_accuracy({ percent: accuracyPercent })}
