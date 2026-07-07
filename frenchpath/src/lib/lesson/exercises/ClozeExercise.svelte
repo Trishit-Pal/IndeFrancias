@@ -52,6 +52,7 @@
 			autocomplete="off"
 			autocapitalize="off"
 			spellcheck="false"
+			enterkeyhint="done"
 			oninput={onInput}
 		/>
 		{#if parts[1]}

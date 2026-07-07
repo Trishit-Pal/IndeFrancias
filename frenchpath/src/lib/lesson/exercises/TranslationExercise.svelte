@@ -48,6 +48,7 @@
 		aria-label="Your translation"
 		data-testid="text-answer"
 		autocomplete="off"
+		enterkeyhint="done"
 		oninput={onInput}
 	/>
 	{#if submitted && !isCorrect}
