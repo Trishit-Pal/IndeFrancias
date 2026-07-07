@@ -28,10 +28,8 @@
 		<span class="fp-neon-border rounded-full px-2 py-0.5 text-xs font-semibold uppercase">
 			{unit.cefrLevel}
 		</span>
-		<span class="rounded-full bg-subtle px-2 py-0.5 text-xs text-muted capitalize"
-			>{skillLabel}</span
-		>
-		<span class="text-xs text-muted">{index + 1}/{total}</span>
+		<span class="fp-eyebrow rounded-full bg-subtle px-2 py-0.5 normal-case">{skillLabel}</span>
+		<span class="fp-figure text-xs text-muted">{index + 1}/{total}</span>
 	</div>
 	{#if hintsRemaining > 0}
 		<button
