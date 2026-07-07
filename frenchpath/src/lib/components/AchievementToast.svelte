@@ -250,4 +250,27 @@
 		transform: translate(2px, 2px);
 		box-shadow: 2px 2px 0 var(--fp-ink);
 	}
+
+	/* Reduce-motion: kill fp-stamp/fp-rise/fp-flame/fp-confetti everywhere in the card.
+	   !important on animation also wins over the inline style="animation:..." on the
+	   fp-rise elements. fp-stamp/fp-rise start at opacity:0, so force opacity:1 too
+	   or content would freeze invisible instead of just skipping the motion. */
+	@media (prefers-reduced-motion: reduce) {
+		.fp-achievement-card,
+		.fp-achievement-card * {
+			animation: none !important;
+			opacity: 1 !important;
+		}
+		.fp-confetti-piece {
+			display: none;
+		}
+	}
+	:global(html.reduce-motion) .fp-achievement-card,
+	:global(html.reduce-motion) .fp-achievement-card * {
+		animation: none !important;
+		opacity: 1 !important;
+	}
+	:global(html.reduce-motion) .fp-confetti-piece {
+		display: none;
+	}
 </style>
