@@ -202,6 +202,10 @@
 	animation: fp-shimmer 3s linear infinite;
 }
 
+.fp-transition {
+	transition: all var(--fp-duration-md) var(--fp-ease-out);
+}
+
 /* ── Reduce-motion override ── */
 @media (prefers-reduced-motion: reduce) {
 	.fp-bob,
@@ -211,8 +215,10 @@
 	.fp-pulse,
 	.fp-route,
 	.fp-route-v,
-	.fp-badge-earned {
+	.fp-badge-earned,
+	.fp-transition {
 		animation: none !important;
+		transition: none !important;
 	}
 	.fp-postcard:hover {
 		transform: none;
@@ -222,6 +228,8 @@
 .reduce-motion .fp-flutter,
 .reduce-motion .fp-flame,
 .reduce-motion .fp-route,
-.reduce-motion .fp-badge-earned {
+.reduce-motion .fp-badge-earned,
+.reduce-motion .fp-transition {
 	animation: none !important;
+	transition: none !important;
 }

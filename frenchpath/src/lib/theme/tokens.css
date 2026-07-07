@@ -44,6 +44,11 @@
 	/* ── Shadows ── */
 	--fp-shadow-card: 4px 4px 0 var(--fp-ink);
 	--fp-shadow-float: 0 30px 50px -20px rgba(43, 27, 23, 0.35);
+
+	/* ── Motion (M2.5 editorial pass) ── */
+	--fp-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--fp-duration-sm: 200ms;
+	--fp-duration-md: 300ms;
 }
 
 /* ── Exam-mode overrides ──                                                  */
@@ -55,4 +60,42 @@
 	--fp-jaipur: #1f2a44;
 	--fp-paper: #fbf7ee;
 	--fp-font-display: 'Instrument Serif', Georgia, serif;
+}
+
+/* ── Editorial type utilities (M2.5) ── */
+.fp-display-lg {
+	font-family: var(--fp-font-display);
+	font-weight: 400;
+	font-size: clamp(2rem, 1.5rem + 2vw, 3.25rem);
+	line-height: 1.05;
+	letter-spacing: -0.01em;
+}
+.fp-display-md {
+	font-family: var(--fp-font-display);
+	font-weight: 400;
+	font-size: clamp(1.5rem, 1.25rem + 1vw, 2.25rem);
+	line-height: 1.1;
+	letter-spacing: -0.01em;
+}
+.fp-quote-fr {
+	font-family: var(--fp-font-display);
+	font-style: italic;
+}
+.fp-figure {
+	font-family: var(--fp-font-mono);
+	font-variant-numeric: tabular-nums;
+	letter-spacing: 0.02em;
+}
+.fp-eyebrow {
+	font-family: var(--fp-font-mono);
+	font-size: 0.6875rem;
+	font-weight: 500;
+	text-transform: uppercase;
+	letter-spacing: 0.12em;
+	color: var(--fp-muted);
+}
+.fp-hairline {
+	border: 0;
+	border-top: 1px solid var(--fp-ink);
+	opacity: 0.15;
 }
