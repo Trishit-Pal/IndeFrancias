@@ -40,7 +40,7 @@
 </script>
 
 <article class="space-y-4">
-	<div class="fp-glass-panel p-4 text-base leading-relaxed text-foreground">
+	<div class="surface-card p-4 text-base leading-relaxed text-foreground">
 		<GlossText text={exercise.passage} {lexicon} />
 	</div>
 	{#each exercise.questions as q, qi (qi)}
