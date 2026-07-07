@@ -205,7 +205,7 @@
 			<div class="flex items-center gap-3">
 				<img src="/icon.svg" alt="" class="h-10 w-10 rounded-lg shadow-sm lg:hidden" />
 				<div>
-					<h1 class="text-2xl font-bold text-foreground md:text-3xl lg:sr-only">FrenchPath</h1>
+					<h1 class="fp-display-lg text-balance text-foreground lg:sr-only">FrenchPath</h1>
 					<p class="text-sm text-muted lg:sr-only">{homeSubtitle}</p>
 				</div>
 			</div>
@@ -231,7 +231,7 @@
 						<div class="mt-1 flex gap-2">
 							<span class="fp-stat-badge fp-stat-badge--fire" data-testid="streak-badge">
 								<span class="fp-flame" aria-hidden="true">🔥</span>
-								{streak}
+								<span class="fp-figure">{streak}</span>
 							</span>
 							<span
 								class="fp-stat-badge fp-stat-badge--ice"
@@ -374,9 +374,7 @@
 
 			<section class="order-1 lg:order-2">
 				<div class="mb-2 flex items-baseline justify-between">
-					<h2 style="font-family:var(--fp-font-display);font-weight:400;font-size:32px">
-						Le Voyage
-					</h2>
+					<h2 class="fp-display-md text-balance">Le Voyage</h2>
 					{#if currentCity}
 						<span
 							style="font-family:var(--fp-font-mono);font-size:12px;color:var(--fp-muted);text-transform:uppercase;letter-spacing:.18em"
