@@ -164,7 +164,7 @@
 	"settings_reduce_motion_label": "Motion kam karo",
 	"settings_storage_section": "Storage & backup",
 	"settings_storage_notice": "Koi account nahi, koi cloud nahi — aapka learning data sirf isi device par hai. Progress na kho, isliye regularly export karo.",
-	"settings_persisted_label": "Permanent storage:",
+	"settings_persisted_label": "Sthayi storage:",
 	"settings_persisted_on": "Chalu",
 	"settings_persisted_best_effort": "best-effort",
 	"settings_last_export": "Pichhla export: {date}",
