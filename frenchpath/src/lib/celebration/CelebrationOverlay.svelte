@@ -1,4 +1,5 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages';
 	import type { CelebrationRequest } from './orchestrator';
 	import { clipForEvent, shouldUseFullCelebration, canUseWebGL } from './orchestrator';
 
@@ -19,6 +20,7 @@
 	const use3d = $derived(
 		request && shouldUseFullCelebration(celebrationLevel, reduceMotion, webglOk)
 	);
+	let dialogEl = $state<HTMLDivElement | undefined>(undefined);
 
 	$effect(() => {
 		if (use3d && !Scene) {
@@ -26,16 +28,34 @@
 		}
 	});
 
+	// Move keyboard focus into the dialog so Escape/Tab work without a prior click.
+	$effect(() => {
+		if (request) dialogEl?.focus();
+	});
+
 	function dismiss() {
 		onDismiss();
+	}
+
+	function onBackdropClick(e: MouseEvent) {
+		if (e.target === e.currentTarget) dismiss();
+	}
+
+	function onBackdropKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape') dismiss();
 	}
 </script>
 
 {#if request}
 	<div
-		class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+		bind:this={dialogEl}
+		class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 focus:outline-none"
 		role="dialog"
+		aria-modal="true"
 		aria-labelledby="celebration-title"
+		tabindex="-1"
+		onclick={onBackdropClick}
+		onkeydown={onBackdropKeydown}
 		data-testid="celebration-overlay"
 	>
 		<div class="surface-card w-full max-w-md p-6 text-center shadow-xl">
@@ -44,7 +64,7 @@
 			{:else}
 				<p class="fp-confetti-lite text-5xl" aria-hidden="true">🎉</p>
 			{/if}
-			<h2 id="celebration-title" class="mt-4 text-xl font-bold text-foreground">
+			<h2 id="celebration-title" class="mt-4 text-xl font-bold text-balance text-foreground">
 				{request.title}
 			</h2>
 			{#if request.subtitle}
@@ -56,7 +76,7 @@
 				onclick={dismiss}
 				data-testid="celebration-skip"
 			>
-				Continue
+				{m.lesson_continue()}
 			</button>
 		</div>
 	</div>
