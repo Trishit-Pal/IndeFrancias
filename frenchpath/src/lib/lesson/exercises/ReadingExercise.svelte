@@ -55,7 +55,7 @@
 					data-testid="reading-option"
 					onclick={() => choose(qi, oi)}
 				>
-					<GlossText text={option} {lexicon} frenchOnly={false} />
+					{option}
 				</button>
 			{/each}
 		</fieldset>

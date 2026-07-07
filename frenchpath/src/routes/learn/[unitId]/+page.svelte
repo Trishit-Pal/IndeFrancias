@@ -344,7 +344,7 @@
 			<div class="grid grid-cols-1 grid-rows-1">
 				{#key current.id}
 					<div
-						class="fp-glass-panel col-start-1 row-start-1 p-4"
+						class="surface-card col-start-1 row-start-1 p-4"
 						in:fly={{ x: 20, duration: reducedMotion ? 0 : 300 }}
 					>
 						<Exercise
