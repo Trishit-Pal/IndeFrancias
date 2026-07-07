@@ -27,3 +27,9 @@ export function getPlatform(): 'web' | 'android' | 'ios' {
 	const p = cap()?.getPlatform?.() ?? 'web';
 	return p === 'android' || p === 'ios' ? p : 'web';
 }
+
+/** True only inside the Tauri desktop shell (Windows/.exe WebView2). */
+export function isDesktopPlatform(): boolean {
+	if (typeof window === 'undefined') return false;
+	return '__TAURI_INTERNALS__' in window;
+}
