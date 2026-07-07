@@ -31,7 +31,10 @@
 		({correctCount}/{total}).
 	</p>
 	{#if outcome && outcome.goalXp > 0}
-		<p class="mt-1 text-sm font-medium text-green-700 dark:text-green-400" data-testid="xp-awarded">
+		<p
+			class="fp-figure mt-1 text-sm font-medium text-green-700 dark:text-green-400"
+			data-testid="xp-awarded"
+		>
 			{outcome.isNewBest ? m.lesson_new_best() : ''} +{outcome.goalXp} XP
 		</p>
 	{:else}
