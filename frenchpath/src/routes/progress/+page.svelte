@@ -131,12 +131,7 @@
 <svelte:head><title>L'Atelier · FrenchPath</title></svelte:head>
 
 <main class="page-shell">
-	<h1
-		class="text-4xl text-balance text-foreground"
-		style="font-family: var(--fp-font-display); font-weight: 400; line-height: 1.1"
-	>
-		L'Atelier
-	</h1>
+	<h1 class="fp-display-lg text-balance text-foreground">L'Atelier</h1>
 	<p class="text-sm text-muted">{m.progress_subtitle()}</p>
 
 	{#if examCountdown() !== null}
@@ -176,7 +171,7 @@
 			<div class="surface-card p-4">
 				<p class="text-sm text-muted">{m.progress_longest_streak()}</p>
 				<p
-					class="mt-1 text-2xl font-bold text-orange-700 dark:text-orange-400"
+					class="fp-figure mt-1 text-2xl font-bold text-orange-700 dark:text-orange-400"
 					data-testid="longest-streak"
 				>
 					🔥 {longestStreak}
@@ -184,7 +179,7 @@
 			</div>
 			<div class="surface-card p-4">
 				<p class="text-sm text-muted">{m.progress_review_forecast()}</p>
-				<p class="mt-1 text-2xl font-bold text-primary" data-testid="review-forecast">
+				<p class="fp-figure mt-1 text-2xl font-bold text-primary" data-testid="review-forecast">
 					{due}
 				</p>
 				{#if due > 0}

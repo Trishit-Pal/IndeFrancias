@@ -233,12 +233,7 @@
 <svelte:head><title>{m.settings_title()} · FrenchPath</title></svelte:head>
 
 <main class="page-shell">
-	<h1
-		class="text-4xl text-balance text-foreground"
-		style="font-family: var(--fp-font-display); font-weight: 400; line-height: 1.1"
-	>
-		{m.settings_title()}
-	</h1>
+	<h1 class="fp-display-lg text-balance text-foreground">{m.settings_title()}</h1>
 
 	{#if settings}
 		<div class="mt-5 space-y-6">
