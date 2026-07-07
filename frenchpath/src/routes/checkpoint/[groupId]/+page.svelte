@@ -166,7 +166,7 @@
 	{:else if phase === 'intro'}
 		{@const gate = gateById(gateId)}
 		{#if gate}
-			<h1 class="mt-4 text-2xl font-bold">{gate.label}</h1>
+			<h1 class="fp-display-md mt-4 text-balance">{gate.label}</h1>
 			<p class="mt-2 text-muted">Pass to unlock the next units on your path.</p>
 			<div class="mt-4 flex items-center gap-2">
 				<TierBadge {tier} />
@@ -189,9 +189,9 @@
 		{/if}
 	{:else if phase === 'exam' && current}
 		<p class="mt-4 text-sm text-muted">
-			Question {index + 1} / {total}
+			Question <span class="fp-figure">{index + 1} / {total}</span>
 			{#if cfg.maxHints > 0}
-				· Hints {hintsUsed}/{cfg.maxHints}
+				· Hints <span class="fp-figure">{hintsUsed}/{cfg.maxHints}</span>
 			{/if}
 		</p>
 		{#if cfg.maxHints > hintsUsed}
@@ -228,12 +228,12 @@
 			</button>
 		{/if}
 	{:else if phase === 'result' && result}
-		<h1 class="mt-4 text-2xl font-bold">
+		<h1 class="fp-display-md mt-4 text-balance">
 			{result.passed ? 'Checkpoint passed' : 'Not yet — keep practising'}
 		</h1>
 		<p class="mt-2 text-muted">Score: {result.percent}%</p>
 		{#if result.passed}
-			<p class="font-semibold text-primary">+{result.xp} XP</p>
+			<p class="fp-figure font-semibold text-primary">+{result.xp} XP</p>
 			<button
 				type="button"
 				class="btn-secondary mt-4 w-full"
