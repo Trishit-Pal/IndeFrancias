@@ -132,10 +132,7 @@
 						</p>
 					{:else}
 						<div class="flex items-center justify-center gap-2">
-							<h1
-								class="text-3xl font-bold text-balance text-foreground md:text-4xl"
-								style="font-family: var(--fp-font-display)"
-							>
+							<h1 class="fp-display-lg text-balance text-foreground">
 								<GlossText text={currentItem.content.french} lexicon={reviewLexicon} />
 							</h1>
 							{#if canSpeak}
@@ -165,10 +162,7 @@
 					{#if currentItem}
 						{@const gloss = getGloss(currentItem.content, nativeLanguage)}
 						<div class="flex items-center justify-center gap-2">
-							<h1
-								class="text-3xl font-bold text-balance text-foreground md:text-4xl"
-								style="font-family: var(--fp-font-display)"
-							>
+							<h1 class="fp-display-lg text-balance text-foreground">
 								<GlossText text={currentItem.content.french} lexicon={reviewLexicon} />
 							</h1>
 							{#if canSpeak}
@@ -231,7 +225,7 @@
 	{:else if phase === 'reviewing'}
 		<div class="mt-10 text-center" data-testid="no-reviews">
 			<p class="text-5xl">✅</p>
-			<h1 class="mt-3 text-2xl font-bold text-balance text-foreground">
+			<h1 class="fp-display-md mt-3 text-balance text-foreground">
 				{m.review_nothing_title()}
 			</h1>
 			<p class="mt-1 text-muted">{m.review_nothing_desc()}</p>
@@ -240,7 +234,7 @@
 	{:else if phase === 'done'}
 		<div class="mt-10 text-center" data-testid="review-done">
 			<p class="text-5xl">🎉</p>
-			<h1 class="mt-3 text-2xl font-bold text-balance text-foreground">{m.review_complete()}</h1>
+			<h1 class="fp-display-md mt-3 text-balance text-foreground">{m.review_complete()}</h1>
 			<ul class="mt-3 space-y-1 text-sm text-muted">
 				<li data-testid="review-summary-accuracy">
 					{m.review_session_accuracy({ percent: accuracyPercent })}
