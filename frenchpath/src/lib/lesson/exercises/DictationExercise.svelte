@@ -37,7 +37,7 @@
 </script>
 
 <div class="space-y-3">
-	<p class="text-lg font-semibold text-foreground">Listen and type what you hear</p>
+	<p class="text-lg font-semibold text-foreground">{m.dictation_prompt()}</p>
 	{#if canSpeak}
 		<div class="flex items-center gap-3">
 			<button
@@ -72,7 +72,7 @@
 		class={answerInputClass(submitted, isCorrect)}
 		{value}
 		disabled={submitted}
-		aria-label="Type what you hear"
+		aria-label={m.dictation_fill_blank()}
 		data-testid="text-answer"
 		autocomplete="off"
 		autocapitalize="off"

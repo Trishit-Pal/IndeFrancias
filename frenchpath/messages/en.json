@@ -156,6 +156,8 @@
 	"cloze_fill_blank": "Fill in the blank",
 	"cloze_correct_answer": "Correct answer:",
 	"common_xp_per_day": "XP / day",
+	"dictation_prompt": "Listen and type what you hear",
+	"dictation_fill_blank": "Type what you hear",
 	"progress_weekly_reviews": "Weekly reviews: {count}",
 	"progress_assessment_history": "Assessment history",
 	"progress_focus_area": "Focus area",
@@ -164,5 +166,6 @@
 	"progress_assessment_milestone": "Milestone {id}",
 	"progress_assessment_checkpoint": "Checkpoint {id}",
 	"review_loading": "Loading your review queue…",
-	"review_queue_progress": "{current} / {total} due"
+	"review_queue_progress": "{current} / {total} due",
+	"progress_activity_title": "Activity · 12 weeks"
 }

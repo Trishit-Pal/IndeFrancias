@@ -127,6 +127,8 @@
 	"cloze_fill_blank": "Blank fill karo",
 	"cloze_correct_answer": "Sahi jawab:",
 	"common_xp_per_day": "XP / din",
+	"dictation_prompt": "Sunno aur jo aap suno use type karo",
+	"dictation_fill_blank": "Jo aap suno use type karo",
 	"progress_weekly_reviews": "Weekly reviews: {count}",
 	"progress_assessment_history": "Assessment history",
 	"progress_focus_area": "Focus area",
@@ -135,5 +137,6 @@
 	"progress_assessment_milestone": "Milestone {id}",
 	"progress_assessment_checkpoint": "Checkpoint {id}",
 	"review_loading": "Review queue load ho rahi hai…",
-	"review_queue_progress": "{current} / {total} baki"
+	"review_queue_progress": "{current} / {total} baki",
+	"progress_activity_title": "Activity · 12 weeks"
 }

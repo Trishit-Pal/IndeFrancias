@@ -156,6 +156,8 @@
 	"cloze_fill_blank": "रिक्त स्थान भरें",
 	"cloze_correct_answer": "सही उत्तर:",
 	"common_xp_per_day": "XP / दिन",
+	"dictation_prompt": "सुनें और जो आप सुनें उसे टाइप करें",
+	"dictation_fill_blank": "जो आप सुनें उसे टाइप करें",
 	"progress_weekly_reviews": "Weekly reviews: {count}",
 	"progress_assessment_history": "Assessment history",
 	"progress_focus_area": "Focus area",
@@ -164,5 +166,6 @@
 	"progress_assessment_milestone": "Milestone {id}",
 	"progress_assessment_checkpoint": "Checkpoint {id}",
 	"review_loading": "आपकी समीक्षा कतार लोड हो रही है…",
-	"review_queue_progress": "{current} / {total} बाकी"
+	"review_queue_progress": "{current} / {total} बाकी",
+	"progress_activity_title": "गतिविधि · 12 सप्ताह"
 }
