@@ -20,6 +20,7 @@ const config = {
 				'script-src': ['self'],
 				'connect-src': ['self'],
 				'img-src': ['self', 'data:'],
+				'media-src': ['self'],
 				'style-src': ['self', 'unsafe-inline'],
 				'object-src': ['none'],
 				'base-uri': ['self'],
