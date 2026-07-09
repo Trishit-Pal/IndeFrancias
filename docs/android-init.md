@@ -42,3 +42,28 @@ npx cap sync             # copies build/ into android/, installs native plugin g
 Icon/splash asset generation (`@capacitor/assets`), release signing (keystore), and the
 `.aab`/APK build itself are **not** covered by this document — they belong to the follow-up
 plan that extends this file once `android/` exists to generate against.
+
+## Icons, splash, and building the APK
+
+Once `cap add android` above has been run (requires Android Studio / the Android SDK):
+
+```bash
+npx capacitor-assets generate --android --splashBackgroundColor "#E5DACF"
+npx cap sync android
+```
+
+This writes the icon/splash PNGs from `assets/icon.png` and `assets/splash.png` into
+`android/app/src/main/res/`.
+
+Debug build (unsigned, for local testing):
+
+```bash
+cd android && ./gradlew assembleDebug   # gradlew.bat on Windows
+```
+
+Expected: `android/app/build/outputs/apk/debug/app-debug.apk`. Install with
+`adb install app-debug.apk` and confirm the app launches offline with the new icon
+and splash background color visible.
+
+Release build (signed) — see [launch-checklist.md](launch-checklist.md) for the keystore/
+signing setup, then run `npm run build:apk`.

@@ -24,6 +24,7 @@
 		"analyze": "vite build --mode analyze",
 		"build:cap": "npm run build && node scripts/prepare-cap.mjs",
 		"cap:sync": "npm run build:cap && cap sync",
+		"build:apk": "npm run build:cap && cap sync android && cd android && gradlew.bat assembleRelease",
 		"build:desktop": "tauri build"
 	},
 	"devDependencies": {
