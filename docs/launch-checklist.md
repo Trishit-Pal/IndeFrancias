@@ -6,7 +6,7 @@ Use before promoting a production deploy on Vercel (root directory: `frenchpath/
 
 - [ ] `npm run check` — types clean
 - [ ] `npm run lint` — formatting + ESLint
-- [ ] `npm run test:unit -- --run` — **189** unit tests green (see [testing.md](./testing.md))
+- [ ] `npm run test:unit -- --run` — **192** unit tests green (see [testing.md](./testing.md))
 - [ ] `npm run content:validate` — all packs valid
 - [ ] `npm run content:proofread:launch` — A1/A2 proofread clean ([content-curation.md](./content-curation.md); B1–C1 templates may fail full proofread)
 - [ ] `npm run build` — static build succeeds

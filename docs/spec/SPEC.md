@@ -97,7 +97,7 @@ same build for a Windows desktop shell (beta). **No backend.**
 
 Detail: appendix [architecture-map](../architecture-map.md), [mobile-architecture](../product/mobile-architecture.md).
 
-**Test baseline:** 189 unit + 35 e2e green (the authoritative count; supersedes any differing
+**Test baseline:** 192 unit + 35 e2e green (the authoritative count; supersedes any differing
 figure in other docs).
 
 ## §6 Domain module index
@@ -185,3 +185,4 @@ This spec is kept honest by the `frenchpath-spec-sync` skill + `/spec-sync` comm
 | 2026-06-27 | Reconciled M1: work confirmed on `main`, dropped stale "merge pending"; surfaced M2 as current | §8 | MEDIUM |
 | 2026-06-27 | CAP-CHECK: completed g6/mA2 collision fix — `buildLockReasonMap` now uses `pendingGateAfterUnit`, so a unit locked solely by the A2 milestone shows its reason (+1 regression test → 189 unit) | §5, §8 | MEDIUM |
 | 2026-07-09 | M2.5: Tauri desktop shell (beta) scaffolded; Android init/signing docs completed; LessonComplete surface + editorial design tokens applied across home/lesson/progress/settings; desktop wide-window layout | §4, §5, §8 | MEDIUM |
+| 2026-07-09 | Corrected test-count drift: baseline was stale at 189 vs. actual 192 (3 tests added this milestone: platform desktop-detection ×2, Tauri CSP ×1) | §5 | LOW |
