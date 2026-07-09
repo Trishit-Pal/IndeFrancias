@@ -67,3 +67,41 @@ and splash background color visible.
 
 Release build (signed) — see [launch-checklist.md](launch-checklist.md) for the keystore/
 signing setup, then run `npm run build:apk`.
+
+## Release signing
+
+Once `android/app/build.gradle` exists (after `cap add android`), add env-var-driven signing
+so the keystore and passwords are never committed:
+
+Near the top of the file, before the `android {` block:
+
+```gradle
+def frenchpathKeystorePath = System.getenv("FRENCHPATH_KEYSTORE_PATH")
+def frenchpathKeystorePassword = System.getenv("FRENCHPATH_KEYSTORE_PASSWORD")
+def frenchpathKeyAlias = System.getenv("FRENCHPATH_KEY_ALIAS")
+def frenchpathKeyPassword = System.getenv("FRENCHPATH_KEY_PASSWORD")
+```
+
+Inside the existing `android { ... }` block, alongside the generated `defaultConfig`/`buildTypes`:
+
+```gradle
+	signingConfigs {
+		release {
+			if (frenchpathKeystorePath) {
+				storeFile file(frenchpathKeystorePath)
+				storePassword frenchpathKeystorePassword
+				keyAlias frenchpathKeyAlias
+				keyPassword frenchpathKeyPassword
+			}
+		}
+	}
+```
+
+Inside the existing `buildTypes { release { ... } }` block, add one line:
+
+```gradle
+			signingConfig signingConfigs.release
+```
+
+Verify afterward with `grep -n "storePassword\|keyPassword" android/app/build.gradle` — output must
+show only the variable references above, never a quoted literal password.

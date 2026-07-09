@@ -48,6 +48,16 @@ Key automated regressions (detail in [testing.md](./testing.md)):
 - [ ] `robots.txt` allows crawling
 - [ ] OG meta tags present (see `+layout.svelte`)
 
+## Desktop (.exe) & Android (.apk) packaging
+
+- [ ] Windows: `npm run build:desktop` — NSIS installer at `src-tauri/target/release/bundle/nsis/`
+- [ ] Windows: install + launch the generated `.exe` on a clean machine, confirm offline operation
+- [ ] Android: install Android Studio / the Android SDK, then follow `docs/android-init.md` to run `cap add android`
+- [ ] Android: generate a release keystore once — `keytool -genkeypair -v -keystore frenchpath-release.keystore -alias frenchpath -keyalg RSA -keysize 2048 -validity 10000` (human step — store the keystore and passwords outside the repo)
+- [ ] Android: apply the signing config from `docs/android-init.md` to `android/app/build.gradle`
+- [ ] Android: set `FRENCHPATH_KEYSTORE_PATH`, `FRENCHPATH_KEYSTORE_PASSWORD`, `FRENCHPATH_KEY_ALIAS`, `FRENCHPATH_KEY_PASSWORD` env vars, then `npm run build:apk` (or `./gradlew assembleRelease` from `android/` on macOS/Linux)
+- [ ] Android: sideload the signed `.apk` on a real device, confirm offline operation and that the icon/splash render correctly
+
 ## Post-launch
 
 - [ ] Community call for native French proof-read
