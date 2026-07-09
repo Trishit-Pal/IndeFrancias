@@ -28,6 +28,9 @@ test-results
 src/lib/paraglide
 project.inlang/cache/
 
+# Transient AI content drafts (curated copies live in src/content/packs/)
+/src/content/drafts/
+
 # Tauri
 /src-tauri/target
 

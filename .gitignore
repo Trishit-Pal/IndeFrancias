@@ -11,6 +11,9 @@ frenchpath/playwright-report/
 .DS_Store
 Thumbs.db
 
+# Session artifacts (design critiques, not versioned docs)
+.impeccable/
+
 # Env / secrets
 .env
 .env.*
