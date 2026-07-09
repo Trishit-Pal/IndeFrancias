@@ -630,6 +630,19 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	}
 }
 
+/* ── Wide-window editorial column (M2.5) ──                                  */
+/* Applies to any viewport ≥1024px — desktop browser tabs and the Tauri       */
+/* .exe window alike — so the mobile-first layout doesn't stretch full-width. */
+/* Unlayered on purpose: .page-shell's mx-auto/max-w-* utilities compile into */
+/* @layer components above, and unlayered rules always beat layered ones      */
+/* regardless of specificity, so plain `main` reliably overrides it here.     */
+@media (min-width: 1024px) {
+	main {
+		max-width: 960px;
+		margin-inline: auto;
+	}
+}
+
 /* Honour the OS reduce-motion preference. */
 @media (prefers-reduced-motion: reduce) {
 	*,
