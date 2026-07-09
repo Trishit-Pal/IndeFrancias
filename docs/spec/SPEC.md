@@ -83,7 +83,8 @@ Enforced on every change. An edit that touches this section is **high-severity**
 | CAP-CONTENT | Content packs + schema (A1–C1) | beta (B1–C1) | `frenchpath/src/lib/content/schema.ts`, `frenchpath/src/lib/content/loader.ts`, `frenchpath/src/content/packs/` | `src/lib/content/content.spec.ts` | content-curation |
 | CAP-SHARE | Share cards | shipped | `frenchpath/src/lib/share/shareCard.ts` | `share-lesson`, `share-progress`, `share-exam`, `share-review` | prd |
 | CAP-PWA | PWA/offline shell + CSP | shipped | `frenchpath/svelte.config.js`, `frenchpath/src/lib/security/` | `offline-banner`; security specs | architecture-map |
-| CAP-MOBILE | Capacitor native shell | shipped | `frenchpath/src/lib/platform/shell.ts`, `frenchpath/src/lib/platform/haptics.ts`, `frenchpath/scripts/prepare-cap.mjs` | — | mobile-architecture |
+| CAP-MOBILE | Capacitor native shell | shipped | `frenchpath/src/lib/platform/shell.ts`, `frenchpath/src/lib/platform/haptics.ts`, `frenchpath/scripts/prepare-cap.mjs`, `docs/android-init.md` | — | mobile-architecture |
+| CAP-DESKTOP | Windows desktop shell (Tauri) | beta | `frenchpath/src-tauri/` | — (installer build pending Build Tools install) | — |
 | CAP-SYNC | Optional E2EE sync (prepared) | planned | `frenchpath/src/lib/sync/types.ts` | — | data-sovereignty |
 
 ## §5 Architecture overview
@@ -91,7 +92,8 @@ Enforced on every change. An edit that touches this section is **high-severity**
 Static SvelteKit (Svelte 5 runes) PWA → `@sveltejs/adapter-static` (SPA, `200.html` fallback for
 Capacitor) → client IndexedDB (`idb`) → pure domain logic (Node-tested) → JSON content packs
 (`zod`-validated). FSRS-6 (`ts-fsrs`) for spaced repetition. Paraglide i18n (10 locales). Strict
-CSP in `svelte.config.js`. Capacitor 8 wraps the same build for Android/iOS. **No backend.**
+CSP in `svelte.config.js`. Capacitor 8 wraps the same build for Android/iOS. Tauri v2 wraps the
+same build for a Windows desktop shell (beta). **No backend.**
 
 Detail: appendix [architecture-map](../architecture-map.md), [mobile-architecture](../product/mobile-architecture.md).
 
@@ -132,8 +134,8 @@ Milestone-based increments. Each milestone = a spec entry → a plan in
   .gitattributes LF enforcement). All automated gates green (189 unit + 35 e2e). ✅ **Merged to
   `main`** (2026-06-27); the remote `feature/grand-voyage-and-capacitor` adds nothing to `main`
   and can be pruned.
-- **M2 — Launch** web PWA (Vercel) + Android APK (GitHub Releases direct download)
-  **simultaneously**. iOS deferred (no macOS).
+- **M2 — Launch** web PWA (Vercel) + Android APK (GitHub Releases direct download) + Windows .exe
+  (Tauri, sideload/direct-download, not a store) **simultaneously**. iOS deferred (no macOS).
 - **M3 — Native-speaker proofread** A1–A2 (satisfies invariant 5 for launch levels).
 - **M4 — B1–C1 curation** (beta → production, level by level).
 - **Later** — on-device ASR (speaking core); optional E2EE sync (prepared, deferred,
@@ -182,3 +184,4 @@ This spec is kept honest by the `frenchpath-spec-sync` skill + `/spec-sync` comm
 | 2026-06-20 | spec-sync: tied Le Grand Voyage UI components into §4 Key files — DailyRitual + Mira/Léo/Coco (CAP-PATH), ExamTimer (CAP-EXAM), AchievementToast (CAP-GAME) | §4 | MEDIUM |
 | 2026-06-27 | Reconciled M1: work confirmed on `main`, dropped stale "merge pending"; surfaced M2 as current | §8 | MEDIUM |
 | 2026-06-27 | CAP-CHECK: completed g6/mA2 collision fix — `buildLockReasonMap` now uses `pendingGateAfterUnit`, so a unit locked solely by the A2 milestone shows its reason (+1 regression test → 189 unit) | §5, §8 | MEDIUM |
+| 2026-07-09 | M2.5: Tauri desktop shell (beta) scaffolded; Android init/signing docs completed; LessonComplete surface + editorial design tokens applied across home/lesson/progress/settings; desktop wide-window layout | §4, §5, §8 | MEDIUM |
