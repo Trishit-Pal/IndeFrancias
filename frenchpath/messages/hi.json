@@ -220,5 +220,22 @@
 	"settings_backup_export_failed": "बैकअप निर्यात असफल रहा।",
 	"settings_file_too_large": "फ़ाइल बहुत बड़ी है। अधिकतम बैकअप आकार {mb} MB है।",
 	"settings_import_failed": "आयात असफल रहा।",
-	"settings_backup_restored": "बैकअप बहाल हो गया। पुनः लोड हो रहा है…"
+	"settings_backup_restored": "बैकअप बहाल हो गया। पुनः लोड हो रहा है…",
+	"checkpoint_loading": "चेकपॉइंट लोड हो रहा है…",
+	"checkpoint_unknown": "अज्ञात चेकपॉइंट।",
+	"checkpoint_intro_desc": "अपने रास्ते की अगली इकाइयाँ खोलने के लिए पास करें।",
+	"checkpoint_questions_to_pass": "{count} प्रश्न · पास होने के लिए {percent}%",
+	"checkpoint_hints_available": "उपलब्ध संकेत: {count}",
+	"checkpoint_xp_first_pass": "पहली बार पास पर XP: {range} (स्तर अनुसार)",
+	"checkpoint_start": "चेकपॉइंट शुरू करें",
+	"checkpoint_question_label": "प्रश्न",
+	"checkpoint_hints_label": "संकेत",
+	"checkpoint_hint": "संकेत",
+	"checkpoint_passed": "चेकपॉइंट पास हो गया",
+	"checkpoint_not_yet": "अभी नहीं — अभ्यास जारी रखें",
+	"checkpoint_score": "स्कोर: {percent}%",
+	"checkpoint_celebration_title": "{label} पास हो गया!",
+	"checkpoint_celebration_subtitle": "स्कोर {percent}% · +{xp} XP",
+	"checkpoint_share_title": "FrenchPath चेकपॉइंट",
+	"checkpoint_share_subtitle": "{label} पास किया"
 }

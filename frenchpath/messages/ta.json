@@ -179,5 +179,22 @@
 	"settings_backup_export_failed": "Backup export failed.",
 	"settings_file_too_large": "File is too large. Maximum backup size is {mb} MB.",
 	"settings_import_failed": "Import failed.",
-	"settings_backup_restored": "Backup restored. Reloading…"
+	"settings_backup_restored": "Backup restored. Reloading…",
+	"checkpoint_loading": "சோதனைச்சாவடி ஏற்றப்படுகிறது…",
+	"checkpoint_unknown": "தெரியாத சோதனைச்சாவடி.",
+	"checkpoint_intro_desc": "உங்கள் பாதையின் அடுத்த அலகுகளைத் திறக்க தேர்ச்சி பெறுங்கள்.",
+	"checkpoint_questions_to_pass": "{count} கேள்விகள் · தேர்ச்சிக்கு {percent}%",
+	"checkpoint_hints_available": "கிடைக்கும் குறிப்புகள்: {count}",
+	"checkpoint_xp_first_pass": "முதல் தேர்ச்சியில் XP: {range} (நிலை வாரியாக)",
+	"checkpoint_start": "சோதனைச்சாவடியைத் தொடங்கு",
+	"checkpoint_question_label": "கேள்வி",
+	"checkpoint_hints_label": "குறிப்புகள்",
+	"checkpoint_hint": "குறிப்பு",
+	"checkpoint_passed": "சோதனைச்சாவடி தேர்ச்சி",
+	"checkpoint_not_yet": "இன்னும் இல்லை — பயிற்சியைத் தொடருங்கள்",
+	"checkpoint_score": "மதிப்பெண்: {percent}%",
+	"checkpoint_celebration_title": "{label} தேர்ச்சி!",
+	"checkpoint_celebration_subtitle": "மதிப்பெண் {percent}% · +{xp} XP",
+	"checkpoint_share_title": "FrenchPath சோதனைச்சாவடி",
+	"checkpoint_share_subtitle": "{label} தேர்ச்சி பெற்றது"
 }

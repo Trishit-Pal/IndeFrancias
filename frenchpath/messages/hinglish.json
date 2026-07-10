@@ -191,5 +191,22 @@
 	"settings_backup_export_failed": "Backup export fail ho gaya.",
 	"settings_file_too_large": "File bahut badi hai. Maximum backup size {mb} MB hai.",
 	"settings_import_failed": "Import fail ho gaya.",
-	"settings_backup_restored": "Backup restore ho gaya. Reload ho raha hai…"
+	"settings_backup_restored": "Backup restore ho gaya. Reload ho raha hai…",
+	"checkpoint_loading": "Checkpoint load ho raha hai…",
+	"checkpoint_unknown": "Unknown checkpoint.",
+	"checkpoint_intro_desc": "Apne path ki agli units unlock karne ke liye pass karein.",
+	"checkpoint_questions_to_pass": "{count} questions · pass hone ke liye {percent}%",
+	"checkpoint_hints_available": "Available hints: {count}",
+	"checkpoint_xp_first_pass": "Pehli baar pass pe XP: {range} (tier ke hisaab se)",
+	"checkpoint_start": "Checkpoint shuru karein",
+	"checkpoint_question_label": "Question",
+	"checkpoint_hints_label": "Hints",
+	"checkpoint_hint": "Hint",
+	"checkpoint_passed": "Checkpoint pass ho gaya",
+	"checkpoint_not_yet": "Abhi nahi — practice jaari rakhein",
+	"checkpoint_score": "Score: {percent}%",
+	"checkpoint_celebration_title": "{label} pass ho gaya!",
+	"checkpoint_celebration_subtitle": "Score {percent}% · +{xp} XP",
+	"checkpoint_share_title": "FrenchPath checkpoint",
+	"checkpoint_share_subtitle": "{label} pass kiya"
 }

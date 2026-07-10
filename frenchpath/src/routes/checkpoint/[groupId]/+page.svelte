@@ -142,8 +142,8 @@
 					: 'checkpoint_pass';
 			celebration = {
 				event,
-				title: `${gate.label} passed!`,
-				subtitle: `Score ${percent}% · +${outcome.xpAwarded} XP`
+				title: m.checkpoint_celebration_title({ label: gate.label }),
+				subtitle: m.checkpoint_celebration_subtitle({ percent, xp: outcome.xpAwarded })
 			};
 		}
 	}
@@ -152,31 +152,36 @@
 <svelte:head><title>Checkpoint · FrenchPath</title></svelte:head>
 
 <main class="page-shell">
-	<a class="text-sm text-muted hover:underline" href={resolve('/')}>← Home</a>
+	<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
 
 	{#if phase === 'loading'}
-		<p class="mt-6 text-muted">Loading checkpoint…</p>
+		<p class="mt-6 text-muted">{m.checkpoint_loading()}</p>
 	{:else if phase === 'error'}
-		<p class="mt-6 text-muted" role="alert">Unknown checkpoint.</p>
+		<p class="mt-6 text-muted" role="alert">{m.checkpoint_unknown()}</p>
 	{:else if phase === 'cooldown'}
 		<p class="mt-6 text-muted" role="alert" data-testid="checkpoint-cooldown">
 			{m.checkpoint_cooldown({ hours: cooldownHours })}
 		</p>
-		<a class="btn-secondary mt-4 inline-block" href={resolve('/')}>Back to path</a>
+		<a class="btn-secondary mt-4 inline-block" href={resolve('/')}>{m.common_back_to_path()}</a>
 	{:else if phase === 'intro'}
 		{@const gate = gateById(gateId)}
 		{#if gate}
 			<h1 class="fp-display-md mt-4 text-balance">{gate.label}</h1>
-			<p class="mt-2 text-muted">Pass to unlock the next units on your path.</p>
+			<p class="mt-2 text-muted">{m.checkpoint_intro_desc()}</p>
 			<div class="mt-4 flex items-center gap-2">
 				<TierBadge {tier} />
 				<span class="text-sm text-muted"
-					>{cfg.questionCount} questions · {cfg.passPercent}% to pass</span
+					>{m.checkpoint_questions_to_pass({
+						count: cfg.questionCount,
+						percent: cfg.passPercent
+					})}</span
 				>
 			</div>
 			<ul class="mt-4 list-inside list-disc text-sm text-muted">
-				<li>Hints available: {cfg.maxHints}</li>
-				<li>XP on first pass: {gate.kind === 'milestone' ? '100–150' : '50–120'} (by tier)</li>
+				<li>{m.checkpoint_hints_available({ count: cfg.maxHints })}</li>
+				<li>
+					{m.checkpoint_xp_first_pass({ range: gate.kind === 'milestone' ? '100–150' : '50–120' })}
+				</li>
 			</ul>
 			<button
 				type="button"
@@ -184,18 +189,20 @@
 				data-testid="checkpoint-start"
 				onclick={start}
 			>
-				Start checkpoint
+				{m.checkpoint_start()}
 			</button>
 		{/if}
 	{:else if phase === 'exam' && current}
 		<p class="mt-4 text-sm text-muted">
-			Question <span class="fp-figure">{index + 1} / {total}</span>
+			{m.checkpoint_question_label()} <span class="fp-figure">{index + 1} / {total}</span>
 			{#if cfg.maxHints > 0}
-				· Hints <span class="fp-figure">{hintsUsed}/{cfg.maxHints}</span>
+				· {m.checkpoint_hints_label()} <span class="fp-figure">{hintsUsed}/{cfg.maxHints}</span>
 			{/if}
 		</p>
 		{#if cfg.maxHints > hintsUsed}
-			<button type="button" class="btn-secondary mt-2 text-sm" onclick={applyHint}>Hint</button>
+			<button type="button" class="btn-secondary mt-2 text-sm" onclick={applyHint}
+				>{m.checkpoint_hint()}</button
+			>
 		{/if}
 		<div class="mt-4">
 			<ExerciseView
@@ -215,7 +222,7 @@
 				data-testid="checkpoint-check"
 				onclick={submit}
 			>
-				Check
+				{m.lesson_check()}
 			</button>
 		{:else}
 			<button
@@ -224,14 +231,14 @@
 				data-testid="checkpoint-continue"
 				onclick={next}
 			>
-				{index + 1 >= total ? 'Finish' : 'Continue'}
+				{index + 1 >= total ? m.lesson_finish() : m.lesson_continue()}
 			</button>
 		{/if}
 	{:else if phase === 'result' && result}
 		<h1 class="fp-display-md mt-4 text-balance">
-			{result.passed ? 'Checkpoint passed' : 'Not yet — keep practising'}
+			{result.passed ? m.checkpoint_passed() : m.checkpoint_not_yet()}
 		</h1>
-		<p class="mt-2 text-muted">Score: {result.percent}%</p>
+		<p class="mt-2 text-muted">{m.checkpoint_score({ percent: result.percent })}</p>
 		{#if result.passed}
 			<p class="fp-figure font-semibold text-primary">+{result.xp} XP</p>
 			<button
@@ -239,15 +246,17 @@
 				class="btn-secondary mt-4 w-full"
 				onclick={() =>
 					shareProgress({
-						title: 'FrenchPath checkpoint',
-						subtitle: `Passed ${gateById(gateId)?.label ?? gateId}`,
+						title: m.checkpoint_share_title(),
+						subtitle: m.checkpoint_share_subtitle({ label: gateById(gateId)?.label ?? gateId }),
 						xp: result?.xp
 					})}
 			>
 				{m.share_progress()}
 			</button>
 		{/if}
-		<a class="btn-primary mt-4 block w-full text-center" href={resolve('/')}>Back to path</a>
+		<a class="btn-primary mt-4 block w-full text-center" href={resolve('/')}
+			>{m.common_back_to_path()}</a
+		>
 	{/if}
 </main>
 

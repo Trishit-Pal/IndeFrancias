@@ -179,5 +179,22 @@
 	"settings_backup_export_failed": "Backup export failed.",
 	"settings_file_too_large": "File is too large. Maximum backup size is {mb} MB.",
 	"settings_import_failed": "Import failed.",
-	"settings_backup_restored": "Backup restored. Reloading…"
+	"settings_backup_restored": "Backup restored. Reloading…",
+	"checkpoint_loading": "চেকপয়েন্ট লোড হচ্ছে…",
+	"checkpoint_unknown": "অজানা চেকপয়েন্ট।",
+	"checkpoint_intro_desc": "আপনার পথের পরবর্তী ইউনিটগুলি আনলক করতে পাস করুন।",
+	"checkpoint_questions_to_pass": "{count}টি প্রশ্ন · পাস করতে {percent}%",
+	"checkpoint_hints_available": "উপলব্ধ ইঙ্গিত: {count}",
+	"checkpoint_xp_first_pass": "প্রথম পাসে XP: {range} (স্তর অনুযায়ী)",
+	"checkpoint_start": "চেকপয়েন্ট শুরু করুন",
+	"checkpoint_question_label": "প্রশ্ন",
+	"checkpoint_hints_label": "ইঙ্গিত",
+	"checkpoint_hint": "ইঙ্গিত",
+	"checkpoint_passed": "চেকপয়েন্ট পাস হয়েছে",
+	"checkpoint_not_yet": "এখনও নয় — অনুশীলন চালিয়ে যান",
+	"checkpoint_score": "স্কোর: {percent}%",
+	"checkpoint_celebration_title": "{label} পাস হয়েছে!",
+	"checkpoint_celebration_subtitle": "স্কোর {percent}% · +{xp} XP",
+	"checkpoint_share_title": "FrenchPath চেকপয়েন্ট",
+	"checkpoint_share_subtitle": "{label} পাস করেছেন"
 }
