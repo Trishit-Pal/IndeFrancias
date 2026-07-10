@@ -1,0 +1,418 @@
+{
+	"id": "a2-unit-10",
+	"cefrLevel": "A2",
+	"order": 10,
+	"title": "Au travail — Jobs & the workplace",
+	"objective": "Talk about jobs, workplaces and obligations. (A2: can describe one's job and workplace and express simple obligations and wishes.)",
+	"bridge": {
+		"title": "Bridge from Hindi / English: vouloir / pouvoir / devoir + a base verb",
+		"body": "French has three handy verbs that work like English **want / can / must** + a base verb: **vouloir** (to want), **pouvoir** (can / to be able to), **devoir** (must / to have to). Each is followed by an infinitive: *Je **veux** travailler.* (I want to work), *Je **peux** venir.* (I can come), *Je **dois** partir.* (I must leave). It mirrors Hindi चाहना / सकना / पड़ना — one verb carries the modal meaning, then the main verb stays in its base form. For a general necessity use the impersonal **il faut** + infinitive (one must / it is necessary): *Il faut travailler dur.* This is an analogy, not a rule — and note **il faut** never changes, it is always **il**.",
+		"quiz": {
+			"prompt": "In French, what usually follows vouloir / pouvoir / devoir?",
+			"options": [
+				"An infinitive (base verb), e.g. « Je veux travailler »",
+				"Always a noun, never a verb",
+				"A past participle only"
+			],
+			"answerIndex": 0
+		}
+	},
+	"cards": [
+		{
+			"id": "a2-wk-ingenieur",
+			"french": "un ingénieur / une ingénieure",
+			"gender": "masculine",
+			"ipa": "ɛ̃.ʒe.njœʁ",
+			"hindiGloss": "इंजीनियर / अभियंता",
+			"englishGloss": "an engineer",
+			"glosses": {
+				"hi": "इंजीनियर / अभियंता",
+				"en": "an engineer",
+				"bn": "ইঞ্জিনিয়ার",
+				"mr": "अभियंता / इंजिनियर",
+				"gu": "ઇજનેર / એન્જિનિયર",
+				"pa": "ਇੰਜੀਨੀਅਰ",
+				"ta": "பொறியாளர்",
+				"te": "ఇంజనీర్",
+				"kn": "ಎಂಜಿನಿಯರ್"
+			},
+			"example": {
+				"french": "Arjun est ingénieur dans une entreprise IT à Bangalore.",
+				"englishGloss": "Arjun is an engineer at an IT company in Bangalore.",
+				"glosses": {
+					"hi": "इंजीनियर / अभियंता",
+					"en": "Arjun is an engineer at an IT company in Bangalore.",
+					"bn": "ইঞ্জিনিয়ার",
+					"mr": "अभियंता / इंजिनियर",
+					"gu": "ઇજનેર / એન્જિનિયર",
+					"pa": "ਇੰਜੀਨੀਅਰ",
+					"ta": "அர்ஜுன் பெங்களூருவில் ஒரு தகவல் தொழில்நுட்ப நிறுவனத்தில் பொறியாளர்.",
+					"te": "అర్జున్ బెంగళూరులో ఒక ఐటీ కంపెనీలో ఇంజనీర్.",
+					"kn": "ಅರ್ಜುನ್ ಬೆಂಗಳೂರಿನ ಒಂದು ಐಟಿ ಕಂಪನಿಯಲ್ಲಿ ಎಂಜಿನಿಯರ್."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading", "spokenProduction"]
+		},
+		{
+			"id": "a2-wk-medecin",
+			"french": "un médecin",
+			"gender": "masculine",
+			"ipa": "med.sɛ̃",
+			"hindiGloss": "डॉक्टर / चिकित्सक",
+			"englishGloss": "a doctor",
+			"glosses": {
+				"hi": "डॉक्टर / चिकित्सक",
+				"en": "a doctor",
+				"bn": "ডাক্তার",
+				"mr": "डॉक्टर / वैद्य",
+				"gu": "ડૉક્ટર",
+				"pa": "ਡਾਕਟਰ",
+				"ta": "மருத்துவர்",
+				"te": "వైద్యుడు / డాక్టర్",
+				"kn": "ವೈದ್ಯ / ಡಾಕ್ಟರ್"
+			},
+			"example": {
+				"french": "Priya est médecin dans un hôpital à Delhi.",
+				"englishGloss": "Priya is a doctor at a hospital in Delhi.",
+				"glosses": {
+					"hi": "डॉक्टर / चिकित्सक",
+					"en": "Priya is a doctor at a hospital in Delhi.",
+					"bn": "ডাক্তার",
+					"mr": "डॉक्टर / वैद्य",
+					"gu": "ડૉક્ટર",
+					"pa": "ਡਾਕਟਰ",
+					"ta": "பிரியா டெல்லியில் ஒரு மருத்துவமனையில் மருத்துவர்.",
+					"te": "ప్రియా ఢిల్లీలో ఒక ఆసుపత్రిలో వైద్యురాలు.",
+					"kn": "ಪ್ರಿಯಾ ದೆಹಲಿಯ ಒಂದು ಆಸ್ಪತ್ರೆಯಲ್ಲಿ ವೈದ್ಯೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-wk-professeur",
+			"french": "un professeur",
+			"gender": "masculine",
+			"ipa": "pʁɔ.fe.sœʁ",
+			"hindiGloss": "शिक्षक / अध्यापक",
+			"englishGloss": "a teacher / professor",
+			"glosses": {
+				"hi": "शिक्षक / अध्यापक",
+				"en": "a teacher / professor",
+				"bn": "শিক্ষক",
+				"mr": "शिक्षक",
+				"gu": "શિક્ષક",
+				"pa": "ਅਧਿਆਪਕ",
+				"ta": "ஆசிரியர்",
+				"te": "ఉపాధ్యాయుడు",
+				"kn": "ಶಿಕ್ಷಕ"
+			},
+			"example": {
+				"french": "Mon professeur de français est très gentil.",
+				"englishGloss": "My French teacher is very kind.",
+				"glosses": {
+					"hi": "शिक्षक / अध्यापक",
+					"en": "My French teacher is very kind.",
+					"bn": "শিক্ষক",
+					"mr": "शिक्षक",
+					"gu": "શિક્ષક",
+					"pa": "ਅਧਿਆਪਕ",
+					"ta": "என் பிரெஞ்சு ஆசிரியர் மிகவும் இரக்கமுள்ளவர்.",
+					"te": "నా ఫ్రెంచ్ ఉపాధ్యాయుడు చాలా దయగలవాడు.",
+					"kn": "ನನ್ನ ಫ್ರೆಂಚ್ ಶಿಕ್ಷಕ ತುಂಬಾ ದಯಾಳು."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-wk-comptable",
+			"french": "un / une comptable",
+			"gender": "masculine",
+			"ipa": "kɔ̃.tabl",
+			"hindiGloss": "लेखाकार / अकाउंटेंट",
+			"englishGloss": "an accountant",
+			"glosses": {
+				"hi": "लेखाकार / अकाउंटेंट",
+				"en": "an accountant",
+				"bn": "হিসাবরক্ষক / অ্যাকাউন্ট্যান্ট",
+				"mr": "लेखापाल",
+				"gu": "હિસાબનીશ / એકાઉન્ટન્ટ",
+				"pa": "ਲੇਖਾਕਾਰ / ਅਕਾਊਂਟੈਂਟ",
+				"ta": "கணக்காளர்",
+				"te": "అకౌంటెంట్",
+				"kn": "ಲೆಕ್ಕಿಗ / ಅಕೌಂಟೆಂಟ್"
+			},
+			"example": {
+				"french": "Rohan est comptable dans une startup à Gurgaon.",
+				"englishGloss": "Rohan is an accountant at a startup in Gurgaon.",
+				"glosses": {
+					"hi": "लेखाकार / अकाउंटेंट",
+					"en": "Rohan is an accountant at a startup in Gurgaon.",
+					"bn": "হিসাবরক্ষক / অ্যাকাউন্ট্যান্ট",
+					"mr": "लेखापाल",
+					"gu": "હિસાબનીશ / એકાઉન્ટન્ટ",
+					"pa": "ਲੇਖਾਕਾਰ / ਅਕਾਊਂਟੈਂਟ",
+					"ta": "ரோஹன் குர்கானில் ஒரு ஸ்டார்ட்அப்பில் கணக்காளர்.",
+					"te": "రోహన్ గుర్గావ్‌లో ఒక స్టార్టప్‌లో అకౌంటెంట్.",
+					"kn": "ರೋಹನ್ ಗುರ್ಗಾಂವ್‌ನ ಒಂದು ಸ್ಟಾರ್ಟಪ್‌ನಲ್ಲಿ ಅಕೌಂಟೆಂಟ್."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-wk-travail",
+			"french": "le travail",
+			"gender": "masculine",
+			"ipa": "lə tʁa.vaj",
+			"hindiGloss": "काम / कार्य",
+			"englishGloss": "work / the job",
+			"glosses": {
+				"hi": "काम / कार्य",
+				"en": "work / the job",
+				"bn": "কাজ",
+				"mr": "काम",
+				"gu": "કામ",
+				"pa": "ਕੰਮ",
+				"ta": "வேலை",
+				"te": "పని",
+				"kn": "ಕೆಲಸ"
+			},
+			"example": {
+				"french": "J'aime beaucoup mon travail à Bangalore.",
+				"englishGloss": "I like my work in Bangalore a lot.",
+				"glosses": {
+					"hi": "काम / कार्य",
+					"en": "I like my work in Bangalore a lot.",
+					"bn": "কাজ",
+					"mr": "काम",
+					"gu": "કામ",
+					"pa": "ਕੰਮ",
+					"ta": "பெங்களூருவில் என் வேலையை நான் மிகவும் விரும்புகிறேன்.",
+					"te": "బెంగళూరులో నా పనిని నేను చాలా ఇష్టపడతాను.",
+					"kn": "ಬೆಂಗಳೂರಿನಲ್ಲಿ ನನ್ನ ಕೆಲಸವನ್ನು ನಾನು ತುಂಬಾ ಇಷ್ಟಪಡುತ್ತೇನೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["writing"]
+		},
+		{
+			"id": "a2-wk-bureau",
+			"french": "le bureau",
+			"gender": "masculine",
+			"ipa": "lə by.ʁo",
+			"hindiGloss": "कार्यालय / दफ़्तर",
+			"englishGloss": "the office / desk",
+			"glosses": {
+				"hi": "कार्यालय / दफ़्तर",
+				"en": "the office / desk",
+				"bn": "অফিস / কার্যালয়",
+				"mr": "कार्यालय",
+				"gu": "ઑફિસ / કાર્યાલય",
+				"pa": "ਦਫ਼ਤਰ",
+				"ta": "அலுவலகம்",
+				"te": "కార్యాలయం / ఆఫీసు",
+				"kn": "ಕಚೇರಿ / ಆಫೀಸ್"
+			},
+			"example": {
+				"french": "Le bureau à Gurgaon est grand et moderne.",
+				"englishGloss": "The office in Gurgaon is big and modern.",
+				"glosses": {
+					"hi": "कार्यालय / दफ़्तर",
+					"en": "The office in Gurgaon is big and modern.",
+					"bn": "অফিস / কার্যালয়",
+					"mr": "कार्यालय",
+					"gu": "ઑફિસ / કાર્યાલય",
+					"pa": "ਦਫ਼ਤਰ",
+					"ta": "குர்கானில் உள்ள அலுவலகம் பெரியதும் நவீனமானதும் ஆகும்.",
+					"te": "గుర్గావ్‌లోని కార్యాలయం పెద్దది మరియు ఆధునికమైనది.",
+					"kn": "ಗುರ್ಗಾಂವ್‌ನ ಕಚೇರಿ ದೊಡ್ಡದು ಮತ್ತು ಆಧುನಿಕವಾಗಿದೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-wk-reunion",
+			"french": "la réunion",
+			"gender": "feminine",
+			"ipa": "la ʁe.y.njɔ̃",
+			"hindiGloss": "बैठक / मीटिंग",
+			"englishGloss": "the meeting",
+			"glosses": {
+				"hi": "बैठक / मीटिंग",
+				"en": "the meeting",
+				"bn": "বৈঠক / মিটিং",
+				"mr": "बैठक / सभा",
+				"gu": "બેઠક / મીટિંગ",
+				"pa": "ਮੀਟਿੰਗ / ਬੈਠਕ",
+				"ta": "கூட்டம்",
+				"te": "సమావేశం / మీటింగ్",
+				"kn": "ಸಭೆ / ಮೀಟಿಂಗ್"
+			},
+			"example": {
+				"french": "Nous avons une réunion importante à dix heures.",
+				"englishGloss": "We have an important meeting at ten o'clock.",
+				"glosses": {
+					"hi": "बैठक / मीटिंग",
+					"en": "We have an important meeting at ten o'clock.",
+					"bn": "বৈঠক / মিটিং",
+					"mr": "बैठक / सभा",
+					"gu": "બેઠક / મીટિંગ",
+					"pa": "ਮੀਟਿੰਗ / ਬੈਠਕ",
+					"ta": "எங்களுக்கு பத்து மணிக்கு ஒரு முக்கியமான கூட்டம் உள்ளது.",
+					"te": "మాకు పది గంటలకు ఒక ముఖ్యమైన సమావేశం ఉంది.",
+					"kn": "ನಮಗೆ ಹತ್ತು ಗಂಟೆಗೆ ಒಂದು ಮುಖ್ಯ ಸಭೆ ಇದೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["listening", "spokenInteraction"]
+		},
+		{
+			"id": "a2-wk-entretien",
+			"french": "un entretien",
+			"gender": "masculine",
+			"ipa": "ɛ̃n.tʁə.tjɛ̃",
+			"hindiGloss": "साक्षात्कार / इंटरव्यू",
+			"englishGloss": "a (job) interview",
+			"glosses": {
+				"hi": "साक्षात्कार / इंटरव्यू",
+				"en": "a (job) interview",
+				"bn": "সাক্ষাৎকার / ইন্টারভিউ",
+				"mr": "मुलाखत",
+				"gu": "મુલાકાત / ઇન્ટરવ્યૂ",
+				"pa": "ਇੰਟਰਵਿਊ / ਮੁਲਾਕਾਤ",
+				"ta": "நேர்காணல்",
+				"te": "ఇంటర్వ్యూ / ముఖాముఖి",
+				"kn": "ಸಂದರ್ಶನ"
+			},
+			"example": {
+				"french": "Arjun a un entretien d'embauche demain à Bangalore.",
+				"englishGloss": "Arjun has a job interview tomorrow in Bangalore.",
+				"glosses": {
+					"hi": "साक्षात्कार / इंटरव्यू",
+					"en": "Arjun has a job interview tomorrow in Bangalore.",
+					"bn": "সাক্ষাৎকার / ইন্টারভিউ",
+					"mr": "मुलाखत",
+					"gu": "મુલાકાત / ઇન્ટરવ્યૂ",
+					"pa": "ਇੰਟਰਵਿਊ / ਮੁਲਾਕਾਤ",
+					"ta": "அர்ஜுனுக்கு நாளை பெங்களூருவில் ஒரு வேலை நேர்காணல் உள்ளது.",
+					"te": "అర్జున్‌కు రేపు బెంగళూరులో ఒక ఉద్యోగ ఇంటర్వ్యూ ఉంది.",
+					"kn": "ಅರ್ಜುನ್‌ಗೆ ನಾಳೆ ಬೆಂಗಳೂರಿನಲ್ಲಿ ಒಂದು ಉದ್ಯೋಗ ಸಂದರ್ಶನ ಇದೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading", "spokenInteraction"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "conjugation",
+			"id": "a2-u10-ex1",
+			"hint": "pouvoir, je form (can / to be able to).",
+			"coachNote": "Talk about jobs, workplaces and obligations. (A2: can describe one's job and workplace and express simple obligations and wishes.)",
+			"verb": "pouvoir",
+			"pronoun": "je",
+			"prompt": "Working from home: « Je ___ travailler à la maison. » (pouvoir)",
+			"answer": "peux",
+			"accept": ["peux"]
+		},
+		{
+			"type": "conjugation",
+			"id": "a2-u10-ex2",
+			"hint": "devoir, nous form (must / to have to).",
+			"coachNote": "Talk about jobs, workplaces and obligations. (A2: can describe one's job and workplace and express simple obligations and wishes.)",
+			"verb": "devoir",
+			"pronoun": "nous",
+			"prompt": "« Nous ___ finir le projet avant la réunion. » (devoir)",
+			"answer": "devons",
+			"accept": ["devons"]
+		},
+		{
+			"type": "conjugation",
+			"id": "a2-u10-ex3",
+			"hint": "vouloir, elle form (to want).",
+			"coachNote": "Talk about jobs, workplaces and obligations. (A2: can describe one's job and workplace and express simple obligations and wishes.)",
+			"verb": "vouloir",
+			"pronoun": "elle",
+			"prompt": "« Priya ___ un nouvel emploi à Bangalore. » (vouloir, elle)",
+			"answer": "veut",
+			"accept": ["veut"]
+		},
+		{
+			"type": "cloze",
+			"id": "a2-u10-ex4",
+			"hint": "Impersonal necessity: il ___ + infinitive.",
+			"coachNote": "Talk about jobs, workplaces and obligations. (A2: can describe one's job and workplace and express simple obligations and wishes.)",
+			"text": "Pour réussir l'entretien, il {{}} arriver à l'heure.",
+			"answer": "faut",
+			"accept": ["faut"]
+		},
+		{
+			"type": "cloze",
+			"id": "a2-u10-ex5",
+			"cardId": "a2-wk-bureau",
+			"hint": "devoir, il form + base verb.",
+			"coachNote": "Talk about jobs, workplaces and obligations. (A2: can describe one's job and workplace and express simple obligations and wishes.)",
+			"text": "Arjun {{}} aller au bureau à Bangalore aujourd'hui. (devoir)",
+			"answer": "doit",
+			"accept": ["doit"]
+		},
+		{
+			"type": "mcq",
+			"id": "a2-u10-ex6",
+			"cardId": "a2-wk-reunion",
+			"hint": "Use vocabulary from this unit.",
+			"coachNote": "Talk about jobs, workplaces and obligations. (A2: can describe one's job and workplace and express simple obligations and wishes.)",
+			"prompt": "Which word means « a meeting »?",
+			"options": ["une réunion", "un entretien", "un bureau", "un emploi"],
+			"answerIndex": 0,
+			"explanation": "une réunion = a meeting; un entretien = a (job) interview; un bureau = an office; un emploi = a job."
+		},
+		{
+			"type": "matching",
+			"id": "a2-u10-ex7",
+			"hint": "Match each profession to its English name.",
+			"coachNote": "Talk about jobs, workplaces and obligations. (A2: can describe one's job and workplace and express simple obligations and wishes.)",
+			"prompt": "Match each profession to English.",
+			"pairs": [
+				{
+					"left": "un médecin",
+					"right": "a doctor"
+				},
+				{
+					"left": "un ingénieur",
+					"right": "an engineer"
+				},
+				{
+					"left": "un professeur",
+					"right": "a teacher"
+				},
+				{
+					"left": "un / une comptable",
+					"right": "an accountant"
+				}
+			]
+		},
+		{
+			"type": "translation",
+			"id": "a2-u10-ex8",
+			"hint": "devoir, je form + base verb.",
+			"coachNote": "Talk about jobs, workplaces and obligations. (A2: can describe one's job and workplace and express simple obligations and wishes.)",
+			"prompt": "I must work.",
+			"direction": "en-fr",
+			"answer": "Je dois travailler.",
+			"accept": ["je dois travailler", "je dois travailler."]
+		}
+	]
+}

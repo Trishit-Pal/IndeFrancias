@@ -1,0 +1,422 @@
+{
+	"id": "a2-unit-12",
+	"cefrLevel": "A2",
+	"order": 12,
+	"title": "Raconter un voyage — Telling a travel story",
+	"objective": "Narrate a past trip, combining events with descriptions (A2: can tell a simple connected story about a past experience).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: the event vs the backdrop (passé composé + imparfait together)",
+		"body": "When you tell a travel story you need two past tenses at once. Use the **passé composé** for finished events — the snapshot of what happened: *nous **sommes partis** à six heures*, *j'**ai visité** Pondichéry*. Use the **imparfait** for the backdrop — description, weather, mood, ongoing scene: *il **faisait** beau*, *c'**était** magnifique*, *il y **avait** beaucoup de monde*. One sentence often uses both: *Il **faisait** beau (backdrop) quand nous **sommes arrivés** (event).* In Hindi you feel the same split — था/रहा था for the ongoing scene vs the plain past for the single action. Paint the scene with the imparfait, then drop in the events with the passé composé.",
+		"quiz": {
+			"prompt": "In « Il faisait beau quand nous sommes arrivés », which verb is the finished event (passé composé)?",
+			"options": [
+				"« sommes arrivés » — the event; « faisait » is the backdrop",
+				"« faisait » — the event; « sommes arrivés » is the backdrop",
+				"Both are imparfait",
+				"Both are passé composé"
+			],
+			"answerIndex": 0
+		}
+	},
+	"cards": [
+		{
+			"id": "a2-tv-voyage",
+			"french": "le voyage",
+			"gender": "masculine",
+			"ipa": "lə vwa.jaʒ",
+			"hindiGloss": "यात्रा / सफ़र",
+			"englishGloss": "the trip / journey",
+			"glosses": {
+				"hi": "यात्रा / सफ़र",
+				"en": "the trip / journey",
+				"bn": "যাত্রা / ভ্রমণ",
+				"mr": "प्रवास / सहल",
+				"gu": "પ્રવાસ / મુસાફરી",
+				"pa": "ਯਾਤਰਾ / ਸਫ਼ਰ",
+				"ta": "பயணம்",
+				"te": "ప్రయాణం",
+				"kn": "ಪ್ರಯಾಣ"
+			},
+			"example": {
+				"french": "Notre voyage à Pondichéry était magnifique.",
+				"englishGloss": "Our trip to Pondicherry was wonderful.",
+				"glosses": {
+					"hi": "पॉन्डिचेरी की हमारी यात्रा शानदार थी।",
+					"en": "Our trip to Pondicherry was wonderful.",
+					"bn": "যাত্রা / ভ্রমণ",
+					"mr": "पॉन्डिचेरीचा आमचा प्रवास अप्रतिम होता.",
+					"gu": "પોંડિચેરીની અમારી મુસાફરી શાનદાર હતી.",
+					"pa": "ਪਾਂਡੀਚੇਰੀ ਦੀ ਸਾਡੀ ਯਾਤਰਾ ਸ਼ਾਨਦਾਰ ਸੀ।",
+					"ta": "பாண்டிச்சேரிக்கான எங்கள் பயணம் அற்புதமாக இருந்தது.",
+					"te": "పాండిచేరీకి మా ప్రయాణం అద్భుతంగా ఉంది.",
+					"kn": "ಪಾಂಡಿಚೇರಿಗೆ ನಮ್ಮ ಪ್ರಯಾಣ ಅದ್ಭುತವಾಗಿತ್ತು."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-tv-partir",
+			"french": "partir",
+			"gender": "none",
+			"ipa": "paʁ.tiʁ",
+			"hindiGloss": "रवाना होना / निकलना",
+			"englishGloss": "to leave / depart (être: nous sommes partis)",
+			"glosses": {
+				"hi": "रवाना होना / निकलना",
+				"en": "to leave / depart (être: nous sommes partis)",
+				"bn": "রওনা হওয়া / বেরিয়ে পড়া",
+				"mr": "निघणे / प्रस्थान करणे",
+				"gu": "રવાના થવું / નીકળવું",
+				"pa": "ਰਵਾਨਾ ਹੋਣਾ / ਨਿਕਲਣਾ",
+				"ta": "புறப்படுதல்",
+				"te": "బయలుదేరడం",
+				"kn": "ಹೊರಡುವುದು / ಪ್ರಯಾಣ ಆರಂಭಿಸುವುದು"
+			},
+			"example": {
+				"french": "Nous sommes partis de Chennai à six heures du matin.",
+				"englishGloss": "We left Chennai at six in the morning.",
+				"glosses": {
+					"hi": "हम सुबह छह बजे चेन्नई से रवाना हुए।",
+					"en": "We left Chennai at six in the morning.",
+					"bn": "রওনা হওয়া / বেরিয়ে পড়া",
+					"mr": "आम्ही सकाळी सहा वाजता चेन्नईहून निघालो.",
+					"gu": "અમે સવારે છ વાગ્યે ચેન્નઈથી નીકળ્યા.",
+					"pa": "ਅਸੀਂ ਸਵੇਰੇ ਛੇ ਵਜੇ ਚੇਨਈ ਤੋਂ ਰਵਾਨਾ ਹੋਏ।",
+					"ta": "நாங்கள் காலை ஆறு மணிக்கு சென்னையிலிருந்து புறப்பட்டோம்.",
+					"te": "మేము ఉదయం ఆరు గంటలకు చెన్నై నుండి బయలుదేరాం.",
+					"kn": "ನಾವು ಬೆಳಗ್ಗೆ ಆರು ಗಂಟೆಗೆ ಚೆನ್ನೈನಿಂದ ಹೊರಟೆವು."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["spokenProduction"]
+		},
+		{
+			"id": "a2-tv-decouvrir",
+			"french": "découvrir",
+			"gender": "none",
+			"ipa": "de.ku.vʁiʁ",
+			"hindiGloss": "खोजना / जानना (नया)",
+			"englishGloss": "to discover (past participle: découvert)",
+			"glosses": {
+				"hi": "खोजना / जानना (नया)",
+				"en": "to discover (past participle: découvert)",
+				"bn": "আবিষ্কার করা / নতুন কিছু জানা",
+				"mr": "शोधणे / नवीन काही जाणून घेणे",
+				"gu": "શોધવું / નવું જાણવું",
+				"pa": "ਖੋਜਣਾ / ਨਵਾਂ ਜਾਣਨਾ",
+				"ta": "கண்டறிதல் / புதிதாய் அறிதல்",
+				"te": "కనుగొనడం / కొత్తగా తెలుసుకోవడం",
+				"kn": "ಕಂಡುಹಿಡಿಯುವುದು / ಹೊಸದನ್ನು ತಿಳಿಯುವುದು"
+			},
+			"example": {
+				"french": "Priya a découvert la cuisine française à Pondichéry.",
+				"englishGloss": "Priya discovered French cuisine in Pondicherry.",
+				"glosses": {
+					"hi": "प्रिया ने पॉन्डिचेरी में फ़्रांसीसी व्यंजन जाने।",
+					"en": "Priya discovered French cuisine in Pondicherry.",
+					"bn": "আবিষ্কার করা / নতুন কিছু জানা",
+					"mr": "प्रियाने पॉन्डिचेरीत फ्रेंच पाककृती अनुभवली.",
+					"gu": "પ્રિયાએ પોંડિચેરીમાં ફ્રેન્ચ ભોજન જાણ્યું.",
+					"pa": "ਪ੍ਰਿਯਾ ਨੇ ਪਾਂਡੀਚੇਰੀ ਵਿੱਚ ਫ਼ਰਾਂਸੀਸੀ ਖਾਣਾ ਜਾਣਿਆ।",
+					"ta": "பிரியா பாண்டிச்சேரியில் பிரெஞ்சு உணவைக் கண்டறிந்தாள்.",
+					"te": "ప్రియా పాండిచేరీలో ఫ్రెంచ్ వంటకాలను కనుగొంది.",
+					"kn": "ಪ್ರಿಯಾ ಪಾಂಡಿಚೇರಿಯಲ್ಲಿ ಫ್ರೆಂಚ್ ಅಡುಗೆಯನ್ನು ಕಂಡುಕೊಂಡಳು."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-tv-billet",
+			"french": "le billet",
+			"gender": "masculine",
+			"ipa": "lə bi.jɛ",
+			"hindiGloss": "टिकट",
+			"englishGloss": "the ticket",
+			"glosses": {
+				"hi": "टिकट",
+				"en": "the ticket",
+				"bn": "টিকিট",
+				"mr": "तिकीट",
+				"gu": "ટિકિટ",
+				"pa": "ਟਿਕਟ",
+				"ta": "டிக்கெட்",
+				"te": "టికెట్",
+				"kn": "ಟಿಕೆಟ್"
+			},
+			"example": {
+				"french": "Arjun a acheté un billet de train pour Pondichéry.",
+				"englishGloss": "Arjun bought a train ticket to Pondicherry.",
+				"glosses": {
+					"hi": "अर्जुन ने पॉन्डिचेरी के लिए ट्रेन का टिकट खरीदा।",
+					"en": "Arjun bought a train ticket to Pondicherry.",
+					"bn": "টিকিট",
+					"mr": "अर्जुनने पॉन्डिचेरीसाठी ट्रेनचे तिकीट घेतले.",
+					"gu": "અર્જુને પોંડિચેરી માટે ટ્રેનની ટિકિટ ખરીદી.",
+					"pa": "ਅਰਜੁਨ ਨੇ ਪਾਂਡੀਚੇਰੀ ਲਈ ਟ੍ਰੇਨ ਦੀ ਟਿਕਟ ਖਰੀਦੀ।",
+					"ta": "அர்ஜுன் பாண்டிச்சேரிக்கு ரயில் டிக்கெட் வாங்கினான்.",
+					"te": "అర్జున్ పాండిచేరీకి రైలు టికెట్ కొన్నాడు.",
+					"kn": "ಅರ್ಜುನ್ ಪಾಂಡಿಚೇರಿಗೆ ರೈಲು ಟಿಕೆಟ್ ಖರೀದಿಸಿದನು."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-tv-plage",
+			"french": "la plage",
+			"gender": "feminine",
+			"ipa": "la plaʒ",
+			"hindiGloss": "समुद्र तट / बीच",
+			"englishGloss": "the beach",
+			"glosses": {
+				"hi": "समुद्र तट / बीच",
+				"en": "the beach",
+				"bn": "সমুদ্র সৈকত",
+				"mr": "समुद्रकिनारा / बीच",
+				"gu": "દરિયાકિનારો / બીચ",
+				"pa": "ਸਮੁੰਦਰੀ ਕੰਢਾ / ਬੀਚ",
+				"ta": "கடற்கரை",
+				"te": "సముద్ర తీరం / బీచ్",
+				"kn": "ಕಡಲ ತೀರ / ಬೀಚ್"
+			},
+			"example": {
+				"french": "À Goa, la plage était calme et il faisait chaud.",
+				"englishGloss": "In Goa, the beach was quiet and it was hot.",
+				"glosses": {
+					"hi": "गोवा में समुद्र तट शांत था और गर्मी थी।",
+					"en": "In Goa, the beach was quiet and it was hot.",
+					"bn": "সমুদ্র সৈকত",
+					"mr": "गोव्यात समुद्रकिनारा शांत होता आणि उकाडा होता.",
+					"gu": "ગોવામાં દરિયાકિનારો શાંત હતો અને ગરમી હતી.",
+					"pa": "ਗੋਆ ਵਿੱਚ ਸਮੁੰਦਰੀ ਕੰਢਾ ਸ਼ਾਂਤ ਸੀ ਅਤੇ ਗਰਮੀ ਸੀ।",
+					"ta": "கோவாவில் கடற்கரை அமைதியாக இருந்தது, வெப்பமாகவும் இருந்தது.",
+					"te": "గోవాలో బీచ్ నిశ్శబ్దంగా ఉంది, వేడిగా కూడా ఉంది.",
+					"kn": "ಗೋವಾದಲ್ಲಿ ಕಡಲ ತೀರ ಶಾಂತವಾಗಿತ್ತು ಮತ್ತು ಸೆಕೆ ಇತ್ತು."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-tv-montagne",
+			"french": "la montagne",
+			"gender": "feminine",
+			"ipa": "la mɔ̃.taɲ",
+			"hindiGloss": "पहाड़ / पर्वत",
+			"englishGloss": "the mountain",
+			"glosses": {
+				"hi": "पहाड़ / पर्वत",
+				"en": "the mountain",
+				"bn": "পাহাড় / পর্বত",
+				"mr": "डोंगर / पर्वत",
+				"gu": "પર્વત / પહાડ",
+				"pa": "ਪਹਾੜ / ਪਰਬਤ",
+				"ta": "மலை",
+				"te": "పర్వతం / కొండ",
+				"kn": "ಬೆಟ್ಟ / ಪರ್ವತ"
+			},
+			"example": {
+				"french": "Ananya a visité la montagne près de Manali.",
+				"englishGloss": "Ananya visited the mountains near Manali.",
+				"glosses": {
+					"hi": "अनन्या ने मनाली के पास पहाड़ देखे।",
+					"en": "Ananya visited the mountains near Manali.",
+					"bn": "পাহাড় / পর্বত",
+					"mr": "अनन्याने मनालीजवळचे डोंगर पाहिले.",
+					"gu": "અનન્યાએ મનાલી પાસેના પર્વત જોયા.",
+					"pa": "ਅਨੰਯਾ ਨੇ ਮਨਾਲੀ ਦੇ ਨੇੜੇ ਪਹਾੜ ਵੇਖੇ।",
+					"ta": "அனன்யா மணாலிக்கு அருகிலுள்ள மலையைப் பார்வையிட்டாள்.",
+					"te": "అనన్య మనాలీ దగ్గరున్న పర్వతాన్ని సందర్శించింది.",
+					"kn": "ಅನನ್ಯಾ ಮನಾಲಿ ಬಳಿಯ ಬೆಟ್ಟವನ್ನು ಭೇಟಿ ಮಾಡಿದಳು."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-tv-magnifique",
+			"french": "magnifique",
+			"gender": "none",
+			"ipa": "ma.ɲi.fik",
+			"hindiGloss": "शानदार / बहुत सुंदर",
+			"englishGloss": "magnificent / wonderful",
+			"glosses": {
+				"hi": "शानदार / बहुत सुंदर",
+				"en": "magnificent / wonderful",
+				"bn": "চমৎকার / অপূর্ব",
+				"mr": "अप्रतिम / खूप सुंदर",
+				"gu": "શાનદાર / ખૂબ સુંદર",
+				"pa": "ਸ਼ਾਨਦਾਰ / ਬਹੁਤ ਸੁੰਦਰ",
+				"ta": "அற்புதமான / மிக அழகான",
+				"te": "అద్భుతమైన / చాలా అందమైన",
+				"kn": "ಅದ್ಭುತ / ತುಂಬ ಸುಂದರ"
+			},
+			"example": {
+				"french": "Le coucher de soleil sur la mer était magnifique.",
+				"englishGloss": "The sunset over the sea was magnificent.",
+				"glosses": {
+					"hi": "समुद्र पर सूर्यास्त बहुत सुंदर था।",
+					"en": "The sunset over the sea was magnificent.",
+					"bn": "চমৎকার / অপূর্ব",
+					"mr": "समुद्रावरचा सूर्यास्त अप्रतिम होता.",
+					"gu": "દરિયા પરનો સૂર્યાસ્ત શાનદાર હતો.",
+					"pa": "ਸਮੁੰਦਰ ਉੱਤੇ ਸੂਰਜ ਡੁੱਬਣ ਦਾ ਨਜ਼ਾਰਾ ਸ਼ਾਨਦਾਰ ਸੀ।",
+					"ta": "கடலின் மேல் சூரிய அஸ்தமனம் அற்புதமாக இருந்தது.",
+					"te": "సముద్రంపై సూర్యాస్తమయం అద్భుతంగా ఉంది.",
+					"kn": "ಸಮುದ್ರದ ಮೇಲಿನ ಸೂರ್ಯಾಸ್ತ ಅದ್ಭುತವಾಗಿತ್ತು."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-tv-fatigue",
+			"french": "fatigué",
+			"gender": "none",
+			"ipa": "fa.ti.ɡe",
+			"hindiGloss": "थका हुआ",
+			"englishGloss": "tired",
+			"glosses": {
+				"hi": "थका हुआ",
+				"en": "tired",
+				"bn": "ক্লান্ত",
+				"mr": "थकलेला",
+				"gu": "થાકેલો",
+				"pa": "ਥੱਕਿਆ ਹੋਇਆ",
+				"ta": "சோர்வான",
+				"te": "అలసిన",
+				"kn": "ದಣಿದ"
+			},
+			"example": {
+				"french": "Après le long voyage en train, Rohan était très fatigué.",
+				"englishGloss": "After the long train journey, Rohan was very tired.",
+				"glosses": {
+					"hi": "लंबी ट्रेन यात्रा के बाद रोहन बहुत थका हुआ था।",
+					"en": "After the long train journey, Rohan was very tired.",
+					"bn": "ক্লান্ত",
+					"mr": "लांब ट्रेन प्रवासानंतर रोहन खूप थकला होता.",
+					"gu": "લાંબી ટ્રેન મુસાફરી પછી રોહન ખૂબ થાકેલો હતો.",
+					"pa": "ਲੰਬੇ ਟ੍ਰੇਨ ਸਫ਼ਰ ਤੋਂ ਬਾਅਦ ਰੋਹਨ ਬਹੁਤ ਥੱਕਿਆ ਹੋਇਆ ਸੀ।",
+					"ta": "நீண்ட ரயில் பயணத்திற்குப் பிறகு ரோஹன் மிகவும் சோர்வாக இருந்தான்.",
+					"te": "పొడవైన రైలు ప్రయాణం తర్వాత రోహన్ చాలా అలసిపోయాడు.",
+					"kn": "ದೀರ್ಘ ರೈಲು ಪ್ರಯಾಣದ ನಂತರ ರೋಹನ್ ತುಂಬ ದಣಿದಿದ್ದನು."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "cloze",
+			"id": "a2-u12-ex1",
+			"cardId": "a2-tv-plage",
+			"hint": "Weather backdrop = imparfait of « faire », il form.",
+			"coachNote": "Narrate a past trip, combining events with descriptions (A2: can tell a simple connected story about a past experience).",
+			"text": "Backdrop then event: « Il {{}} beau quand nous sommes arrivés à Goa. » (faire, imparfait)",
+			"answer": "faisait",
+			"accept": ["faisait"]
+		},
+		{
+			"type": "mcq",
+			"id": "a2-u12-ex2",
+			"hint": "Snapshot event vs ongoing backdrop.",
+			"coachNote": "Narrate a past trip, combining events with descriptions (A2: can tell a simple connected story about a past experience).",
+			"prompt": "« Nous ___ le fort, et il y ___ beaucoup de touristes. » Which pair is correct?",
+			"options": [
+				"avons visité … avait",
+				"visitions … a eu",
+				"avons visité … a eu",
+				"visitions … avait"
+			],
+			"answerIndex": 0,
+			"explanation": "The single event « visiter » takes the passé composé (avons visité); the background scene « il y avait » (there were) takes the imparfait."
+		},
+		{
+			"type": "conjugation",
+			"id": "a2-u12-ex3",
+			"cardId": "a2-tv-partir",
+			"hint": "« partir » uses être; give the auxiliary for « nous ».",
+			"coachNote": "Narrate a past trip, combining events with descriptions (A2: can tell a simple connected story about a past experience).",
+			"verb": "être",
+			"pronoun": "nous",
+			"prompt": "Passé composé auxiliary: Nous ___ partis à six heures. (être, nous form)",
+			"answer": "sommes",
+			"accept": []
+		},
+		{
+			"type": "cloze",
+			"id": "a2-u12-ex4",
+			"cardId": "a2-tv-decouvrir",
+			"hint": "Finished event = passé composé; participle of « visiter ».",
+			"coachNote": "Narrate a past trip, combining events with descriptions (A2: can tell a simple connected story about a past experience).",
+			"text": "Completed event: « Hier, Priya a {{}} Pondichéry. » (visiter, passé composé)",
+			"answer": "visité",
+			"accept": ["visite", "visité"]
+		},
+		{
+			"type": "mcq",
+			"id": "a2-u12-ex5",
+			"cardId": "a2-tv-magnifique",
+			"hint": "Description of a scene = which tense?",
+			"coachNote": "Narrate a past trip, combining events with descriptions (A2: can tell a simple connected story about a past experience).",
+			"prompt": "To describe the scene « the sea was magnificent », you say…",
+			"options": [
+				"la mer était magnifique",
+				"la mer a été magnifique hier soir précisément",
+				"la mer est magnifique",
+				"la mer sera magnifique"
+			],
+			"answerIndex": 0,
+			"explanation": "A background description uses the imparfait: « était » (was). The passé composé « a été » marks a finished change, not an ongoing description."
+		},
+		{
+			"type": "translation",
+			"id": "a2-u12-ex6",
+			"cardId": "a2-tv-billet",
+			"hint": "Passé composé with avoir; « acheter » → acheté.",
+			"coachNote": "Narrate a past trip, combining events with descriptions (A2: can tell a simple connected story about a past experience).",
+			"prompt": "Arjun bought a train ticket.",
+			"direction": "en-fr",
+			"answer": "Arjun a acheté un billet de train",
+			"accept": [
+				"arjun a acheté un billet de train",
+				"arjun a acheté un billet de train.",
+				"arjun a achete un billet de train"
+			]
+		},
+		{
+			"type": "reorder",
+			"id": "a2-u12-ex7",
+			"hint": "Backdrop (imparfait) + event (passé composé) in one sentence.",
+			"coachNote": "Narrate a past trip, combining events with descriptions (A2: can tell a simple connected story about a past experience).",
+			"prompt": "Build: “It was hot when we arrived.”",
+			"words": ["Il", "faisait", "chaud", "quand", "nous", "sommes", "arrivés"]
+		},
+		{
+			"type": "translation",
+			"id": "a2-u12-ex8",
+			"cardId": "a2-tv-voyage",
+			"hint": "Description of the whole trip = imparfait « était ».",
+			"coachNote": "Narrate a past trip, combining events with descriptions (A2: can tell a simple connected story about a past experience).",
+			"prompt": "The trip was wonderful.",
+			"direction": "en-fr",
+			"answer": "Le voyage était magnifique",
+			"accept": [
+				"le voyage était magnifique",
+				"le voyage était magnifique.",
+				"le voyage etait magnifique"
+			]
+		}
+	]
+}

@@ -1,0 +1,425 @@
+{
+	"id": "a1-unit-12",
+	"cefrLevel": "A1",
+	"order": 12,
+	"title": "Les vêtements et les couleurs — Clothes & colours",
+	"objective": "Describe clothes and colours with correct adjective agreement (A1: can describe everyday objects and clothing with simple adjectives).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: colours change to match the noun",
+		"body": "In French, a colour used as an adjective agrees with its noun: **un pull vert** (masc.), **une robe verte** (fem.), **des robes vertes** (plural). The endings **-e** and **-s** are added just like Hindi adjectives shift — think **अच्छा** → **अच्छी** when the noun turns feminine. Handy analogy, not an exact rule: some French colours never change (**rouge**, **jaune**, **orange**), and Hindi **लाल** never changes either. English adjectives never change at all (“a green dress”, “green dresses”). Also learn **ce pull**, **cette robe**, **ces chaussures** = “this / these”.",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Les vêtements et les couleurs — Clothes & colours\"?",
+			"options": [
+				"Focus on: colours agree in gender and number with the noun",
+				"French adjectives never change form",
+				"Only nouns matter, never colours"
+			],
+			"answerIndex": 0
+		}
+	},
+	"cards": [
+		{
+			"id": "a1-cl-pull",
+			"french": "un pull",
+			"gender": "masculine",
+			"ipa": "œ̃ pyl",
+			"hindiGloss": "स्वेटर / पुलओवर",
+			"englishGloss": "a sweater / pullover",
+			"glosses": {
+				"hi": "स्वेटर / पुलओवर",
+				"en": "a sweater / pullover",
+				"bn": "সোয়েটার / পুলওভার",
+				"mr": "स्वेटर / पुलओव्हर",
+				"gu": "સ્વેટર / પુલઓવર",
+				"pa": "ਸਵੈਟਰ / ਪੁਲਓਵਰ",
+				"ta": "ஸ்வெட்டர் / புல்ஓவர்",
+				"te": "స్వెటర్ / పుల్‌ఓవర్",
+				"kn": "ಸ್ವೆಟರ್ / ಪುಲ್‌ಓವರ್"
+			},
+			"example": {
+				"french": "Arjun porte un pull vert au marché.",
+				"englishGloss": "Arjun is wearing a green sweater at the market.",
+				"glosses": {
+					"hi": "अर्जुन बाज़ार में हरा स्वेटर पहनता है।",
+					"en": "Arjun is wearing a green sweater at the market.",
+					"bn": "সোয়েটার / পুলওভার",
+					"mr": "अर्जुन बाजारात हिरवा स्वेटर घालतो.",
+					"gu": "અર્જુન બજારમાં લીલો સ્વેટર પહેરે છે.",
+					"pa": "ਅਰਜੁਨ ਬਾਜ਼ਾਰ ਵਿੱਚ ਹਰਾ ਸਵੈਟਰ ਪਹਿਨਦਾ ਹੈ।",
+					"ta": "அர்ஜுன் சந்தையில் பச்சை ஸ்வெட்டர் அணிந்துள்ளான்.",
+					"te": "అర్జున్ మార్కెట్‌లో ఆకుపచ్చ స్వెటర్ ధరించాడు.",
+					"kn": "ಅರ್ಜುನ್ ಮಾರುಕಟ್ಟೆಯಲ್ಲಿ ಹಸಿರು ಸ್ವೆಟರ್ ಧರಿಸಿದ್ದಾನೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-cl-chemise",
+			"french": "une chemise",
+			"gender": "feminine",
+			"ipa": "yn ʃə.miz",
+			"hindiGloss": "कमीज़ / शर्ट",
+			"englishGloss": "a shirt",
+			"glosses": {
+				"hi": "कमीज़ / शर्ट",
+				"en": "a shirt",
+				"bn": "শার্ট / জামা",
+				"mr": "शर्ट / कमीज",
+				"gu": "શર્ટ / કમીઝ",
+				"pa": "ਕਮੀਜ਼ / ਸ਼ਰਟ",
+				"ta": "சட்டை",
+				"te": "చొక్కా / షర్ట్",
+				"kn": "ಅಂಗಿ / ಶರ್ಟ್"
+			},
+			"example": {
+				"french": "Priya aime la chemise blanche.",
+				"englishGloss": "Priya likes the white shirt.",
+				"glosses": {
+					"hi": "प्रिया को सफ़ेद कमीज़ पसंद है।",
+					"en": "Priya likes the white shirt.",
+					"bn": "শার্ট / জামা",
+					"mr": "प्रियाला पांढरा शर्ट आवडतो.",
+					"gu": "પ્રિયાને સફેદ શર્ટ ગમે છે.",
+					"pa": "ਪ੍ਰਿਯਾ ਨੂੰ ਚਿੱਟੀ ਕਮੀਜ਼ ਪਸੰਦ ਹੈ।",
+					"ta": "பிரியாவுக்கு வெள்ளை சட்டை பிடிக்கும்.",
+					"te": "ప్రియకు తెల్ల చొక్కా ఇష్టం.",
+					"kn": "ಪ್ರಿಯಾಗೆ ಬಿಳಿ ಅಂಗಿ ಇಷ್ಟ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-cl-pantalon",
+			"french": "un pantalon",
+			"gender": "masculine",
+			"ipa": "œ̃ pɑ̃.ta.lɔ̃",
+			"hindiGloss": "पतलून / पैंट",
+			"englishGloss": "trousers / a pair of trousers",
+			"glosses": {
+				"hi": "पतलून / पैंट",
+				"en": "trousers / a pair of trousers",
+				"bn": "প্যান্ট / পাতলুন",
+				"mr": "पँट / पतलून",
+				"gu": "પેન્ટ / પાટલૂન",
+				"pa": "ਪੈਂਟ / ਪਤਲੂਨ",
+				"ta": "பேண்ட் / கால்சட்டை",
+				"te": "ప్యాంటు",
+				"kn": "ಪ್ಯಾಂಟ್ / ಪ್ಯಾಂಟು"
+			},
+			"example": {
+				"french": "Il y a un pantalon noir dans le magasin.",
+				"englishGloss": "There is a black pair of trousers in the shop.",
+				"glosses": {
+					"hi": "दुकान में एक काली पैंट है।",
+					"en": "There is a black pair of trousers in the shop.",
+					"bn": "প্যান্ট / পাতলুন",
+					"mr": "दुकानात एक काळी पँट आहे.",
+					"gu": "દુકાનમાં એક કાળી પેન્ટ છે.",
+					"pa": "ਦੁਕਾਨ ਵਿੱਚ ਇੱਕ ਕਾਲੀ ਪੈਂਟ ਹੈ।",
+					"ta": "கடையில் ஒரு கருப்பு பேண்ட் உள்ளது.",
+					"te": "దుకాణంలో ఒక నల్ల ప్యాంటు ఉంది.",
+					"kn": "ಅಂಗಡಿಯಲ್ಲಿ ಒಂದು ಕಪ್ಪು ಪ್ಯಾಂಟು ಇದೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-cl-robe",
+			"french": "une robe",
+			"gender": "feminine",
+			"ipa": "yn ʁɔb",
+			"hindiGloss": "फ़्रॉक / गाउन",
+			"englishGloss": "a dress",
+			"glosses": {
+				"hi": "फ़्रॉक / गाउन",
+				"en": "a dress",
+				"bn": "পোশাক / গাউন",
+				"mr": "ड्रेस / झगा",
+				"gu": "ડ્રેસ / ગાઉન",
+				"pa": "ਡਰੈੱਸ / ਗਾਊਨ",
+				"ta": "உடை / கவுன்",
+				"te": "గౌను / దుస్తు",
+				"kn": "ಉಡುಗೆ / ಗೌನ್"
+			},
+			"example": {
+				"french": "Pour le mariage, Ananya porte une robe rouge.",
+				"englishGloss": "For the wedding, Ananya is wearing a red dress.",
+				"glosses": {
+					"hi": "शादी के लिए अनन्या लाल फ़्रॉक पहनती है।",
+					"en": "For the wedding, Ananya is wearing a red dress.",
+					"bn": "পোশাক / গাউন",
+					"mr": "लग्नासाठी अनन्या लाल ड्रेस घालते.",
+					"gu": "લગ્ન માટે અનન્યા લાલ ડ્રેસ પહેરે છે.",
+					"pa": "ਵਿਆਹ ਲਈ ਅਨਨਿਆ ਲਾਲ ਡਰੈੱਸ ਪਹਿਨਦੀ ਹੈ।",
+					"ta": "திருமணத்திற்கு அனன்யா சிவப்பு உடை அணிகிறாள்.",
+					"te": "పెళ్లికి అనన్య ఎర్ర గౌను ధరిస్తుంది.",
+					"kn": "ಮದುವೆಗೆ ಅನನ್ಯ ಕೆಂಪು ಉಡುಗೆ ಧರಿಸುತ್ತಾಳೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-cl-chaussures",
+			"french": "des chaussures",
+			"gender": "feminine",
+			"ipa": "de ʃo.syʁ",
+			"hindiGloss": "जूते",
+			"englishGloss": "shoes",
+			"glosses": {
+				"hi": "जूते",
+				"en": "shoes",
+				"bn": "জুতা",
+				"mr": "बूट / जोडे",
+				"gu": "જૂતાં / બૂટ",
+				"pa": "ਜੁੱਤੀਆਂ",
+				"ta": "காலணிகள்",
+				"te": "బూట్లు / చెప్పులు",
+				"kn": "ಪಾದರಕ್ಷೆಗಳು / ಬೂಟುಗಳು"
+			},
+			"example": {
+				"french": "Priya aime les chaussures bleues du bazar.",
+				"englishGloss": "Priya likes the blue shoes from the bazaar.",
+				"glosses": {
+					"hi": "प्रिया को बाज़ार के नीले जूते पसंद हैं।",
+					"en": "Priya likes the blue shoes from the bazaar.",
+					"bn": "জুতা",
+					"mr": "प्रियाला बाजारातील निळे बूट आवडतात.",
+					"gu": "પ્રિયાને બજારના વાદળી બૂટ ગમે છે.",
+					"pa": "ਪ੍ਰਿਯਾ ਨੂੰ ਬਾਜ਼ਾਰ ਦੀਆਂ ਨੀਲੀਆਂ ਜੁੱਤੀਆਂ ਪਸੰਦ ਹਨ।",
+					"ta": "பிரியாவுக்கு சந்தையின் நீல காலணிகள் பிடிக்கும்.",
+					"te": "ప్రియకు బజారులోని నీలి బూట్లు ఇష్టం.",
+					"kn": "ಪ್ರಿಯಾಗೆ ಬಜಾರಿನ ನೀಲಿ ಬೂಟುಗಳು ಇಷ್ಟ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-cl-rouge",
+			"french": "rouge",
+			"gender": "none",
+			"ipa": "ʁuʒ",
+			"hindiGloss": "लाल",
+			"englishGloss": "red",
+			"glosses": {
+				"hi": "लाल",
+				"en": "red",
+				"bn": "লাল",
+				"mr": "लाल",
+				"gu": "લાલ",
+				"pa": "ਲਾਲ",
+				"ta": "சிவப்பு",
+				"te": "ఎరుపు",
+				"kn": "ಕೆಂಪು"
+			},
+			"example": {
+				"french": "À Holi, le rouge est partout.",
+				"englishGloss": "At Holi, red is everywhere.",
+				"glosses": {
+					"hi": "होली में लाल रंग हर जगह होता है।",
+					"en": "At Holi, red is everywhere.",
+					"bn": "লাল",
+					"mr": "होळीत लाल रंग सर्वत्र असतो.",
+					"gu": "હોળીમાં લાલ રંગ બધે હોય છે.",
+					"pa": "ਹੋਲੀ ਵਿੱਚ ਲਾਲ ਰੰਗ ਹਰ ਥਾਂ ਹੁੰਦਾ ਹੈ।",
+					"ta": "ஹோலியில் சிவப்பு நிறம் எங்கும் இருக்கும்.",
+					"te": "హోలీలో ఎరుపు రంగు అంతటా ఉంటుంది.",
+					"kn": "ಹೋಳಿಯಲ್ಲಿ ಕೆಂಪು ಬಣ್ಣ ಎಲ್ಲೆಡೆ ಇರುತ್ತದೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading", "spokenProduction"]
+		},
+		{
+			"id": "a1-cl-vert",
+			"french": "vert / verte",
+			"gender": "none",
+			"ipa": "vɛʁ / vɛʁt",
+			"hindiGloss": "हरा / हरी",
+			"englishGloss": "green (masc. / fem.)",
+			"glosses": {
+				"hi": "हरा / हरी",
+				"en": "green (masc. / fem.)",
+				"bn": "সবুজ",
+				"mr": "हिरवा / हिरवी",
+				"gu": "લીલો / લીલી",
+				"pa": "ਹਰਾ / ਹਰੀ",
+				"ta": "பச்சை",
+				"te": "ఆకుపచ్చ",
+				"kn": "ಹಸಿರು"
+			},
+			"example": {
+				"french": "Un pull vert, une robe verte.",
+				"englishGloss": "A green sweater, a green dress.",
+				"glosses": {
+					"hi": "एक हरा स्वेटर, एक हरी फ़्रॉक।",
+					"en": "A green sweater, a green dress.",
+					"bn": "সবুজ",
+					"mr": "एक हिरवा स्वेटर, एक हिरवी ड्रेस.",
+					"gu": "એક લીલો સ્વેટર, એક લીલી ડ્રેસ.",
+					"pa": "ਇੱਕ ਹਰਾ ਸਵੈਟਰ, ਇੱਕ ਹਰੀ ਡਰੈੱਸ।",
+					"ta": "ஒரு பச்சை ஸ்வெட்டர், ஒரு பச்சை உடை.",
+					"te": "ఒక ఆకుపచ్చ స్వెటర్, ఒక ఆకుపచ్చ గౌను.",
+					"kn": "ಒಂದು ಹಸಿರು ಸ್ವೆಟರ್, ಒಂದು ಹಸಿರು ಉಡುಗೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["writing", "reading"]
+		},
+		{
+			"id": "a1-cl-porter",
+			"french": "porter",
+			"gender": "none",
+			"ipa": "pɔʁ.te",
+			"hindiGloss": "पहनना",
+			"englishGloss": "to wear",
+			"glosses": {
+				"hi": "पहनना",
+				"en": "to wear",
+				"bn": "পরা",
+				"mr": "घालणे",
+				"gu": "પહેરવું",
+				"pa": "ਪਹਿਨਣਾ",
+				"ta": "அணிதல்",
+				"te": "ధరించడం",
+				"kn": "ಧರಿಸುವುದು"
+			},
+			"example": {
+				"french": "Ananya porte un lehenga jaune au mariage.",
+				"englishGloss": "Ananya wears a yellow lehenga at the wedding.",
+				"glosses": {
+					"hi": "अनन्या शादी में पीला लहंगा पहनती है।",
+					"en": "Ananya wears a yellow lehenga at the wedding.",
+					"bn": "পরা",
+					"mr": "अनन्या लग्नात पिवळा लेहंगा घालते.",
+					"gu": "અનન્યા લગ્નમાં પીળો લેહંગા પહેરે છે.",
+					"pa": "ਅਨਨਿਆ ਵਿਆਹ ਵਿੱਚ ਪੀਲਾ ਲਹਿੰਗਾ ਪਹਿਨਦੀ ਹੈ।",
+					"ta": "அனன்யா திருமணத்தில் மஞ்சள் லெஹங்கா அணிகிறாள்.",
+					"te": "అనన్య పెళ్లిలో పసుపు లెహంగా ధరిస్తుంది.",
+					"kn": "ಅನನ್ಯ ಮದುವೆಯಲ್ಲಿ ಹಳದಿ ಲೆಹಂಗಾ ಧರಿಸುತ್ತಾಳೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["spokenProduction", "writing"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "gender",
+			"id": "a1-u12-ex1",
+			"cardId": "a1-cl-pull",
+			"hint": "Recall the article used with « pull » in this unit.",
+			"coachNote": "Describe clothes and colours with correct adjective agreement (A1: can describe everyday objects and clothing with simple adjectives).",
+			"noun": "pull",
+			"answer": "masculine",
+			"articleStyle": "indefinite"
+		},
+		{
+			"type": "gender",
+			"id": "a1-u12-ex2",
+			"cardId": "a1-cl-robe",
+			"hint": "Recall the article used with « robe » in this unit.",
+			"coachNote": "Describe clothes and colours with correct adjective agreement (A1: can describe everyday objects and clothing with simple adjectives).",
+			"noun": "robe",
+			"answer": "feminine",
+			"articleStyle": "indefinite"
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u12-ex3",
+			"cardId": "a1-cl-vert",
+			"hint": "The noun « robe » is feminine, so add -e to the colour.",
+			"coachNote": "Describe clothes and colours with correct adjective agreement (A1: can describe everyday objects and clothing with simple adjectives).",
+			"text": "Ananya porte une robe {{}} (green).",
+			"answer": "verte",
+			"accept": ["verte"]
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u12-ex4",
+			"cardId": "a1-cl-chaussures",
+			"hint": "« chaussures » is feminine plural, so the colour takes -es.",
+			"coachNote": "Describe clothes and colours with correct adjective agreement (A1: can describe everyday objects and clothing with simple adjectives).",
+			"text": "Priya aime les chaussures {{}} (green).",
+			"answer": "vertes",
+			"accept": ["vertes"]
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u12-ex5",
+			"cardId": "a1-cl-pull",
+			"hint": "« pull » is masculine — the colour stays in its base form.",
+			"coachNote": "Describe clothes and colours with correct adjective agreement (A1: can describe everyday objects and clothing with simple adjectives).",
+			"prompt": "Arjun wears a green sweater. Which is correct?",
+			"options": ["un pull vert", "un pull verte", "une pull verte", "un pull vertes"],
+			"answerIndex": 0,
+			"explanation": "« pull » is masculine singular, so the colour stays « vert » with no ending."
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u12-ex6",
+			"hint": "Which demonstrative goes with a feminine noun?",
+			"coachNote": "Describe clothes and colours with correct adjective agreement (A1: can describe everyday objects and clothing with simple adjectives).",
+			"prompt": "How do you say “this dress” (une robe)?",
+			"options": ["cette robe", "ce robe", "ces robe", "cet robe"],
+			"answerIndex": 0,
+			"explanation": "« robe » is feminine, so use « cette ». « ce » is masculine and « ces » is plural."
+		},
+		{
+			"type": "translation",
+			"id": "a1-u12-ex7",
+			"cardId": "a1-cl-robe",
+			"hint": "Colour follows the noun and agrees: robe (fem.) → rouge stays the same.",
+			"coachNote": "Describe clothes and colours with correct adjective agreement (A1: can describe everyday objects and clothing with simple adjectives).",
+			"prompt": "a red dress",
+			"direction": "en-fr",
+			"answer": "une robe rouge",
+			"accept": ["une robe rouge", "la robe rouge"]
+		},
+		{
+			"type": "matching",
+			"id": "a1-u12-ex8",
+			"hint": "Match each French colour to its English meaning.",
+			"coachNote": "Describe clothes and colours with correct adjective agreement (A1: can describe everyday objects and clothing with simple adjectives).",
+			"prompt": "Match the colour to English.",
+			"pairs": [
+				{
+					"left": "rouge",
+					"right": "red"
+				},
+				{
+					"left": "bleu",
+					"right": "blue"
+				},
+				{
+					"left": "vert",
+					"right": "green"
+				},
+				{
+					"left": "jaune",
+					"right": "yellow"
+				},
+				{
+					"left": "blanc",
+					"right": "white"
+				},
+				{
+					"left": "noir",
+					"right": "black"
+				}
+			]
+		}
+	]
+}

@@ -86,7 +86,7 @@ speech input → Web Speech API (V1) → Whisper WASM (V2, optional)
 
 **Rationale:**
 
-- 52-unit path scales acceptably with CSS perspective on mobile
+- 58-unit path scales acceptably with CSS perspective on mobile
 - WebGL ribbon adds bundle weight and GPU variance on low-end devices
 - Celebration 3D is optional and short-lived; the path is always visible
 

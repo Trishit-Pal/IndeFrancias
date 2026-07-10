@@ -34,7 +34,7 @@ selectors and accessibility checks.
                             │
 ┌───────────────────────────▼─────────────────────────────────┐
 │  CI content gates — content:validate · content:proofread:launch (A1/A2) │
-│  Full content:proofread (52 units) — CI report only (continue-on-error) │
+│  Full content:proofread (58 units) — CI report only (continue-on-error) │
 └─────────────────────────────────────────────────────────────┘
 ```
 

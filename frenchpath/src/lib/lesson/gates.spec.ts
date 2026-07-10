@@ -82,10 +82,10 @@ describe('checkpoint gates', () => {
 	});
 
 	it('surfaces the A2 milestone (not the already-passed checkpoint) as the lock reason', () => {
-		// g6 and mA2 share afterUnitId 'a2-unit-08'. Once g6 is passed but the A2
+		// g16 and mA2 share afterUnitId 'a2-unit-12'. Once g16 is passed but the A2
 		// milestone is not, the next unit must still explain *why* it is locked.
 		const a2Summaries: UnitSummary[] = [
-			...Array.from({ length: 8 }, (_, i) => ({
+			...Array.from({ length: 12 }, (_, i) => ({
 				id: `a2-unit-${String(i + 1).padStart(2, '0')}`,
 				cefrLevel: 'A2' as const,
 				order: i + 1,
@@ -94,10 +94,37 @@ describe('checkpoint gates', () => {
 			})),
 			{ id: 'b1-unit-01', cefrLevel: 'B1' as const, order: 1, title: 'B1 Unit 1', objective: 'o' }
 		];
-		const progress = completed(...a2Summaries.slice(0, 8).map((u) => u.id));
-		const passed = new Set(['checkpoint:g6']);
+		const progress = completed(...a2Summaries.slice(0, 12).map((u) => u.id));
+		const passed = new Set(['checkpoint:g16']);
 		const reason = lockReasonForUnit('b1-unit-01', a2Summaries, progress, passed);
 		expect(reason).toMatch(/A2 Milestone/);
+	});
+
+	it('gates A1 units 10–12 behind checkpoint g15 before the A1 milestone', () => {
+		// g15 (units 10–12) and mA1 both sit after a1-unit-12, g15 first in array.
+		const a1Summaries: UnitSummary[] = [
+			...Array.from({ length: 12 }, (_, i) => ({
+				id: `a1-unit-${String(i + 1).padStart(2, '0')}`,
+				cefrLevel: 'A1' as const,
+				order: i + 1,
+				title: `A1 Unit ${i + 1}`,
+				objective: 'o'
+			})),
+			{ id: 'a2-unit-01', cefrLevel: 'A2' as const, order: 1, title: 'A2 Unit 1', objective: 'o' }
+		];
+		const progress = completed(...a1Summaries.slice(0, 12).map((u) => u.id));
+		// Nothing passed yet: the first pending gate after unit-12 is g15.
+		expect(lockReasonForUnit('a2-unit-01', a1Summaries, progress, new Set())).toMatch(
+			/Checkpoint 15/
+		);
+		// g15 passed but not the milestone: now the A1 milestone is the blocker.
+		const reason = lockReasonForUnit(
+			'a2-unit-01',
+			a1Summaries,
+			progress,
+			new Set(['checkpoint:g15'])
+		);
+		expect(reason).toMatch(/A1 Milestone/);
 	});
 
 	it('buildLockReasonMap matches lockReasonForUnit for each unit', () => {
