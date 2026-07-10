@@ -20,6 +20,8 @@ const exists = await access(DEST).then(
 	() => false
 );
 let bytes;
+let wasDownloaded = false;
+
 if (exists) {
 	bytes = await readFile(DEST);
 } else {
@@ -27,13 +29,24 @@ if (exists) {
 	const res = await fetch(UPSTREAM);
 	if (!res.ok) throw new Error(`Model download failed: HTTP ${res.status}`);
 	bytes = Buffer.from(await res.arrayBuffer());
+	wasDownloaded = true;
+}
+
+// Compute hash BEFORE writing to disk
+const hash = createHash('sha256').update(bytes).digest('hex');
+
+if (printHash) {
+	// Print-hash mode: write file and print hash
+	await mkdir(DEST_DIR, { recursive: true });
+	await writeFile(DEST, bytes);
+	console.log(hash);
+} else if (pinned !== hash) {
+	// Hash mismatch: refuse without writing to disk
+	throw new Error(`Model hash mismatch: pinned ${pinned}, got ${hash}. Refusing.`);
+} else if (wasDownloaded) {
+	// Hash matches and we just downloaded it: write to disk now
 	await mkdir(DEST_DIR, { recursive: true });
 	await writeFile(DEST, bytes);
 }
-const hash = createHash('sha256').update(bytes).digest('hex');
-if (printHash) {
-	console.log(hash);
-} else if (pinned !== hash) {
-	throw new Error(`Model hash mismatch: pinned ${pinned}, got ${hash}. Refusing.`);
-}
+
 console.error(`Model OK at ${DEST}`);
