@@ -65,7 +65,10 @@ describe('security headers', () => {
 	// hardened directive set so the two can never silently drift apart.
 	const REQUIRED_CSP: Record<string, string[]> = {
 		'default-src': ["'self'"],
-		'script-src': ["'self'"],
+		// unsafe-eval needed for vosk-browser's Emscripten WASM runtime (new
+		// Function() during its own startup) — approved by project owner, see
+		// .superpowers/sdd/task-10-csp-fix-report.md / task-10-csp-unsafe-eval-report.md.
+		'script-src': ["'self'", "'unsafe-eval'"],
 		'style-src': ["'self'", "'unsafe-inline'"],
 		'img-src': ["'self'", 'data:'],
 		'media-src': ["'self'"],
