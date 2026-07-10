@@ -72,7 +72,9 @@ describe('security headers', () => {
 		'object-src': ["'none'"],
 		'base-uri': ["'self'"],
 		'frame-ancestors': ["'none'"],
-		'worker-src': ["'self'"],
+		// blob: needed for vosk-browser (Task 10 ASR), which spawns its worker
+		// from a blob: URL rather than a same-origin module URL.
+		'worker-src': ["'self'", 'blob:'],
 		'manifest-src': ["'self'"]
 	};
 

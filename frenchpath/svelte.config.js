@@ -26,7 +26,9 @@ const config = {
 				'base-uri': ['self'],
 				'frame-ancestors': ['none'],
 				'manifest-src': ['self'],
-				'worker-src': ['self']
+				// blob: needed for vosk-browser, which bundles and spawns its worker
+				// from a blob: URL rather than a same-origin module URL.
+				'worker-src': ['self', 'blob:']
 			}
 		}
 	}
