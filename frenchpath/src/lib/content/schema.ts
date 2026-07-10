@@ -206,6 +206,16 @@ export const productiveExerciseSchema = z.object({
 	minChecks: z.number().int().min(1).default(2)
 });
 
+/** Speak the phrase aloud; scored on-device by the ASR worker (WP3). */
+export const speakExerciseSchema = z.object({
+	type: z.literal('speak'),
+	...exerciseBase,
+	/** The French phrase the learner must say. */
+	phrase: z.string().min(1),
+	/** Optional different TTS model text (defaults to phrase). */
+	audioText: z.string().optional()
+});
+
 export const exerciseSchema = z.discriminatedUnion('type', [
 	mcqExerciseSchema,
 	clozeExerciseSchema,
@@ -217,7 +227,8 @@ export const exerciseSchema = z.discriminatedUnion('type', [
 	genderExerciseSchema,
 	readingExerciseSchema,
 	listeningExerciseSchema,
-	productiveExerciseSchema
+	productiveExerciseSchema,
+	speakExerciseSchema
 ]);
 export type Exercise = z.infer<typeof exerciseSchema>;
 export type ExerciseType = Exercise['type'];

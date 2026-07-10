@@ -225,6 +225,23 @@ describe('gradeExercise — added types', () => {
 	});
 });
 
+describe('speak exercise', () => {
+	const speak = {
+		type: 'speak',
+		id: 's1',
+		phrase: 'je voudrais un café'
+	} as unknown as Exercise;
+
+	it('good and partial pronunciations pass', () => {
+		expect(gradeExercise(speak, { type: 'speak', overall: 'good' })).toBe(true);
+		expect(gradeExercise(speak, { type: 'speak', overall: 'partial' })).toBe(true);
+	});
+	it('retry fails unless self-assessed ok (ASR-unavailable fallback)', () => {
+		expect(gradeExercise(speak, { type: 'speak', overall: 'retry' })).toBe(false);
+		expect(gradeExercise(speak, { type: 'speak', overall: 'retry', selfOk: true })).toBe(true);
+	});
+});
+
 describe('scorePercent', () => {
 	it('rounds to whole percent and handles empty', () => {
 		expect(scorePercent(1, 3)).toBe(33);
