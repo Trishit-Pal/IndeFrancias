@@ -14,3 +14,8 @@ export async function getLogsForCard(cardId: string): Promise<ReviewLogRecord[]>
 export async function countReviews(): Promise<number> {
 	return (await getDB()).count('reviewLog');
 }
+
+/** All review log entries, unordered — input to the FSRS optimizer's replay. */
+export async function getAllReviewLogs(): Promise<ReviewLogRecord[]> {
+	return (await getDB()).getAll('reviewLog');
+}

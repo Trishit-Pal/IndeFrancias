@@ -82,6 +82,7 @@
 		"@threlte/core": "^8.5.16",
 		"@threlte/extras": "^9.21.0",
 		"bits-ui": "^2.18.1",
+		"fsrs-browser": "^6.6.0",
 		"idb": "^8.0.3",
 		"three": "^0.184.0",
 		"ts-fsrs": "^5.4.1",

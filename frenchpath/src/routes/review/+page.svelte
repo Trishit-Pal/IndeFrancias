@@ -19,6 +19,7 @@
 	import { speakFrench, ttsAvailable } from '$lib/audio/tts';
 	import { shareProgress } from '$lib/share/shareCard';
 	import type { ReviewGrade } from '$lib/srs/fsrs';
+	import { maybeRunFsrsOptimizer } from '$lib/srs/optimizer';
 
 	type ReviewItem = { srs: SrsCard; content: Card };
 	type Phase = 'loading' | 'reviewing' | 'done';
@@ -110,6 +111,7 @@
 		} else {
 			sessionDurationMs = Date.now() - sessionStartedAt;
 			phase = 'done';
+			void maybeRunFsrsOptimizer();
 		}
 	}
 </script>
