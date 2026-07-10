@@ -5,6 +5,7 @@
 	import { answerInputClass } from './inputClass';
 	import type { Lexicon } from '$lib/content/lexicon';
 	import GlossText from '$lib/components/GlossText.svelte';
+	import ShadowingPlayer from '$lib/lesson/ShadowingPlayer.svelte';
 	import * as m from '$lib/paraglide/messages';
 
 	let {
@@ -23,6 +24,7 @@
 	const isCorrect = $derived(submitted && response ? gradeExercise(exercise, response) : false);
 	const canSpeak = ttsAvailable();
 	let playing = $state(false);
+	let showShadow = $state(false);
 
 	function onInput(event: Event) {
 		const text = (event.currentTarget as HTMLInputElement).value;
@@ -60,7 +62,18 @@
 					<span class="fp-dictation-bar" style="--fp-bar: {h}"></span>
 				{/each}
 			</div>
+			<button
+				type="button"
+				class="min-h-11 rounded-full border border-border px-4 py-2 hover:border-primary"
+				onclick={() => (showShadow = !showShadow)}
+				data-testid="shadow-toggle"
+			>
+				{showShadow ? m.shadow_stop() : m.shadow_start()}
+			</button>
 		</div>
+		{#if showShadow}
+			<ShadowingPlayer audioText={exercise.audioText} />
+		{/if}
 	{:else}
 		<p class="rounded-lg bg-subtle px-3 py-2 text-foreground">
 			<GlossText text={exercise.audioText} {lexicon} />

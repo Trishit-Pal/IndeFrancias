@@ -1,11 +1,15 @@
 // French text-to-speech via Web Speech API. Always uses a French voice when available.
 // On the Capacitor native shell, speaking routes to the native TTS plugin.
 import { isNativePlatform } from '$lib/platform';
-import { nativeSpeakFrench } from '$lib/platform/tts';
+import { nativeSpeakFrench, nativeStopSpeaking } from '$lib/platform/tts';
 
 export interface SpeakOptions {
 	voiceUri?: string | null;
 	rate?: number;
+	/** Word-boundary callback — only fires on the web Web Speech path (native shell has no boundary events). */
+	onBoundary?: (charIndex: number) => void;
+	/** Fires once the utterance finishes (web: utterance.onend; native: after the speak() promise resolves). */
+	onEnd?: () => void;
 }
 
 /** Module-level defaults; updated from layout when settings load. */
@@ -101,7 +105,9 @@ export function speakFrench(text: string, options: SpeakOptions = {}): void {
 	if (!text.trim()) return;
 
 	if (isNativePlatform()) {
-		void nativeSpeakFrench(text, clampRate(options.rate ?? cachedRate));
+		void nativeSpeakFrench(text, clampRate(options.rate ?? cachedRate)).then(() =>
+			options.onEnd?.()
+		);
 		return;
 	}
 
@@ -116,7 +122,25 @@ export function speakFrench(text: string, options: SpeakOptions = {}): void {
 	utterance.lang = voice?.lang ?? 'fr-FR';
 	utterance.rate = rate;
 	if (voice) utterance.voice = voice;
+	if (options.onBoundary) {
+		utterance.onboundary = (event) => options.onBoundary?.(event.charIndex);
+	}
+	if (options.onEnd) utterance.onend = () => options.onEnd?.();
 
 	window.speechSynthesis.cancel();
 	window.speechSynthesis.speak(utterance);
+}
+
+/** Stops any in-progress speech (web cancel; native TextToSpeech.stop()). */
+export function stopSpeaking(): void {
+	if (isNativePlatform()) {
+		void nativeStopSpeaking();
+		return;
+	}
+	if (ttsAvailable()) window.speechSynthesis.cancel();
+}
+
+/** Currently configured playback rate (from Settings) — for UI that paces itself without calling speakFrench. */
+export function getConfiguredRate(): number {
+	return cachedRate;
 }
