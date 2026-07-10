@@ -199,5 +199,9 @@
 	"checkpoint_share_subtitle": "{label} পাস করেছেন",
 	"beta_badge": "বিটা",
 	"checkpoint_cooldown": "{hours} ঘণ্টা পরে আবার চেষ্টা করা যাবে।",
-	"rubric_hint_label": "Tip:"
+	"rubric_hint_label": "Tip:",
+	"fsrs_personalized_title": "Scheduling",
+	"fsrs_personalized_on": "Personalized — tuned from {count} of your reviews, on this device only.",
+	"fsrs_personalized_off": "Standard FSRS scheduling. Personalizes automatically after 500 reviews.",
+	"fsrs_reset_defaults": "Reset to standard"
 }

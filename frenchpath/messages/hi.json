@@ -239,5 +239,9 @@
 	"checkpoint_share_title": "FrenchPath चेकपॉइंट",
 	"checkpoint_share_subtitle": "{label} पास किया",
 	"beta_badge": "बीटा",
-	"rubric_hint_label": "सुझाव:"
+	"rubric_hint_label": "सुझाव:",
+	"fsrs_personalized_title": "शेड्यूलिंग",
+	"fsrs_personalized_on": "व्यक्तिगत — आपकी {count} समीक्षाओं से तैयार, केवल इसी डिवाइस पर।",
+	"fsrs_personalized_off": "मानक FSRS शेड्यूलिंग। 500 समीक्षाओं के बाद अपने आप व्यक्तिगत हो जाएगी।",
+	"fsrs_reset_defaults": "मानक पर रीसेट करें"
 }
