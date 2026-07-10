@@ -4,8 +4,9 @@
 <!-- lesson nodes — the interactive unit entry points.                      -->
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import type { UnitSummary } from '$lib/content/schema';
+	import { BETA_LEVELS, type UnitSummary } from '$lib/content/schema';
 	import type { LessonStatus } from '$lib/db/schema';
+	import * as m from '$lib/paraglide/messages';
 
 	let {
 		units,
@@ -80,7 +81,11 @@
 				class:fp-voyage-city--locked={!done && !active}
 			>
 				<div class="fp-voyage-city-label">{band.city.city}</div>
-				<div class="fp-voyage-city-sublabel">{band.level}</div>
+				<div class="fp-voyage-city-sublabel">
+					{band.level}{#if BETA_LEVELS.has(band.level)}<span class="fp-beta-badge"
+							>{m.beta_badge()}</span
+						>{/if}
+				</div>
 				<div
 					class="fp-voyage-city-node"
 					class:fp-pulse={active && !reduceMotion}
@@ -107,7 +112,13 @@
 				<div class="fp-voyage-city-info" class:fp-text-right={bi % 2 === 0}>
 					<span class="fp-city-name" class:fp-active-city={active}>{band.city.city}</span>
 					<span class="fp-city-cefr"
-						>{band.level}{active ? ' · vous êtes ici' : done ? ' · complet' : ' · à venir'}</span
+						>{band.level}{active
+							? ' · vous êtes ici'
+							: done
+								? ' · complet'
+								: ' · à venir'}{#if BETA_LEVELS.has(band.level)}<span class="fp-beta-badge"
+								>{m.beta_badge()}</span
+							>{/if}</span
 					>
 				</div>
 				<div
@@ -130,7 +141,9 @@
 		<div class="fp-voyage-leg">
 			<p class="fp-voyage-leg-label">
 				<span aria-hidden="true">{activeBand.city.emoji}</span>
-				{activeBand.city.city} · {activeBand.level}
+				{activeBand.city.city} · {activeBand.level}{#if BETA_LEVELS.has(activeBand.level)}<span
+						class="fp-beta-badge">{m.beta_badge()}</span
+					>{/if}
 			</p>
 			<ul class="fp-lesson-nodes">
 				{#each activeBand.units as unit (unit.id)}
@@ -309,6 +322,23 @@
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
 		color: var(--fp-muted);
+	}
+	/* Quiet, factual "beta" marker on AI-drafted levels — a hairline pill in the
+	   muted mono voice, never an alarm colour (SPEC invariant 6). */
+	.fp-beta-badge {
+		display: inline-block;
+		margin-left: 6px;
+		padding: 1px 6px;
+		font-family: var(--fp-font-mono);
+		font-size: 9px;
+		font-weight: 500;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		line-height: 1.4;
+		vertical-align: middle;
+		color: var(--fp-muted);
+		border: 1px solid color-mix(in srgb, var(--fp-ink) 25%, transparent);
+		border-radius: 999px;
 	}
 	.fp-voyage-city-node-v {
 		width: 44px;

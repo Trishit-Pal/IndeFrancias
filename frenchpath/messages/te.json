@@ -196,5 +196,6 @@
 	"checkpoint_celebration_title": "{label} పాస్ అయింది!",
 	"checkpoint_celebration_subtitle": "స్కోర్ {percent}% · +{xp} XP",
 	"checkpoint_share_title": "FrenchPath చెక్‌పాయింట్",
-	"checkpoint_share_subtitle": "{label} పాస్ అయ్యారు"
+	"checkpoint_share_subtitle": "{label} పాస్ అయ్యారు",
+	"beta_badge": "బీటా"
 }

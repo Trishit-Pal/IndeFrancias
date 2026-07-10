@@ -237,5 +237,6 @@
 	"checkpoint_celebration_title": "{label} पास हो गया!",
 	"checkpoint_celebration_subtitle": "स्कोर {percent}% · +{xp} XP",
 	"checkpoint_share_title": "FrenchPath चेकपॉइंट",
-	"checkpoint_share_subtitle": "{label} पास किया"
+	"checkpoint_share_subtitle": "{label} पास किया",
+	"beta_badge": "बीटा"
 }

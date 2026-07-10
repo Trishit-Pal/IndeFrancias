@@ -196,5 +196,6 @@
 	"checkpoint_celebration_title": "{label} ਪਾਸ!",
 	"checkpoint_celebration_subtitle": "ਸਕੋਰ {percent}% · +{xp} XP",
 	"checkpoint_share_title": "FrenchPath ਚੈਕਪੌਇੰਟ",
-	"checkpoint_share_subtitle": "{label} ਪਾਸ ਕੀਤਾ"
+	"checkpoint_share_subtitle": "{label} ਪਾਸ ਕੀਤਾ",
+	"beta_badge": "ਬੀਟਾ"
 }

@@ -196,5 +196,6 @@
 	"checkpoint_celebration_title": "{label} தேர்ச்சி!",
 	"checkpoint_celebration_subtitle": "மதிப்பெண் {percent}% · +{xp} XP",
 	"checkpoint_share_title": "FrenchPath சோதனைச்சாவடி",
-	"checkpoint_share_subtitle": "{label} தேர்ச்சி பெற்றது"
+	"checkpoint_share_subtitle": "{label} தேர்ச்சி பெற்றது",
+	"beta_badge": "பீட்டா"
 }

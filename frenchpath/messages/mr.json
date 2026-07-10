@@ -196,5 +196,6 @@
 	"checkpoint_celebration_title": "{label} उत्तीर्ण!",
 	"checkpoint_celebration_subtitle": "गुण {percent}% · +{xp} XP",
 	"checkpoint_share_title": "FrenchPath चेकपॉइंट",
-	"checkpoint_share_subtitle": "{label} उत्तीर्ण केले"
+	"checkpoint_share_subtitle": "{label} उत्तीर्ण केले",
+	"beta_badge": "बीटा"
 }
