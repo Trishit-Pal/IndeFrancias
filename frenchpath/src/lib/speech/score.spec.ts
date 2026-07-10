@@ -40,4 +40,20 @@ describe('scorePronunciation', () => {
 		expect(r.overall).toBe('retry');
 		expect(r.words.every((x) => x.verdict === 'missed')).toBe(true);
 	});
+
+	it('mid-phrase punctuation-only token does not shift later expected labels', () => {
+		// "..." is its own whitespace-separated token and normalizes to '', so it
+		// must be dropped from BOTH the comparison and label sequences together —
+		// not just the comparison one — or every word after it gets mislabeled.
+		const r = scorePronunciation('Alors ... vous venez ?', [
+			w('alors'),
+			w('vous'),
+			w('venez')
+		]);
+		expect(r.words).toEqual([
+			{ expected: 'Alors', verdict: 'good' },
+			{ expected: 'vous', verdict: 'good' },
+			{ expected: 'venez', verdict: 'good' }
+		]);
+	});
 });

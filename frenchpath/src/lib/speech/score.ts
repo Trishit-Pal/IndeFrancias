@@ -43,12 +43,17 @@ export function scorePronunciation(
 	expectedPhrase: string,
 	recognized: VoskWord[]
 ): PronunciationScore {
-	const expectedNorm = normalizeAnswer(expectedPhrase).split(' ').filter(Boolean);
-	const expectedOrig = expectedPhrase.split(/\s+/).filter(Boolean);
+	// Tokenize once, then derive the normalized form per-token so the two
+	// sequences can never drift out of alignment (see score.spec.ts mid-phrase
+	// punctuation regression test).
+	const expectedTokens = expectedPhrase
+		.split(/\s+/)
+		.filter(Boolean)
+		.map((orig) => ({ orig, norm: normalizeAnswer(orig) }))
+		.filter((t) => t.norm.length > 0);
 	const heard = recognized.map((r) => ({ ...r, norm: normalizeAnswer(r.word) }));
 	let cursor = 0;
-	const words: WordVerdict[] = expectedNorm.map((expNorm, idx) => {
-		const expOrig = expectedOrig[idx];
+	const words: WordVerdict[] = expectedTokens.map(({ orig: expOrig, norm: expNorm }) => {
 		for (let i = cursor; i < heard.length; i++) {
 			const h = heard[i];
 			if (h.norm === expNorm) {
