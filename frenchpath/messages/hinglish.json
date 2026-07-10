@@ -209,5 +209,6 @@
 	"checkpoint_celebration_subtitle": "Score {percent}% · +{xp} XP",
 	"checkpoint_share_title": "FrenchPath checkpoint",
 	"checkpoint_share_subtitle": "{label} pass kiya",
-	"beta_badge": "Beta"
+	"beta_badge": "Beta",
+	"checkpoint_cooldown": "Retry {hours}h me available hoga."
 }

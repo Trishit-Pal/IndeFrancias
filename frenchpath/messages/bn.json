@@ -197,5 +197,6 @@
 	"checkpoint_celebration_subtitle": "স্কোর {percent}% · +{xp} XP",
 	"checkpoint_share_title": "FrenchPath চেকপয়েন্ট",
 	"checkpoint_share_subtitle": "{label} পাস করেছেন",
-	"beta_badge": "বিটা"
+	"beta_badge": "বিটা",
+	"checkpoint_cooldown": "{hours} ঘণ্টা পরে আবার চেষ্টা করা যাবে।"
 }

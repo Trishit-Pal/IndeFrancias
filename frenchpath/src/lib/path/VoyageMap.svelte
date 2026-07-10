@@ -82,7 +82,7 @@
 			>
 				<div class="fp-voyage-city-label">{band.city.city}</div>
 				<div class="fp-voyage-city-sublabel">
-					{band.level}{#if BETA_LEVELS.has(band.level)}<span class="fp-beta-badge"
+					{band.level}{#if BETA_LEVELS.has(band.level)}&nbsp;<span class="fp-beta-badge"
 							>{m.beta_badge()}</span
 						>{/if}
 				</div>
@@ -116,7 +116,7 @@
 							? ' · vous êtes ici'
 							: done
 								? ' · complet'
-								: ' · à venir'}{#if BETA_LEVELS.has(band.level)}<span class="fp-beta-badge"
+								: ' · à venir'}{#if BETA_LEVELS.has(band.level)}&nbsp;<span class="fp-beta-badge"
 								>{m.beta_badge()}</span
 							>{/if}</span
 					>
@@ -141,7 +141,7 @@
 		<div class="fp-voyage-leg">
 			<p class="fp-voyage-leg-label">
 				<span aria-hidden="true">{activeBand.city.emoji}</span>
-				{activeBand.city.city} · {activeBand.level}{#if BETA_LEVELS.has(activeBand.level)}<span
+				{activeBand.city.city} · {activeBand.level}{#if BETA_LEVELS.has(activeBand.level)}&nbsp;<span
 						class="fp-beta-badge">{m.beta_badge()}</span
 					>{/if}
 			</p>
