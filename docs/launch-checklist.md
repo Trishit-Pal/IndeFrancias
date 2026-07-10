@@ -45,6 +45,7 @@ Key automated regressions (detail in [testing.md](./testing.md)):
 ## Deploy
 
 - [ ] Vercel project linked with `frenchpath` as root
+- [ ] Vercel build command set to `npm run vercel-build` (fetches the pinned Vosk model before `vite build`; plain `npm run build` is model-free)
 - [ ] Custom domain configured (optional: `frenchpath.in`)
 - [ ] `robots.txt` allows crawling
 - [ ] OG meta tags present (see `+layout.svelte`)

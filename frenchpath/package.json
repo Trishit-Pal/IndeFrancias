@@ -23,10 +23,12 @@
 		"content:proofread:launch": "tsx scripts/proofread-report.ts --launch",
 		"content:translate-glosses": "tsx scripts/translate-glosses.ts",
 		"analyze": "vite build --mode analyze",
-		"build:cap": "npm run build && node scripts/prepare-cap.mjs",
+		"model:fetch": "node scripts/fetch-vosk-model.mjs",
+		"build:cap": "npm run model:fetch && npm run build && node scripts/prepare-cap.mjs",
 		"cap:sync": "npm run build:cap && cap sync",
 		"build:apk": "npm run build:cap && cap sync android && cd android && gradlew.bat assembleRelease",
-		"build:desktop": "tauri build"
+		"build:desktop": "npm run model:fetch && tauri build",
+		"vercel-build": "npm run model:fetch && npm run build"
 	},
 	"devDependencies": {
 		"@anthropic-ai/sdk": "^0.100.1",

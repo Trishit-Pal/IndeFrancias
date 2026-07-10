@@ -73,6 +73,9 @@ export default defineConfig(({ mode }) => ({
 			},
 			workbox: {
 				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2,json,html}'],
+				// The Vosk ASR model (static/models/) is a same-origin opt-in download,
+				// never part of the app-shell precache (privacy: web speech is opt-in).
+				globIgnores: ['**/models/**'],
 				navigateFallback: '/',
 				navigateFallbackDenylist: [/^\/manifest\.webmanifest$/],
 				runtimeCaching: [
