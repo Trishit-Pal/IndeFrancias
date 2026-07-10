@@ -33,7 +33,9 @@ export const rubricRuleSchema = z.object({
 	/** Regex source, tested against the normalized answer (see lesson/engine). */
 	match: z.string().min(1),
 	hint: z.string().min(1),
-	hintByLang: z.record(nativeLangSchema, z.string()).optional(),
+	// ponytail: partialRecord, not record — z.record(enum, ...) demands every
+	// enum key present. Content only ever supplies a few languages per rule.
+	hintByLang: z.partialRecord(nativeLangSchema, z.string()).optional(),
 	severity: z.enum(['gentle', 'correction'])
 });
 export type RubricRule = z.infer<typeof rubricRuleSchema>;

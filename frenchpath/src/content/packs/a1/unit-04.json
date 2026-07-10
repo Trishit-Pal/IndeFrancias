@@ -290,7 +290,18 @@
 			"prompt": "I like biryani.",
 			"direction": "en-fr",
 			"answer": "J'aime le biryani",
-			"accept": ["jaime le biryani", "j'aime le biryani"]
+			"accept": ["jaime le biryani", "j'aime le biryani"],
+			"rubricRules": [
+				{
+					"id": "faim-de",
+					"match": "\\bj'ai faim de\\b",
+					"hint": "“J’ai faim” doesn’t take “de” here — just say “j’ai faim”.",
+					"hintByLang": {
+						"hi": "यहाँ “j’ai faim” के बाद “de” नहीं आता — बस “j’ai faim” कहें।"
+					},
+					"severity": "gentle"
+				}
+			]
 		},
 		{
 			"type": "matching",

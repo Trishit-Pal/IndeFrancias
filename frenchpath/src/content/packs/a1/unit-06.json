@@ -208,7 +208,18 @@
 			"coachNote": "Use the four essential irregular verbs in the present (A1: can use high-frequency verbs to handle basic needs).",
 			"text": "Priya is 20 years old: « Elle {{}} vingt ans. »",
 			"answer": "a",
-			"accept": ["a"]
+			"accept": ["a"],
+			"rubricRules": [
+				{
+					"id": "age-etre-ans",
+					"match": "\\bje suis (\\d+ )?ans\\b",
+					"hint": "Age uses avoir in French: say “j’ai vingt ans”, not “je suis … ans”.",
+					"hintByLang": {
+						"hi": "फ़्रेंच में उम्र के लिए avoir इस्तेमाल होता है: “j’ai vingt ans”, “je suis … ans” नहीं।"
+					},
+					"severity": "correction"
+				}
+			]
 		},
 		{
 			"type": "translation",

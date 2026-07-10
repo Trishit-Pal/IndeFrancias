@@ -311,7 +311,16 @@
 			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce onese",
 			"text": "At the end of the call, Priya says: « {{}} ! À demain. »",
 			"answer": "Au revoir",
-			"accept": ["au revoir", "au-revoir"]
+			"accept": ["au revoir", "au-revoir"],
+			"rubricRules": [
+				{
+					"id": "age-etre",
+					"match": "\\bje suis \\d+\\b",
+					"hint": "In French, age uses avoir: “j’ai 25 ans”, not “je suis 25”.",
+					"hintByLang": { "hi": "फ़्रेंच में उम्र avoir से बताते हैं: “j’ai 25 ans”." },
+					"severity": "correction"
+				}
+			]
 		},
 		{
 			"type": "cloze",

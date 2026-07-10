@@ -1,16 +1,58 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+import { gotoHome } from './helpers';
 
-// a1-unit-01 gets a seeded rubric rule in Task 3; until then this test uses
-// the test-only unit route if one exists. Write against a1-unit-01 and let
-// Task 3 make it pass — expected red until content is seeded.
+/**
+ * Drives a1-unit-01 from the unit card through its bridge quiz and the two
+ * leading mcq exercises (ex1, ex2), stopping once ex3 (the seeded cloze) is
+ * on screen. Mirrors the bridge-quiz loop in hints.e2e.ts's
+ * reachExercisePhase and the exercise-answering loop in helpers.ts's
+ * completeLesson.
+ */
+async function reachSeededCloze(page: Page) {
+	const bridgeContinue = page.getByTestId('bridge-quiz-continue');
+	const start = page.getByTestId('start-lesson');
+	const mcq = page.getByTestId('mcq-option');
+	const check = page.getByTestId('check');
+	const cloze = page.getByTestId('cloze-input');
+
+	for (let attempt = 0; attempt < 12; attempt++) {
+		if (await cloze.isVisible().catch(() => false)) return;
+
+		if (await bridgeContinue.isVisible().catch(() => false)) {
+			const options = page.getByTestId('bridge-quiz-option');
+			const count = await options.count();
+			for (let i = 0; i < count; i++) {
+				await options.nth(i).click();
+				if (await bridgeContinue.isEnabled().catch(() => false)) break;
+			}
+			await bridgeContinue.click();
+			continue;
+		}
+
+		if (await start.isVisible().catch(() => false)) {
+			await start.click();
+			continue;
+		}
+
+		if (await mcq.first().isVisible().catch(() => false)) {
+			await mcq.first().click();
+			await expect(check).toBeEnabled();
+			await check.click();
+			await page.getByTestId('continue').click();
+			continue;
+		}
+	}
+
+	await expect(cloze).toBeVisible({ timeout: 15_000 });
+}
+
 test('a wrong answer matching a rubric rule shows a hint chip', async ({ page }) => {
-	await page.goto('/learn/a1-unit-01');
+	await gotoHome(page);
+	await page.getByTestId('unit-card').first().click();
 	await page.getByTestId('start-lesson').click();
-	// Advance to the first cloze/translation exercise, type the trap answer.
-	// (Exact navigation depends on unit content — use the seeded exercise
-	// from Task 3 which is the unit's first cloze.)
-	const input = page.getByTestId('cloze-input').or(page.getByTestId('text-answer'));
-	await input.first().fill('je suis 25');
+	await reachSeededCloze(page);
+
+	await page.getByTestId('cloze-input').fill('je suis 25');
 	await page.getByTestId('check').click();
 	await expect(page.getByTestId('rubric-hint')).toBeVisible();
 	await expect(page.getByTestId('rubric-hint')).toContainText('avoir');
