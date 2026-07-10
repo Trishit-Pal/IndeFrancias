@@ -12,27 +12,27 @@ const DAY_MS = 86_400_000;
 export function buildTrainingSet(logs: ReviewLogRecord[]): FsrsTrainingSet {
 	const valid = logs.filter((l) => l.grade >= 1 && l.grade <= 4);
 
-	// Group reviews by card
+	// Group reviews by card (immutably)
 	const byCard = new Map<string, ReviewLogRecord[]>();
 	for (const l of valid) {
-		if (!byCard.has(l.cardId)) {
-			byCard.set(l.cardId, []);
-		}
-		byCard.get(l.cardId)!.push(l);
+		const existing = byCard.get(l.cardId);
+		byCard.set(l.cardId, existing ? [...existing, l] : [l]);
 	}
 
 	// Sort cards by their first review timestamp (first-seen order)
-	const sorted_cards = Array.from(byCard.entries()).sort((a, b) => {
-		const min_a = Math.min(...a[1].map(l => l.ts));
-		const min_b = Math.min(...b[1].map(l => l.ts));
-		return min_a - min_b;
-	});
+	// Precompute min-ts to avoid recomputation in comparator
+	const cardsWithMinTs = Array.from(byCard.entries()).map(([cardId, reviews]) => ({
+		cardId,
+		reviews,
+		minTs: Math.min(...reviews.map(l => l.ts))
+	}));
+	const sortedCards = cardsWithMinTs.sort((a, b) => a.minTs - b.minTs);
 
 	const ratings: number[] = [];
 	const deltaTs: number[] = [];
 	const lengths: number[] = [];
 
-	for (const [, reviews] of sorted_cards) {
+	for (const { reviews } of sortedCards) {
 		const sorted = [...reviews].sort((a, b) => a.ts - b.ts);
 		lengths.push(sorted.length);
 		sorted.forEach((l, i) => {
