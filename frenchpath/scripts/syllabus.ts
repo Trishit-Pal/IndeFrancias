@@ -210,5 +210,71 @@ export const SYLLABUS: UnitBrief[] = [
 		vocab: 'opinions, feelings, reasons',
 		context: 'discussing films, food, cricket',
 		exerciseTypes: ['mcq', 'cloze', 'translation', 'reorder', 'matching']
+	},
+	{
+		id: 'a1-unit-11',
+		cefrLevel: 'A1',
+		order: 11,
+		title: 'Quel temps fait-il ? — Weather & small talk',
+		objective: 'Talk about the weather and seasons and make simple small talk.',
+		grammar: 'il fait + adjective, weather expressions, quel/quelle',
+		vocab: 'weather, seasons, temperature',
+		context: 'monsoon in Mumbai, winter in Delhi, summer heat',
+		exerciseTypes: ['mcq', 'cloze', 'matching', 'translation', 'reorder']
+	},
+	{
+		id: 'a1-unit-12',
+		cefrLevel: 'A1',
+		order: 12,
+		title: 'Les vêtements et les couleurs — Clothes & colours',
+		objective: 'Describe clothes and colours with correct adjective agreement.',
+		grammar: 'adjective agreement (gender/number), demonstratives ce/cette/ces',
+		vocab: 'clothing, colours',
+		context: 'buying a kurta or sari, the colours of Holi',
+		exerciseTypes: ['mcq', 'cloze', 'gender', 'matching', 'translation']
+	},
+	{
+		id: 'a2-unit-09',
+		cefrLevel: 'A2',
+		order: 9,
+		title: 'Chez le médecin — Health & the body',
+		objective: 'Describe symptoms, name body parts and give simple advice.',
+		grammar: 'avoir mal à, devoir + infinitive, imperative (advice)',
+		vocab: 'body parts, illness, remedies',
+		context: 'a pharmacy visit, home remedies like haldi doodh',
+		exerciseTypes: ['mcq', 'cloze', 'conjugation', 'translation', 'matching']
+	},
+	{
+		id: 'a2-unit-10',
+		cefrLevel: 'A2',
+		order: 10,
+		title: 'Au travail — Jobs & the workplace',
+		objective: 'Talk about jobs, workplaces and obligations.',
+		grammar: 'vouloir/pouvoir/devoir, il faut + infinitive',
+		vocab: 'professions, workplace, tasks',
+		context: 'an IT office in Bangalore, a job interview',
+		exerciseTypes: ['conjugation', 'mcq', 'cloze', 'translation', 'matching']
+	},
+	{
+		id: 'a2-unit-11',
+		cefrLevel: 'A2',
+		order: 11,
+		title: 'Se loger — Housing & furniture',
+		objective: 'Describe your home, its rooms and furniture.',
+		grammar: 'prepositions of place (review), pronoun y',
+		vocab: 'rooms, furniture, housing',
+		context: 'renting a flat or PG accommodation in Delhi',
+		exerciseTypes: ['mcq', 'cloze', 'gender', 'reorder', 'matching']
+	},
+	{
+		id: 'a2-unit-12',
+		cefrLevel: 'A2',
+		order: 12,
+		title: 'Raconter un voyage — Telling a travel story',
+		objective: 'Narrate a past trip, combining events with descriptions.',
+		grammar: 'passé composé vs imparfait (combined, capstone review)',
+		vocab: 'travel, landscapes, feelings',
+		context: 'a trip to Pondicherry, or a first journey to France',
+		exerciseTypes: ['conjugation', 'cloze', 'mcq', 'translation', 'reorder']
 	}
 ];
