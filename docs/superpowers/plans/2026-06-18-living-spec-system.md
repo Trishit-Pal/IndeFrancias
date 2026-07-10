@@ -1,5 +1,7 @@
 # Living Spec System Implementation Plan
 
+> **✅ Status: COMPLETED & VERIFIED (2026-06-20).** All 6 tasks shipped in commits `fe19afc` → `221fd52`; `npm run spec:validate` passes (11 sections, 66 file anchors, 8 links verified). Checkboxes below are ticked to reflect the verified-done state.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Create FrenchPath's living "mother book" spec (`docs/spec/SPEC.md`) as the single source of truth, with a validator that prevents rot and a workflow-gated `/spec-sync` skill that keeps it accurate as features change.
@@ -30,7 +32,7 @@ Create the mother book with all 11 section headings and complete content for the
 **Interfaces:**
 - Produces: the canonical section headings other tasks/validator depend on — exactly: `## §1 Vision & positioning`, `## §2 Personas, JTBD & decision rule`, `## §3 Invariants (the constitution)`, `## §4 Capability Map`, `## §5 Architecture overview`, `## §6 Domain module index`, `## §7 Decision log (ADR index)`, `## §8 Roadmap & milestones`, `## §9 Glossary`, `## §10 Spec maintenance protocol`, `## §11 Revision log`.
 
-- [ ] **Step 1: Create `docs/spec/SPEC.md` with this exact content**
+- [x] **Step 1: Create `docs/spec/SPEC.md` with this exact content**
 
 ```markdown
 # FrenchPath — Specification (the mother book)
@@ -175,12 +177,12 @@ This spec is kept honest by the `frenchpath-spec-sync` skill + `/spec-sync` comm
 | 2026-06-18 | Spec created (mother book established) | all | — |
 ```
 
-- [ ] **Step 2: Verify all 11 section headings are present**
+- [x] **Step 2: Verify all 11 section headings are present**
 
 Run: `grep -cE "^## §([1-9]|1[01]) " docs/spec/SPEC.md`
 Expected: `11`
 
-- [ ] **Step 3: Verify appendix links resolve**
+- [x] **Step 3: Verify appendix links resolve**
 
 Run (from repo root):
 ```bash
@@ -188,7 +190,7 @@ cd docs/spec && for f in ../product/prd.md ../product/mobile-architecture.md ../
 ```
 Expected: every line begins `OK`.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add docs/spec/SPEC.md
@@ -208,7 +210,7 @@ Replace the empty §4 table with real rows tying capabilities to existing files 
 - Consumes: §4 heading + table schema from Task 1.
 - Produces: the Capability Map the validator (Task 3) and `/spec-sync` (Task 4) read.
 
-- [ ] **Step 1: Replace the empty §4 table with these rows** (paste under the `|----|...` header row)
+- [x] **Step 1: Replace the empty §4 table with these rows** (paste under the `|----|...` header row)
 
 ```markdown
 | CAP-ONB | Onboarding wizard | shipped | `frenchpath/src/lib/components/OnboardingWizard.svelte` | `onboarding-wizard`, `onboarding-next`, `native-lang-{lang}`, `goal-{goal}`; `e2e/onboarding.e2e.ts` | prd |
@@ -236,7 +238,7 @@ Replace the empty §4 table with real rows tying capabilities to existing files 
 | CAP-SYNC | Optional E2EE sync (prepared) | planned | `frenchpath/src/lib/sync/types.ts` | — | data-sovereignty |
 ```
 
-- [ ] **Step 2: Spot-check that every Key file path exists** (manual, until the validator lands in Task 3)
+- [x] **Step 2: Spot-check that every Key file path exists** (manual, until the validator lands in Task 3)
 
 Run (from repo root):
 ```bash
@@ -244,7 +246,7 @@ grep -oE '`frenchpath/[^`]+`' docs/spec/SPEC.md | tr -d '`' | sort -u | while re
 ```
 Expected: every line begins `OK`. If any path is `MISSING`, fix the row (the file may have moved) — do not invent paths. Note: directory anchors (paths ending `/`) are expected and resolve as directories.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add docs/spec/SPEC.md
@@ -268,7 +270,7 @@ Create the validator that keeps the Capability Map from rotting, fix the known t
 - Consumes: §4 Capability Map (Task 2), the 11 section headings (Task 1).
 - Produces: `npm run spec:validate` exiting non-zero on any broken anchor/section/link — used by Task 4's skill and Task 6's loop test.
 
-- [ ] **Step 1: Write the validator** `frenchpath/scripts/validate-spec.ts`
+- [x] **Step 1: Write the validator** `frenchpath/scripts/validate-spec.ts`
 
 ```typescript
 import { readFileSync, existsSync } from 'node:fs';
@@ -323,18 +325,18 @@ if (errors.length) {
 console.log(`spec:validate OK — ${REQUIRED_SECTIONS.length} sections, ${new Set(fileAnchors).size} file anchors, ${new Set(links).size} links verified`);
 ```
 
-- [ ] **Step 2: Register the npm script** in `frenchpath/package.json` (add to `scripts`, after `content:validate`)
+- [x] **Step 2: Register the npm script** in `frenchpath/package.json` (add to `scripts`, after `content:validate`)
 
 ```json
 		"spec:validate": "tsx scripts/validate-spec.ts",
 ```
 
-- [ ] **Step 3: Run the validator — expect PASS**
+- [x] **Step 3: Run the validator — expect PASS**
 
 Run (from `frenchpath/`): `npm run spec:validate`
 Expected: `spec:validate OK — 11 sections, N file anchors, M links verified`. If it reports MISSING anchors, fix the offending §4 row (do not weaken the validator).
 
-- [ ] **Step 4: Get the true test counts and reconcile the drift**
+- [x] **Step 4: Get the true test counts and reconcile the drift**
 
 Run (from `frenchpath/`):
 ```bash
@@ -343,14 +345,14 @@ npx playwright test --list 2>&1 | tail -3
 ```
 Record the real totals. In `docs/spec/SPEC.md` §5, append a sentence: `Test baseline: <U> unit + <E> e2e green.` (use the actual `<U>`/`<E>` from the commands). Add a §11 row: `| 2026-06-18 | Reconciled test-count drift to ground truth | §5 | LOW |`.
 
-- [ ] **Step 5: Add the additive SSOT banner to the PRD** — insert at `docs/product/prd.md` line 2 (right under the H1), before the existing `> Single source of truth...` line:
+- [x] **Step 5: Add the additive SSOT banner to the PRD** — insert at `docs/product/prd.md` line 2 (right under the H1), before the existing `> Single source of truth...` line:
 
 ```markdown
 > ⬆️ **The authoritative spec is now [`docs/spec/SPEC.md`](../spec/SPEC.md).** This PRD is a
 > detailed product-requirements *appendix* to it. If the two disagree, SPEC.md wins.
 ```
 
-- [ ] **Step 6: Add the routing line to `AGENTS.md`** — under the "Skill routing" table, add a row, and under "Non-negotiables" add the DoD line:
+- [x] **Step 6: Add the routing line to `AGENTS.md`** — under the "Skill routing" table, add a row, and under "Non-negotiables" add the DoD line:
 
 Add this table row (after the existing rows):
 ```markdown
@@ -361,7 +363,7 @@ Add this non-negotiable bullet:
 - **Spec is living** — updating `docs/spec/SPEC.md` via `/spec-sync` is part of Definition of Done; run `npm run spec:validate` after spec edits.
 ```
 
-- [ ] **Step 7: Run validator again + commit**
+- [x] **Step 7: Run validator again + commit**
 
 Run (from `frenchpath/`): `npm run spec:validate`
 Expected: PASS.
@@ -385,7 +387,7 @@ Author the skill that performs diff-scoped spec updates with severity gating, an
 - Consumes: `SPEC.md` §4 anchors + §10 protocol; `npm run spec:validate`.
 - Produces: the `/spec-sync` workflow used as the DoD step in every future feature.
 
-- [ ] **Step 1: Write `.claude/skills/frenchpath-spec-sync/SKILL.md`**
+- [x] **Step 1: Write `.claude/skills/frenchpath-spec-sync/SKILL.md`**
 
 ````markdown
 ---
@@ -433,7 +435,7 @@ durable learnings are folded in (with review) at milestone boundaries, then prun
 - `spec:validate` fails after your edit and you can't see why. → report, don't force.
 ````
 
-- [ ] **Step 2: Write the seed `.claude/skills/frenchpath-spec-sync/LEARNINGS.md`**
+- [x] **Step 2: Write the seed `.claude/skills/frenchpath-spec-sync/LEARNINGS.md`**
 
 ```markdown
 # frenchpath-spec-sync — Learnings
@@ -445,7 +447,7 @@ durable learnings are folded in (with review) at milestone boundaries, then prun
   e2e contract in `frenchpath/e2e/*` and `docs/testing.md`.
 ```
 
-- [ ] **Step 3: Write the `/spec-sync` command** `.claude/commands/spec-sync.md`
+- [x] **Step 3: Write the `/spec-sync` command** `.claude/commands/spec-sync.md`
 
 ```markdown
 ---
@@ -459,7 +461,7 @@ After syncing: report (1) the file→section mapping you used, (2) the sections 
 (touches an invariant or ADR), STOP before editing and ask me for explicit sign-off.
 ```
 
-- [ ] **Step 4: Verify the skill files are well-formed**
+- [x] **Step 4: Verify the skill files are well-formed**
 
 Run (from repo root):
 ```bash
@@ -467,7 +469,7 @@ test -f .claude/skills/frenchpath-spec-sync/SKILL.md && head -1 .claude/skills/f
 ```
 Expected: `---` (frontmatter start), `command OK`, `learnings OK`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add .claude/skills/frenchpath-spec-sync/ .claude/commands/spec-sync.md
@@ -489,7 +491,7 @@ Make "skills improve over time" concrete and discoverable, and add a memory poin
 - Consumes: SPEC.md §10, skill `LEARNINGS.md` convention (Task 4).
 - Produces: a cross-session memory pointer; a milestone distill checklist.
 
-- [ ] **Step 1: Add the milestone-distill checklist to SPEC.md §10** (append under §10):
+- [x] **Step 1: Add the milestone-distill checklist to SPEC.md §10** (append under §10):
 
 ```markdown
 **Milestone distill checklist (run at each milestone close):**
@@ -499,7 +501,7 @@ Make "skills improve over time" concrete and discoverable, and add a memory poin
 4. Run `npm run spec:validate`.
 ```
 
-- [ ] **Step 2: Create the memory file** `...\memory\frenchpath-spec-mother-book.md`
+- [x] **Step 2: Create the memory file** `...\memory\frenchpath-spec-mother-book.md`
 
 ```markdown
 ---
@@ -517,13 +519,13 @@ command, with HIGH-severity sign-off required for edits touching §3 invariants 
 Related: [[frenchpath-project]], [[frenchpath-mobile-capacitor]].
 ```
 
-- [ ] **Step 3: Add the index line to MEMORY.md** (append under the existing list):
+- [x] **Step 3: Add the index line to MEMORY.md** (append under the existing list):
 
 ```markdown
 - [FrenchPath mother-book spec](frenchpath-spec-mother-book.md) — docs/spec/SPEC.md is the SSOT; sync via /spec-sync (DoD), validate via `npm run spec:validate`.
 ```
 
-- [ ] **Step 4: Validate + commit** (memory files are outside the repo; commit only the repo file)
+- [x] **Step 4: Validate + commit** (memory files are outside the repo; commit only the repo file)
 
 Run (from `frenchpath/`): `npm run spec:validate`
 Expected: PASS.
@@ -544,16 +546,16 @@ Prove the system works: a no-op diff produces no spurious edits, and a real smal
 **Interfaces:**
 - Consumes: everything from Tasks 1–5.
 
-- [ ] **Step 1: No-op test** — with a clean working tree (`git status` clean), invoke `/spec-sync`.
+- [x] **Step 1: No-op test** — with a clean working tree (`git status` clean), invoke `/spec-sync`.
 Expected: it reports "no changes" and makes **no edits**. If it edits anything, the trigger logic is wrong — fix the SKILL.md procedure step 1.
 
-- [ ] **Step 2: Real-change test** — make a tiny real capability change to verify mapping. For example, add a `data-testid="practice-note"` reference to CAP-LESSON's Proof column is already present; instead simulate by changing a Proof anchor: temporarily append ` (verified)` to the CAP-EX row's Proof cell via a normal edit, stage nothing, then run `/spec-sync`.
+- [x] **Step 2: Real-change test** — make a tiny real capability change to verify mapping. For example, add a `data-testid="practice-note"` reference to CAP-LESSON's Proof column is already present; instead simulate by changing a Proof anchor: temporarily append ` (verified)` to the CAP-EX row's Proof cell via a normal edit, stage nothing, then run `/spec-sync`.
 Expected: the skill maps the change to §4 CAP-EX, classifies MEDIUM, and appends a §11 row. Confirm no other section changed (`git diff docs/spec/SPEC.md`).
 
-- [ ] **Step 3: Severity-gate test (dry, no real change)** — ask `/spec-sync` to evaluate a hypothetical diff that "adds a fetch() call to a cloud API in src/lib/sync/". 
+- [x] **Step 3: Severity-gate test (dry, no real change)** — ask `/spec-sync` to evaluate a hypothetical diff that "adds a fetch() call to a cloud API in src/lib/sync/". 
 Expected: it classifies **HIGH** (violates invariant 1/2/4), STOPS, and asks for sign-off instead of editing §3. This confirms the guardrail.
 
-- [ ] **Step 4: Revert the simulation + final validate**
+- [x] **Step 4: Revert the simulation + final validate**
 
 ```bash
 git checkout -- docs/spec/SPEC.md   # drop the Step 2 simulation edit
@@ -561,7 +563,7 @@ cd frenchpath && npm run spec:validate && cd ..
 ```
 Expected: clean tree, `spec:validate OK`.
 
-- [ ] **Step 5: Commit (if any intended doc refinements came out of the loop test)**
+- [x] **Step 5: Commit (if any intended doc refinements came out of the loop test)**
 
 ```bash
 git add -A docs/spec/

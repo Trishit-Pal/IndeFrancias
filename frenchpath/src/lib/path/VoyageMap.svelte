@@ -145,13 +145,19 @@
 							class:fp-lesson-node--locked={st === 'locked'}
 							class:fp-pulse={isCur && !reduceMotion}
 							data-testid="unit-card"
-							aria-label="{unit.title} – {st}"
-							title={st === 'locked' ? (lockReasons.get(unit.id) ?? 'Locked') : unit.title}
+							aria-label={st === 'locked'
+								? `${unit.title} – locked. ${lockReasons.get(unit.id) ?? ''}`
+								: `${unit.title} – ${st}`}
 						>
 							<span class="fp-lesson-node-icon" aria-hidden="true">
 								{#if st === 'completed'}✓{:else if isCur}▶{:else}🔒{/if}
 							</span>
-							<span class="fp-lesson-node-title">{unit.title}</span>
+							<span class="fp-lesson-node-text">
+								<span class="fp-lesson-node-title">{unit.title}</span>
+								{#if st === 'locked'}
+									<span class="fp-lesson-node-reason">{lockReasons.get(unit.id) ?? 'Locked'}</span>
+								{/if}
+							</span>
 						</a>
 					</li>
 				{/each}
@@ -213,7 +219,7 @@
 	}
 	.fp-voyage-city-sublabel {
 		font-family: var(--fp-font-mono);
-		font-size: 9px;
+		font-size: 11px;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
 		color: var(--fp-muted);
@@ -242,7 +248,7 @@
 	}
 	.fp-voyage-city-status {
 		font-family: var(--fp-font-mono);
-		font-size: 9px;
+		font-size: 11px;
 		color: var(--fp-muted);
 		margin-top: 8px;
 	}
@@ -299,7 +305,7 @@
 	}
 	.fp-city-cefr {
 		font-family: var(--fp-font-mono);
-		font-size: 9px;
+		font-size: 11px;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
 		color: var(--fp-muted);
@@ -383,10 +389,21 @@
 		font-weight: 700;
 		background: var(--fp-paper);
 	}
+	.fp-lesson-node-text {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		min-width: 0;
+	}
 	.fp-lesson-node-title {
 		font-size: 14px;
 		font-weight: 600;
 		line-height: 1.15;
+	}
+	.fp-lesson-node-reason {
+		font-size: 12px;
+		line-height: 1.2;
+		color: var(--fp-muted);
 	}
 	.fp-lesson-node--done {
 		background: color-mix(in srgb, var(--fp-sage) 22%, var(--fp-paper));

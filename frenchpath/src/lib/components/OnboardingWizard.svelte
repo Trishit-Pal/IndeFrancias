@@ -103,7 +103,14 @@
 	class="page-shell flex min-h-dvh flex-col justify-center py-8"
 	data-testid="onboarding-wizard"
 >
-	<div class="mb-6 flex justify-center gap-1.5" aria-hidden="true">
+	<div
+		class="mb-6 flex justify-center gap-1.5"
+		role="progressbar"
+		aria-valuemin={1}
+		aria-valuemax={STEPS.length}
+		aria-valuenow={stepIndex + 1}
+		aria-valuetext="{stepIndex + 1} / {STEPS.length}"
+	>
 		{#each STEPS as s, i (s)}
 			<span
 				class="h-1.5 w-8 rounded-full transition-colors {i <= stepIndex
@@ -182,7 +189,7 @@
 			{:else if step === 'goal'}
 				<h2 class="text-xl font-bold text-foreground">{m.onb_goal_title()}</h2>
 				<p class="mt-2 text-sm text-muted">{m.onb_goal_desc()}</p>
-				<div class="mt-4 space-y-2" role="radiogroup">
+				<div class="mt-4 space-y-2" role="radiogroup" aria-label={m.onb_goal_title()}>
 					{#each goals as goal (goal)}
 						<button
 							type="button"
@@ -222,7 +229,7 @@
 			{:else if step === 'difficulty'}
 				<h2 class="text-xl font-bold text-foreground">{m.onb_difficulty_title()}</h2>
 				<p class="mt-2 text-sm text-muted">{m.onb_difficulty_desc()}</p>
-				<div class="mt-4 space-y-2" role="radiogroup">
+				<div class="mt-4 space-y-2" role="radiogroup" aria-label={m.onb_difficulty_title()}>
 					{#each tiers as t (t.value)}
 						<button
 							type="button"
@@ -251,7 +258,7 @@
 			{:else if step === 'rhythm'}
 				<h2 class="text-xl font-bold text-foreground">{m.onb_rhythm_title()}</h2>
 				<p class="mt-2 text-sm text-muted">{m.onb_rhythm_desc()}</p>
-				<div class="mt-4 space-y-2" role="radiogroup">
+				<div class="mt-4 space-y-2" role="radiogroup" aria-label={m.onb_rhythm_title()}>
 					{#each presets as preset (preset.value)}
 						<button
 							type="button"
