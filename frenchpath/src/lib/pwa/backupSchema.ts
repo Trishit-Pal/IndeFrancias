@@ -40,7 +40,10 @@ export const settingsSchema = z.object({
 				choice: z.enum(['low', 'ok', 'high'])
 			})
 		)
-		.optional()
+		.optional(),
+	fsrsWeights: z.array(z.number()).nullable().optional(),
+	fsrsOptimizedAt: z.number().nullable().optional(),
+	fsrsOptimizedReviewCount: z.number().optional()
 });
 
 export const progressSchema = z.object({

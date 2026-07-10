@@ -32,6 +32,7 @@
 	let targetRetention = $state(0.9);
 	let nativeLanguage = $state<NativeLanguage>('hi');
 	let difficultyTier = $state<import('$lib/db/schema').DifficultyTier>('regular');
+	let fsrsWeights = $state<number[] | null>(null);
 	let sessionStartedAt = Date.now();
 	let cardStartedAt = Date.now();
 	let sessionDurationMs = $state(0);
@@ -63,6 +64,7 @@
 		targetRetention = effectiveRetention(settings.targetRetention, settings.difficultyTier);
 		nativeLanguage = settings.nativeLanguage;
 		difficultyTier = settings.difficultyTier;
+		fsrsWeights = settings.fsrsWeights;
 		const due = await getReviewQueue();
 		queue = await resolveContent(due);
 		phase = queue.length > 0 ? 'reviewing' : 'reviewing';
@@ -96,7 +98,8 @@
 		else if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
 		await recordReview(item.srs, grade, {
 			targetRetention,
-			durationMs: Date.now() - cardStartedAt
+			durationMs: Date.now() - cardStartedAt,
+			weights: fsrsWeights
 		});
 		reviewedCount += 1;
 		if (grade === 'good' || grade === 'easy') goodCount += 1;

@@ -12,6 +12,7 @@ export interface RecordReviewOptions {
 	now?: Date;
 	targetRetention?: number;
 	durationMs?: number;
+	weights?: number[] | null;
 }
 
 /** `${unitId}:${contentId}` -> its parts (used to resolve display content). */
@@ -30,7 +31,8 @@ export async function recordReview(
 	const now = opts.now ?? new Date();
 	const { card: updated, log } = gradeCard(card, grade, {
 		now,
-		targetRetention: opts.targetRetention
+		targetRetention: opts.targetRetention,
+		weights: opts.weights
 	});
 
 	await srsRepo.putCard(updated);

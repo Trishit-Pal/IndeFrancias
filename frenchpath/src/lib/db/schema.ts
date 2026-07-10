@@ -52,6 +52,10 @@ export interface Settings {
 	difficultyTier: DifficultyTier;
 	celebratedMilestones: number[];
 	confidenceSnapshots?: ConfidenceSnapshot[];
+	/** On-device optimized FSRS weights (WP2); null = ts-fsrs defaults. */
+	fsrsWeights: number[] | null;
+	fsrsOptimizedAt: number | null;
+	fsrsOptimizedReviewCount: number;
 }
 
 export const SETTINGS_KEY = 'app';
@@ -76,7 +80,10 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = {
 	revisionNotifications: false,
 	difficultyTier: 'regular',
 	celebratedMilestones: [],
-	confidenceSnapshots: []
+	confidenceSnapshots: [],
+	fsrsWeights: null,
+	fsrsOptimizedAt: null,
+	fsrsOptimizedReviewCount: 0
 };
 
 /** Per-lesson completion state. */

@@ -25,9 +25,13 @@ const GRADE_TO_RATING: Record<ReviewGrade, Grade> = {
 	easy: Rating.Easy
 };
 
-/** Builds an FSRS scheduler at the learner's desired retention (default 0.9). */
-export function getScheduler(targetRetention = 0.9) {
-	return fsrs(generatorParameters({ request_retention: targetRetention }));
+/** Builds an FSRS scheduler; custom on-device-optimized weights when present. */
+export function getScheduler(targetRetention = 0.9, weights?: number[] | null) {
+	const params =
+		weights && weights.length > 0
+			? generatorParameters({ request_retention: targetRetention, w: weights })
+			: generatorParameters({ request_retention: targetRetention });
+	return fsrs(params);
 }
 
 function toFsrsCard(card: SrsCard): FsrsCard {
@@ -91,10 +95,10 @@ export interface GradeResult {
 export function gradeCard(
 	card: SrsCard,
 	grade: ReviewGrade,
-	opts: { now?: Date; targetRetention?: number } = {}
+	opts: { now?: Date; targetRetention?: number; weights?: number[] | null } = {}
 ): GradeResult {
 	const now = opts.now ?? new Date();
-	const scheduler = getScheduler(opts.targetRetention);
+	const scheduler = getScheduler(opts.targetRetention, opts.weights);
 	const { card: nextCard, log } = scheduler.next(toFsrsCard(card), now, GRADE_TO_RATING[grade]);
 	return {
 		card: {
