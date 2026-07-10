@@ -31,13 +31,13 @@
 	let totalXp = $state(0);
 	let heatmap = $state<{ date: string; xp: number }[]>([]);
 
-	const SKILL_LABELS: Record<Skill, string> = {
-		listening: 'Listening',
-		reading: 'Reading',
-		spokenInteraction: 'Speaking (interaction)',
-		spokenProduction: 'Speaking (production)',
-		writing: 'Writing'
-	};
+	function skillLabel(skill: Skill): string {
+		if (skill === 'listening') return m.weak_skill_listening();
+		if (skill === 'reading') return m.weak_skill_reading();
+		if (skill === 'spokenInteraction') return m.weak_skill_speaking_interaction();
+		if (skill === 'spokenProduction') return m.weak_skill_speaking_production();
+		return m.weak_skill_writing();
+	}
 
 	const SKILL_COLORS: Record<Skill, string> = {
 		listening: 'var(--fp-seine)',
@@ -123,31 +123,27 @@
 			if (a.refId === 'c1') return 'DALF C1 mock';
 			return 'DELF A2 mock';
 		}
-		if (a.kind === 'cefr_milestone') return `Milestone ${a.refId}`;
-		return `Checkpoint ${a.refId}`;
+		if (a.kind === 'cefr_milestone') return m.progress_assessment_milestone({ id: a.refId });
+		return m.progress_assessment_checkpoint({ id: a.refId });
 	}
 </script>
 
 <svelte:head><title>L'Atelier · FrenchPath</title></svelte:head>
 
 <main class="page-shell">
-	<h1
-		class="text-foreground"
-		style="font-family: var(--fp-font-display); font-size: 38px; font-weight: 400; line-height: 1.1"
-	>
-		L'Atelier
-	</h1>
-	<p class="text-sm" style="color: var(--fp-muted)">{m.progress_subtitle()}</p>
+	<h1 class="fp-display-lg text-balance text-foreground">L'Atelier</h1>
+	<p class="text-sm text-muted">{m.progress_subtitle()}</p>
 
 	{#if examCountdown() !== null}
+		{@const days = examCountdown() ?? 0}
 		<p class="mt-2 text-sm font-medium text-primary" data-testid="exam-countdown">
-			Exam in {examCountdown()} day{examCountdown() === 1 ? '' : 's'}
+			{days === 1 ? m.progress_exam_one_day() : m.progress_exam_many_days({ days })}
 		</p>
 	{/if}
 
 	<div class="mt-5 lg:grid lg:grid-cols-3 lg:gap-6">
 		<section class="surface-card p-4 lg:col-span-2" aria-label={m.progress_xp_chart()}>
-			<h2 class="text-sm font-semibold text-foreground">{m.progress_xp_chart()}</h2>
+			<h2 class="text-sm font-semibold text-balance text-foreground">{m.progress_xp_chart()}</h2>
 			<div
 				class="mt-4 flex items-end justify-between gap-2 md:gap-3"
 				style="height: 8rem"
@@ -167,7 +163,7 @@
 				{/each}
 			</div>
 			<p class="mt-3 text-xs text-muted" data-testid="weekly-reviews">
-				Weekly reviews completed: {weekReviewed}
+				{m.progress_weekly_reviews({ count: weekReviewed })}
 			</p>
 		</section>
 
@@ -175,7 +171,7 @@
 			<div class="surface-card p-4">
 				<p class="text-sm text-muted">{m.progress_longest_streak()}</p>
 				<p
-					class="mt-1 text-2xl font-bold text-orange-700 dark:text-orange-400"
+					class="fp-figure mt-1 text-2xl font-bold text-orange-700 dark:text-orange-400"
 					data-testid="longest-streak"
 				>
 					🔥 {longestStreak}
@@ -183,12 +179,12 @@
 			</div>
 			<div class="surface-card p-4">
 				<p class="text-sm text-muted">{m.progress_review_forecast()}</p>
-				<p class="mt-1 text-2xl font-bold text-primary" data-testid="review-forecast">
+				<p class="fp-figure mt-1 text-2xl font-bold text-primary" data-testid="review-forecast">
 					{due}
 				</p>
 				{#if due > 0}
 					<a
-						class="mt-2 inline-block text-sm font-medium text-primary hover:underline"
+						class="mt-2 inline-flex min-h-11 items-center text-sm font-medium text-primary hover:underline"
 						href={resolve('/review')}
 					>
 						{m.nav_review()} →
@@ -207,7 +203,7 @@
 						xp: todayXp
 					})}
 			>
-				Share progress card
+				{m.share_progress()}
 			</button>
 		</div>
 	</div>
@@ -225,18 +221,22 @@
 	<section class="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-1">
 		{#if skillProfiles.length > 0}
 			<div class="surface-card p-4 md:col-span-2 lg:col-span-1" data-testid="skill-profile">
-				<h2 class="text-sm font-semibold text-foreground">{m.progress_skills()}</h2>
+				<h2 class="text-sm font-semibold text-balance text-foreground">{m.progress_skills()}</h2>
 				{#if weakestSkill}
 					<p class="mt-1 text-xs text-muted" data-testid="weak-skill">
-						Focus area: {SKILL_LABELS[weakestSkill.skill]} ({weakestSkill.estimatedLevel})
-						<a class="text-primary underline" href={resolve('/review')}>Review →</a>
+						{m.progress_focus_area()}: {skillLabel(weakestSkill.skill)} ({weakestSkill.estimatedLevel})
+						<a
+							class="inline-flex min-h-11 items-center text-primary underline"
+							href={resolve('/review')}>{m.nav_review()} →</a
+						>
 					</p>
 				{/if}
 				<ul class="mt-3 space-y-3">
 					{#each skillProfiles as profile (profile.skill)}
+						{@const pct = (['A1', 'A2', 'B1', 'B2', 'C1'].indexOf(profile.estimatedLevel) + 1) * 20}
 						<li>
 							<div class="flex justify-between text-sm">
-								<span class="text-foreground">{SKILL_LABELS[profile.skill]}</span>
+								<span class="text-foreground">{skillLabel(profile.skill)}</span>
 								<span class="font-medium text-primary">{profile.estimatedLevel}</span>
 							</div>
 							<div
@@ -245,9 +245,11 @@
 							>
 								<div
 									class="fp-progress-fill h-full rounded-full"
-									style="width: {(['A1', 'A2', 'B1', 'B2', 'C1'].indexOf(profile.estimatedLevel) +
-										1) *
-										20}%; background: {SKILL_COLORS[profile.skill]}"
+									role="progressbar"
+									aria-valuenow={pct}
+									aria-valuemin={0}
+									aria-valuemax={100}
+									style="width: {pct}%; background: {SKILL_COLORS[profile.skill]}"
 								></div>
 							</div>
 						</li>
@@ -258,7 +260,9 @@
 
 		{#if assessments.length > 0}
 			<div class="surface-card p-4" data-testid="assessment-history">
-				<h2 class="text-sm font-semibold text-foreground">Assessment history</h2>
+				<h2 class="text-sm font-semibold text-balance text-foreground">
+					{m.progress_assessment_history()}
+				</h2>
 				<ul class="mt-3 divide-y divide-border text-sm">
 					{#each assessments as a (a.assessmentId)}
 						<li class="flex justify-between py-2">
@@ -273,7 +277,9 @@
 
 	<section class="mt-5 grid gap-5 lg:grid-cols-3">
 		<div class="surface-card p-4 lg:col-span-2">
-			<h2 style="font-family: var(--fp-font-display); font-size: 18px">Activité · 12 semaines</h2>
+			<h2 class="text-lg text-balance" style="font-family: var(--fp-font-display)">
+				Activité · 12 semaines
+			</h2>
 			<div class="fp-heatmap mt-3" role="img" aria-label="Practice activity, last 84 days">
 				{#each heatmap as cell (cell.date)}
 					<span
@@ -287,13 +293,18 @@
 
 		<div class="surface-card p-4 text-center">
 			<CharacterCoco size="lg" level={cocoLevel} animate={true} />
-			<p style="font-family: var(--fp-font-display); font-size: 18px">Coco · Niveau {cocoLevel}</p>
+			<p class="text-lg" style="font-family: var(--fp-font-display)">Coco · Niveau {cocoLevel}</p>
 			<div class="fp-progress-bar mt-2">
-				<div class="fp-progress-fill" style="width: {cocoXpPercent}%"></div>
+				<div
+					class="fp-progress-fill"
+					role="progressbar"
+					aria-valuenow={cocoXpPercent}
+					aria-valuemin={0}
+					aria-valuemax={100}
+					style="width: {cocoXpPercent}%"
+				></div>
 			</div>
-			<p
-				style="font-family: var(--fp-font-mono); font-size: 10px; color: var(--fp-muted); margin-top: 6px"
-			>
+			<p class="mt-1.5 text-xs text-muted" style="font-family: var(--fp-font-mono)">
 				{#if cocoLevel < 10}{xpToNextLevel} XP → Niveau {cocoLevel + 1}{:else}Niveau max ⭐{/if}
 			</p>
 		</div>

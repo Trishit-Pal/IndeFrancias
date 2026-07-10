@@ -28,6 +28,13 @@
 	} = $props();
 
 	const visible = $derived(event !== null);
+	let dialogEl = $state<HTMLDivElement | undefined>(undefined);
+
+	// Move keyboard focus into the dialog so a pure-keyboard user can Escape/Tab
+	// without needing to click the backdrop first.
+	$effect(() => {
+		if (visible) dialogEl?.focus();
+	});
 
 	const CONFETTI_COLORS = ['#E94F64', '#2D6CDF', '#D4A24C', '#8AA67A'];
 	const confettiPieces = Array.from({ length: 16 }, (_, i) => ({
@@ -41,10 +48,12 @@
 
 {#if visible}
 	<div
+		bind:this={dialogEl}
 		class="fp-achievement-backdrop"
 		role="dialog"
 		aria-modal="true"
 		aria-live="assertive"
+		aria-labelledby="fp-achievement-title"
 		tabindex="-1"
 		onclick={(e) => {
 			if (e.target === e.currentTarget) onDismiss?.();
@@ -70,7 +79,11 @@
 				<p class="fp-achievement-eyebrow" style="animation:fp-rise .5s ease-out both">
 					Niveau supérieur
 				</p>
-				<h2 class="fp-achievement-title" style="animation:fp-rise .5s ease-out .08s both">
+				<h2
+					id="fp-achievement-title"
+					class="fp-achievement-title text-balance"
+					style="animation:fp-rise .5s ease-out .08s both"
+				>
 					{title}
 				</h2>
 				{#if subtitle}
@@ -106,13 +119,14 @@
 	.fp-achievement-backdrop {
 		position: fixed;
 		inset: 0;
-		z-index: 999;
+		z-index: 50; /* top overlay layer — matches CelebrationOverlay/XpFloat/GlossPopover */
 		background: rgba(43, 27, 23, 0.55);
 		backdrop-filter: blur(3px);
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		padding: 24px;
+		outline: none;
 	}
 	.fp-achievement-card {
 		position: relative;
@@ -123,7 +137,7 @@
 		max-width: 420px;
 		width: 100%;
 		overflow: hidden;
-		animation: fp-stamp 0.4s cubic-bezier(0.2, 0.8, 0.3, 1.2) both;
+		animation: fp-stamp 0.4s ease-out both;
 	}
 	.fp-confetti-container {
 		position: absolute;
@@ -153,7 +167,7 @@
 		font-size: 11px;
 		letter-spacing: 0.28em;
 		text-transform: uppercase;
-		color: var(--fp-terracotta);
+		color: var(--fp-ink-soft); /* fp-terracotta fails 4.5:1 on this card's gradient */
 		margin: 0;
 	}
 	.fp-achievement-title {
@@ -167,7 +181,7 @@
 	.fp-achievement-subtitle {
 		font-family: var(--fp-font-hindi);
 		font-size: 16px;
-		color: var(--fp-muted);
+		color: var(--fp-ink-soft); /* fp-muted fails 4.5:1 on this card's gradient */
 		margin: 0;
 	}
 	.fp-achievement-mascot {
@@ -235,5 +249,28 @@
 	.fp-achievement-cta:active {
 		transform: translate(2px, 2px);
 		box-shadow: 2px 2px 0 var(--fp-ink);
+	}
+
+	/* Reduce-motion: kill fp-stamp/fp-rise/fp-flame/fp-confetti everywhere in the card.
+	   !important on animation also wins over the inline style="animation:..." on the
+	   fp-rise elements. fp-stamp/fp-rise start at opacity:0, so force opacity:1 too
+	   or content would freeze invisible instead of just skipping the motion. */
+	@media (prefers-reduced-motion: reduce) {
+		.fp-achievement-card,
+		.fp-achievement-card * {
+			animation: none !important;
+			opacity: 1 !important;
+		}
+		.fp-confetti-piece {
+			display: none;
+		}
+	}
+	:global(html.reduce-motion) .fp-achievement-card,
+	:global(html.reduce-motion) .fp-achievement-card * {
+		animation: none !important;
+		opacity: 1 !important;
+	}
+	:global(html.reduce-motion) .fp-confetti-piece {
+		display: none;
 	}
 </style>

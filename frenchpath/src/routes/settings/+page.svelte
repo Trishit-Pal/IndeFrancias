@@ -59,16 +59,16 @@
 		{ value: 'pa', label: 'ਪੰਜਾਬੀ' }
 	];
 
-	const presetOptions: { value: Preset; label: string }[] = [
-		{ value: 'casual', label: 'Casual (20 XP)' },
-		{ value: 'regular', label: 'Regular (50 XP)' },
-		{ value: 'intense', label: 'Intense (100 XP)' }
+	const presetOptions: { value: Preset; label: () => string }[] = [
+		{ value: 'casual', label: () => m.settings_preset_casual({ xp: xpFromPreset('casual') }) },
+		{ value: 'regular', label: () => m.settings_preset_regular({ xp: xpFromPreset('regular') }) },
+		{ value: 'intense', label: () => m.settings_preset_intense({ xp: xpFromPreset('intense') }) }
 	];
 
-	const tierOptions: { value: DifficultyTier; label: string }[] = [
-		{ value: 'easy', label: 'Easy — 60% pass, gentler reviews' },
-		{ value: 'regular', label: 'Regular — 70% pass' },
-		{ value: 'hard', label: 'Hard — 80% pass, longer gaps' }
+	const tierOptions: { value: DifficultyTier; label: () => string }[] = [
+		{ value: 'easy', label: m.settings_tier_easy },
+		{ value: 'regular', label: m.settings_tier_regular },
+		{ value: 'hard', label: m.settings_tier_hard }
 	];
 
 	let frenchVoices = $state<{ uri: string; label: string }[]>([]);
@@ -111,8 +111,7 @@
 		if (enabled && typeof Notification !== 'undefined' && Notification.permission === 'default') {
 			const permission = await Notification.requestPermission();
 			if (permission !== 'granted') {
-				message =
-					'Notifications were not allowed. Enable them in browser settings to get revision reminders.';
+				message = m.settings_notif_denied_hint();
 				return;
 			}
 		}
@@ -121,18 +120,18 @@
 
 	async function sendTestNotification() {
 		if (typeof Notification === 'undefined') {
-			message = 'Notifications are not supported in this browser.';
+			message = m.settings_notif_unsupported();
 			return;
 		}
 		if (Notification.permission === 'default') {
 			const permission = await Notification.requestPermission();
 			if (permission !== 'granted') {
-				message = 'Notifications were not allowed.';
+				message = m.settings_notif_denied();
 				return;
 			}
 		}
 		if (Notification.permission !== 'granted') {
-			message = 'Enable notifications in browser settings first.';
+			message = m.settings_notif_enable_first();
 			return;
 		}
 		new Notification(m.revision_notify_title(), {
@@ -144,9 +143,7 @@
 
 	async function requestPersist() {
 		persisted = await ensurePersistence();
-		message = persisted
-			? 'Storage is now persistent — your data is protected from eviction.'
-			: 'The browser did not grant persistent storage. Your data is still saved (best-effort).';
+		message = persisted ? m.settings_persist_granted() : m.settings_persist_denied();
 	}
 
 	async function download() {
@@ -167,11 +164,11 @@
 			const exportedAt = new Date().toISOString();
 			localStorage.setItem(LAST_EXPORT_KEY, exportedAt);
 			lastExportAt = exportedAt;
-			message = 'Backup downloaded.';
+			message = m.settings_backup_downloaded();
 		} catch (error) {
 			// Surface native (share/filesystem) or web failures instead of
 			// throwing unhandled — backup is the only data-recovery path.
-			message = error instanceof Error ? error.message : 'Backup export failed.';
+			message = error instanceof Error ? error.message : m.settings_backup_export_failed();
 		}
 	}
 
@@ -181,7 +178,7 @@
 		input.value = '';
 		if (!file) return;
 		if (file.size > MAX_BACKUP_BYTES) {
-			message = `File is too large. Maximum backup size is ${Math.round(MAX_BACKUP_BYTES / 1024 / 1024)} MB.`;
+			message = m.settings_file_too_large({ mb: Math.round(MAX_BACKUP_BYTES / 1024 / 1024) });
 			return;
 		}
 		try {
@@ -189,7 +186,7 @@
 			importPreview = await previewBackup(json);
 			pendingImportJson = json;
 		} catch (error) {
-			message = error instanceof Error ? error.message : 'Import failed.';
+			message = error instanceof Error ? error.message : m.settings_import_failed();
 		}
 	}
 
@@ -198,10 +195,10 @@
 		importing = true;
 		try {
 			await importBackup(pendingImportJson);
-			message = 'Backup restored. Reloading…';
+			message = m.settings_backup_restored();
 			location.reload();
 		} catch (error) {
-			message = error instanceof Error ? error.message : 'Import failed.';
+			message = error instanceof Error ? error.message : m.settings_import_failed();
 		} finally {
 			importing = false;
 			importPreview = null;
@@ -219,11 +216,11 @@
 		location.reload();
 	}
 
-	const retentionOptions = [
-		{ value: 0.8, label: '80% — fewer reviews' },
-		{ value: 0.85, label: '85%' },
-		{ value: 0.9, label: '90% — recommended' },
-		{ value: 0.95, label: '95% — stronger recall' }
+	const retentionOptions: { value: number; label: () => string }[] = [
+		{ value: 0.8, label: m.settings_retention_80 },
+		{ value: 0.85, label: m.settings_retention_85 },
+		{ value: 0.9, label: m.settings_retention_90 },
+		{ value: 0.95, label: m.settings_retention_95 }
 	];
 	const goalOptions = [10, 20, 30, 50, 100];
 
@@ -233,20 +230,15 @@
 	}
 </script>
 
-<svelte:head><title>Settings · FrenchPath</title></svelte:head>
+<svelte:head><title>{m.settings_title()} · FrenchPath</title></svelte:head>
 
 <main class="page-shell">
-	<h1
-		class="text-foreground"
-		style="font-family: var(--fp-font-display); font-size: 38px; font-weight: 400; line-height: 1.1"
-	>
-		{m.settings_title()}
-	</h1>
+	<h1 class="fp-display-lg text-balance text-foreground">{m.settings_title()}</h1>
 
 	{#if settings}
 		<div class="mt-5 space-y-6">
 			<section class="surface-card p-4" data-testid="my-learning-section">
-				<h2 class="font-semibold text-foreground">{m.settings_my_learning()}</h2>
+				<h2 class="font-semibold text-balance text-foreground">{m.settings_my_learning()}</h2>
 
 				<label class="mt-3 block text-sm text-muted" for="native-language">
 					{m.settings_native_language()}
@@ -304,7 +296,7 @@
 					data-testid="daily-preset-select"
 				>
 					{#each presetOptions as opt (opt.value)}
-						<option value={opt.value}>{opt.label}</option>
+						<option value={opt.value}>{opt.label()}</option>
 					{/each}
 				</select>
 
@@ -322,7 +314,7 @@
 					<option value="minimal">{m.settings_celebration_minimal()}</option>
 				</select>
 
-				<label class="mt-4 flex items-center justify-between">
+				<label class="mt-4 flex min-h-11 items-center justify-between">
 					<span class="text-sm text-muted">{m.settings_french_tips()}</span>
 					<input
 						type="checkbox"
@@ -333,7 +325,7 @@
 				</label>
 
 				<label class="mt-4 block text-sm text-muted" for="difficulty-tier">
-					Checkpoint difficulty
+					{m.onb_difficulty_title()}
 				</label>
 				<select
 					id="difficulty-tier"
@@ -343,12 +335,12 @@
 					data-testid="difficulty-tier-select"
 				>
 					{#each tierOptions as opt (opt.value)}
-						<option value={opt.value}>{opt.label}</option>
+						<option value={opt.value}>{opt.label()}</option>
 					{/each}
 				</select>
 
-				<label class="mt-4 flex items-center justify-between">
-					<span class="text-sm text-muted">Revision reminders (browser notifications)</span>
+				<label class="mt-4 flex min-h-11 items-center justify-between">
+					<span class="text-sm text-muted">{m.settings_revision_reminders()}</span>
 					<input
 						type="checkbox"
 						class="h-5 w-5 accent-primary"
@@ -378,23 +370,22 @@
 			</section>
 
 			<section class="surface-card p-4" data-testid="sovereignty-panel">
-				<h2 class="font-semibold text-foreground">{m.settings_sovereignty()}</h2>
+				<h2 class="font-semibold text-balance text-foreground">{m.settings_sovereignty()}</h2>
 				<p class="mt-2 text-sm text-muted">{m.settings_sovereignty_desc()}</p>
 				<ul class="mt-3 list-inside list-disc text-sm text-muted">
-					<li>Progress, reviews, and settings: on-device only</li>
-					<li>Export: JSON backup you control</li>
-					<li>Cloud sync: disabled (E2EE architecture prepared)</li>
+					<li>{m.settings_sovereignty_item_ondevice()}</li>
+					<li>{m.settings_sovereignty_item_export()}</li>
+					<li>{m.settings_sovereignty_item_sync()}</li>
 				</ul>
 				<p class="mt-3 text-xs text-muted">
-					See <code class="rounded bg-subtle px-1">docs/data-sovereignty.md</code> in the project repo
-					for the full sovereignty model.
+					{m.settings_sovereignty_doc()}
 				</p>
 			</section>
 
 			<section class="surface-card p-4">
-				<h2 class="font-semibold text-foreground">{m.settings_language()}</h2>
+				<h2 class="font-semibold text-balance text-foreground">{m.settings_language()}</h2>
 				<label class="mt-3 block text-sm text-muted" for="language">
-					Interface language (Hindi / English / Hinglish)
+					{m.settings_ui_language_label()}
 				</label>
 				<select
 					id="language"
@@ -410,9 +401,9 @@
 			</section>
 
 			<section class="surface-card p-4" data-testid="tts-section">
-				<h2 class="font-semibold text-foreground">{m.settings_tts_section()}</h2>
+				<h2 class="font-semibold text-balance text-foreground">{m.settings_tts_section()}</h2>
 				<p class="mt-1 text-sm text-muted">
-					All pronunciation uses French voices only — never English TTS.
+					{m.settings_tts_desc()}
 				</p>
 
 				<label class="mt-3 block text-sm text-muted" for="tts-voice">
@@ -448,7 +439,7 @@
 			</section>
 
 			<section class="surface-card p-4">
-				<h2 class="font-semibold text-foreground">{m.settings_theme()}</h2>
+				<h2 class="font-semibold text-balance text-foreground">{m.settings_theme()}</h2>
 				<label class="mt-3 block text-sm text-muted" for="theme">
 					{m.settings_theme()}
 				</label>
@@ -466,9 +457,9 @@
 			</section>
 
 			<section class="surface-card p-4">
-				<h2 class="font-semibold text-foreground">Review</h2>
+				<h2 class="font-semibold text-balance text-foreground">{m.settings_review_section()}</h2>
 				<label class="mt-3 block text-sm text-muted" for="retention">
-					Desired retention (FSRS)
+					{m.settings_retention_label()}
 				</label>
 				<select
 					id="retention"
@@ -478,11 +469,13 @@
 					data-testid="retention-select"
 				>
 					{#each retentionOptions as opt (opt.value)}
-						<option value={opt.value}>{opt.label}</option>
+						<option value={opt.value}>{opt.label()}</option>
 					{/each}
 				</select>
 
-				<label class="mt-4 block text-sm text-muted" for="goal">Daily goal (XP)</label>
+				<label class="mt-4 block text-sm text-muted" for="goal">
+					{m.settings_daily_goal_label()}
+				</label>
 				<select
 					id="goal"
 					class="field-input mt-1"
@@ -491,15 +484,17 @@
 					data-testid="goal-select"
 				>
 					{#each goalOptions as goal (goal)}
-						<option value={goal}>{goal} XP</option>
+						<option value={goal}>{m.settings_goal_xp({ xp: goal })}</option>
 					{/each}
 				</select>
 			</section>
 
 			<section class="surface-card p-4">
-				<h2 class="font-semibold text-foreground">Accessibility</h2>
-				<label class="mt-3 flex items-center justify-between">
-					<span class="text-sm text-muted">Reduce motion</span>
+				<h2 class="font-semibold text-balance text-foreground">
+					{m.settings_accessibility_section()}
+				</h2>
+				<label class="mt-3 flex min-h-11 items-center justify-between">
+					<span class="text-sm text-muted">{m.settings_reduce_motion_label()}</span>
 					<input
 						type="checkbox"
 						class="h-5 w-5 accent-primary"
@@ -511,26 +506,26 @@
 			</section>
 
 			<section class="surface-card p-4">
-				<h2 class="font-semibold text-foreground">Storage & backup</h2>
+				<h2 class="font-semibold text-balance text-foreground">{m.settings_storage_section()}</h2>
 				<div class="fp-data-card mt-2" data-testid="data-local-notice">
 					<p class="text-sm font-medium">
-						No account, no cloud — your learning data lives only on this device. Export regularly to
-						avoid losing progress.
+						{m.settings_storage_notice()}
 					</p>
 				</div>
 				<p class="mt-1 text-sm text-muted">
-					Persistent storage: <span class="font-medium text-foreground"
-						>{persisted ? 'on' : 'best-effort'}</span
-					>
+					{m.settings_persisted_label()}
+					<span class="font-medium text-foreground">
+						{persisted ? m.settings_persisted_on() : m.settings_persisted_best_effort()}
+					</span>
 				</p>
 				{#if lastExportAt}
 					<p class="mt-1 text-sm text-muted" data-testid="last-export">
-						Last export: {new Date(lastExportAt).toLocaleString()}
+						{m.settings_last_export({ date: new Date(lastExportAt).toLocaleString() })}
 					</p>
 				{/if}
 				{#if !persisted}
 					<button type="button" class="btn-secondary mt-2 text-sm" onclick={requestPersist}>
-						Request persistent storage
+						{m.settings_request_persist()}
 					</button>
 				{/if}
 				<div class="mt-3 flex flex-wrap gap-2">
@@ -540,14 +535,14 @@
 						onclick={download}
 						data-testid="backup-export"
 					>
-						Export backup
+						{m.settings_backup_export()}
 					</button>
 					<label class="btn-secondary cursor-pointer text-sm" data-testid="backup-import">
-						Import backup
+						{m.settings_backup_import()}
 						<input
 							type="file"
 							accept="application/json"
-							class="hidden"
+							class="sr-only"
 							onchange={onFile}
 							data-testid="backup-file-input"
 						/>
@@ -558,36 +553,38 @@
 			<section
 				class="rounded-xl border border-red-300 bg-red-50 p-4 dark:border-red-800 dark:bg-red-950"
 			>
-				<h2 class="font-semibold text-red-900 dark:text-red-200">Danger zone</h2>
+				<h2 class="font-semibold text-balance text-red-900 dark:text-red-200">
+					{m.settings_danger_zone()}
+				</h2>
 				{#if confirmingReset}
 					<p class="mt-2 text-sm text-red-800 dark:text-red-300">
-						Erase all progress on this device? This cannot be undone.
+						{m.settings_reset_confirm_desc()}
 					</p>
 					<div class="mt-2 flex gap-2">
 						<button
 							type="button"
-							class="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white dark:bg-red-500 dark:text-black"
+							class="min-h-11 rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:bg-red-500 dark:text-black"
 							onclick={reset}
 							data-testid="reset-confirm"
 						>
-							Yes, erase everything
+							{m.settings_reset_yes()}
 						</button>
 						<button
 							type="button"
 							class="btn-secondary text-sm"
 							onclick={() => (confirmingReset = false)}
 						>
-							Cancel
+							{m.common_cancel()}
 						</button>
 					</div>
 				{:else}
 					<button
 						type="button"
-						class="mt-2 rounded-lg border border-red-300 px-3 py-2 text-sm font-semibold text-red-700 dark:border-red-700 dark:text-red-300"
+						class="mt-2 min-h-11 rounded-lg border border-red-300 px-3 py-2 text-sm font-semibold text-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:border-red-700 dark:text-red-300"
 						onclick={() => (confirmingReset = true)}
 						data-testid="reset-progress"
 					>
-						Reset all progress
+						{m.settings_reset_progress()}
 					</button>
 				{/if}
 			</section>
@@ -599,15 +596,18 @@
 					aria-labelledby="import-preview-title"
 					data-testid="import-preview"
 				>
-					<h2 id="import-preview-title" class="font-semibold text-foreground">
-						Replace all on-device data?
+					<h2 id="import-preview-title" class="font-semibold text-balance text-foreground">
+						{m.settings_import_preview_title()}
 					</h2>
 					<p class="mt-2 text-sm text-muted">
-						Exported: {new Date(importPreview.exportedAt).toLocaleString()} ·
-						{importPreview.lessonCount} lessons · {importPreview.cardCount} review cards
+						{m.settings_import_preview_summary({
+							date: new Date(importPreview.exportedAt).toLocaleString(),
+							lessons: importPreview.lessonCount,
+							cards: importPreview.cardCount
+						})}
 					</p>
 					<p class="mt-1 text-sm text-muted">
-						This will erase your current progress and replace it with the backup.
+						{m.settings_import_preview_warning()}
 					</p>
 					<div class="mt-3 flex gap-2">
 						<button
@@ -617,10 +617,10 @@
 							disabled={importing}
 							data-testid="import-confirm"
 						>
-							{importing ? 'Importing…' : 'Replace data'}
+							{importing ? m.settings_importing() : m.settings_import_confirm()}
 						</button>
 						<button type="button" class="btn-secondary text-sm" onclick={cancelImport}>
-							Cancel
+							{m.common_cancel()}
 						</button>
 					</div>
 				</div>

@@ -48,7 +48,7 @@
 				data-testid="mcq-option"
 				onclick={() => choose(i)}
 			>
-				<GlossText text={option} {lexicon} />
+				{option}
 			</button>
 		{/if}
 	{/each}

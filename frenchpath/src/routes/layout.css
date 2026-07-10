@@ -552,7 +552,9 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 
 @layer components {
 	.page-shell {
-		@apply mx-auto min-h-dvh w-full max-w-xl px-4 py-6 md:max-w-2xl md:px-6 lg:max-w-4xl lg:px-8 xl:max-w-5xl;
+		/* No lg:/xl: max-w-* here: the unlayered `main{}` rule below is the single
+		   source of truth for column width at >=1024px (see that rule's comment). */
+		@apply mx-auto min-h-dvh w-full max-w-xl px-4 py-6 md:max-w-2xl md:px-6 lg:px-8;
 	}
 
 	.surface-card {
@@ -627,6 +629,22 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 
 	.option-default {
 		@apply border-border bg-card hover:border-primary;
+	}
+}
+
+/* ── Wide-window editorial column (M2.5) ──                                  */
+/* Applies to any viewport ≥1024px — desktop browser tabs and the Tauri       */
+/* .exe window alike — so the mobile-first layout doesn't stretch full-width. */
+/* Unlayered on purpose: .page-shell's mx-auto/max-w-* utilities compile into */
+/* @layer components above, and unlayered rules always beat layered ones      */
+/* regardless of specificity, so plain `main` reliably overrides it here.     */
+@media (min-width: 1024px) {
+	main {
+		/* Deliberate single source of truth for the >=1024px column width — don't
+		   re-add a competing lg:/xl: max-w-* utility to .page-shell, it would be
+		   silently unreachable (unlayered always beats @layer components). */
+		max-width: 960px;
+		margin-inline: auto;
 	}
 }
 

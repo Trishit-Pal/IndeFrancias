@@ -59,8 +59,7 @@
 				data-testid="gender-option"
 				onclick={() => pick(opt.value)}
 			>
-				{opt.label}
-				<GlossText text={exercise.noun} {lexicon} class="inline" />
+				{`${opt.label} ${exercise.noun}`}
 			</button>
 		{/each}
 	</div>

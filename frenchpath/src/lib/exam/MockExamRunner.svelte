@@ -174,15 +174,19 @@
 			{m.exam_start()}
 		</button>
 	{:else if phase === 'section' && section}
-		<p class="mt-2 text-xs font-semibold tracking-wide text-primary uppercase">
-			Section {sectionIndex + 1} / {sections.length} · {section.skill}
+		<p class="fp-eyebrow mt-2 text-primary">
+			Section <span class="fp-figure">{sectionIndex + 1} / {sections.length}</span> ·
+			{section.skill}
 		</p>
 		<h2 class="mt-1 text-xl font-bold text-foreground">{section.title}</h2>
 		<p class="mt-1 text-sm text-muted">{section.instructions}</p>
 
 		{#if isObjective && objItem}
 			<p class="mt-4 mb-2 text-sm text-muted">
-				Question {itemIndex + 1} of {'items' in section ? section.items.length : 0}
+				Question
+				<span class="fp-figure"
+					>{itemIndex + 1} of {'items' in section ? section.items.length : 0}</span
+				>
 			</p>
 			{#key objItem.id}
 				<Exercise exercise={objItem} bind:response {submitted} lexicon={new Map()} />
@@ -252,8 +256,10 @@
 			data-testid="exam-result"
 		>
 			<p class="text-center text-5xl">{result.passed ? '🎓' : '📚'}</p>
-			<h1 class="mt-2 text-center text-2xl font-bold text-foreground">
-				{result.total} / 100 — {result.passed ? m.exam_pass() : m.exam_not_yet()}
+			<h1 class="fp-display-md mt-2 text-center text-balance text-foreground">
+				<span class="fp-figure">{result.total} / 100</span> — {result.passed
+					? m.exam_pass()
+					: m.exam_not_yet()}
 			</h1>
 			<div class="mt-3 flex justify-center">
 				{#if result.passed}
@@ -263,7 +269,7 @@
 				{/if}
 			</div>
 			{#if result.passed && xpAwarded > 0}
-				<p class="mt-1 text-center text-sm font-medium text-primary">+{xpAwarded} XP</p>
+				<p class="fp-figure mt-1 text-center text-sm font-medium text-primary">+{xpAwarded} XP</p>
 			{/if}
 			{#if result.eliminated && !result.passed}
 				<p class="mt-1 text-center text-sm text-red-600 dark:text-red-400">{m.exam_eliminated()}</p>
@@ -273,7 +279,7 @@
 					<li>
 						<div class="flex justify-between text-sm">
 							<span class="text-foreground capitalize">{skill}</span>
-							<span class={score < 5 ? 'text-red-600 dark:text-red-400' : 'text-muted'}
+							<span class="fp-figure {score < 5 ? 'text-red-600 dark:text-red-400' : 'text-muted'}"
 								>{score} / 25</span
 							>
 						</div>

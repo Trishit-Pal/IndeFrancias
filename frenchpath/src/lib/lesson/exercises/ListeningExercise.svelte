@@ -56,6 +56,7 @@
 		aria-label="Type what you heard"
 		data-testid="text-answer"
 		autocomplete="off"
+		enterkeyhint="done"
 		oninput={onInput}
 	/>
 	{#if submitted && !isCorrect}

@@ -6,7 +6,7 @@ Use before promoting a production deploy on Vercel (root directory: `frenchpath/
 
 - [ ] `npm run check` — types clean
 - [ ] `npm run lint` — formatting + ESLint
-- [ ] `npm run test:unit -- --run` — **189** unit tests green (see [testing.md](./testing.md))
+- [ ] `npm run test:unit -- --run` — **192** unit tests green (see [testing.md](./testing.md))
 - [ ] `npm run content:validate` — all packs valid
 - [ ] `npm run content:proofread:launch` — A1/A2 proofread clean ([content-curation.md](./content-curation.md); B1–C1 templates may fail full proofread)
 - [ ] `npm run build` — static build succeeds
@@ -47,6 +47,16 @@ Key automated regressions (detail in [testing.md](./testing.md)):
 - [ ] Custom domain configured (optional: `frenchpath.in`)
 - [ ] `robots.txt` allows crawling
 - [ ] OG meta tags present (see `+layout.svelte`)
+
+## Desktop (.exe) & Android (.apk) packaging
+
+- [ ] Windows: `npm run build:desktop` — NSIS installer at `src-tauri/target/release/bundle/nsis/`
+- [ ] Windows: install + launch the generated `.exe` on a clean machine, confirm offline operation
+- [ ] Android: install Android Studio / the Android SDK, then follow `docs/android-init.md` to run `cap add android`
+- [ ] Android: generate a release keystore once — `keytool -genkeypair -v -keystore frenchpath-release.keystore -alias frenchpath -keyalg RSA -keysize 2048 -validity 10000` (human step — store the keystore and passwords outside the repo)
+- [ ] Android: apply the signing config from `docs/android-init.md` to `android/app/build.gradle`
+- [ ] Android: set `FRENCHPATH_KEYSTORE_PATH`, `FRENCHPATH_KEYSTORE_PASSWORD`, `FRENCHPATH_KEY_ALIAS`, `FRENCHPATH_KEY_PASSWORD` env vars, then `npm run build:apk` (or `./gradlew assembleRelease` from `android/` on macOS/Linux)
+- [ ] Android: sideload the signed `.apk` on a real device, confirm offline operation and that the icon/splash render correctly
 
 ## Post-launch
 

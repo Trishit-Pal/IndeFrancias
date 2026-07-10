@@ -58,4 +58,11 @@ describe('security headers', () => {
 	it('static/_headers defines the same required headers', () => {
 		assertSecurityHeaders(parseNetlifyHeaders(), 'static/_headers');
 	});
+
+	it('src-tauri/tauri.conf.json locks the desktop shell to self-origin CSP', () => {
+		const raw = readFileSync(resolve(ROOT, 'src-tauri/tauri.conf.json'), 'utf8');
+		const config = JSON.parse(raw) as { app?: { security?: { csp?: string } } };
+		const csp = config.app?.security?.csp ?? '';
+		expect(csp).toContain("default-src 'self'");
+	});
 });

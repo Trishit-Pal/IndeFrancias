@@ -10,7 +10,7 @@
 	import { shouldNotify, revisionNotificationBody } from '$lib/pwa/revisionNotify';
 	import { applyTheme, watchSystemTheme } from '$lib/theme/apply';
 	import { configureTts } from '$lib/audio/tts';
-	import { isNativePlatform } from '$lib/platform';
+	import { isNativePlatform, isDesktopPlatform } from '$lib/platform';
 	import { initNativeShell } from '$lib/platform/shell';
 	import { showRevisionNotification } from '$lib/platform/notifications';
 	// Self-hosted fonts — served from origin to satisfy the strict
@@ -67,10 +67,11 @@
 
 		void (async () => {
 			if (isNativePlatform()) void initNativeShell();
-			// In the Capacitor native shell the WebView bundle IS the offline cache,
-			// and the SW's navigateFallback fights local serving — so skip it on
-			// native and keep it on web. (mobile-architecture.md R3)
-			if (!isNativePlatform()) {
+			// Neither the Capacitor native shell nor the Tauri desktop shell benefit
+			// from the PWA service worker — both already serve the bundle locally
+			// (WebView bundle / WebView2 local files ARE the offline cache), and the
+			// SW's navigateFallback fights local serving. (mobile-architecture.md R3)
+			if (!isNativePlatform() && !isDesktopPlatform()) {
 				const { registerSW } = await import('virtual:pwa-register');
 				registerSW({ immediate: true });
 			}

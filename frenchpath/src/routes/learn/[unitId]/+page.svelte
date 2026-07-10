@@ -24,6 +24,7 @@
 	import GlossText from '$lib/components/GlossText.svelte';
 	import LessonShell from '$lib/components/LessonShell.svelte';
 	import ExerciseChrome from '$lib/components/ExerciseChrome.svelte';
+	import LessonComplete from '$lib/components/LessonComplete.svelte';
 	import CharacterLeo from '$lib/components/CharacterLeo.svelte';
 	import CharacterMira from '$lib/components/CharacterMira.svelte';
 	import { fly, fade } from 'svelte/transition';
@@ -286,12 +287,12 @@
 				}
 			}}
 		>
-			Start ({total} questions)
+			{m.lesson_start({ count: total })}
 		</button>
 	{:else if phase === 'bridge-quiz' && unit?.bridge?.quiz}
 		{@const quiz = unit.bridge.quiz}
 		{@const bridgeCorrect = bridgeQuizIndex === quiz.answerIndex}
-		<h2 class="mt-4 text-lg font-semibold">Quick check</h2>
+		<h2 class="mt-4 text-lg font-semibold">{m.lesson_quick_check()}</h2>
 		<p class="mt-2 text-muted">{quiz.prompt}</p>
 		<ul class="mt-4 space-y-2">
 			{#each quiz.options as option, i (option)}
@@ -318,7 +319,7 @@
 			{/each}
 		</ul>
 		{#if bridgeQuizSubmitted && !bridgeCorrect}
-			<p class="mt-3 text-sm text-red-700 dark:text-red-300" role="alert">Not quite — try again.</p>
+			<p class="mt-3 text-sm text-red-700 dark:text-red-300" role="alert">{m.lesson_try_again()}</p>
 		{/if}
 		<button
 			type="button"
@@ -327,7 +328,7 @@
 			data-testid="bridge-quiz-continue"
 			onclick={() => (phase = 'exercise')}
 		>
-			Continue to exercises
+			{m.lesson_continue_exercises()}
 		</button>
 	{:else if phase === 'exercise' && current && unit}
 		<LessonShell {progress} {reducedMotion} current={index + 1} {total}>
@@ -344,7 +345,7 @@
 			<div class="grid grid-cols-1 grid-rows-1">
 				{#key current.id}
 					<div
-						class="fp-glass-panel col-start-1 row-start-1 p-4"
+						class="surface-card col-start-1 row-start-1 p-4"
 						in:fly={{ x: 20, duration: reducedMotion ? 0 : 300 }}
 					>
 						<Exercise
@@ -398,49 +399,19 @@
 			{/if}
 		</LessonShell>
 	{:else if phase === 'finished'}
-		<div
-			class="surface-card rounded-2xl p-6 text-center lg:mx-auto lg:max-w-lg"
-			data-testid="summary"
-		>
-			<p class="text-5xl">{score >= 80 ? '🎉' : '💪'}</p>
-			<h1 class="mt-3 text-2xl font-bold text-foreground">{m.lesson_complete()}</h1>
-			<p class="mt-1 text-muted">
-				You scored <span class="font-semibold text-foreground">{score}%</span>
-				({correctCount}/{total}).
-			</p>
-			{#if outcome && outcome.goalXp > 0}
-				<p
-					class="mt-1 text-sm font-medium text-green-700 dark:text-green-400"
-					data-testid="xp-awarded"
-				>
-					{outcome.isNewBest ? 'New best!' : ''} +{outcome.goalXp} XP
-				</p>
-			{:else}
-				<p class="mt-1 text-sm text-muted" data-testid="practice-note">
-					Practice complete — no new XP (best: {outcome?.bestScore ?? score}%).
-					<a class="text-primary underline" href={resolve('/review')}>Review due cards</a>
-					to keep your streak.
-				</p>
-			{/if}
-			<p class="mt-1 text-sm text-muted">{m.lesson_srs_note()}</p>
-			<button
-				type="button"
-				class="btn-secondary mt-4 w-full"
-				data-testid="share-lesson"
-				onclick={() =>
-					shareProgress({
-						title: 'FrenchPath lesson',
-						subtitle: `${unit?.title ?? 'Lesson'} · ${score}%`,
-						xp: outcome?.goalXp
-					})}
-			>
-				{m.share_progress()}
-			</button>
-			<div class="mt-3 grid gap-3">
-				<a class="btn-primary block" href={resolve('/review')}>{m.lesson_review_now()}</a>
-				<a class="btn-secondary block" href={resolve('/')}>{m.common_back_to_path()}</a>
-			</div>
-		</div>
+		<LessonComplete
+			{score}
+			{correctCount}
+			{total}
+			{outcome}
+			{reducedMotion}
+			onShare={() =>
+				shareProgress({
+					title: 'FrenchPath lesson',
+					subtitle: `${unit?.title ?? 'Lesson'} · ${score}%`,
+					xp: outcome?.goalXp
+				})}
+		/>
 	{/if}
 </main>
 

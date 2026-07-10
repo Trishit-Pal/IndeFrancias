@@ -5,6 +5,7 @@
 	import { answerInputClass } from './inputClass';
 	import type { Lexicon } from '$lib/content/lexicon';
 	import GlossText from '$lib/components/GlossText.svelte';
+	import * as m from '$lib/paraglide/messages';
 
 	let {
 		exercise,
@@ -36,7 +37,7 @@
 </script>
 
 <div class="space-y-3">
-	<p class="text-lg font-semibold text-foreground">Listen and type what you hear</p>
+	<p class="text-lg font-semibold text-foreground">{m.dictation_prompt()}</p>
 	{#if canSpeak}
 		<div class="flex items-center gap-3">
 			<button
@@ -65,22 +66,24 @@
 			<GlossText text={exercise.audioText} {lexicon} />
 		</p>
 	{/if}
-	{#if exercise.hint}<p class="text-sm text-muted">Hint: {exercise.hint}</p>{/if}
+	{#if exercise.hint}<p class="text-sm text-muted">{m.cloze_hint({ hint: exercise.hint })}</p>{/if}
 	<input
 		type="text"
 		class={answerInputClass(submitted, isCorrect)}
 		{value}
 		disabled={submitted}
-		aria-label="Type what you hear"
+		aria-label={m.dictation_fill_blank()}
 		data-testid="text-answer"
 		autocomplete="off"
 		autocapitalize="off"
 		spellcheck="false"
+		enterkeyhint="done"
 		oninput={onInput}
 	/>
 	{#if submitted && !isCorrect}
 		<p class="text-sm">
-			Correct answer: <span class="text-green-700 dark:text-green-400">{exercise.answer}</span>
+			{m.cloze_correct_answer()}
+			<span class="text-green-700 dark:text-green-400">{exercise.answer}</span>
 		</p>
 	{/if}
 </div>

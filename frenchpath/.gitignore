@@ -27,3 +27,10 @@ test-results
 # Paraglide
 src/lib/paraglide
 project.inlang/cache/
+
+# Tauri
+/src-tauri/target
+
+# Android signing
+*.keystore
+*.jks
