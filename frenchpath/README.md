@@ -5,7 +5,7 @@ to **Indian learners**, using Hindi/English contrastive pedagogy and **FSRS-6** 
 repetition. All progress lives on-device in IndexedDB — there is no backend and no sign-up.
 
 > **Status: full A1–A2 MVP.** A learner can work through a locked path of **10 A1 + 8 A2 lessons**
-> (18 units), practise with **8 exercise types**, record & compare their pronunciation, build a
+> (24 units), practise with **8 exercise types**, record & compare their pronunciation, build a
 > **streak** toward a daily goal, review with **FSRS-6 spaced repetition**, sit a **mock DELF A2**,
 > switch the UI between **Hindi / English / Hinglish**, and do it all **offline with no account** —
 > installable with real maskable icons. The build-time AI pipeline extends content to B1–C1.
@@ -86,7 +86,7 @@ ANTHROPIC_API_KEY=sk-ant-... npm run content:generate a2-unit-03  # one unit
 # curate drafts in src/content/drafts/, move into src/content/packs/<level>/, then:
 npm run content:validate           # validates packs + regenerates the manifest
 npm run content:proofread:launch   # A1/A2 French QA — CI launch gate
-npm run content:proofread          # all 52 units; B1+ may flag until curated
+npm run content:proofread          # all 58 units; B1+ may flag until curated
 ```
 
 B1–C1 packs ship as **beta templates** (structurally valid, pedagogically generic). See
@@ -100,13 +100,13 @@ B1–C1 packs ship as **beta templates** (structurally valid, pedagogically gene
 - Security headers: `vercel.json` and `static/_headers` (Netlify/Cloudflare)
 - See [docs/launch-checklist.md](../docs/launch-checklist.md) before promoting to production.
 
-The A1–A2 syllabus (`scripts/syllabus.ts`) defines ~18 unit briefs; all **18 units** are authored, validated, and shipped in `src/content/packs/`.
+The A1–A2 syllabus (`scripts/syllabus.ts`) defines 24 unit briefs; all **24 units** are authored, validated, and shipped in `src/content/packs/`.
 
 ## Roadmap
 
 - **Done (full A1–A2 MVP):** PWA + offline + data layer; FSRS review; 8 exercise types; retention
   loop (streaks/daily-goal/lesson unlock); onboarding; record-and-compare; maskable PNG icons;
-  content pipeline; **complete A1 (10) + A2 (8) = 18 units**; mock DELF A2; **Hindi/English/Hinglish
+  content pipeline; **complete A1 (12) + A2 (12) = 24 units**; mock DELF A2; **Hindi/English/Hinglish
   UI toggle across all screens** (Paraglide).
 - **Shipped as beta templates:** B1–C1 JSON (34 units) — validate in CI; full proofread after human curation ([content-curation.md](../docs/content-curation.md)).
 - **Next:** native-speaker proof-read of the AI-authored French; B1+ curation batches.

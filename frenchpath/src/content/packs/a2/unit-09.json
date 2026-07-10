@@ -1,0 +1,435 @@
+{
+	"id": "a2-unit-09",
+	"cefrLevel": "A2",
+	"order": 9,
+	"title": "Chez le médecin — Health & the body",
+	"objective": "Describe symptoms, name body parts and give simple advice. (A2: can describe symptoms and follow or give simple health advice.)",
+	"bridge": {
+		"title": "Bridge from Hindi / English: French HAS a pain — « avoir mal à »",
+		"body": "To say a body part hurts, French uses **avoir** (to have) + **mal à** (pain to): *J'ai mal à la tête* literally = “I have pain to the head”, not *ma tête fait mal*. English says “my head **hurts**” and Hindi सिर दर्द हो रहा है — same idea, different structure. The little word after **mal** changes with gender/number: **à la** tête, **au** dos, **aux** dents. Give advice with **devoir** + infinitive (*tu dois te reposer*) or the imperative (**buvez**, **reposez-vous**, **prenez**). Analogy, not rule: French owns its pain.",
+		"quiz": {
+			"prompt": "How does French say “my head hurts”?",
+			"options": [
+				"J'ai mal à la tête (I have pain to the head)",
+				"Ma tête est mal",
+				"Je suis mal à la tête"
+			],
+			"answerIndex": 0
+		}
+	},
+	"cards": [
+		{
+			"id": "a2-he-tete",
+			"french": "la tête",
+			"gender": "feminine",
+			"ipa": "la tɛt",
+			"hindiGloss": "सिर",
+			"englishGloss": "the head",
+			"glosses": {
+				"hi": "सिर",
+				"en": "the head",
+				"bn": "মাথা",
+				"mr": "डोके",
+				"gu": "માથું",
+				"pa": "ਸਿਰ",
+				"ta": "தலை",
+				"te": "తల",
+				"kn": "ತಲೆ"
+			},
+			"example": {
+				"french": "Priya a mal à la tête à cause de la pluie de mousson.",
+				"englishGloss": "Priya has a headache because of the monsoon rain.",
+				"glosses": {
+					"hi": "प्रिया को मानसून की बारिश के कारण सिर में दर्द है।",
+					"en": "Priya has a headache because of the monsoon rain.",
+					"bn": "মাথা",
+					"mr": "पावसाळ्याच्या पावसामुळे प्रियाला डोकेदुखी आहे.",
+					"gu": "ચોમાસાના વરસાદને કારણે પ્રિયાને માથું દુખે છે.",
+					"pa": "ਮੌਨਸੂਨ ਦੀ ਬਾਰਿਸ਼ ਕਾਰਨ ਪ੍ਰਿਯਾ ਦੇ ਸਿਰ ਵਿੱਚ ਦਰਦ ਹੈ।",
+					"ta": "பருவமழையின் காரணமாக பிரியாவுக்குத் தலைவலி.",
+					"te": "వర్షాకాల వర్షం వల్ల ప్రియకు తలనొప్పి.",
+					"kn": "ಮಾನ್ಸೂನ್ ಮಳೆಯಿಂದ ಪ್ರಿಯಾಗೆ ತಲೆನೋವು."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading", "spokenProduction"]
+		},
+		{
+			"id": "a2-he-dos",
+			"french": "le dos",
+			"gender": "masculine",
+			"ipa": "lə do",
+			"hindiGloss": "पीठ",
+			"englishGloss": "the back",
+			"glosses": {
+				"hi": "पीठ",
+				"en": "the back",
+				"bn": "পিঠ",
+				"mr": "पाठ",
+				"gu": "પીઠ",
+				"pa": "ਪਿੱਠ",
+				"ta": "முதுகு",
+				"te": "వీపు",
+				"kn": "ಬೆನ್ನು"
+			},
+			"example": {
+				"french": "Après le long voyage en train, Arjun a mal au dos.",
+				"englishGloss": "After the long train journey, Arjun has a backache.",
+				"glosses": {
+					"hi": "लंबी ट्रेन यात्रा के बाद अर्जुन की पीठ में दर्द है।",
+					"en": "After the long train journey, Arjun has a backache.",
+					"bn": "পিঠ",
+					"mr": "लांब रेल्वे प्रवासानंतर अर्जुनला पाठदुखी आहे.",
+					"gu": "લાંબી ટ્રેન મુસાફરી પછી અર્જુનને પીઠમાં દુખાવો છે.",
+					"pa": "ਲੰਬੀ ਟ੍ਰੇਨ ਯਾਤਰਾ ਤੋਂ ਬਾਅਦ ਅਰਜੁਨ ਦੀ ਪਿੱਠ ਵਿੱਚ ਦਰਦ ਹੈ।",
+					"ta": "நீண்ட ரயில் பயணத்திற்குப் பிறகு அர்ஜுனுக்கு முதுகுவலி.",
+					"te": "సుదీర్ఘ రైలు ప్రయాణం తర్వాత అర్జున్‌కు వీపు నొప్పి.",
+					"kn": "ದೀರ್ಘ ರೈಲು ಪ್ರಯಾಣದ ನಂತರ ಅರ್ಜುನ್‌ಗೆ ಬೆನ್ನುನೋವು."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-he-gorge",
+			"french": "la gorge",
+			"gender": "feminine",
+			"ipa": "la ɡɔʁʒ",
+			"hindiGloss": "गला",
+			"englishGloss": "the throat",
+			"glosses": {
+				"hi": "गला",
+				"en": "the throat",
+				"bn": "গলা",
+				"mr": "घसा",
+				"gu": "ગળું",
+				"pa": "ਗਲਾ",
+				"ta": "தொண்டை",
+				"te": "గొంతు",
+				"kn": "ಗಂಟಲು"
+			},
+			"example": {
+				"french": "J'ai mal à la gorge, alors je bois du haldi doodh chaud.",
+				"englishGloss": "I have a sore throat, so I drink warm turmeric milk (haldi doodh).",
+				"glosses": {
+					"hi": "मेरे गले में दर्द है, इसलिए मैं गरम हल्दी दूध पीता हूँ।",
+					"en": "I have a sore throat, so I drink warm turmeric milk (haldi doodh).",
+					"bn": "গলা",
+					"mr": "माझा घसा दुखतो, म्हणून मी गरम हळदीचे दूध पितो.",
+					"gu": "મારું ગળું દુખે છે, તેથી હું ગરમ હળદરવાળું દૂધ પીઉં છું.",
+					"pa": "ਮੇਰੇ ਗਲੇ ਵਿੱਚ ਦਰਦ ਹੈ, ਇਸ ਲਈ ਮੈਂ ਗਰਮ ਹਲਦੀ ਵਾਲਾ ਦੁੱਧ ਪੀਂਦਾ ਹਾਂ।",
+					"ta": "எனக்குத் தொண்டை வலிக்கிறது, அதனால் நான் சூடான மஞ்சள் பால் குடிக்கிறேன்.",
+					"te": "నాకు గొంతు నొప్పి, అందుకే నేను వేడి పసుపు పాలు తాగుతాను.",
+					"kn": "ನನಗೆ ಗಂಟಲು ನೋವು, ಆದ್ದರಿಂದ ನಾನು ಬಿಸಿ ಅರಿಶಿನ ಹಾಲು ಕುಡಿಯುತ್ತೇನೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading", "spokenInteraction"]
+		},
+		{
+			"id": "a2-he-dents",
+			"french": "les dents",
+			"gender": "feminine",
+			"ipa": "le dɑ̃",
+			"hindiGloss": "दाँत",
+			"englishGloss": "the teeth",
+			"glosses": {
+				"hi": "दाँत",
+				"en": "the teeth",
+				"bn": "দাঁত",
+				"mr": "दात",
+				"gu": "દાંત",
+				"pa": "ਦੰਦ",
+				"ta": "பற்கள்",
+				"te": "దంతాలు",
+				"kn": "ಹಲ್ಲುಗಳು"
+			},
+			"example": {
+				"french": "Ananya a mal aux dents et va chez le dentiste.",
+				"englishGloss": "Ananya has a toothache and goes to the dentist.",
+				"glosses": {
+					"hi": "अनन्या के दाँत में दर्द है और वह दंत चिकित्सक के पास जाती है।",
+					"en": "Ananya has a toothache and goes to the dentist.",
+					"bn": "দাঁত",
+					"mr": "अनन्याला दातदुखी आहे आणि ती दंतवैद्याकडे जाते.",
+					"gu": "અનન્યાને દાંતમાં દુખાવો છે અને તે દંત ચિકિત્સક પાસે જાય છે.",
+					"pa": "ਅਨਨਿਆ ਦੇ ਦੰਦ ਵਿੱਚ ਦਰਦ ਹੈ ਅਤੇ ਉਹ ਦੰਦਾਂ ਦੇ ਡਾਕਟਰ ਕੋਲ ਜਾਂਦੀ ਹੈ।",
+					"ta": "அனன்யாவுக்குப் பல்வலி, அவள் பல் மருத்துவரிடம் செல்கிறாள்.",
+					"te": "అనన్యకు దంతనొప్పి, ఆమె దంతవైద్యుని వద్దకు వెళుతుంది.",
+					"kn": "ಅನನ್ಯಾಗೆ ಹಲ್ಲುನೋವು, ಅವಳು ದಂತವೈದ್ಯರ ಬಳಿ ಹೋಗುತ್ತಾಳೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-he-mal",
+			"french": "avoir mal à",
+			"gender": "none",
+			"ipa": "a.vwaʁ mal a",
+			"hindiGloss": "दर्द होना (… में)",
+			"englishGloss": "to have pain in (… hurts)",
+			"glosses": {
+				"hi": "दर्द होना (… में)",
+				"en": "to have pain in (… hurts)",
+				"bn": "ব্যথা হওয়া (… তে)",
+				"mr": "दुखणे (… मध्ये)",
+				"gu": "દુખાવો થવો (… માં)",
+				"pa": "ਦਰਦ ਹੋਣਾ (… ਵਿੱਚ)",
+				"ta": "வலி இருத்தல் (… இல்)",
+				"te": "నొప్పి ఉండటం (… లో)",
+				"kn": "ನೋವು ಇರುವುದು (… ನಲ್ಲಿ)"
+			},
+			"example": {
+				"french": "Où as-tu mal ? J'ai mal au ventre depuis ce matin.",
+				"englishGloss": "Where does it hurt? I have had a stomachache since this morning.",
+				"glosses": {
+					"hi": "कहाँ दर्द है? आज सुबह से मेरे पेट में दर्द है।",
+					"en": "Where does it hurt? I have had a stomachache since this morning.",
+					"bn": "ব্যথা হওয়া (… তে)",
+					"mr": "कुठे दुखतंय? आज सकाळपासून माझं पोट दुखतंय.",
+					"gu": "ક્યાં દુખે છે? આજે સવારથી મારું પેટ દુખે છે.",
+					"pa": "ਕਿੱਥੇ ਦਰਦ ਹੈ? ਅੱਜ ਸਵੇਰ ਤੋਂ ਮੇਰੇ ਪੇਟ ਵਿੱਚ ਦਰਦ ਹੈ।",
+					"ta": "எங்கே வலிக்கிறது? இன்று காலையிலிருந்து எனக்கு வயிற்று வலி.",
+					"te": "ఎక్కడ నొప్పి? ఈ ఉదయం నుండి నాకు కడుపు నొప్పి.",
+					"kn": "ಎಲ್ಲಿ ನೋವು? ಇಂದು ಬೆಳಿಗ್ಗೆಯಿಂದ ನನಗೆ ಹೊಟ್ಟೆ ನೋವು."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["spokenInteraction", "spokenProduction"]
+		},
+		{
+			"id": "a2-he-medecin",
+			"french": "le médecin",
+			"gender": "masculine",
+			"ipa": "lə med.sɛ̃",
+			"hindiGloss": "डॉक्टर",
+			"englishGloss": "the doctor",
+			"glosses": {
+				"hi": "डॉक्टर",
+				"en": "the doctor",
+				"bn": "ডাক্তার",
+				"mr": "डॉक्टर",
+				"gu": "ડૉક્ટર",
+				"pa": "ਡਾਕਟਰ",
+				"ta": "மருத்துவர்",
+				"te": "వైద్యుడు",
+				"kn": "ವೈದ್ಯ"
+			},
+			"example": {
+				"french": "Le médecin dit : reposez-vous et buvez du haldi doodh.",
+				"englishGloss": "The doctor says: rest and drink turmeric milk.",
+				"glosses": {
+					"hi": "डॉक्टर कहते हैं: आराम करो और हल्दी दूध पियो।",
+					"en": "The doctor says: rest and drink turmeric milk.",
+					"bn": "ডাক্তার",
+					"mr": "डॉक्टर म्हणतात: विश्रांती घ्या आणि हळदीचे दूध प्या.",
+					"gu": "ડૉક્ટર કહે છે: આરામ કરો અને હળદરવાળું દૂધ પીઓ.",
+					"pa": "ਡਾਕਟਰ ਕਹਿੰਦੇ ਹਨ: ਆਰਾਮ ਕਰੋ ਅਤੇ ਹਲਦੀ ਵਾਲਾ ਦੁੱਧ ਪੀਓ।",
+					"ta": "மருத்துவர் கூறுகிறார்: ஓய்வெடுங்கள், மஞ்சள் பால் குடியுங்கள்.",
+					"te": "వైద్యుడు చెబుతాడు: విశ్రాంతి తీసుకోండి, పసుపు పాలు తాగండి.",
+					"kn": "ವೈದ್ಯರು ಹೇಳುತ್ತಾರೆ: ವಿಶ್ರಾಂತಿ ಪಡೆಯಿರಿ ಮತ್ತು ಅರಿಶಿನ ಹಾಲು ಕುಡಿಯಿರಿ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading", "listening"]
+		},
+		{
+			"id": "a2-he-pharmacie",
+			"french": "la pharmacie",
+			"gender": "feminine",
+			"ipa": "la faʁ.ma.si",
+			"hindiGloss": "फार्मेसी / दवाख़ाना",
+			"englishGloss": "the pharmacy / chemist",
+			"glosses": {
+				"hi": "फार्मेसी / दवाख़ाना",
+				"en": "the pharmacy / chemist",
+				"bn": "ওষুধের দোকান",
+				"mr": "औषधालय",
+				"gu": "ફાર્મસી / દવાની દુકાન",
+				"pa": "ਫਾਰਮੇਸੀ / ਦਵਾਈ ਦੀ ਦੁਕਾਨ",
+				"ta": "மருந்தகம்",
+				"te": "ఔషధ దుకాణం",
+				"kn": "ಔಷಧ ಅಂಗಡಿ"
+			},
+			"example": {
+				"french": "À la pharmacie de Mumbai, Priya achète un médicament contre la toux.",
+				"englishGloss": "At the pharmacy in Mumbai, Priya buys a medicine for the cough.",
+				"glosses": {
+					"hi": "मुंबई की फार्मेसी में प्रिया खांसी की दवा खरीदती है।",
+					"en": "At the pharmacy in Mumbai, Priya buys a medicine for the cough.",
+					"bn": "ওষুধের দোকান",
+					"mr": "मुंबईच्या औषधालयात प्रिया खोकल्याचे औषध विकत घेते.",
+					"gu": "મુંબઈની ફાર્મસીમાં પ્રિયા ઉધરસની દવા ખરીદે છે.",
+					"pa": "ਮੁੰਬਈ ਦੀ ਫਾਰਮੇਸੀ ਵਿੱਚ ਪ੍ਰਿਯਾ ਖਾਂਸੀ ਦੀ ਦਵਾਈ ਖਰੀਦਦੀ ਹੈ।",
+					"ta": "மும்பையின் மருந்தகத்தில் பிரியா இருமலுக்கான மருந்து வாங்குகிறாள்.",
+					"te": "ముంబైలోని ఔషధ దుకాణంలో ప్రియ దగ్గు మందు కొంటుంది.",
+					"kn": "ಮುಂಬೈನ ಔಷಧ ಅಂಗಡಿಯಲ್ಲಿ ಪ್ರಿಯಾ ಕೆಮ್ಮಿನ ಔಷಧ ಖರೀದಿಸುತ್ತಾಳೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-he-devoir",
+			"french": "devoir",
+			"gender": "none",
+			"ipa": "də.vwaʁ",
+			"hindiGloss": "…ना चाहिए / ज़रूरी होना",
+			"englishGloss": "must / to have to (devoir + infinitive)",
+			"glosses": {
+				"hi": "…ना चाहिए / ज़रूरी होना",
+				"en": "must / to have to (devoir + infinitive)",
+				"bn": "উচিত / করতে হবে",
+				"mr": "पाहिजे / करावे लागणे",
+				"gu": "જોઈએ / કરવું પડે",
+				"pa": "ਚਾਹੀਦਾ ਹੈ / ਕਰਨਾ ਪੈਣਾ",
+				"ta": "வேண்டும் (செய்ய வேண்டும்)",
+				"te": "చేయాలి / తప్పనిసరి",
+				"kn": "ಮಾಡಬೇಕು / ಅಗತ್ಯ"
+			},
+			"example": {
+				"french": "Tu as de la fièvre ; tu dois boire beaucoup d'eau.",
+				"englishGloss": "You have a fever; you must drink a lot of water.",
+				"glosses": {
+					"hi": "तुम्हें बुखार है; तुम्हें बहुत पानी पीना चाहिए।",
+					"en": "You have a fever; you must drink a lot of water.",
+					"bn": "উচিত / করতে হবে",
+					"mr": "तुला ताप आहे; तू खूप पाणी प्यायला हवं.",
+					"gu": "તને તાવ છે; તારે ઘણું પાણી પીવું જોઈએ.",
+					"pa": "ਤੈਨੂੰ ਬੁਖ਼ਾਰ ਹੈ; ਤੈਨੂੰ ਬਹੁਤ ਪਾਣੀ ਪੀਣਾ ਚਾਹੀਦਾ ਹੈ।",
+					"ta": "உனக்குக் காய்ச்சல்; நீ நிறைய தண்ணீர் குடிக்க வேண்டும்.",
+					"te": "నీకు జ్వరం ఉంది; నువ్వు చాలా నీరు తాగాలి.",
+					"kn": "ನಿನಗೆ ಜ್ವರವಿದೆ; ನೀನು ಸಾಕಷ್ಟು ನೀರು ಕುಡಿಯಬೇಕು."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["writing", "spokenProduction"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "cloze",
+			"id": "a2-u9-ex1",
+			"cardId": "a2-he-tete",
+			"hint": "tête is feminine → à + la.",
+			"coachNote": "Describe symptoms, name body parts and give simple advice. (A2: can describe symptoms and follow or give simple health advice.)",
+			"text": "Priya a mal {{}} tête à cause de la mousson.",
+			"answer": "à la",
+			"accept": ["a la"]
+		},
+		{
+			"type": "mcq",
+			"id": "a2-u9-ex2",
+			"cardId": "a2-he-mal",
+			"hint": "French HAS the pain: avoir + mal à.",
+			"coachNote": "Describe symptoms, name body parts and give simple advice. (A2: can describe symptoms and follow or give simple health advice.)",
+			"prompt": "How do you say “my head hurts” in French?",
+			"options": [
+				"J'ai mal à la tête",
+				"Ma tête est mal",
+				"Je suis mal à la tête",
+				"J'ai la tête mal"
+			],
+			"answerIndex": 0,
+			"explanation": "French uses avoir mal à: J'ai mal à la tête = literally “I have pain to the head”."
+		},
+		{
+			"type": "conjugation",
+			"id": "a2-u9-ex3",
+			"cardId": "a2-he-devoir",
+			"hint": "devoir, tu form (advice).",
+			"coachNote": "Describe symptoms, name body parts and give simple advice. (A2: can describe symptoms and follow or give simple health advice.)",
+			"verb": "devoir",
+			"pronoun": "tu",
+			"prompt": "Advice: « Tu ___ te reposer aujourd'hui. » (devoir)",
+			"answer": "dois",
+			"accept": ["dois"]
+		},
+		{
+			"type": "translation",
+			"id": "a2-u9-ex4",
+			"cardId": "a2-he-dos",
+			"hint": "dos is masculine → à + le = au.",
+			"coachNote": "Describe symptoms, name body parts and give simple advice. (A2: can describe symptoms and follow or give simple health advice.)",
+			"prompt": "I have a backache.",
+			"direction": "en-fr",
+			"answer": "J'ai mal au dos",
+			"accept": ["j'ai mal au dos", "jai mal au dos"]
+		},
+		{
+			"type": "matching",
+			"id": "a2-u9-ex5",
+			"hint": "Match each body part to English.",
+			"coachNote": "Describe symptoms, name body parts and give simple advice. (A2: can describe symptoms and follow or give simple health advice.)",
+			"prompt": "Match each body part to its English meaning.",
+			"pairs": [
+				{
+					"left": "la tête",
+					"right": "the head"
+				},
+				{
+					"left": "le dos",
+					"right": "the back"
+				},
+				{
+					"left": "la gorge",
+					"right": "the throat"
+				},
+				{
+					"left": "les dents",
+					"right": "the teeth"
+				}
+			]
+		},
+		{
+			"type": "cloze",
+			"id": "a2-u9-ex6",
+			"cardId": "a2-he-dos",
+			"hint": "à + le dos → contracts to one word.",
+			"coachNote": "Describe symptoms, name body parts and give simple advice. (A2: can describe symptoms and follow or give simple health advice.)",
+			"text": "Arjun a mal {{}} dos après le long voyage en train.",
+			"answer": "au",
+			"accept": ["au"]
+		},
+		{
+			"type": "mcq",
+			"id": "a2-u9-ex7",
+			"cardId": "a2-he-medecin",
+			"hint": "Advice in the imperative: buvez, reposez-vous, prenez.",
+			"coachNote": "Describe symptoms, name body parts and give simple advice. (A2: can describe symptoms and follow or give simple health advice.)",
+			"prompt": "The doctor advises « drink turmeric milk ». Which is the correct imperative?",
+			"options": [
+				"Buvez du haldi doodh",
+				"Vous buvez du haldi doodh ?",
+				"Boire du haldi doodh",
+				"Je bois du haldi doodh"
+			],
+			"answerIndex": 0,
+			"explanation": "Advice uses the imperative: buvez (drink), reposez-vous (rest), prenez (take) — no subject pronoun."
+		},
+		{
+			"type": "translation",
+			"id": "a2-u9-ex8",
+			"cardId": "a2-he-pharmacie",
+			"hint": "devoir + infinitive; pharmacie is feminine (à la).",
+			"coachNote": "Describe symptoms, name body parts and give simple advice. (A2: can describe symptoms and follow or give simple health advice.)",
+			"prompt": "Tu dois aller à la pharmacie.",
+			"direction": "fr-en",
+			"answer": "You must go to the pharmacy.",
+			"accept": [
+				"you must go to the pharmacy",
+				"you have to go to the pharmacy",
+				"you must go to the chemist"
+			]
+		}
+	]
+}

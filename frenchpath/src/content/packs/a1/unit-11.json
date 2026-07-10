@@ -1,0 +1,422 @@
+{
+	"id": "a1-unit-11",
+	"cefrLevel": "A1",
+	"order": 11,
+	"title": "Quel temps fait-il ? — Weather & small talk",
+	"objective": "Talk about the weather and seasons and make simple small talk (A1: can describe today's weather and the seasons in short, simple phrases).",
+	"bridge": {
+		"title": "Bridge from Hindi / English: French says « il fait chaud » = literally “it makes hot”",
+		"body": "To describe the weather, French uses **il fait** + adjective: **il fait chaud** (it's hot), **il fait froid** (it's cold), **il fait beau** (it's nice), **il fait mauvais** (it's bad weather). Word-for-word this is “it makes hot”, not “it is hot”. Hindi says गरमी है / ठंड है and English says “it IS hot” — so treat **il fait** as a fixed weather phrase to memorise, an analogy not a rule. For rain and snow, French uses one verb: **il pleut** (it's raining), **il neige** (it's snowing). To ask, use **quel** (masc.) / **quelle** (fem.): **Quel temps fait-il ?** = “What's the weather like?”",
+		"quiz": {
+			"prompt": "What is the main bridge idea for \"Quel temps fait-il ? — Weather & small talk\"?",
+			"options": [
+				"Focus on: « il fait chaud » literally means “it makes hot”",
+				"Weather always uses the verb « être » like English",
+				"French has no word for rain"
+			],
+			"answerIndex": 0
+		}
+	},
+	"cards": [
+		{
+			"id": "a1-we-temps",
+			"french": "le temps",
+			"gender": "masculine",
+			"ipa": "lə tɑ̃",
+			"hindiGloss": "मौसम",
+			"englishGloss": "the weather",
+			"glosses": {
+				"hi": "मौसम",
+				"en": "the weather",
+				"bn": "আবহাওয়া",
+				"mr": "हवामान",
+				"gu": "હવામાન",
+				"pa": "ਮੌਸਮ",
+				"ta": "வானிலை",
+				"te": "వాతావరణం",
+				"kn": "ಹವಾಮಾನ"
+			},
+			"example": {
+				"french": "Quel temps fait-il à Mumbai aujourd'hui ?",
+				"englishGloss": "What's the weather like in Mumbai today?",
+				"glosses": {
+					"hi": "आज मुंबई में मौसम कैसा है?",
+					"en": "What's the weather like in Mumbai today?",
+					"bn": "আজ মুম্বইয়ে আবহাওয়া কেমন?",
+					"mr": "आज मुंबईत हवामान कसे आहे?",
+					"gu": "આજે મુંબઈમાં હવામાન કેવું છે?",
+					"pa": "ਅੱਜ ਮੁੰਬਈ ਵਿੱਚ ਮੌਸਮ ਕਿਹੋ ਜਿਹਾ ਹੈ?",
+					"ta": "இன்று மும்பையில் வானிலை எப்படி உள்ளது?",
+					"te": "ఈరోజు ముంబైలో వాతావరణం ఎలా ఉంది?",
+					"kn": "ಇಂದು ಮುಂಬೈನಲ್ಲಿ ಹವಾಮಾನ ಹೇಗಿದೆ?"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-we-beau",
+			"french": "il fait beau",
+			"gender": "none",
+			"ipa": "il fɛ bo",
+			"hindiGloss": "मौसम अच्छा है",
+			"englishGloss": "the weather is nice",
+			"glosses": {
+				"hi": "मौसम अच्छा है",
+				"en": "the weather is nice",
+				"bn": "আবহাওয়া সুন্দর",
+				"mr": "हवामान छान आहे",
+				"gu": "હવામાન સરસ છે",
+				"pa": "ਮੌਸਮ ਵਧੀਆ ਹੈ",
+				"ta": "வானிலை நன்றாக உள்ளது",
+				"te": "వాతావరణం బాగుంది",
+				"kn": "ಹವಾಮಾನ ಚೆನ್ನಾಗಿದೆ"
+			},
+			"example": {
+				"french": "Aujourd'hui il fait beau à Delhi.",
+				"englishGloss": "Today the weather is nice in Delhi.",
+				"glosses": {
+					"hi": "आज दिल्ली में मौसम अच्छा है।",
+					"en": "Today the weather is nice in Delhi.",
+					"bn": "আবহাওয়া সুন্দর",
+					"mr": "आज दिल्लीत हवामान छान आहे.",
+					"gu": "આજે દિલ્હીમાં હવામાન સરસ છે.",
+					"pa": "ਅੱਜ ਦਿੱਲੀ ਵਿੱਚ ਮੌਸਮ ਵਧੀਆ ਹੈ।",
+					"ta": "இன்று டெல்லியில் வானிலை நன்றாக உள்ளது.",
+					"te": "ఈరోజు ఢిల్లీలో వాతావరణం బాగుంది.",
+					"kn": "ಇಂದು ದೆಹಲಿಯಲ್ಲಿ ಹವಾಮಾನ ಚೆನ್ನಾಗಿದೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["spokenProduction"]
+		},
+		{
+			"id": "a1-we-chaud",
+			"french": "il fait chaud",
+			"gender": "none",
+			"ipa": "il fɛ ʃo",
+			"hindiGloss": "गरमी है",
+			"englishGloss": "it is hot",
+			"glosses": {
+				"hi": "गरमी है",
+				"en": "it is hot",
+				"bn": "গরম পড়ছে",
+				"mr": "गरमी आहे",
+				"gu": "ગરમી છે",
+				"pa": "ਗਰਮੀ ਹੈ",
+				"ta": "வெப்பமாக உள்ளது",
+				"te": "వేడిగా ఉంది",
+				"kn": "ಸೆಕೆ ಇದೆ"
+			},
+			"example": {
+				"french": "En été, il fait très chaud à Delhi.",
+				"englishGloss": "In summer, it is very hot in Delhi.",
+				"glosses": {
+					"hi": "गर्मियों में दिल्ली में बहुत गरमी होती है।",
+					"en": "In summer, it is very hot in Delhi.",
+					"bn": "গরম পড়ছে",
+					"mr": "उन्हाळ्यात दिल्लीत खूप गरमी असते.",
+					"gu": "ઉનાળામાં દિલ્હીમાં ખૂબ ગરમી હોય છે.",
+					"pa": "ਗਰਮੀਆਂ ਵਿੱਚ ਦਿੱਲੀ ਵਿੱਚ ਬਹੁਤ ਗਰਮੀ ਹੁੰਦੀ ਹੈ।",
+					"ta": "கோடையில் டெல்லியில் மிகவும் வெப்பமாக இருக்கும்.",
+					"te": "వేసవిలో ఢిల్లీలో చాలా వేడిగా ఉంటుంది.",
+					"kn": "ಬೇಸಿಗೆಯಲ್ಲಿ ದೆಹಲಿಯಲ್ಲಿ ತುಂಬಾ ಸೆಕೆ ಇರುತ್ತದೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["spokenProduction"]
+		},
+		{
+			"id": "a1-we-froid",
+			"french": "il fait froid",
+			"gender": "none",
+			"ipa": "il fɛ fʁwa",
+			"hindiGloss": "ठंड है",
+			"englishGloss": "it is cold",
+			"glosses": {
+				"hi": "ठंड है",
+				"en": "it is cold",
+				"bn": "ঠান্ডা পড়ছে",
+				"mr": "थंडी आहे",
+				"gu": "ઠંડી છે",
+				"pa": "ਠੰਢ ਹੈ",
+				"ta": "குளிராக உள்ளது",
+				"te": "చలిగా ఉంది",
+				"kn": "ಚಳಿ ಇದೆ"
+			},
+			"example": {
+				"french": "En hiver, il fait froid à Delhi le matin.",
+				"englishGloss": "In winter, it is cold in Delhi in the morning.",
+				"glosses": {
+					"hi": "सर्दियों में सुबह दिल्ली में ठंड होती है।",
+					"en": "In winter, it is cold in Delhi in the morning.",
+					"bn": "ঠান্ডা পড়ছে",
+					"mr": "हिवाळ्यात सकाळी दिल्लीत थंडी असते.",
+					"gu": "શિયાળામાં સવારે દિલ્હીમાં ઠંડી હોય છે.",
+					"pa": "ਸਰਦੀਆਂ ਵਿੱਚ ਸਵੇਰੇ ਦਿੱਲੀ ਵਿੱਚ ਠੰਢ ਹੁੰਦੀ ਹੈ।",
+					"ta": "குளிர்காலத்தில் காலையில் டெல்லியில் குளிராக இருக்கும்.",
+					"te": "శీతాకాలంలో ఉదయం ఢిల్లీలో చలిగా ఉంటుంది.",
+					"kn": "ಚಳಿಗಾಲದಲ್ಲಿ ಬೆಳಿಗ್ಗೆ ದೆಹಲಿಯಲ್ಲಿ ಚಳಿ ಇರುತ್ತದೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["spokenProduction"]
+		},
+		{
+			"id": "a1-we-pleut",
+			"french": "il pleut",
+			"gender": "none",
+			"ipa": "il plø",
+			"hindiGloss": "बारिश हो रही है",
+			"englishGloss": "it is raining",
+			"glosses": {
+				"hi": "बारिश हो रही है",
+				"en": "it is raining",
+				"bn": "বৃষ্টি হচ্ছে",
+				"mr": "पाऊस पडत आहे",
+				"gu": "વરસાદ પડે છે",
+				"pa": "ਮੀਂਹ ਪੈ ਰਿਹਾ ਹੈ",
+				"ta": "மழை பெய்கிறது",
+				"te": "వర్షం పడుతోంది",
+				"kn": "ಮಳೆ ಬರುತ್ತಿದೆ"
+			},
+			"example": {
+				"french": "Il pleut beaucoup pendant la mousson à Mumbai.",
+				"englishGloss": "It rains a lot during the monsoon in Mumbai.",
+				"glosses": {
+					"hi": "मुंबई में मानसून के दौरान बहुत बारिश होती है।",
+					"en": "It rains a lot during the monsoon in Mumbai.",
+					"bn": "বৃষ্টি হচ্ছে",
+					"mr": "मुंबईत पावसाळ्यात खूप पाऊस पडतो.",
+					"gu": "મુંબઈમાં ચોમાસા દરમિયાન ખૂબ વરસાદ પડે છે.",
+					"pa": "ਮੁੰਬਈ ਵਿੱਚ ਮੌਨਸੂਨ ਦੌਰਾਨ ਬਹੁਤ ਮੀਂਹ ਪੈਂਦਾ ਹੈ।",
+					"ta": "மும்பையில் பருவமழை காலத்தில் அதிக மழை பெய்யும்.",
+					"te": "ముంబైలో వర్షాకాలంలో చాలా వర్షం పడుతుంది.",
+					"kn": "ಮುಂಬೈನಲ್ಲಿ ಮಳೆಗಾಲದಲ್ಲಿ ತುಂಬಾ ಮಳೆ ಬರುತ್ತದೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-we-mousson",
+			"french": "la mousson",
+			"gender": "feminine",
+			"ipa": "la mu.sɔ̃",
+			"hindiGloss": "मानसून / वर्षा ऋतु",
+			"englishGloss": "the monsoon",
+			"glosses": {
+				"hi": "मानसून / वर्षा ऋतु",
+				"en": "the monsoon",
+				"bn": "বর্ষা / মৌসুমি",
+				"mr": "पावसाळा / मान्सून",
+				"gu": "ચોમાસું / મોસમ",
+				"pa": "ਮੌਨਸੂਨ / ਬਰਸਾਤ",
+				"ta": "பருவமழை / மழைக்காலம்",
+				"te": "వర్షాకాలం / రుతుపవనాలు",
+				"kn": "ಮಳೆಗಾಲ / ಮಾನ್ಸೂನ್"
+			},
+			"example": {
+				"french": "Priya aime le chai quand il y a la mousson.",
+				"englishGloss": "Priya likes chai when there is the monsoon.",
+				"glosses": {
+					"hi": "प्रिया को मानसून के समय चाय पसंद है।",
+					"en": "Priya likes chai when it is monsoon season.",
+					"bn": "বর্ষা / মৌসুমি",
+					"mr": "प्रियाला पावसाळ्यात चहा आवडतो.",
+					"gu": "પ્રિયાને ચોમાસામાં ચા ગમે છે.",
+					"pa": "ਪ੍ਰਿਯਾ ਨੂੰ ਮੌਨਸੂਨ ਵੇਲੇ ਚਾਹ ਪਸੰਦ ਹੈ।",
+					"ta": "பருவமழை நேரத்தில் பிரியாவுக்கு தேநீர் பிடிக்கும்.",
+					"te": "వర్షాకాలంలో ప్రియకు చాయ్ ఇష్టం.",
+					"kn": "ಮಳೆಗಾಲದಲ್ಲಿ ಪ್ರಿಯಾಗೆ ಚಾ ಇಷ್ಟ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-we-ete",
+			"french": "l'été",
+			"gender": "masculine",
+			"ipa": "l‿e.te",
+			"hindiGloss": "गर्मी का मौसम",
+			"englishGloss": "the summer",
+			"glosses": {
+				"hi": "गर्मी का मौसम",
+				"en": "the summer",
+				"bn": "গ্রীষ্মকাল",
+				"mr": "उन्हाळा",
+				"gu": "ઉનાળો",
+				"pa": "ਗਰਮੀ ਦਾ ਮੌਸਮ",
+				"ta": "கோடைக்காலம்",
+				"te": "వేసవి కాలం",
+				"kn": "ಬೇಸಿಗೆ ಕಾಲ"
+			},
+			"example": {
+				"french": "En été, Arjun boit beaucoup d'eau.",
+				"englishGloss": "In summer, Arjun drinks a lot of water.",
+				"glosses": {
+					"hi": "गर्मियों में अर्जुन बहुत पानी पीता है।",
+					"en": "In summer, Arjun drinks a lot of water.",
+					"bn": "গ্রীষ্মকাল",
+					"mr": "उन्हाळ्यात अर्जुन खूप पाणी पितो.",
+					"gu": "ઉનાળામાં અર્જુન ખૂબ પાણી પીવે છે.",
+					"pa": "ਗਰਮੀਆਂ ਵਿੱਚ ਅਰਜੁਨ ਬਹੁਤ ਪਾਣੀ ਪੀਂਦਾ ਹੈ।",
+					"ta": "கோடையில் அர்ஜுன் அதிக தண்ணீர் குடிக்கிறான்.",
+					"te": "వేసవిలో అర్జున్ చాలా నీళ్లు తాగుతాడు.",
+					"kn": "ಬೇಸಿಗೆಯಲ್ಲಿ ಅರ್ಜುನ್ ತುಂಬಾ ನೀರು ಕುಡಿಯುತ್ತಾನೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-we-hiver",
+			"french": "l'hiver",
+			"gender": "masculine",
+			"ipa": "l‿i.vɛʁ",
+			"hindiGloss": "सर्दी का मौसम",
+			"englishGloss": "the winter",
+			"glosses": {
+				"hi": "सर्दी का मौसम",
+				"en": "the winter",
+				"bn": "শীতকাল",
+				"mr": "हिवाळा",
+				"gu": "શિયાળો",
+				"pa": "ਸਰਦੀ ਦਾ ਮੌਸਮ",
+				"ta": "குளிர்காலம்",
+				"te": "శీతాకాలం",
+				"kn": "ಚಳಿಗಾಲ"
+			},
+			"example": {
+				"french": "En hiver, il neige à Shimla mais pas à Chennai.",
+				"englishGloss": "In winter, it snows in Shimla but not in Chennai.",
+				"glosses": {
+					"hi": "सर्दियों में शिमला में बर्फ गिरती है पर चेन्नई में नहीं।",
+					"en": "In winter, it snows in Shimla but not in Chennai.",
+					"bn": "শীতকাল",
+					"mr": "हिवाळ्यात शिमल्यात बर्फ पडतो पण चेन्नईत नाही.",
+					"gu": "શિયાળામાં શિમલામાં બરફ પડે છે પણ ચેન્નઈમાં નહીં.",
+					"pa": "ਸਰਦੀਆਂ ਵਿੱਚ ਸ਼ਿਮਲੇ ਵਿੱਚ ਬਰਫ਼ ਪੈਂਦੀ ਹੈ ਪਰ ਚੇਨਈ ਵਿੱਚ ਨਹੀਂ।",
+					"ta": "குளிர்காலத்தில் ஷிம்லாவில் பனி பெய்யும் ஆனால் சென்னையில் இல்லை.",
+					"te": "శీతాకాలంలో సిమ్లాలో మంచు కురుస్తుంది కానీ చెన్నైలో కాదు.",
+					"kn": "ಚಳಿಗಾಲದಲ್ಲಿ ಶಿಮ್ಲಾದಲ್ಲಿ ಹಿಮ ಬೀಳುತ್ತದೆ ಆದರೆ ಚೆನ್ನೈನಲ್ಲಿ ಇಲ್ಲ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "mcq",
+			"id": "a1-u11-ex1",
+			"cardId": "a1-we-chaud",
+			"hint": "Remember: French weather uses « il fait » + adjective.",
+			"coachNote": "Talk about the weather and seasons and make simple small talk (A1: can describe today's weather and the seasons in short, simple phrases).",
+			"prompt": "How do you say “it is hot” about the weather in French?",
+			"options": ["Il fait chaud", "Il est chaud", "Il a chaud", "C'est chaud"],
+			"answerIndex": 0,
+			"explanation": "Weather takes « il fait » + adjective, literally “it makes hot”, not « il est »."
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u11-ex2",
+			"cardId": "a1-we-froid",
+			"hint": "Same fixed weather verb as « il fait chaud ».",
+			"coachNote": "Talk about the weather and seasons and make simple small talk (A1: can describe today's weather and the seasons in short, simple phrases).",
+			"text": "En hiver à Delhi, il {{}} froid.",
+			"answer": "fait",
+			"accept": ["fait"]
+		},
+		{
+			"type": "translation",
+			"id": "a1-u11-ex3",
+			"cardId": "a1-we-pleut",
+			"hint": "Rain uses one verb, not « il fait ».",
+			"coachNote": "Talk about the weather and seasons and make simple small talk (A1: can describe today's weather and the seasons in short, simple phrases).",
+			"prompt": "It is raining in Mumbai.",
+			"direction": "en-fr",
+			"answer": "Il pleut à Mumbai",
+			"accept": ["il pleut a mumbai", "il pleut à mumbai"]
+		},
+		{
+			"type": "reorder",
+			"id": "a1-u11-ex4",
+			"cardId": "a1-we-temps",
+			"hint": "Start with the question word « Quel ».",
+			"coachNote": "Talk about the weather and seasons and make simple small talk (A1: can describe today's weather and the seasons in short, simple phrases).",
+			"prompt": "Build the question: “What's the weather like?”",
+			"words": ["Quel", "temps", "fait-il"]
+		},
+		{
+			"type": "matching",
+			"id": "a1-u11-ex5",
+			"hint": "Match each French weather phrase to its English meaning.",
+			"coachNote": "Talk about the weather and seasons and make simple small talk (A1: can describe today's weather and the seasons in short, simple phrases).",
+			"prompt": "Match the weather phrase to English.",
+			"pairs": [
+				{
+					"left": "il fait beau",
+					"right": "the weather is nice"
+				},
+				{
+					"left": "il fait chaud",
+					"right": "it is hot"
+				},
+				{
+					"left": "il neige",
+					"right": "it is snowing"
+				},
+				{
+					"left": "la mousson",
+					"right": "the monsoon"
+				}
+			]
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u11-ex6",
+			"cardId": "a1-we-hiver",
+			"hint": "« quel » agrees with the noun's gender.",
+			"coachNote": "Talk about the weather and seasons and make simple small talk (A1: can describe today's weather and the seasons in short, simple phrases).",
+			"prompt": "« saison » is feminine. Which asks “Which season?”",
+			"options": ["Quelle saison ?", "Quel saison ?", "Quels saison ?", "Quelles saison ?"],
+			"answerIndex": 0,
+			"explanation": "« saison » is feminine and singular, so use « quelle »."
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u11-ex7",
+			"cardId": "a1-we-mousson",
+			"hint": "Recycle « il y a » = there is.",
+			"coachNote": "Talk about the weather and seasons and make simple small talk (A1: can describe today's weather and the seasons in short, simple phrases).",
+			"text": "À Mumbai en juillet, il y a la {{}} et il pleut beaucoup.",
+			"answer": "mousson",
+			"accept": ["mousson"]
+		},
+		{
+			"type": "translation",
+			"id": "a1-u11-ex8",
+			"cardId": "a1-we-beau",
+			"hint": "Use « il fait » + adjective for “nice weather”.",
+			"coachNote": "Talk about the weather and seasons and make simple small talk (A1: can describe today's weather and the seasons in short, simple phrases).",
+			"prompt": "Aujourd'hui il fait beau à Delhi.",
+			"direction": "fr-en",
+			"answer": "Today the weather is nice in Delhi",
+			"accept": [
+				"today it is nice in delhi",
+				"today the weather is nice in delhi",
+				"today it's nice in delhi"
+			]
+		}
+	]
+}

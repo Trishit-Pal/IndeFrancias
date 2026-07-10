@@ -33,7 +33,9 @@ const A1_UNITS = [
 	'a1-unit-07',
 	'a1-unit-08',
 	'a1-unit-09',
-	'a1-unit-10'
+	'a1-unit-10',
+	'a1-unit-11',
+	'a1-unit-12'
 ];
 
 const A2_UNITS = [
@@ -44,7 +46,11 @@ const A2_UNITS = [
 	'a2-unit-05',
 	'a2-unit-06',
 	'a2-unit-07',
-	'a2-unit-08'
+	'a2-unit-08',
+	'a2-unit-09',
+	'a2-unit-10',
+	'a2-unit-11',
+	'a2-unit-12'
 ];
 
 const B1_UNITS = Array.from({ length: 12 }, (_, i) => `b1-unit-${String(i + 1).padStart(2, '0')}`);
@@ -74,9 +80,16 @@ export const CHECKPOINT_GATES: GateDefinition[] = [
 		label: 'Checkpoint 3 (A1 Units 7–9)'
 	},
 	{
+		id: 'g15',
+		kind: 'checkpoint',
+		afterUnitId: 'a1-unit-12',
+		unitIds: ['a1-unit-10', 'a1-unit-11', 'a1-unit-12'],
+		label: 'Checkpoint 15 (A1 Units 10–12)'
+	},
+	{
 		id: 'mA1',
 		kind: 'milestone',
-		afterUnitId: 'a1-unit-10',
+		afterUnitId: 'a1-unit-12',
 		unitIds: [...A1_UNITS],
 		label: 'A1 Milestone'
 	},
@@ -97,14 +110,21 @@ export const CHECKPOINT_GATES: GateDefinition[] = [
 	{
 		id: 'g6',
 		kind: 'checkpoint',
-		afterUnitId: 'a2-unit-08',
-		unitIds: ['a2-unit-07', 'a2-unit-08'],
-		label: 'Checkpoint 6 (A2 Units 7–8)'
+		afterUnitId: 'a2-unit-09',
+		unitIds: ['a2-unit-07', 'a2-unit-08', 'a2-unit-09'],
+		label: 'Checkpoint 6 (A2 Units 7–9)'
+	},
+	{
+		id: 'g16',
+		kind: 'checkpoint',
+		afterUnitId: 'a2-unit-12',
+		unitIds: ['a2-unit-10', 'a2-unit-11', 'a2-unit-12'],
+		label: 'Checkpoint 16 (A2 Units 10–12)'
 	},
 	{
 		id: 'mA2',
 		kind: 'milestone',
-		afterUnitId: 'a2-unit-08',
+		afterUnitId: 'a2-unit-12',
 		unitIds: [...A2_UNITS],
 		label: 'A2 Milestone'
 	},

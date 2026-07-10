@@ -4,6 +4,14 @@ import { z } from 'zod';
 
 export const cefrLevelSchema = z.enum(['A1', 'A2', 'B1', 'B2', 'C1']);
 
+/** Levels whose French is still AI-drafted and shown as clearly-labelled beta
+ *  until a native-speaker proofread lands (SPEC invariant 5). */
+export const BETA_LEVELS: ReadonlySet<z.infer<typeof cefrLevelSchema>> = new Set([
+	'B1',
+	'B2',
+	'C1'
+]);
+
 export const skillSchema = z.enum([
 	'listening',
 	'reading',

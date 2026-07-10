@@ -44,7 +44,7 @@ A failed import **never** clears existing data.
 
 ## Content vs learner data
 
-Lesson JSON packs ship with the app (static assets). They contain no PII. AI-authored French content is validated at build time (`content:validate` on all 52 units; `content:proofread:launch` on A1/A2 for release). B1–C1 template packs may fail full `content:proofread` until human curation — see [content-curation.md](./content-curation.md).
+Lesson JSON packs ship with the app (static assets). They contain no PII. AI-authored French content is validated at build time (`content:validate` on all 58 units; `content:proofread:launch` on A1/A2 for release). B1–C1 template packs may fail full `content:proofread` until human curation — see [content-curation.md](./content-curation.md).
 
 ## Related docs
 

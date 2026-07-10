@@ -97,7 +97,7 @@ same build for a Windows desktop shell (beta). **No backend.**
 
 Detail: appendix [architecture-map](../architecture-map.md), [mobile-architecture](../product/mobile-architecture.md).
 
-**Test baseline:** 192 unit + 35 e2e green (the authoritative count; supersedes any differing
+**Test baseline:** 195 unit + 35 e2e green (the authoritative count; supersedes any differing
 figure in other docs).
 
 ## §6 Domain module index
@@ -136,7 +136,9 @@ Milestone-based increments. Each milestone = a spec entry → a plan in
   and can be pruned.
 - **M2 — Launch** web PWA (Vercel) + Android APK (GitHub Releases direct download) + Windows .exe
   (Tauri, sideload/direct-download, not a store) **simultaneously**. iOS deferred (no macOS).
-- **M3 — Native-speaker proofread** A1–A2 (satisfies invariant 5 for launch levels).
+- **M3 — Native-speaker proofread** A1–A2 (satisfies invariant 5 for launch levels). Scope now
+  **24 units** (A1 12 + A2 12) after the M2.5 content deepening — the 6 new AI-drafted units pass
+  the automated `content:proofread:launch` gate but still await human native-speaker sign-off.
 - **M4 — B1–C1 curation** (beta → production, level by level).
 - **Later** — on-device ASR (speaking core); optional E2EE sync (prepared, deferred,
   `src/lib/sync/`); on-device FSRS optimisation (`src/lib/srs/optimizer.ts`).
@@ -186,3 +188,6 @@ This spec is kept honest by the `frenchpath-spec-sync` skill + `/spec-sync` comm
 | 2026-06-27 | CAP-CHECK: completed g6/mA2 collision fix — `buildLockReasonMap` now uses `pendingGateAfterUnit`, so a unit locked solely by the A2 milestone shows its reason (+1 regression test → 189 unit) | §5, §8 | MEDIUM |
 | 2026-07-09 | M2.5: Tauri desktop shell (beta) scaffolded; Android init/signing docs completed; LessonComplete surface + editorial design tokens applied across home/lesson/progress/settings; desktop wide-window layout | §4, §5, §8 | MEDIUM |
 | 2026-07-09 | Corrected test-count drift: baseline was stale at 189 vs. actual 192 (3 tests added this milestone: platform desktop-detection ×2, Tauri CSP ×1) | §5 | LOW |
+| 2026-07-10 | Pre-launch hardening: hardened Tauri CSP to full web-shell parity (object-src/base-uri/frame-ancestors/worker-src) + drift-proof parity test — **strengthens** invariant 4, no relaxation | §5 | MEDIUM |
+| 2026-07-10 | Content deepening: +6 AI-drafted A1/A2 units (24 total, 58 overall); checkpoints restructured (g15 A1 10–12, g16 A2 10–12; mA1/mA2 moved to each level's new last unit); per-level BETA pill on B1–C1 (CAP-CONTENT/CAP-PATH); new units enter the invariant-5 proofread gate | §4, §8 | MEDIUM |
+| 2026-07-10 | Test baseline 192→195 (+IndexedDB v1→v2 upgrade-preservation test, +CSP parity test, +A1/A2 gate-restructure test); checkpoint route fully localized across 10 locales; onb_beta translated in 7 Indic locales | §5 | LOW |

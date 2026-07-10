@@ -17,9 +17,9 @@ automated French QA at launch.
 
 | Command | Scope | CI |
 |---------|-------|-----|
-| `npm run content:validate` | All 52 units | Required — fails on schema errors |
+| `npm run content:validate` | All 58 units | Required — fails on schema errors |
 | `npm run content:proofread:launch` | A1/A2 only (`--launch`) | Required — launch gate |
-| `npm run content:proofread` | All 52 units | Informational in CI (`continue-on-error`); use locally after curation batches |
+| `npm run content:proofread` | All 58 units | Informational in CI (`continue-on-error`); use locally after curation batches |
 
 Run from `frenchpath/`:
 
@@ -58,7 +58,7 @@ Work in batches (recommended: units 1–4 per level first, then 5–8, etc.):
    - Full proofread green for touched units
    - Spot-check in app (lesson + checkpoint pool)
 
-Repeat until `content:proofread` passes on all 52 units.
+Repeat until `content:proofread` passes on all 58 units.
 
 ## In-app policy
 

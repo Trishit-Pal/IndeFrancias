@@ -1,0 +1,414 @@
+{
+	"id": "a2-unit-11",
+	"cefrLevel": "A2",
+	"order": 11,
+	"title": "Se loger — Housing & furniture",
+	"objective": "Describe your home, its rooms and furniture. (A2: can describe in simple terms one's living conditions.)",
+	"bridge": {
+		"title": "Bridge from Hindi / English: the little word « y » replaces a place",
+		"body": "Once a place is already known, French swaps it for **y** instead of repeating it: *Tu habites à Delhi ? — Oui, **j'y** habite.* It works like English “there” and Hindi वहाँ — but unlike them, **y comes BEFORE the verb**, not after. Think of it as *«* I-there-live *»* rather than *«* I live there *»*. Same idea as **il y a** (there is), which you already know — the same little **y** hiding inside.",
+		"quiz": {
+			"prompt": "In « Oui, j'y habite », where does « y » sit?",
+			"options": [
+				"Before the verb (j'y habite)",
+				"After the verb (j'habite y)",
+				"At the very end of the sentence"
+			],
+			"answerIndex": 0
+		}
+	},
+	"cards": [
+		{
+			"id": "a2-lo-cuisine",
+			"french": "la cuisine",
+			"gender": "feminine",
+			"ipa": "la kɥi.zin",
+			"hindiGloss": "रसोई",
+			"englishGloss": "the kitchen",
+			"glosses": {
+				"hi": "रसोई",
+				"en": "the kitchen",
+				"bn": "রান্নাঘর",
+				"mr": "स्वयंपाकघर",
+				"gu": "રસોડું",
+				"pa": "ਰਸੋਈ",
+				"ta": "சமையலறை",
+				"te": "వంటగది",
+				"kn": "ಅಡಿಗೆಮನೆ"
+			},
+			"example": {
+				"french": "La cuisine de notre appartement à Pune est petite.",
+				"englishGloss": "The kitchen of our flat in Pune is small.",
+				"glosses": {
+					"hi": "पुणे में हमारे फ्लैट की रसोई छोटी है।",
+					"en": "The kitchen of our flat in Pune is small.",
+					"bn": "রান্নাঘর",
+					"mr": "पुण्यात आमच्या फ्लॅटचे स्वयंपाकघर लहान आहे.",
+					"gu": "પુણેમાં અમારા ફ્લેટનું રસોડું નાનું છે.",
+					"pa": "ਪੁਣੇ ਵਿੱਚ ਸਾਡੇ ਫਲੈਟ ਦੀ ਰਸੋਈ ਛੋਟੀ ਹੈ।",
+					"ta": "புனேவில் எங்கள் பிளாட்டின் சமையலறை சிறியது.",
+					"te": "పూణేలో మా ఫ్లాట్ వంటగది చిన్నది.",
+					"kn": "ಪುಣೆಯಲ್ಲಿ ನಮ್ಮ ಫ್ಲ್ಯಾಟ್‌ನ ಅಡಿಗೆಮನೆ ಚಿಕ್ಕದಾಗಿದೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading", "spokenProduction"]
+		},
+		{
+			"id": "a2-lo-chambre",
+			"french": "la chambre",
+			"gender": "feminine",
+			"ipa": "la ʃɑ̃bʁ",
+			"hindiGloss": "शयनकक्ष / कमरा",
+			"englishGloss": "the bedroom",
+			"glosses": {
+				"hi": "शयनकक्ष / कमरा",
+				"en": "the bedroom",
+				"bn": "শোবার ঘর",
+				"mr": "शयनगृह / खोली",
+				"gu": "સૂવાનો ઓરડો",
+				"pa": "ਸੌਣ ਵਾਲਾ ਕਮਰਾ",
+				"ta": "படுக்கையறை",
+				"te": "పడకగది",
+				"kn": "ಮಲಗುವ ಕೋಣೆ"
+			},
+			"example": {
+				"french": "Priya partage sa chambre dans le PG à Delhi.",
+				"englishGloss": "Priya shares her bedroom in the PG in Delhi.",
+				"glosses": {
+					"hi": "प्रिया दिल्ली के पीजी में अपना कमरा साझा करती है।",
+					"en": "Priya shares her bedroom in the PG in Delhi.",
+					"bn": "শোবার ঘর",
+					"mr": "प्रिया दिल्लीतील पीजीमध्ये तिची खोली सामायिक करते.",
+					"gu": "પ્રિયા દિલ્હીના પીજીમાં પોતાનો ઓરડો વહેંચે છે.",
+					"pa": "ਪ੍ਰਿਯਾ ਦਿੱਲੀ ਦੇ ਪੀਜੀ ਵਿੱਚ ਆਪਣਾ ਕਮਰਾ ਸਾਂਝਾ ਕਰਦੀ ਹੈ।",
+					"ta": "பிரியா டெல்லியில் பிஜியில் தன் அறையைப் பகிர்ந்துகொள்கிறாள்.",
+					"te": "ప్రియ ఢిల్లీలో పీజీలో తన గదిని పంచుకుంటుంది.",
+					"kn": "ಪ್ರಿಯಾ ದೆಹಲಿಯ ಪಿಜಿಯಲ್ಲಿ ತನ್ನ ಕೋಣೆಯನ್ನು ಹಂಚಿಕೊಳ್ಳುತ್ತಾಳೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading", "spokenInteraction"]
+		},
+		{
+			"id": "a2-lo-salon",
+			"french": "le salon",
+			"gender": "masculine",
+			"ipa": "lə sa.lɔ̃",
+			"hindiGloss": "बैठक / लिविंग रूम",
+			"englishGloss": "the living room",
+			"glosses": {
+				"hi": "बैठक / लिविंग रूम",
+				"en": "the living room",
+				"bn": "বসার ঘর",
+				"mr": "बैठकीची खोली",
+				"gu": "બેઠક ખંડ",
+				"pa": "ਬੈਠਕ",
+				"ta": "வரவேற்பறை",
+				"te": "హాలు",
+				"kn": "ಕೂಡುವ ಕೋಣೆ"
+			},
+			"example": {
+				"french": "Dans la maison familiale, le salon est très grand.",
+				"englishGloss": "In the joint-family home, the living room is very big.",
+				"glosses": {
+					"hi": "संयुक्त परिवार के घर में बैठक बहुत बड़ी है।",
+					"en": "In the joint-family home, the living room is very big.",
+					"bn": "বসার ঘর",
+					"mr": "एकत्र कुटुंबाच्या घरात बैठकीची खोली खूप मोठी आहे.",
+					"gu": "સંયુક્ત કુટુંબના ઘરમાં બેઠક ખંડ ખૂબ મોટો છે.",
+					"pa": "ਸਾਂਝੇ ਪਰਿਵਾਰ ਦੇ ਘਰ ਵਿੱਚ ਬੈਠਕ ਬਹੁਤ ਵੱਡੀ ਹੈ।",
+					"ta": "கூட்டுக் குடும்ப வீட்டில் வரவேற்பறை மிகப் பெரியது.",
+					"te": "ఉమ్మడి కుటుంబ ఇంట్లో హాలు చాలా పెద్దది.",
+					"kn": "ಅವಿಭಕ್ತ ಕುಟುಂಬದ ಮನೆಯಲ್ಲಿ ಕೂಡುವ ಕೋಣೆ ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-lo-lit",
+			"french": "le lit",
+			"gender": "masculine",
+			"ipa": "lə li",
+			"hindiGloss": "बिस्तर / पलंग",
+			"englishGloss": "the bed",
+			"glosses": {
+				"hi": "बिस्तर / पलंग",
+				"en": "the bed",
+				"bn": "বিছানা",
+				"mr": "पलंग",
+				"gu": "પલંગ",
+				"pa": "ਬਿਸਤਰਾ",
+				"ta": "படுக்கை",
+				"te": "మంచం",
+				"kn": "ಹಾಸಿಗೆ"
+			},
+			"example": {
+				"french": "Le lit est à côté de la fenêtre, sous le ventilateur.",
+				"englishGloss": "The bed is next to the window, under the fan.",
+				"glosses": {
+					"hi": "बिस्तर खिड़की के बगल में, पंखे के नीचे है।",
+					"en": "The bed is next to the window, under the fan.",
+					"bn": "বিছানা",
+					"mr": "पलंग खिडकीच्या शेजारी, पंख्याखाली आहे.",
+					"gu": "પલંગ બારીની બાજુમાં, પંખાની નીચે છે.",
+					"pa": "ਬਿਸਤਰਾ ਖਿੜਕੀ ਦੇ ਕੋਲ, ਪੱਖੇ ਦੇ ਹੇਠਾਂ ਹੈ।",
+					"ta": "படுக்கை ஜன்னலுக்கு அருகில், விசிறிக்கு கீழே உள்ளது.",
+					"te": "మంచం కిటికీ పక్కన, ఫ్యాన్ కింద ఉంది.",
+					"kn": "ಹಾಸಿಗೆ ಕಿಟಕಿಯ ಪಕ್ಕದಲ್ಲಿ, ಫ್ಯಾನ್ ಕೆಳಗೆ ಇದೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading", "spokenProduction"]
+		},
+		{
+			"id": "a2-lo-canape",
+			"french": "le canapé",
+			"gender": "masculine",
+			"ipa": "lə ka.na.pe",
+			"hindiGloss": "सोफ़ा",
+			"englishGloss": "the sofa / couch",
+			"glosses": {
+				"hi": "सोफ़ा",
+				"en": "the sofa / couch",
+				"bn": "সোফা",
+				"mr": "सोफा",
+				"gu": "સોફા",
+				"pa": "ਸੋਫਾ",
+				"ta": "சோஃபா",
+				"te": "సోఫా",
+				"kn": "ಸೋಫಾ"
+			},
+			"example": {
+				"french": "Rohan dort sur le canapé quand ses cousins arrivent.",
+				"englishGloss": "Rohan sleeps on the sofa when his cousins arrive.",
+				"glosses": {
+					"hi": "जब रोहन के चचेरे भाई आते हैं तो वह सोफ़े पर सोता है।",
+					"en": "Rohan sleeps on the sofa when his cousins arrive.",
+					"bn": "সোফা",
+					"mr": "रोहनचे चुलतभाऊ येतात तेव्हा तो सोफ्यावर झोपतो.",
+					"gu": "રોહનના પિતરાઈ ભાઈઓ આવે ત્યારે તે સોફા પર સૂએ છે.",
+					"pa": "ਜਦੋਂ ਰੋਹਨ ਦੇ ਚਚੇਰੇ ਭਰਾ ਆਉਂਦੇ ਹਨ ਤਾਂ ਉਹ ਸੋਫੇ 'ਤੇ ਸੌਂਦਾ ਹੈ।",
+					"ta": "ரோஹனின் உறவினர்கள் வரும்போது அவன் சோஃபாவில் தூங்குகிறான்.",
+					"te": "రోహన్ బంధువులు వచ్చినప్పుడు అతను సోఫాపై నిద్రపోతాడు.",
+					"kn": "ರೋಹನ್‌ನ ಸೋದರಸಂಬಂಧಿಗಳು ಬಂದಾಗ ಅವನು ಸೋಫಾ ಮೇಲೆ ಮಲಗುತ್ತಾನೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a2-lo-armoire",
+			"french": "l'armoire",
+			"gender": "feminine",
+			"ipa": "laʁ.mwaʁ",
+			"hindiGloss": "अलमारी",
+			"englishGloss": "the wardrobe / cupboard",
+			"glosses": {
+				"hi": "अलमारी",
+				"en": "the wardrobe / cupboard",
+				"bn": "আলমারি",
+				"mr": "कपाट",
+				"gu": "કબાટ",
+				"pa": "ਅਲਮਾਰੀ",
+				"ta": "அலமாரி",
+				"te": "బీరువా",
+				"kn": "ಬೀರು / ಅಲಮಾರಿ"
+			},
+			"example": {
+				"french": "Ananya range ses saris dans l'armoire de la chambre.",
+				"englishGloss": "Ananya keeps her saris in the bedroom wardrobe.",
+				"glosses": {
+					"hi": "अनन्या अपनी साड़ियाँ कमरे की अलमारी में रखती है।",
+					"en": "Ananya keeps her saris in the bedroom wardrobe.",
+					"bn": "আলমারি",
+					"mr": "अनन्या तिच्या साड्या खोलीतील कपाटात ठेवते.",
+					"gu": "અનન્યા પોતાની સાડીઓ ઓરડાના કબાટમાં રાખે છે.",
+					"pa": "ਅਨਨਿਆ ਆਪਣੀਆਂ ਸਾੜੀਆਂ ਕਮਰੇ ਦੀ ਅਲਮਾਰੀ ਵਿੱਚ ਰੱਖਦੀ ਹੈ।",
+					"ta": "அனன்யா தன் புடவைகளை அறையின் அலமாரியில் வைக்கிறாள்.",
+					"te": "అనన్య తన చీరలను గది బీరువాలో ఉంచుతుంది.",
+					"kn": "ಅನನ್ಯಾ ತನ್ನ ಸೀರೆಗಳನ್ನು ಕೋಣೆಯ ಬೀರುವಿನಲ್ಲಿ ಇಡುತ್ತಾಳೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading", "writing"]
+		},
+		{
+			"id": "a2-lo-appartement",
+			"french": "l'appartement",
+			"gender": "masculine",
+			"ipa": "la.paʁ.tə.mɑ̃",
+			"hindiGloss": "फ्लैट / अपार्टमेंट",
+			"englishGloss": "the flat / apartment",
+			"glosses": {
+				"hi": "फ्लैट / अपार्टमेंट",
+				"en": "the flat / apartment",
+				"bn": "ফ্ল্যাট",
+				"mr": "फ्लॅट / सदनिका",
+				"gu": "ફ્લેટ / એપાર્ટમેન્ટ",
+				"pa": "ਫਲੈਟ / ਅਪਾਰਟਮੈਂਟ",
+				"ta": "பிளாட் / குடியிருப்பு",
+				"te": "ఫ్లాట్ / అపార్ట్‌మెంట్",
+				"kn": "ಫ್ಲ್ಯಾಟ್ / ಅಪಾರ್ಟ್‌ಮೆಂಟ್"
+			},
+			"example": {
+				"french": "Nous louons un appartement 2BHK avec un balcon à Pune.",
+				"englishGloss": "We rent a 2BHK flat with a balcony in Pune.",
+				"glosses": {
+					"hi": "हम पुणे में बालकनी वाला एक 2BHK फ्लैट किराए पर लेते हैं।",
+					"en": "We rent a 2BHK flat with a balcony in Pune.",
+					"bn": "ফ্ল্যাট",
+					"mr": "आम्ही पुण्यात बाल्कनी असलेला एक 2BHK फ्लॅट भाड्याने घेतो.",
+					"gu": "અમે પુણેમાં બાલ્કની સાથેનો એક 2BHK ફ્લેટ ભાડે લઈએ છીએ.",
+					"pa": "ਅਸੀਂ ਪੁਣੇ ਵਿੱਚ ਬਾਲਕੋਨੀ ਵਾਲਾ ਇੱਕ 2BHK ਫਲੈਟ ਕਿਰਾਏ 'ਤੇ ਲੈਂਦੇ ਹਾਂ।",
+					"ta": "நாங்கள் புனேவில் பால்கனியுடன் ஒரு 2BHK பிளாட் வாடகைக்கு எடுக்கிறோம்.",
+					"te": "మేము పూణేలో బాల్కనీతో ఒక 2BHK ఫ్లాట్ అద్దెకు తీసుకుంటాము.",
+					"kn": "ನಾವು ಪುಣೆಯಲ್ಲಿ ಬಾಲ್ಕನಿ ಇರುವ ಒಂದು 2BHK ಫ್ಲ್ಯಾಟ್ ಬಾಡಿಗೆಗೆ ಪಡೆಯುತ್ತೇವೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["reading", "spokenInteraction"]
+		},
+		{
+			"id": "a2-lo-y",
+			"french": "y",
+			"gender": "none",
+			"ipa": "i",
+			"hindiGloss": "वहाँ (स्थान की जगह)",
+			"englishGloss": "there (replaces a place, before the verb)",
+			"glosses": {
+				"hi": "वहाँ (स्थान की जगह)",
+				"en": "there (replaces a place, before the verb)",
+				"bn": "সেখানে (স্থানের বদলে)",
+				"mr": "तिथे (ठिकाणाच्या जागी)",
+				"gu": "ત્યાં (સ્થાનની જગ્યાએ)",
+				"pa": "ਓਥੇ (ਥਾਂ ਦੀ ਥਾਂ)",
+				"ta": "அங்கே (இடத்திற்குப் பதிலாக)",
+				"te": "అక్కడ (స్థలం బదులు)",
+				"kn": "ಅಲ್ಲಿ (ಸ್ಥಳದ ಬದಲಿಗೆ)"
+			},
+			"example": {
+				"french": "Tu habites à Delhi ? — Oui, j'y habite depuis deux ans.",
+				"englishGloss": "Do you live in Delhi? — Yes, I've lived there for two years.",
+				"glosses": {
+					"hi": "क्या तुम दिल्ली में रहते हो? — हाँ, मैं दो साल से वहाँ रहता हूँ।",
+					"en": "Do you live in Delhi? — Yes, I've lived there for two years.",
+					"bn": "সেখানে (স্থানের বদলে)",
+					"mr": "तू दिल्लीत राहतोस का? — हो, मी दोन वर्षांपासून तिथे राहतो.",
+					"gu": "શું તું દિલ્હીમાં રહે છે? — હા, હું બે વર્ષથી ત્યાં રહું છું.",
+					"pa": "ਕੀ ਤੂੰ ਦਿੱਲੀ ਵਿੱਚ ਰਹਿੰਦਾ ਹੈਂ? — ਹਾਂ, ਮੈਂ ਦੋ ਸਾਲਾਂ ਤੋਂ ਓਥੇ ਰਹਿੰਦਾ ਹਾਂ।",
+					"ta": "நீ டெல்லியில் வசிக்கிறாயா? — ஆம், நான் இரண்டு ஆண்டுகளாக அங்கே வசிக்கிறேன்.",
+					"te": "నువ్వు ఢిల్లీలో ఉంటావా? — అవును, నేను రెండేళ్లుగా అక్కడ ఉంటాను.",
+					"kn": "ನೀನು ದೆಹಲಿಯಲ್ಲಿ ವಾಸಿಸುತ್ತೀಯಾ? — ಹೌದು, ನಾನು ಎರಡು ವರ್ಷಗಳಿಂದ ಅಲ್ಲಿ ವಾಸಿಸುತ್ತೇನೆ."
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A2",
+			"skills": ["spokenInteraction", "spokenProduction"]
+		}
+	],
+	"exercises": [
+		{
+			"type": "gender",
+			"id": "a2-u11-ex1",
+			"cardId": "a2-lo-cuisine",
+			"hint": "Rooms ending in -e are often feminine.",
+			"coachNote": "Describe your home, its rooms and furniture. (A2: can describe in simple terms one's living conditions.)",
+			"noun": "cuisine",
+			"answer": "feminine",
+			"articleStyle": "definite"
+		},
+		{
+			"type": "gender",
+			"id": "a2-u11-ex2",
+			"cardId": "a2-lo-lit",
+			"hint": "le lit — one syllable, masculine.",
+			"coachNote": "Describe your home, its rooms and furniture. (A2: can describe in simple terms one's living conditions.)",
+			"noun": "lit",
+			"answer": "masculine",
+			"articleStyle": "definite"
+		},
+		{
+			"type": "cloze",
+			"id": "a2-u11-ex3",
+			"cardId": "a2-lo-lit",
+			"hint": "Preposition for being INSIDE a room.",
+			"coachNote": "Describe your home, its rooms and furniture. (A2: can describe in simple terms one's living conditions.)",
+			"text": "À Pune, le lit est {{}} la chambre.",
+			"answer": "dans",
+			"accept": ["dans"]
+		},
+		{
+			"type": "cloze",
+			"id": "a2-u11-ex4",
+			"cardId": "a2-lo-y",
+			"hint": "The little word that replaces « à Delhi » and comes before the verb.",
+			"coachNote": "Describe your home, its rooms and furniture. (A2: can describe in simple terms one's living conditions.)",
+			"text": "Tu habites à Delhi ? — Oui, j'{{}} habite.",
+			"answer": "y",
+			"accept": ["y"]
+		},
+		{
+			"type": "mcq",
+			"id": "a2-u11-ex5",
+			"hint": "Preposition of place from this unit.",
+			"coachNote": "Describe your home, its rooms and furniture. (A2: can describe in simple terms one's living conditions.)",
+			"prompt": "« à côté de » means…",
+			"options": ["next to", "under", "between", "behind"],
+			"answerIndex": 0,
+			"explanation": "à côté de = next to; sous = under; entre = between; derrière = behind."
+		},
+		{
+			"type": "mcq",
+			"id": "a2-u11-ex6",
+			"hint": "Which preposition puts something UNDER another thing?",
+			"coachNote": "Describe your home, its rooms and furniture. (A2: can describe in simple terms one's living conditions.)",
+			"prompt": "Le tapis est ___ le lit. (The rug is ___ the bed.) Which fits « under »?",
+			"options": ["sous", "sur", "devant", "entre"],
+			"answerIndex": 0,
+			"explanation": "sous = under; sur = on; devant = in front of; entre = between."
+		},
+		{
+			"type": "reorder",
+			"id": "a2-u11-ex7",
+			"cardId": "a2-lo-armoire",
+			"hint": "Furniture + preposition « à côté de » (du = de + le).",
+			"coachNote": "Describe your home, its rooms and furniture. (A2: can describe in simple terms one's living conditions.)",
+			"prompt": "Build: “The wardrobe is next to the bed.”",
+			"words": ["L'armoire", "est", "à", "côté", "du", "lit"]
+		},
+		{
+			"type": "matching",
+			"id": "a2-u11-ex8",
+			"hint": "Match each room to its English name.",
+			"coachNote": "Describe your home, its rooms and furniture. (A2: can describe in simple terms one's living conditions.)",
+			"prompt": "Match each French room to English.",
+			"pairs": [
+				{
+					"left": "la cuisine",
+					"right": "the kitchen"
+				},
+				{
+					"left": "la chambre",
+					"right": "the bedroom"
+				},
+				{
+					"left": "le salon",
+					"right": "the living room"
+				},
+				{
+					"left": "la salle de bains",
+					"right": "the bathroom"
+				}
+			]
+		}
+	]
+}

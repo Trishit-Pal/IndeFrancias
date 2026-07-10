@@ -24,6 +24,8 @@ test('progress persists across a reload (IndexedDB)', async ({ page }) => {
 	await expect(page.getByTestId('unit-card').first()).toContainText('✓');
 	await expect(page.getByTestId('streak-badge')).toContainText('1');
 	await expect(page.getByTestId('daily-goal')).toContainText('/ 50 XP');
+	// B1–C1 are AI-drafted → surfaced as a quiet "beta" pill on the voyage map.
+	await expect(page.locator('.fp-beta-badge').first()).toHaveText('Beta');
 });
 
 test('completed lesson seeds the SRS queue and reviews can be graded', async ({ page }) => {

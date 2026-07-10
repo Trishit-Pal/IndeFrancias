@@ -70,6 +70,20 @@
 		"objective": "Describe a typical day and how often you do things (A1: can describe daily routines and habits simply)."
 	},
 	{
+		"id": "a1-unit-11",
+		"cefrLevel": "A1",
+		"order": 11,
+		"title": "Quel temps fait-il ? — Weather & small talk",
+		"objective": "Talk about the weather and seasons and make simple small talk (A1: can describe today's weather and the seasons in short, simple phrases)."
+	},
+	{
+		"id": "a1-unit-12",
+		"cefrLevel": "A1",
+		"order": 12,
+		"title": "Les vêtements et les couleurs — Clothes & colours",
+		"objective": "Describe clothes and colours with correct adjective agreement (A1: can describe everyday objects and clothing with simple adjectives)."
+	},
+	{
 		"id": "a2-unit-01",
 		"cefrLevel": "A2",
 		"order": 1,
@@ -124,6 +138,34 @@
 		"order": 8,
 		"title": "Donner son opinion — Giving opinions",
 		"objective": "Express and justify simple opinions (A2: can give and explain opinions on familiar topics)."
+	},
+	{
+		"id": "a2-unit-09",
+		"cefrLevel": "A2",
+		"order": 9,
+		"title": "Chez le médecin — Health & the body",
+		"objective": "Describe symptoms, name body parts and give simple advice. (A2: can describe symptoms and follow or give simple health advice.)"
+	},
+	{
+		"id": "a2-unit-10",
+		"cefrLevel": "A2",
+		"order": 10,
+		"title": "Au travail — Jobs & the workplace",
+		"objective": "Talk about jobs, workplaces and obligations. (A2: can describe one's job and workplace and express simple obligations and wishes.)"
+	},
+	{
+		"id": "a2-unit-11",
+		"cefrLevel": "A2",
+		"order": 11,
+		"title": "Se loger — Housing & furniture",
+		"objective": "Describe your home, its rooms and furniture. (A2: can describe in simple terms one's living conditions.)"
+	},
+	{
+		"id": "a2-unit-12",
+		"cefrLevel": "A2",
+		"order": 12,
+		"title": "Raconter un voyage — Telling a travel story",
+		"objective": "Narrate a past trip, combining events with descriptions (A2: can tell a simple connected story about a past experience)."
 	},
 	{
 		"id": "b1-unit-01",

@@ -3,7 +3,11 @@
 	import { gradeExercise, type ExerciseResponse } from '$lib/lesson/engine';
 	import type { Lexicon } from '$lib/content/lexicon';
 	import GlossText from '$lib/components/GlossText.svelte';
+	import { answerInputClass } from '$lib/lesson/exercises/inputClass';
 	import * as m from '$lib/paraglide/messages';
+
+	const CLOZE_BASE =
+		'inline-block min-w-32 rounded-lg border-2 bg-input px-2 py-1 text-center text-base text-foreground focus:outline-none';
 
 	let {
 		exercise,
@@ -25,15 +29,6 @@
 		const text = (event.currentTarget as HTMLInputElement).value;
 		response = text.trim() ? { type: 'cloze', text } : null;
 	}
-
-	function inputClass(): string {
-		const base =
-			'inline-block min-w-32 rounded-lg border-2 bg-input px-2 py-1 text-center text-base text-foreground focus:outline-none';
-		if (submitted && isCorrect)
-			return `${base} border-green-500 text-green-900 dark:text-green-200`;
-		if (submitted) return `${base} border-red-500 text-red-900 dark:text-red-200`;
-		return `${base} border-primary`;
-	}
 </script>
 
 <div class="space-y-3 text-lg leading-relaxed text-foreground">
@@ -44,7 +39,7 @@
 		<GlossText text={parts[0] ?? ''} {lexicon} />
 		<input
 			type="text"
-			class={inputClass()}
+			class={answerInputClass(submitted, isCorrect, CLOZE_BASE)}
 			{value}
 			disabled={submitted}
 			aria-label={m.cloze_fill_blank()}

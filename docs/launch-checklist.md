@@ -33,6 +33,7 @@ Key automated regressions (detail in [testing.md](./testing.md)):
 - [ ] Streak + freeze badges visible on home
 - [ ] Progress page: 7-day XP chart, longest streak, skill bars after a lesson
 - [ ] Beta disclaimer visible on first-run onboarding
+- [ ] Beta pill renders on B1/B2/C1 cities in the voyage map (desktop + mobile widths)
 - [ ] Record-and-compare works (microphone permission granted)
 
 ## Security & privacy
@@ -60,6 +61,7 @@ Key automated regressions (detail in [testing.md](./testing.md)):
 
 ## Post-launch
 
-- [ ] Community call for native French proof-read
+- [ ] Community call for native French proof-read (24 A1/A2 units incl. the 6 M2.5 additions —
+      weather, clothes, health, work, housing, travel narration — are AI-drafted pending sign-off)
 - [ ] Track feedback without cloud analytics (GitHub issues, manual reports)
 - [ ] See [ml-roadmap.md](./ml-roadmap.md) for V1 ML features

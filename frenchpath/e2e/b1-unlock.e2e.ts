@@ -27,6 +27,7 @@ test('B1 band appears after milestone B1 is passed', async ({ page }) => {
 		});
 	});
 	await page.reload();
-	await expect(page.getByText('B1', { exact: true }).first()).toBeVisible();
+	// The B1 city label carries a "Beta" badge, so match the sublabel by substring.
+	await expect(page.locator('.fp-voyage-city-sublabel', { hasText: 'B1' })).toBeVisible();
 	await expect(page.getByTestId('delf-b1-card')).toBeVisible();
 });

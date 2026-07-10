@@ -59,10 +59,76 @@ describe('security headers', () => {
 		assertSecurityHeaders(parseNetlifyHeaders(), 'static/_headers');
 	});
 
-	it('src-tauri/tauri.conf.json locks the desktop shell to self-origin CSP', () => {
+	// The CSP is authored in two independent places — the web shell
+	// (svelte.config.js, injected into the document) and the Tauri desktop
+	// shell (tauri.conf.json). These tests assert both carry the identical
+	// hardened directive set so the two can never silently drift apart.
+	const REQUIRED_CSP: Record<string, string[]> = {
+		'default-src': ["'self'"],
+		'script-src': ["'self'"],
+		'style-src': ["'self'", "'unsafe-inline'"],
+		'img-src': ["'self'", 'data:'],
+		'media-src': ["'self'"],
+		'object-src': ["'none'"],
+		'base-uri': ["'self'"],
+		'frame-ancestors': ["'none'"],
+		'worker-src': ["'self'"],
+		'manifest-src': ["'self'"]
+	};
+
+	// SvelteKit quotes these keyword source tokens when it serializes the CSP;
+	// schemes (data:, ipc:) and hosts are left bare. Normalize both sources to
+	// the same quoted form before comparing.
+	const CSP_KEYWORDS = new Set(['self', 'none', 'unsafe-inline', 'unsafe-eval', 'strict-dynamic']);
+	const quote = (token: string): string => (CSP_KEYWORDS.has(token) ? `'${token}'` : token);
+
+	function parseCspString(csp: string): Map<string, Set<string>> {
+		const map = new Map<string, Set<string>>();
+		for (const part of csp.split(';')) {
+			const [name, ...sources] = part.trim().split(/\s+/).filter(Boolean);
+			if (name) map.set(name, new Set(sources));
+		}
+		return map;
+	}
+
+	async function webCsp(): Promise<Map<string, Set<string>>> {
+		const { default: config } = await import('../../../svelte.config.js');
+		const directives = (config.kit?.csp?.directives ?? {}) as Record<string, string[]>;
+		const map = new Map<string, Set<string>>();
+		for (const [name, arr] of Object.entries(directives)) {
+			map.set(name, new Set(arr.map(quote)));
+		}
+		return map;
+	}
+
+	function tauriCsp(): Map<string, Set<string>> {
 		const raw = readFileSync(resolve(ROOT, 'src-tauri/tauri.conf.json'), 'utf8');
 		const config = JSON.parse(raw) as { app?: { security?: { csp?: string } } };
-		const csp = config.app?.security?.csp ?? '';
-		expect(csp).toContain("default-src 'self'");
+		return parseCspString(config.app?.security?.csp ?? '');
+	}
+
+	function assertRequiredDirectives(csp: Map<string, Set<string>>, label: string): void {
+		for (const [name, tokens] of Object.entries(REQUIRED_CSP)) {
+			expect(csp.has(name), `${label} missing ${name}`).toBe(true);
+			expect([...(csp.get(name) ?? [])].sort(), `${label} ${name} mismatch`).toEqual(
+				[...tokens].sort()
+			);
+		}
+	}
+
+	it('web CSP (svelte.config.js) carries the hardened directive set', async () => {
+		const csp = await webCsp();
+		assertRequiredDirectives(csp, 'svelte.config.js');
+		// Web shell makes no exceptions: connect-src is self-only.
+		expect([...(csp.get('connect-src') ?? [])]).toEqual(["'self'"]);
+	});
+
+	it('desktop CSP (tauri.conf.json) matches the web directives', () => {
+		const csp = tauriCsp();
+		assertRequiredDirectives(csp, 'tauri.conf.json');
+		// The one intentional delta: Tauri's IPC channel. No other network origin.
+		expect([...(csp.get('connect-src') ?? [])].sort()).toEqual(
+			["'self'", 'http://ipc.localhost', 'ipc:'].sort()
+		);
 	});
 });
