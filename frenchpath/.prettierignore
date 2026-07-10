@@ -8,3 +8,7 @@ bun.lockb
 # Miscellaneous
 /static/
 /coverage/
+
+# inlang project — tool-generated metadata/readme (created fresh on a clean
+# checkout by `paraglide-js compile`); not ours to format.
+/project.inlang/
