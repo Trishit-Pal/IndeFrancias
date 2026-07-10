@@ -25,6 +25,19 @@ export const genderSchema = z.enum(['masculine', 'feminine', 'none']);
 
 export const nativeLangSchema = z.enum(['hi', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'en']);
 
+/** A build-time-authored writing feedback rule; runs as a regex over the
+ *  learner's normalized answer. Lives in content packs so the native
+ *  proofreader reviews it like any French content. */
+export const rubricRuleSchema = z.object({
+	id: z.string().min(1),
+	/** Regex source, tested against the normalized answer (see lesson/engine). */
+	match: z.string().min(1),
+	hint: z.string().min(1),
+	hintByLang: z.record(nativeLangSchema, z.string()).optional(),
+	severity: z.enum(['gentle', 'correction'])
+});
+export type RubricRule = z.infer<typeof rubricRuleSchema>;
+
 export const glossesSchema = z.object({
 	hi: z.string().min(1),
 	bn: z.string().min(1),
@@ -77,7 +90,9 @@ const exerciseBase = {
 	hint: z.string().optional(),
 	coachNote: z.string().optional(),
 	/** French tokens in the prompt to always make tappable (even if not in lexicon). */
-	promptGlosses: z.array(z.string().min(1)).optional()
+	promptGlosses: z.array(z.string().min(1)).optional(),
+	/** Optional writing-feedback rules (WP1); free-text exercises only. */
+	rubricRules: z.array(rubricRuleSchema).optional()
 };
 
 export const mcqExerciseSchema = z.object({
