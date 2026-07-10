@@ -29,7 +29,6 @@
 		const text = (event.currentTarget as HTMLInputElement).value;
 		response = text.trim() ? { type: 'cloze', text } : null;
 	}
-
 </script>
 
 <div class="space-y-3 text-lg leading-relaxed text-foreground">
