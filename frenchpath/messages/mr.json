@@ -198,5 +198,6 @@
 	"checkpoint_share_title": "FrenchPath चेकपॉइंट",
 	"checkpoint_share_subtitle": "{label} उत्तीर्ण केले",
 	"beta_badge": "बीटा",
-	"checkpoint_cooldown": "{hours} तासांत पुन्हा प्रयत्न करता येईल."
+	"checkpoint_cooldown": "{hours} तासांत पुन्हा प्रयत्न करता येईल.",
+	"rubric_hint_label": "Tip:"
 }

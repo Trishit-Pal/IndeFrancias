@@ -6,6 +6,7 @@
 	import type { Unit } from '$lib/content/schema';
 	import type { Lexicon } from '$lib/content/lexicon';
 	import { gradeExercise, scorePercent, type ExerciseResponse } from '$lib/lesson/engine';
+	import { evaluateRubric, type RubricHint } from '$lib/lesson/rubric';
 	import { completeLesson, type CompleteOutcome } from '$lib/lesson/complete';
 	import { isUnitLocked, lockReasonForUnit } from '$lib/lesson/progression';
 	import { passedAssessmentIds } from '$lib/assessment/checkpoint';
@@ -57,6 +58,7 @@
 	let lexicon = $state<Lexicon>(new Map());
 	let hintsUsed = $state(0);
 	let hintText = $state<string | null>(null);
+	let rubricHints = $state<RubricHint[]>([]);
 	const MAX_LESSON_HINTS = 2;
 
 	const bridgeCopy = $derived(unit?.bridge ? getBridgeCopy(unit.bridge, nativeLanguage) : null);
@@ -91,6 +93,7 @@
 			index = 0;
 			hintsUsed = 0;
 			hintText = null;
+			rubricHints = [];
 			response = null;
 			submitted = false;
 			correct = false;
@@ -119,6 +122,10 @@
 		correct = gradeExercise(current, response);
 		if (correct) correctCount += 1;
 		submitted = true;
+		rubricHints =
+			(response.type === 'cloze' || response.type === 'translation') && !correct
+				? evaluateRubric(response.text, current)
+				: [];
 		if (!correct && 'coachNote' in current && current.coachNote) {
 			hintText = current.coachNote;
 		} else if (!correct && current.type === 'mcq' && current.explanation) {
@@ -164,6 +171,7 @@
 			submitted = false;
 			correct = false;
 			hintText = null;
+			rubricHints = [];
 		} else {
 			outcome = await completeLesson(unit, { correct: correctCount, total, score });
 			await ensurePersistence();
@@ -363,7 +371,7 @@
 			{#if submitted}
 				<div
 					transition:fade={{ duration: reducedMotion ? 0 : 200 }}
-					class="mt-5 flex items-center gap-3 rounded-2xl p-3 text-sm font-medium {correct
+					class="mt-5 flex items-start gap-3 rounded-2xl p-3 text-sm font-medium {correct
 						? 'feedback-correct animate-scale-in fp-feedback-pulse'
 						: 'feedback-incorrect animate-shake'}"
 					style="border: 2px solid var(--fp-ink)"
@@ -376,7 +384,15 @@
 					{:else}
 						<CharacterMira size="sm" animate={!reducedMotion} />
 					{/if}
-					<span>{correct ? m.lesson_correct() : m.lesson_incorrect()}</span>
+					<div class="flex flex-col gap-2">
+						<span>{correct ? m.lesson_correct() : m.lesson_incorrect()}</span>
+						{#each rubricHints as h (h.ruleId)}
+							<p class="fp-rubric-hint" data-testid="rubric-hint" aria-live="polite">
+								<span class="fp-rubric-hint__label">{m.rubric_hint_label()}</span>
+								{h.hint}
+							</p>
+						{/each}
+					</div>
 				</div>
 				<button
 					type="button"
@@ -492,6 +508,19 @@
 
 	.animate-scale-in {
 		animation: scale-in 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.fp-rubric-hint {
+		background: var(--fp-jaipur-light);
+		color: var(--fp-ink);
+		border-radius: var(--fp-r-sm);
+		padding: 8px 12px;
+		font-size: 0.9375rem;
+	}
+
+	.fp-rubric-hint__label {
+		font-weight: 700;
+		margin-right: 4px;
 	}
 
 	@media (prefers-reduced-motion: reduce) {

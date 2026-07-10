@@ -210,5 +210,6 @@
 	"checkpoint_share_title": "FrenchPath checkpoint",
 	"checkpoint_share_subtitle": "{label} pass kiya",
 	"beta_badge": "Beta",
-	"checkpoint_cooldown": "Retry {hours}h me available hoga."
+	"checkpoint_cooldown": "Retry {hours}h me available hoga.",
+	"rubric_hint_label": "Tip:"
 }

@@ -198,5 +198,6 @@
 	"checkpoint_share_title": "FrenchPath ಚೆಕ್‌ಪಾಯಿಂಟ್",
 	"checkpoint_share_subtitle": "{label} ಉತ್ತೀರ್ಣರಾದರು",
 	"beta_badge": "ಬೀಟಾ",
-	"checkpoint_cooldown": "{hours} ಗಂಟೆಗಳಲ್ಲಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಬಹುದು."
+	"checkpoint_cooldown": "{hours} ಗಂಟೆಗಳಲ್ಲಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಬಹುದು.",
+	"rubric_hint_label": "Tip:"
 }

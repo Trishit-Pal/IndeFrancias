@@ -198,5 +198,6 @@
 	"checkpoint_share_title": "FrenchPath சோதனைச்சாவடி",
 	"checkpoint_share_subtitle": "{label} தேர்ச்சி பெற்றது",
 	"beta_badge": "பீட்டா",
-	"checkpoint_cooldown": "{hours} மணி நேரத்தில் மீண்டும் முயற்சிக்கலாம்."
+	"checkpoint_cooldown": "{hours} மணி நேரத்தில் மீண்டும் முயற்சிக்கலாம்.",
+	"rubric_hint_label": "Tip:"
 }
