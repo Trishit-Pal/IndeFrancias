@@ -21,7 +21,7 @@ import { migrateBackup } from './migrations';
 /** Reject imports larger than this before JSON.parse (DoS guard). */
 export const MAX_BACKUP_BYTES = 5 * 1024 * 1024;
 
-const STORES = [
+export const STORES = [
 	'settings',
 	'progress',
 	'srsCards',
@@ -70,7 +70,7 @@ export async function previewBackup(json: string): Promise<BackupPreview> {
 	};
 }
 
-function assertBackupSize(json: string): void {
+export function assertBackupSize(json: string): void {
 	const bytes = new TextEncoder().encode(json).byteLength;
 	if (bytes > MAX_BACKUP_BYTES) {
 		throw new Error(
@@ -79,7 +79,7 @@ function assertBackupSize(json: string): void {
 	}
 }
 
-function parseBackupJson(json: string): {
+export function parseBackupJson(json: string): {
 	version?: number;
 	schemaVersion?: number;
 	checksum?: string;
@@ -125,7 +125,7 @@ export async function exportBackup(): Promise<string> {
 }
 
 // JSON has no Date type, so SRS card dates come back as ISO strings on import.
-function reviveCard(c: BackupPayload['srsCards'][number]): SrsCard {
+export function reviveCard(c: BackupPayload['srsCards'][number]): SrsCard {
 	return {
 		...c,
 		due: new Date(c.due),
