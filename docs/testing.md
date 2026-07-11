@@ -8,8 +8,8 @@ when adding features, reviewing PRs, or preparing a release.
 
 ```bash
 npm run check && npm run lint
-npm run test:unit -- --run    # 188 unit tests
-npm run test:e2e              # 35 Playwright scenarios (build + preview first)
+npm run test:unit -- --run    # 256 unit tests
+npm run test:e2e              # 42 Playwright scenarios (build + preview first)
 npm run content:proofread:launch  # A1/A2 launch gate only
 ```
 
@@ -23,13 +23,13 @@ selectors and accessibility checks.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  Playwright E2E (35) — production preview on :4173           │
-│  app · backup · progression · checkpoint · gloss · hints · … │
+│  Playwright E2E (42) — production preview on :4173           │
+│  app · backup · sync · speak · progression · checkpoint · …  │
 └───────────────────────────┬─────────────────────────────────┘
                             │
 ┌───────────────────────────▼─────────────────────────────────┐
-│  Vitest unit (188) — Node env + fake-indexeddb             │
-│  db · pwa/backup · srs · lesson · gamification · security   │
+│  Vitest unit (256) — Node env + fake-indexeddb             │
+│  db · pwa/backup+merge · srs+optimizer · sync · speech · lesson │
 └───────────────────────────┬─────────────────────────────────┘
                             │
 ┌───────────────────────────▼─────────────────────────────────┐
@@ -40,8 +40,8 @@ selectors and accessibility checks.
 
 | Layer | Tool | Config | Count |
 |-------|------|--------|-------|
-| Unit | Vitest 4 | `vite.config.ts` → `test.projects[server]` | **188** tests in **35** `*.spec.ts` files |
-| E2E | Playwright | `playwright.config.ts` → `**/*.e2e.ts` | **35** scenarios in **13** files + `helpers.ts` |
+| Unit | Vitest 4 | `vite.config.ts` → `test.projects[server]` | **256** tests (M2.6 added `*.spec.ts` files under `srs/`, `speech/`, `sync/`, `pwa/merge*`) |
+| E2E | Playwright | `playwright.config.ts` → `**/*.e2e.ts` | **42** scenarios (M2.6 added `sync.e2e.ts`, `speak.e2e.ts`, `fsrs-status.e2e.ts`, `rubric.e2e.ts`) + `helpers.ts`. Per-file breakdown below predates M2.6 — see §11 of the mother book for the current count. |
 | Setup | `fake-indexeddb` | `src/tests/setup.ts` | Polyfills IndexedDB in Node |
 
 E2E always runs against a **production build** (`npm run build && npm run preview` on port 4173),

@@ -6,11 +6,11 @@ Use before promoting a production deploy on Vercel (root directory: `frenchpath/
 
 - [ ] `npm run check` — types clean
 - [ ] `npm run lint` — formatting + ESLint
-- [ ] `npm run test:unit -- --run` — **192** unit tests green (see [testing.md](./testing.md))
+- [ ] `npm run test:unit -- --run` — **256** unit tests green (see [testing.md](./testing.md))
 - [ ] `npm run content:validate` — all packs valid
 - [ ] `npm run content:proofread:launch` — A1/A2 proofread clean ([content-curation.md](./content-curation.md); B1–C1 templates may fail full proofread)
 - [ ] `npm run build` — static build succeeds
-- [ ] `npm run test:e2e` — **35** Playwright journeys green (backup round-trip, progression, checkpoint, CSP on 9 routes)
+- [ ] `npm run test:e2e` — **42** Playwright journeys green (backup round-trip, sync round-trip, progression, checkpoint, speaking/shadowing, CSP on 10 routes)
 
 Key automated regressions (detail in [testing.md](./testing.md)):
 
