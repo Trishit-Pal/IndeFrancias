@@ -17,19 +17,27 @@ import {
 } from '../db/schema';
 import {
 	exportBackup,
-	assertBackupSize,
-	parseBackupJson,
+	validateAndParseBackup,
 	reviveCard,
 	STORES,
 	MAX_BACKUP_BYTES
 } from '../pwa/backup';
-import { backupFileSchema, CURRENT_BACKUP_VERSION, type BackupPayload } from '../pwa/backupSchema';
-import { sha256Hex } from '../pwa/checksum';
-import { migrateBackup } from '../pwa/migrations';
+import { type BackupPayload } from '../pwa/backupSchema';
 import { mergePayloads, type MergeSummary } from '../pwa/merge';
 import { encryptPayload, decryptPayload, type EncryptedEnvelope } from './crypto';
 
-export const MAX_SYNC_BYTES = MAX_BACKUP_BYTES;
+/** Envelope carries the backup as base64 ciphertext (~4/3 of plaintext) plus
+ *  header fields, so a legitimate max-size backup exceeds MAX_BACKUP_BYTES. */
+export const MAX_SYNC_BYTES = Math.ceil(MAX_BACKUP_BYTES * 1.5);
+
+function assertSyncFileSize(json: string): void {
+	const bytes = new TextEncoder().encode(json).byteLength;
+	if (bytes > MAX_SYNC_BYTES) {
+		throw new Error(
+			`Sync file is too large (${Math.round(bytes / 1024)} KB). Maximum is ${Math.round(MAX_SYNC_BYTES / 1024 / 1024)} MB.`
+		);
+	}
+}
 
 let importInFlight = false;
 
@@ -42,29 +50,15 @@ export async function exportSyncFile(passphrase: string): Promise<string> {
 
 /** Decrypts a sync file and runs it through the same pipeline as backup import. */
 async function decryptAndValidate(fileJson: string, passphrase: string): Promise<BackupPayload> {
-	const envelope = JSON.parse(fileJson) as EncryptedEnvelope;
+	assertSyncFileSize(fileJson); // outer envelope guard — before any parse
+	let envelope: EncryptedEnvelope;
+	try {
+		envelope = JSON.parse(fileJson) as EncryptedEnvelope;
+	} catch {
+		throw new Error('Sync file is not valid JSON.');
+	}
 	const plaintext = await decryptPayload(envelope, passphrase);
-
-	assertBackupSize(plaintext);
-	const raw = parseBackupJson(plaintext);
-	const version = raw.schemaVersion ?? raw.version;
-	if (typeof version !== 'number' || version < 1 || version > CURRENT_BACKUP_VERSION) {
-		throw new Error(`Unsupported backup version: ${String(version)}`);
-	}
-	if (version >= 2) {
-		const expected = await sha256Hex(JSON.stringify(raw.payload ?? null));
-		if (expected !== raw.checksum) {
-			throw new Error(
-				'Backup integrity check failed: checksum mismatch (corrupted or edited file).'
-			);
-		}
-	}
-	const migrated = await migrateBackup(raw);
-	const parsed = backupFileSchema.safeParse(migrated);
-	if (!parsed.success) {
-		throw new Error(`Invalid backup file: ${parsed.error.issues[0]?.message ?? 'schema mismatch'}`);
-	}
-	return parsed.data.payload;
+	return (await validateAndParseBackup(plaintext)).payload;
 }
 
 async function currentLocalPayload(): Promise<BackupPayload> {

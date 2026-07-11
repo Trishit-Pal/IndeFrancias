@@ -42,6 +42,25 @@ export interface BackupPreview {
 
 /** Lightweight parse for the import confirmation UI — does not mutate the database. */
 export async function previewBackup(json: string): Promise<BackupPreview> {
+	const { payload, exportedAt } = await validateAndParseBackup(json);
+	return {
+		exportedAt,
+		lessonCount: payload.progress.length,
+		cardCount: payload.srsCards.length
+	};
+}
+
+export interface ValidatedBackup {
+	payload: BackupPayload;
+	exportedAt: string;
+}
+
+/**
+ * The single validation gate for anything that becomes database content:
+ * size guard → JSON parse → version bounds → checksum → migrate → schema.
+ * Used by backup preview/import AND sync import so the pipelines can't drift.
+ */
+export async function validateAndParseBackup(json: string): Promise<ValidatedBackup> {
 	assertBackupSize(json);
 	const raw = parseBackupJson(json);
 	const version = raw.schemaVersion ?? raw.version;
@@ -62,12 +81,7 @@ export async function previewBackup(json: string): Promise<BackupPreview> {
 	if (!parsed.success) {
 		throw new Error(`Invalid backup file: ${parsed.error.issues[0]?.message ?? 'schema mismatch'}`);
 	}
-	const p = parsed.data.payload;
-	return {
-		exportedAt: String(raw.exportedAt ?? 'unknown'),
-		lessonCount: p.progress.length,
-		cardCount: p.srsCards.length
-	};
+	return { payload: parsed.data.payload, exportedAt: String(raw.exportedAt ?? 'unknown') };
 }
 
 export function assertBackupSize(json: string): void {
@@ -147,28 +161,7 @@ export async function importBackup(json: string): Promise<void> {
 }
 
 async function importBackupInner(json: string): Promise<void> {
-	assertBackupSize(json);
-	const raw = parseBackupJson(json);
-	const version = raw.schemaVersion ?? raw.version;
-	if (typeof version !== 'number' || version < 1 || version > CURRENT_BACKUP_VERSION) {
-		throw new Error(`Unsupported backup version: ${String(version)}`);
-	}
-	// v2+ files carry a checksum; verify before any migration or mutation.
-	if (version >= 2) {
-		const expected = await sha256Hex(JSON.stringify(raw.payload ?? null));
-		if (expected !== raw.checksum) {
-			throw new Error(
-				'Backup integrity check failed: checksum mismatch (corrupted or edited file).'
-			);
-		}
-	}
-
-	const migrated = await migrateBackup(raw);
-	const parsed = backupFileSchema.safeParse(migrated);
-	if (!parsed.success) {
-		throw new Error(`Invalid backup file: ${parsed.error.issues[0]?.message ?? 'schema mismatch'}`);
-	}
-	const p = parsed.data.payload;
+	const { payload: p } = await validateAndParseBackup(json);
 
 	// Validation passed — only now mutate the database, atomically.
 	// All clears + puts are inside one transaction: if any put throws, IDB rolls

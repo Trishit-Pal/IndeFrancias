@@ -163,4 +163,17 @@ describe('sync file export/preview/import', () => {
 		await expect(first).resolves.toBeDefined();
 		expect((await progressRepo.getProgress('a1-u1'))?.score).toBe(90);
 	});
+
+	it('rejects an oversized sync file before parsing (outer envelope guard)', async () => {
+		const huge = 'x'.repeat(MAX_SYNC_BYTES + 1);
+		await expect(importSyncMerge(huge, 'any-passphrase')).rejects.toThrow(/too large/i);
+	});
+
+	it('rejects a non-JSON sync file with a friendly message', async () => {
+		// Exact message, not a regex: V8's raw SyntaxError also ends in
+		// "is not valid JSON", which must NOT satisfy this test.
+		await expect(previewSyncMerge('not json at all', 'any-passphrase')).rejects.toThrow(
+			'Sync file is not valid JSON.'
+		);
+	});
 });
