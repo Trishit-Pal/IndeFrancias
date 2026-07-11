@@ -20,6 +20,30 @@ describe('checkForUpdate', () => {
 		vi.unstubAllGlobals();
 	});
 
+	it('defaults to a relative same-origin fetch with no-store, no baseUrl needed', async () => {
+		const fetchMock = vi.fn().mockResolvedValue({
+			ok: true,
+			status: 200,
+			json: async () => ({ version: '1.0.0' })
+		});
+		vi.stubGlobal('fetch', fetchMock);
+		await checkForUpdate('1.0.0');
+		expect(fetchMock).toHaveBeenCalledWith('/version.json', { cache: 'no-store' });
+	});
+
+	it('passes cache: no-store even with an explicit baseUrl', async () => {
+		const fetchMock = vi.fn().mockResolvedValue({
+			ok: true,
+			status: 200,
+			json: async () => ({ version: '1.0.0' })
+		});
+		vi.stubGlobal('fetch', fetchMock);
+		await checkForUpdate('1.0.0', 'https://example.com');
+		expect(fetchMock).toHaveBeenCalledWith('https://example.com/version.json', {
+			cache: 'no-store'
+		});
+	});
+
 	it('returns UpdateInfo when the fetched version is newer', async () => {
 		vi.stubGlobal(
 			'fetch',

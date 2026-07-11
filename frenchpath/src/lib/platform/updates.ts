@@ -3,10 +3,6 @@
 // auto-download, no auto-install — this only ever surfaces a link.
 import { z } from 'zod';
 
-// ponytail: placeholder — confirm this matches the real deployed origin
-// before release (see report). One constant, one place to change.
-export const UPDATE_BASE_URL = 'https://frenchpath.vercel.app';
-
 // Hardcoded client-side, matching scripts/emit-version-json.mjs's DOWNLOAD_URL.
 // The link target NEVER comes from the fetched version.json — that file is
 // same-origin but not a trust boundary we want to render `href` from (see
@@ -50,14 +46,22 @@ export function compareVersions(a: string, b: string): -1 | 0 | 1 {
  * version is published, `null` when current is same/newer. Throws a typed
  * `UpdateCheckError` (never a generic `Error`) on network failure, a
  * non-OK response, or a malformed payload.
+ *
+ * `baseUrl` defaults to `''` (relative fetch) — version.json ships inside
+ * this app's own build output, so it's same-origin on every deployment
+ * (Vercel, Tauri, ...) without needing a pinned absolute domain. The param
+ * stays so tests can point it at a mocked absolute URL.
  */
 export async function checkForUpdate(
 	currentVersion: string,
-	baseUrl: string
+	baseUrl = ''
 ): Promise<UpdateInfo | null> {
 	let response: Response;
 	try {
-		response = await fetch(`${baseUrl}/version.json`);
+		// no-store: defense-in-depth alongside the workbox globIgnores exclusion
+		// (vite.config.ts) — guarantees a live network check even if some
+		// browser/SW config would otherwise serve a stale HTTP cache entry.
+		response = await fetch(`${baseUrl}/version.json`, { cache: 'no-store' });
 	} catch (error) {
 		throw new UpdateCheckError('Network error while checking for updates', { cause: error });
 	}

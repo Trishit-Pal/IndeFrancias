@@ -45,6 +45,12 @@ for (const name of swFiles) {
 	if (contents.includes(MODEL_FILENAME)) {
 		fail(`model filename "${MODEL_FILENAME}" leaked into service worker precache (${name})`);
 	}
+	// version.json must never be precached — checkForUpdate() needs a live
+	// network fetch to detect a newer deployment (see src/lib/platform/updates.ts).
+	// A precached copy would always compare equal to the running version.
+	if (contents.includes('version.json')) {
+		fail(`"version.json" leaked into service worker precache (${name})`);
+	}
 }
 
 // (c) version.json must be present

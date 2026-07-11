@@ -84,7 +84,10 @@ export default defineConfig(({ mode }) => ({
 				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2,json,html}'],
 				// The Vosk ASR model (static/models/) is a same-origin opt-in download,
 				// never part of the app-shell precache (privacy: web speech is opt-in).
-				globIgnores: ['**/models/**'],
+				// version.json must also stay out of the precache — checkForUpdate()
+				// needs a live network fetch to detect a newer deployment; a precached
+				// copy would always compare equal to itself (see updates.ts).
+				globIgnores: ['**/models/**', '**/version.json'],
 				navigateFallback: '/',
 				navigateFallbackDenylist: [/^\/manifest\.webmanifest$/],
 				runtimeCaching: [

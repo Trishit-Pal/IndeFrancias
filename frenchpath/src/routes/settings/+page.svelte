@@ -40,12 +40,7 @@
 	import { applyTheme } from '$lib/theme/apply';
 	import { configureTts, listFrenchVoices, voicesReady } from '$lib/audio/tts';
 	import { revisionNotificationBody } from '$lib/pwa/revisionNotify';
-	import {
-		checkForUpdate,
-		UpdateCheckError,
-		UPDATE_BASE_URL,
-		type UpdateInfo
-	} from '$lib/platform/updates';
+	import { checkForUpdate, UpdateCheckError, type UpdateInfo } from '$lib/platform/updates';
 	import pkg from '../../../package.json';
 	import * as m from '$lib/paraglide/messages';
 	import { getLocale, setLocale } from '$lib/paraglide/runtime';
@@ -332,7 +327,7 @@
 		updateChecking = true;
 		updateResult = null;
 		try {
-			updateResult = await checkForUpdate(pkg.version, UPDATE_BASE_URL);
+			updateResult = await checkForUpdate(pkg.version);
 			updateStatus = updateResult ? '' : m.updates_current();
 		} catch (error) {
 			updateStatus = error instanceof UpdateCheckError ? error.message : m.updates_current();
