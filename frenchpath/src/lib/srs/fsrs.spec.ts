@@ -85,7 +85,13 @@ describe('custom FSRS weights', () => {
 		// show a weight effect. Graduate to Review state first (matches the
 		// targetRetention test above), then grade later where stability (which `w`
 		// drives) determines the interval.
-		let card = createSrsCard({ cardId: 'c', contentId: 'c', cefrLevel: 'A1', skill: 'reading', now: NOW });
+		let card = createSrsCard({
+			cardId: 'c',
+			contentId: 'c',
+			cefrLevel: 'A1',
+			skill: 'reading',
+			now: NOW
+		});
 		card = gradeCard(card, 'good', { now: NOW }).card;
 		card = gradeCard(card, 'good', { now: NOW }).card;
 		const later = new Date('2026-01-15T00:00:00Z');

@@ -25,7 +25,7 @@ describe('sync file export/preview/import', () => {
 		const fileJson = await exportSyncFile(PASSPHRASE);
 
 		await resetDatabase();
-		expect((await progressRepo.getProgress('a1-u1'))).toBeUndefined();
+		expect(await progressRepo.getProgress('a1-u1')).toBeUndefined();
 
 		await importSyncMerge(fileJson, PASSPHRASE);
 
@@ -134,7 +134,7 @@ describe('sync file export/preview/import', () => {
 
 		expect(summary.newProgress).toBe(1);
 		// Nothing was written: only the pre-existing local record is present.
-		expect((await progressRepo.getProgress('local'))).toBeUndefined();
+		expect(await progressRepo.getProgress('local')).toBeUndefined();
 		expect((await progressRepo.getProgress('other'))?.score).toBe(60);
 	});
 

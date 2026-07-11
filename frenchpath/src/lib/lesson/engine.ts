@@ -108,9 +108,7 @@ export function gradeExercise(exercise: Exercise, response: ExerciseResponse): b
 		case 'speak':
 			return (
 				response.type === 'speak' &&
-				(response.overall === 'good' ||
-					response.overall === 'partial' ||
-					response.selfOk === true)
+				(response.overall === 'good' || response.overall === 'partial' || response.selfOk === true)
 			);
 	}
 }

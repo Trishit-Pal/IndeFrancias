@@ -6,7 +6,7 @@ const cloze = (rules: unknown[]): Exercise =>
 	({
 		type: 'cloze',
 		id: 'x1',
-		text: 'J\'ai {{}} ans.',
+		text: "J'ai {{}} ans.",
 		answer: 'vingt',
 		accept: [],
 		rubricRules: rules
@@ -14,7 +14,7 @@ const cloze = (rules: unknown[]): Exercise =>
 
 const AGE_RULE = {
 	id: 'age-etre',
-	match: "\\bje suis \\d+\\b",
+	match: '\\bje suis \\d+\\b',
 	hint: 'In French, age uses avoir: "j\'ai 25 ans".',
 	severity: 'correction'
 };
@@ -22,9 +22,7 @@ const AGE_RULE = {
 describe('evaluateRubric', () => {
 	it('returns a hint when a rule pattern matches the answer', () => {
 		const hints = evaluateRubric('je suis 25', cloze([AGE_RULE]));
-		expect(hints).toEqual([
-			{ ruleId: 'age-etre', hint: AGE_RULE.hint, severity: 'correction' }
-		]);
+		expect(hints).toEqual([{ ruleId: 'age-etre', hint: AGE_RULE.hint, severity: 'correction' }]);
 	});
 
 	it('matches accent- and case-insensitively (normalized like grading)', () => {

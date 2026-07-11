@@ -73,7 +73,10 @@ async function currentLocalPayload(): Promise<BackupPayload> {
 }
 
 /** Decrypt + validate + dry-run merge against the current DB. Mutates nothing. */
-export async function previewSyncMerge(fileJson: string, passphrase: string): Promise<MergeSummary> {
+export async function previewSyncMerge(
+	fileJson: string,
+	passphrase: string
+): Promise<MergeSummary> {
 	const remote = await decryptAndValidate(fileJson, passphrase);
 	const local = await currentLocalPayload();
 	return mergePayloads(local, remote).summary;
@@ -92,10 +95,7 @@ export async function importSyncMerge(fileJson: string, passphrase: string): Pro
 	}
 }
 
-async function importSyncMergeInner(
-	fileJson: string,
-	passphrase: string
-): Promise<MergeSummary> {
+async function importSyncMergeInner(fileJson: string, passphrase: string): Promise<MergeSummary> {
 	const remote = await decryptAndValidate(fileJson, passphrase);
 	const local = await currentLocalPayload();
 	const { merged, summary } = mergePayloads(local, remote);

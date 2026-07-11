@@ -224,7 +224,13 @@ describe('mergePayloads', () => {
 		const { merged, summary } = mergePayloads(local, remote);
 		expect(merged.progress).toEqual(local.progress);
 		expect(merged.srsCards).toEqual(local.srsCards);
-		expect(merged.reviewLog).toEqual(local.reviewLog.map(({ id: _id, ...rest }) => rest));
+		expect(merged.reviewLog).toEqual(
+			local.reviewLog.map((r) => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars -- dropping `id` to match mergePayloads' output shape
+				const { id, ...rest } = r;
+				return rest;
+			})
+		);
 		expect(merged.streak).toEqual(local.streak);
 		expect(merged.stats).toEqual(local.stats);
 		expect(merged.skillProfile).toEqual(local.skillProfile);

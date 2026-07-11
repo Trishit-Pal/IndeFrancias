@@ -34,7 +34,12 @@ async function reachSeededCloze(page: Page) {
 			continue;
 		}
 
-		if (await mcq.first().isVisible().catch(() => false)) {
+		if (
+			await mcq
+				.first()
+				.isVisible()
+				.catch(() => false)
+		) {
 			await mcq.first().click();
 			await expect(check).toBeEnabled();
 			await check.click();

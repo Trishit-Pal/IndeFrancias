@@ -77,9 +77,11 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 		newReviews++;
 		return true;
 	});
-	const mergedReviews: ReviewLogT[] = [...local.reviewLog, ...newRemoteReviews].map(
-		({ id: _id, ...rest }) => rest
-	);
+	const mergedReviews: ReviewLogT[] = [...local.reviewLog, ...newRemoteReviews].map((r) => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars -- dropping `id`, autoIncrement reassigns it
+		const { id, ...rest } = r;
+		return rest;
+	});
 
 	// streak: longestStreak = max of both; rest of the fields come from the later-lastActiveDate snapshot
 	const mergedStreak = mergeStreak(local.streak[0], remote.streak[0]);

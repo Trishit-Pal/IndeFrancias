@@ -6,16 +6,17 @@ const w = (word: string, conf = 1) => ({ word, conf });
 describe('scorePronunciation', () => {
 	it('all words recognized confidently → all good', () => {
 		const r = scorePronunciation('je voudrais un café', [
-			w('je'), w('voudrais'), w('un'), w('café')
+			w('je'),
+			w('voudrais'),
+			w('un'),
+			w('café')
 		]);
 		expect(r.words.map((x) => x.verdict)).toEqual(['good', 'good', 'good', 'good']);
 		expect(r.overall).toBe('good');
 	});
 
 	it('missing word → missed; low confidence → unclear', () => {
-		const r = scorePronunciation('je voudrais un café', [
-			w('je'), w('voudrais', 0.4), w('café')
-		]);
+		const r = scorePronunciation('je voudrais un café', [w('je'), w('voudrais', 0.4), w('café')]);
 		expect(r.words).toEqual([
 			{ expected: 'je', verdict: 'good' },
 			{ expected: 'voudrais', verdict: 'unclear' },
@@ -45,11 +46,7 @@ describe('scorePronunciation', () => {
 		// "..." is its own whitespace-separated token and normalizes to '', so it
 		// must be dropped from BOTH the comparison and label sequences together —
 		// not just the comparison one — or every word after it gets mislabeled.
-		const r = scorePronunciation('Alors ... vous venez ?', [
-			w('alors'),
-			w('vous'),
-			w('venez')
-		]);
+		const r = scorePronunciation('Alors ... vous venez ?', [w('alors'), w('vous'), w('venez')]);
 		expect(r.words).toEqual([
 			{ expected: 'Alors', verdict: 'good' },
 			{ expected: 'vous', verdict: 'good' },

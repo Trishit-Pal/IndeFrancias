@@ -24,7 +24,7 @@ export function buildTrainingSet(logs: ReviewLogRecord[]): FsrsTrainingSet {
 	const cardsWithMinTs = Array.from(byCard.entries()).map(([cardId, reviews]) => ({
 		cardId,
 		reviews,
-		minTs: Math.min(...reviews.map(l => l.ts))
+		minTs: Math.min(...reviews.map((l) => l.ts))
 	}));
 	const sortedCards = cardsWithMinTs.sort((a, b) => a.minTs - b.minTs);
 

@@ -4,7 +4,14 @@ import type { ReviewLogRecord } from '../db/schema';
 
 const DAY = 86_400_000;
 const log = (cardId: string, ts: number, grade: number): ReviewLogRecord => ({
-	cardId, ts, grade, state: 2, stability: 1, difficulty: 5, elapsedDays: 0, scheduledDays: 1
+	cardId,
+	ts,
+	grade,
+	state: 2,
+	stability: 1,
+	difficulty: 5,
+	elapsedDays: 0,
+	scheduledDays: 1
 });
 
 describe('buildTrainingSet', () => {
