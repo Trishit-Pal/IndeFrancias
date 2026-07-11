@@ -59,6 +59,9 @@ Key automated regressions (detail in [testing.md](./testing.md)):
 - [ ] Android: apply the signing config from `docs/android-init.md` to `android/app/build.gradle`
 - [ ] Android: set `FRENCHPATH_KEYSTORE_PATH`, `FRENCHPATH_KEYSTORE_PASSWORD`, `FRENCHPATH_KEY_ALIAS`, `FRENCHPATH_KEY_PASSWORD` env vars, then `npm run build:apk` (or `./gradlew assembleRelease` from `android/` on macOS/Linux)
 - [ ] Android: sideload the signed `.apk` on a real device, confirm offline operation and that the icon/splash render correctly
+- [ ] Both `build:desktop` and `build:apk` (via `build:cap`) now run `npm run verify:dist` at the end — it fails the build if the bundled Vosk model, `version.json`, or a clean (model-free) service worker precache is missing
+- [ ] Installer size expectations, now that the ~42 MB Vosk model is bundled: `.exe` (NSIS) and `.apk` roughly **~55–90 MB** total (app shell + assets ~15–20 MB + the model). Verify actual sizes are in this range before publishing — a much smaller file likely means the model didn't get bundled
+- [ ] Publish SHA-256 checksums alongside each release artifact, e.g. `sha256sum FrenchPath-setup.exe frenchpath.apk` — include the output in the release notes so users can verify their download
 
 ## Post-launch
 

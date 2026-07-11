@@ -25,11 +25,12 @@
 		"analyze": "vite build --mode analyze",
 		"model:fetch": "node scripts/fetch-vosk-model.mjs",
 		"version:emit": "node scripts/emit-version-json.mjs",
-		"build:cap": "npm run model:fetch && npm run version:emit && npm run build && node scripts/prepare-cap.mjs",
+		"verify:dist": "node scripts/verify-dist.mjs",
+		"build:cap": "npm run model:fetch && npm run version:emit && npm run build && node scripts/prepare-cap.mjs && npm run verify:dist",
 		"cap:sync": "npm run build:cap && cap sync",
 		"build:apk": "npm run build:cap && cap sync android && cd android && gradlew.bat assembleRelease",
-		"build:desktop": "npm run model:fetch && npm run version:emit && tauri build",
-		"vercel-build": "npm run model:fetch && npm run version:emit && npm run build"
+		"build:desktop": "npm run model:fetch && npm run version:emit && tauri build && npm run verify:dist",
+		"vercel-build": "npm run model:fetch && npm run version:emit && npm run build && npm run verify:dist"
 	},
 	"devDependencies": {
 		"@anthropic-ai/sdk": "^0.100.1",
