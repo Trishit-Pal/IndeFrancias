@@ -106,9 +106,9 @@ test('speak exercise scores per word with stubbed ASR', async ({ page }) => {
 	await recordBtn.click(); // start (getUserMedia pending ~300ms)
 	await recordBtn.click(); // must be ignored, not treated as a second start
 	await expect(recordBtn).toHaveAttribute('aria-pressed', 'true'); // wait for the async start to land
-	expect(
-		await page.evaluate(() => (window as unknown as { __gumCalls: number }).__gumCalls)
-	).toBe(1);
+	expect(await page.evaluate(() => (window as unknown as { __gumCalls: number }).__gumCalls)).toBe(
+		1
+	);
 	await recordBtn.click(); // stop → transcribe (stub returns instantly)
 
 	const chips = page.getByTestId('speak-word-chip');
