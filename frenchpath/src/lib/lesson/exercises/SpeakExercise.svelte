@@ -45,6 +45,7 @@
 	let mediaStream: MediaStream | null = null;
 	let audioCtx: AudioContext | null = null;
 	let chunks: Float32Array[] = [];
+	let starting = false; // guards the async gap between tap and recording=true
 
 	const canSpeak = ttsAvailable();
 
@@ -87,17 +88,22 @@
 	}
 
 	async function toggleRecord() {
-		if (submitted || busy) return;
+		if (submitted || busy || starting) return;
 		if (recording) {
 			await stopRecording();
 			return;
 		}
+		starting = true;
 		chunks = [];
 		try {
 			mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 		} catch {
 			asrFailed = true;
 			return;
+		} finally {
+			// Safe: everything from here through recording=true is synchronous,
+			// so no second tap can interleave once the guard drops.
+			starting = false;
 		}
 		audioCtx = new AudioContext({ sampleRate: 16000 });
 		const source = audioCtx.createMediaStreamSource(mediaStream);

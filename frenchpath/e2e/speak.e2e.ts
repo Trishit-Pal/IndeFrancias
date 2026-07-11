@@ -82,14 +82,33 @@ test('speak exercise scores per word with stubbed ASR', async ({ page }) => {
 		);
 	});
 
+	await page.addInitScript(() => {
+		// Count getUserMedia calls and widen the async window so a double-tap
+		// lands while the first call is still pending (the regression race).
+		const md = navigator.mediaDevices;
+		const orig = md.getUserMedia.bind(md);
+		(window as unknown as { __gumCalls: number }).__gumCalls = 0;
+		md.getUserMedia = async (constraints?: MediaStreamConstraints) => {
+			(window as unknown as { __gumCalls: number }).__gumCalls += 1;
+			await new Promise((r) => setTimeout(r, 300));
+			return orig(constraints);
+		};
+	});
+
 	await gotoHome(page);
 	await page.getByTestId('unit-card').first().click();
 	await reachSpeakExercise(page);
 
 	await expect(page.getByTestId('speak-exercise')).toBeVisible();
 	const recordBtn = page.getByTestId('speak-record');
-	await recordBtn.click(); // start
-	await expect(recordBtn).toHaveAttribute('aria-pressed', 'true'); // wait for the async getUserMedia() start to land before stopping
+	// Regression (M2.6 review): a rapid double-tap during the pending
+	// getUserMedia() must not acquire a second, leaked mic stream.
+	await recordBtn.click(); // start (getUserMedia pending ~300ms)
+	await recordBtn.click(); // must be ignored, not treated as a second start
+	await expect(recordBtn).toHaveAttribute('aria-pressed', 'true'); // wait for the async start to land
+	expect(
+		await page.evaluate(() => (window as unknown as { __gumCalls: number }).__gumCalls)
+	).toBe(1);
 	await recordBtn.click(); // stop → transcribe (stub returns instantly)
 
 	const chips = page.getByTestId('speak-word-chip');
