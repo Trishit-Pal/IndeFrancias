@@ -36,6 +36,15 @@ export default defineConfig(({ mode }) => ({
 		SvelteKitPWA({
 			registerType: 'autoUpdate',
 			injectRegister: 'auto',
+			// vosk-browser (the WASM ASR engine, ~6MB) is only ever pulled in via a
+			// dynamic import inside src/lib/speech/asr.ts, once a learner opts into
+			// a speak exercise's model download. SvelteKit hashes client chunk
+			// filenames (no [name] control), so it can't be glob-excluded from the
+			// precache by path the way static/models/ is below — instead, let
+			// vite-pwa fall back to workbox's default behavior (skip oversized
+			// files from the precache manifest with a console warning) rather than
+			// hard-failing the build, since skipping it is exactly what we want.
+			showMaximumFileSizeToCacheInBytesWarning: true,
 			includeAssets: [
 				'favicon.svg',
 				'icon.svg',
@@ -73,6 +82,12 @@ export default defineConfig(({ mode }) => ({
 			},
 			workbox: {
 				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2,json,html}'],
+				// The Vosk ASR model (static/models/) is a same-origin opt-in download,
+				// never part of the app-shell precache (privacy: web speech is opt-in).
+				// version.json must also stay out of the precache — checkForUpdate()
+				// needs a live network fetch to detect a newer deployment; a precached
+				// copy would always compare equal to itself (see updates.ts).
+				globIgnores: ['**/models/**', '**/version.json'],
 				navigateFallback: '/',
 				navigateFallbackDenylist: [/^\/manifest\.webmanifest$/],
 				runtimeCaching: [

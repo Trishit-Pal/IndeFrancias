@@ -33,7 +33,12 @@ npx cap sync             # copies build/ into android/, installs native plugin g
 - `capacitor.config.ts` already has the correct config for this step — `appId: 'app.frenchpath'`,
   `appName: 'FrenchPath'`, `webDir: 'build'` — `cap add android` reads these directly, no manual
   edits needed.
-- `npm run build:cap` exists in `frenchpath/package.json` (`"build:cap": "npm run build && node scripts/prepare-cap.mjs"`).
+- `npm run build:cap` exists in `frenchpath/package.json`
+  (`"build:cap": "npm run model:fetch && npm run version:emit && npm run build && node scripts/prepare-cap.mjs && npm run verify:dist"`).
+  It now fetches the ~42 MB pinned Vosk ASR model before building — this adds build time
+  (a one-time download, then cached in `static/models/`, gitignored) and ~42 MB to the
+  `build/` output, so `cap sync android` copies a correspondingly larger `android/app/src/main/assets/public/`
+  and the resulting `.apk` is bigger than a model-free build.
 - After `cap add android`, open the generated `android/` project in Android Studio to run/debug
   on a device or emulator (`npx cap open android` also launches it).
 

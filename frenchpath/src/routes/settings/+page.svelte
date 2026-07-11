@@ -26,16 +26,27 @@
 		MAX_BACKUP_BYTES,
 		type BackupPreview
 	} from '$lib/pwa/backup';
+	import {
+		exportSyncFile,
+		previewSyncMerge,
+		importSyncMerge,
+		MAX_SYNC_BYTES
+	} from '$lib/sync/mergeFile';
+	import { WrongPassphraseError } from '$lib/sync/crypto';
+	import type { MergeSummary } from '$lib/pwa/merge';
 	import { ensurePersistence, isPersisted } from '$lib/pwa/persist';
 	import { isNativePlatform } from '$lib/platform';
 	import { exportBackupNative } from '$lib/platform/backup';
 	import { applyTheme } from '$lib/theme/apply';
 	import { configureTts, listFrenchVoices, voicesReady } from '$lib/audio/tts';
 	import { revisionNotificationBody } from '$lib/pwa/revisionNotify';
+	import { checkForUpdate, UpdateCheckError, type UpdateInfo } from '$lib/platform/updates';
+	import pkg from '../../../package.json';
 	import * as m from '$lib/paraglide/messages';
 	import { getLocale, setLocale } from '$lib/paraglide/runtime';
 
 	const LAST_EXPORT_KEY = 'frenchpath:lastExportAt';
+	const MIN_SYNC_PASSPHRASE_LENGTH = 8;
 
 	let settings = $state<Settings | null>(null);
 	let persisted = $state(false);
@@ -45,6 +56,13 @@
 	let importPreview = $state<BackupPreview | null>(null);
 	let pendingImportJson = $state('');
 	let importing = $state(false);
+	let syncPassphrase = $state('');
+	let syncPreview = $state<MergeSummary | null>(null);
+	let pendingSyncJson = $state('');
+	let syncImporting = $state(false);
+	let updateChecking = $state(false);
+	let updateResult = $state<UpdateInfo | null>(null);
+	let updateStatus = $state('');
 
 	const languages: { value: UiLanguage; label: string }[] = [
 		{ value: 'en', label: 'English' },
@@ -211,6 +229,82 @@
 		pendingImportJson = '';
 	}
 
+	async function syncExport() {
+		if (syncPassphrase.length < MIN_SYNC_PASSPHRASE_LENGTH) {
+			message = m.sync_passphrase_hint({ min: MIN_SYNC_PASSPHRASE_LENGTH });
+			return;
+		}
+		try {
+			const json = await exportSyncFile(syncPassphrase);
+			const filename = `frenchpath-sync-${new Date().toISOString().slice(0, 10)}.fpsync`;
+			if (isNativePlatform()) {
+				await exportBackupNative(json, filename);
+			} else {
+				const blob = new Blob([json], { type: 'application/json' });
+				const url = URL.createObjectURL(blob);
+				const link = document.createElement('a');
+				link.href = url;
+				link.download = filename;
+				link.click();
+				URL.revokeObjectURL(url);
+			}
+			message = m.sync_success();
+		} catch (error) {
+			message = error instanceof Error ? error.message : m.settings_backup_export_failed();
+		}
+	}
+
+	async function onSyncFile(event: Event) {
+		const input = event.currentTarget as HTMLInputElement;
+		const file = input.files?.[0];
+		input.value = '';
+		if (!file) return;
+		if (file.size > MAX_SYNC_BYTES) {
+			message = m.settings_file_too_large({ mb: Math.round(MAX_SYNC_BYTES / 1024 / 1024) });
+			return;
+		}
+		if (syncPassphrase.length < MIN_SYNC_PASSPHRASE_LENGTH) {
+			message = m.sync_passphrase_hint({ min: MIN_SYNC_PASSPHRASE_LENGTH });
+			return;
+		}
+		try {
+			const json = await file.text();
+			syncPreview = await previewSyncMerge(json, syncPassphrase);
+			pendingSyncJson = json;
+		} catch (error) {
+			if (error instanceof WrongPassphraseError) {
+				message = m.sync_wrong_passphrase();
+			} else {
+				message = error instanceof Error ? error.message : m.settings_import_failed();
+			}
+		}
+	}
+
+	async function confirmSyncImport() {
+		if (!pendingSyncJson || syncImporting) return;
+		syncImporting = true;
+		try {
+			await importSyncMerge(pendingSyncJson, syncPassphrase);
+			message = m.sync_success();
+			location.reload();
+		} catch (error) {
+			if (error instanceof WrongPassphraseError) {
+				message = m.sync_wrong_passphrase();
+			} else {
+				message = error instanceof Error ? error.message : m.settings_import_failed();
+			}
+		} finally {
+			syncImporting = false;
+			syncPreview = null;
+			pendingSyncJson = '';
+		}
+	}
+
+	function cancelSyncImport() {
+		syncPreview = null;
+		pendingSyncJson = '';
+	}
+
 	async function reset() {
 		await resetDatabase();
 		location.reload();
@@ -227,6 +321,18 @@
 	async function rerunSetupTour() {
 		await settingsRepo.saveSettings({ onboarded: false });
 		location.href = '/';
+	}
+
+	async function runUpdateCheck() {
+		updateChecking = true;
+		updateResult = null;
+		try {
+			updateResult = await checkForUpdate(pkg.version);
+			updateStatus = updateResult ? '' : m.updates_current();
+		} catch (error) {
+			updateStatus = error instanceof UpdateCheckError ? error.message : m.updates_current();
+		}
+		updateChecking = false;
 	}
 </script>
 
@@ -505,6 +611,48 @@
 				</label>
 			</section>
 
+			<section class="surface-card p-4" data-testid="updates-section">
+				<h2 class="font-semibold text-balance text-foreground">{m.updates_title()}</h2>
+				<label class="mt-3 flex min-h-11 items-center justify-between">
+					<span class="text-sm text-muted">{m.updates_toggle_label()}</span>
+					<input
+						type="checkbox"
+						class="h-5 w-5 accent-primary"
+						checked={settings.updateCheckEnabled}
+						onchange={(e) => update({ updateCheckEnabled: e.currentTarget.checked })}
+						data-testid="update-check-toggle"
+					/>
+				</label>
+				<p class="mt-2 text-xs text-muted">{m.updates_privacy_note()}</p>
+				{#if settings.updateCheckEnabled}
+					<button
+						type="button"
+						class="btn-secondary mt-3 text-sm"
+						onclick={runUpdateCheck}
+						disabled={updateChecking}
+						data-testid="update-check-now"
+					>
+						{m.updates_check_now()}
+					</button>
+					{#if updateResult}
+						<p class="mt-2 text-sm text-foreground" data-testid="updates-status">
+							<!-- eslint-disable svelte/no-navigation-without-resolve -- external download URL, not an app route -->
+							<a
+								href={updateResult.downloadUrl}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="underline"
+							>
+								{m.updates_available({ version: updateResult.version })}
+							</a>
+							<!-- eslint-enable svelte/no-navigation-without-resolve -->
+						</p>
+					{:else if updateStatus}
+						<p class="mt-2 text-sm text-muted" data-testid="updates-status">{updateStatus}</p>
+					{/if}
+				{/if}
+			</section>
+
 			<section class="surface-card p-4">
 				<h2 class="font-semibold text-balance text-foreground">{m.settings_storage_section()}</h2>
 				<div class="fp-data-card mt-2" data-testid="data-local-notice">
@@ -545,6 +693,46 @@
 							class="sr-only"
 							onchange={onFile}
 							data-testid="backup-file-input"
+						/>
+					</label>
+				</div>
+			</section>
+
+			<section class="surface-card p-4" data-testid="sync-section">
+				<h2 class="font-semibold text-balance text-foreground">{m.sync_title()}</h2>
+				<p class="mt-1 text-sm text-muted">{m.sync_body()}</p>
+
+				<label class="mt-3 block text-sm text-muted" for="sync-passphrase">
+					{m.sync_passphrase_label()}
+				</label>
+				<input
+					id="sync-passphrase"
+					type="password"
+					class="field-input mt-1"
+					bind:value={syncPassphrase}
+					data-testid="sync-passphrase"
+				/>
+				<p class="mt-1 text-xs text-muted">
+					{m.sync_passphrase_hint({ min: MIN_SYNC_PASSPHRASE_LENGTH })}
+				</p>
+
+				<div class="mt-3 flex flex-wrap gap-2">
+					<button
+						type="button"
+						class="btn-primary text-sm"
+						onclick={syncExport}
+						data-testid="sync-export"
+					>
+						{m.sync_export()}
+					</button>
+					<label class="btn-secondary cursor-pointer text-sm">
+						{m.sync_import()}
+						<input
+							type="file"
+							accept="application/json,.fpsync"
+							class="sr-only"
+							onchange={onSyncFile}
+							data-testid="sync-import"
 						/>
 					</label>
 				</div>
@@ -620,6 +808,41 @@
 							{importing ? m.settings_importing() : m.settings_import_confirm()}
 						</button>
 						<button type="button" class="btn-secondary text-sm" onclick={cancelImport}>
+							{m.common_cancel()}
+						</button>
+					</div>
+				</div>
+			{/if}
+
+			{#if syncPreview}
+				<div
+					class="surface-card border-amber-300 p-4 dark:border-amber-700"
+					role="dialog"
+					aria-labelledby="sync-preview-title"
+					data-testid="sync-preview"
+				>
+					<h2 id="sync-preview-title" class="font-semibold text-balance text-foreground">
+						{m.sync_preview_title()}
+					</h2>
+					<p class="mt-2 text-sm text-muted">
+						{m.sync_preview_body({
+							reviews: syncPreview.newReviews,
+							lessons: syncPreview.newProgress,
+							cards: syncPreview.newCards,
+							assessments: syncPreview.newAssessments
+						})}
+					</p>
+					<div class="mt-3 flex gap-2">
+						<button
+							type="button"
+							class="btn-primary text-sm"
+							onclick={confirmSyncImport}
+							disabled={syncImporting}
+							data-testid="sync-confirm"
+						>
+							{syncImporting ? m.settings_importing() : m.sync_confirm()}
+						</button>
+						<button type="button" class="btn-secondary text-sm" onclick={cancelSyncImport}>
 							{m.common_cancel()}
 						</button>
 					</div>

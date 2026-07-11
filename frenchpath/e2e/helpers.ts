@@ -16,8 +16,26 @@ function loadUnitForE2e(unitId: string): Unit {
 	return unitSchema.parse(JSON.parse(readFileSync(filePath, 'utf8')));
 }
 
+/**
+ * Default stub for asr.ts's e2e hook (see src/lib/speech/asr.ts) so generic
+ * flows (completeLesson/completeCheckpoint) can get through 'speak'
+ * exercises deterministically, without a real model download + WASM
+ * inference. Only fills the key if a test hasn't already set its own value —
+ * speak.e2e.ts registers a specific stub via its own addInitScript *before*
+ * calling gotoHome, and initScripts run in registration order, so that one
+ * wins and this default is a no-op for it.
+ */
+async function stubAsrDefault(page: Page) {
+	await page.addInitScript(() => {
+		if (!localStorage.getItem('fp-e2e-stub-asr')) {
+			localStorage.setItem('fp-e2e-stub-asr', JSON.stringify([{ word: 'test', conf: 1 }]));
+		}
+	});
+}
+
 /** Opens the home path map, completing multi-step onboarding if shown. */
 export async function gotoHome(page: Page) {
+	await stubAsrDefault(page);
 	await page.goto('/');
 	await expect(
 		page.getByTestId('onboarding-wizard').or(page.getByTestId('unit-card').first())
@@ -151,9 +169,10 @@ export async function completeLesson(page: Page) {
 		const mcq = page.locator('[data-testid="mcq-option"]:enabled');
 		const reorderWord = page.locator('[data-testid="reorder-word"]:enabled');
 		const genderOption = page.locator('[data-testid="gender-option"]:enabled');
+		const speakRecord = page.locator('[data-testid="speak-record"]:enabled');
 
 		await expect(
-			cloze.or(text).or(selects).or(mcq).or(reorderWord).or(genderOption).first()
+			cloze.or(text).or(selects).or(mcq).or(reorderWord).or(genderOption).or(speakRecord).first()
 		).toBeVisible();
 
 		if (await cloze.count()) {
@@ -167,6 +186,8 @@ export async function completeLesson(page: Page) {
 			while ((await reorderWord.count()) > 0) await reorderWord.first().click();
 		} else if (await genderOption.count()) {
 			await genderOption.first().click();
+		} else if (await speakRecord.count()) {
+			await recordAndStop(page);
 		} else {
 			await mcq.first().click();
 		}
@@ -187,6 +208,16 @@ export async function completeLesson(page: Page) {
 	if (await dismiss.isVisible().catch(() => false)) {
 		await dismiss.click();
 	}
+}
+
+/** Click the speak-record toggle to start, wait for it to actually start
+ * (avoids racing the async getUserMedia() call), then click again to stop
+ * and trigger the stubbed transcription. */
+async function recordAndStop(page: Page) {
+	const recordBtn = page.getByTestId('speak-record');
+	await recordBtn.click();
+	await expect(recordBtn).toHaveAttribute('aria-pressed', 'true');
+	await recordBtn.click();
 }
 
 /** Dismiss gloss popover if open. */
@@ -270,6 +301,9 @@ async function applyExerciseAnswer(page: Page, ex: Exercise) {
 			}
 			break;
 		}
+		case 'speak':
+			await recordAndStop(page);
+			break;
 	}
 }
 

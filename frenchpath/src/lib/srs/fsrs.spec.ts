@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { createSrsCard, gradeCard, retrievability, FSRS_VERSION } from './fsrs';
+import { generatorParameters } from 'ts-fsrs';
+import { createSrsCard, gradeCard, getScheduler, retrievability, FSRS_VERSION } from './fsrs';
 
 const NOW = new Date('2026-01-01T00:00:00Z');
 
@@ -61,6 +62,43 @@ describe('gradeCard', () => {
 		gradeCard(card, 'easy', { now: NOW });
 		expect(card.reps).toBe(0);
 		expect(card.due.getTime()).toBe(snapshotDue);
+	});
+});
+
+describe('custom FSRS weights', () => {
+	const defaults = generatorParameters().w;
+	const custom = defaults.map((v, i) => (i === 0 ? v + 0.1 : v));
+
+	it('getScheduler applies custom weights', () => {
+		const s = getScheduler(0.9, custom);
+		expect(s.parameters.w[0]).toBeCloseTo(defaults[0] + 0.1);
+	});
+
+	it('getScheduler with null/empty weights uses defaults', () => {
+		expect(getScheduler(0.9, null).parameters.w).toEqual(defaults);
+		expect(getScheduler(0.9, []).parameters.w).toEqual(defaults);
+	});
+
+	it('gradeCard schedules differently under different weights', () => {
+		// ponytail: a single 'good' from a brand-new card follows ts-fsrs's fixed
+		// short-term learning steps (1m/10m), which ignore `w` entirely — so it can't
+		// show a weight effect. Graduate to Review state first (matches the
+		// targetRetention test above), then grade later where stability (which `w`
+		// drives) determines the interval.
+		let card = createSrsCard({
+			cardId: 'c',
+			contentId: 'c',
+			cefrLevel: 'A1',
+			skill: 'reading',
+			now: NOW
+		});
+		card = gradeCard(card, 'good', { now: NOW }).card;
+		card = gradeCard(card, 'good', { now: NOW }).card;
+		const later = new Date('2026-01-15T00:00:00Z');
+		const heavier = defaults.map((v) => v * 1.5);
+		const a = gradeCard(card, 'good', { now: later, weights: null });
+		const b = gradeCard(card, 'good', { now: later, weights: heavier });
+		expect(a.card.due.getTime()).not.toBe(b.card.due.getTime());
 	});
 });
 

@@ -11,23 +11,23 @@ Privacy-first, offline-only. No user accounts. All inference on-device unless no
 
 ## Phase V1 — 4–8 weeks post-launch
 
-### On-device personalization
+### On-device personalization — ✅ shipped in M2.6 (2026-07-11)
 
 | Feature | Data source | Approach |
 |---------|-------------|----------|
-| FSRS parameter optimization | `reviewLog` store (≥500 reviews) | `src/lib/srs/optimizer.ts` stub + Web Worker (V1); port open-spaced-repetition optimizer |
+| FSRS parameter optimization | `reviewLog` store (≥500 reviews) | `src/lib/srs/optimizer.ts` + `optimizer.worker.ts`, `fsrs-browser` (official open-spaced-repetition WASM build) in a Web Worker. See CAP-SRS in the spec. |
 | Adaptive unit suggestions | `skillProfile` store | `src/lib/gamification/adaptiveSuggestions.ts` on home CoachTip |
 | Retention forecast UI | `srsCards` FSRS state | Pure math via `ts-fsrs` — no ML |
 
 **Why not deep learning:** sparse per-user data; FSRS-6 already SOTA for SRS; mobile training cost is high.
 
-### Speech & writing (V1)
+### Speech & writing (V1) — ✅ shipped in M2.6 (2026-07-11)
 
 | Feature | Technology | Notes |
 |---------|------------|-------|
-| Pronunciation scoring | Web Speech API (`webkitSpeechRecognition`) | Chromium-only; Levenshtein vs expected phrase |
-| Shadowing mode | Audio + transcript scroll sync | No ML — UX pattern |
-| Writing rubric feedback | JSON rule patterns | e.g. `je suis` + age → suggest `j'ai`; `avoir faim` errors |
+| Pronunciation scoring | **Vosk (`vosk-browser`, on-device WASM)** | Corrected from the original Web Speech API plan: `webkitSpeechRecognition` streams raw audio to Google's servers, which violates invariants 1/2 (on-device only, zero runtime AI). Vosk runs the recognizer entirely on-device (Kaldi WASM); word-level confidence via `scorePronunciation()`. See CAP-SPEAK in the spec. |
+| Shadowing mode | Audio + transcript scroll sync | No ML — UX pattern. Shipped (`ShadowingPlayer.svelte`, CAP-TTS). |
+| Writing rubric feedback | JSON rule patterns | e.g. `je suis` + age → suggest `j'ai`; `avoir faim` errors. Shipped (`rubric.ts`, CAP-CONTENT/CAP-EX). |
 
 ## Phase V2 — 3–6 months post-launch
 

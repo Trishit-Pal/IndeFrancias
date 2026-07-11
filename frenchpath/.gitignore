@@ -37,3 +37,9 @@ project.inlang/cache/
 # Android signing
 *.keystore
 *.jks
+
+# Vosk ASR model (fetched via `npm run model:fetch`, ~40MB, pinned by hash)
+static/models/
+
+# Build-time generated (scripts/emit-version-json.mjs)
+static/version.json

@@ -1,4 +1,8 @@
-/** E2EE sync envelope — architecture stub for optional future cloud sync. */
+/**
+ * E2EE sync envelope — architecture stub for optional future cloud sync.
+ * @deprecated Not wired to anything shipped. File-based sync lives in
+ * `./mergeFile.ts` (export/preview/import via `./crypto.ts` envelopes).
+ */
 
 export interface SyncEnvelope {
 	version: number;

@@ -23,10 +23,14 @@
 		"content:proofread:launch": "tsx scripts/proofread-report.ts --launch",
 		"content:translate-glosses": "tsx scripts/translate-glosses.ts",
 		"analyze": "vite build --mode analyze",
-		"build:cap": "npm run build && node scripts/prepare-cap.mjs",
+		"model:fetch": "node scripts/fetch-vosk-model.mjs",
+		"version:emit": "node scripts/emit-version-json.mjs",
+		"verify:dist": "node scripts/verify-dist.mjs",
+		"build:cap": "npm run model:fetch && npm run version:emit && npm run build && node scripts/prepare-cap.mjs && npm run verify:dist",
 		"cap:sync": "npm run build:cap && cap sync",
 		"build:apk": "npm run build:cap && cap sync android && cd android && gradlew.bat assembleRelease",
-		"build:desktop": "tauri build"
+		"build:desktop": "npm run model:fetch && npm run version:emit && tauri build && npm run verify:dist",
+		"vercel-build": "npm run model:fetch && npm run version:emit && npm run build && npm run verify:dist"
 	},
 	"devDependencies": {
 		"@anthropic-ai/sdk": "^0.100.1",
@@ -82,9 +86,11 @@
 		"@threlte/core": "^8.5.16",
 		"@threlte/extras": "^9.21.0",
 		"bits-ui": "^2.18.1",
+		"fsrs-browser": "^6.6.0",
 		"idb": "^8.0.3",
 		"three": "^0.184.0",
 		"ts-fsrs": "^5.4.1",
+		"vosk-browser": "^0.0.8",
 		"zod": "^4.4.3"
 	}
 }

@@ -13,7 +13,8 @@ export type ExerciseResponse =
 	| { type: 'gender'; choice: 'masculine' | 'feminine' }
 	| { type: 'reading'; selectedIndices: number[] }
 	| { type: 'listening'; text: string }
-	| { type: 'productive'; checked: boolean[] };
+	| { type: 'productive'; checked: boolean[] }
+	| { type: 'speak'; overall: 'good' | 'partial' | 'retry'; selfOk?: boolean };
 
 /** True if `text` matches the answer or any accepted alternative (normalised). */
 function matchesText(answer: string, accept: readonly string[], text: string): boolean {
@@ -103,6 +104,12 @@ export function gradeExercise(exercise: Exercise, response: ExerciseResponse): b
 			const checked = response.checked.filter(Boolean).length;
 			return checked >= exercise.minChecks;
 		}
+
+		case 'speak':
+			return (
+				response.type === 'speak' &&
+				(response.overall === 'good' || response.overall === 'partial' || response.selfOk === true)
+			);
 	}
 }
 

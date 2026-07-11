@@ -25,6 +25,21 @@ export const genderSchema = z.enum(['masculine', 'feminine', 'none']);
 
 export const nativeLangSchema = z.enum(['hi', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'en']);
 
+/** A build-time-authored writing feedback rule; runs as a regex over the
+ *  learner's normalized answer. Lives in content packs so the native
+ *  proofreader reviews it like any French content. */
+export const rubricRuleSchema = z.object({
+	id: z.string().min(1),
+	/** Regex source, tested against the normalized answer (see lesson/engine). */
+	match: z.string().min(1),
+	hint: z.string().min(1),
+	// ponytail: partialRecord, not record — z.record(enum, ...) demands every
+	// enum key present. Content only ever supplies a few languages per rule.
+	hintByLang: z.partialRecord(nativeLangSchema, z.string()).optional(),
+	severity: z.enum(['gentle', 'correction'])
+});
+export type RubricRule = z.infer<typeof rubricRuleSchema>;
+
 export const glossesSchema = z.object({
 	hi: z.string().min(1),
 	bn: z.string().min(1),
@@ -77,7 +92,9 @@ const exerciseBase = {
 	hint: z.string().optional(),
 	coachNote: z.string().optional(),
 	/** French tokens in the prompt to always make tappable (even if not in lexicon). */
-	promptGlosses: z.array(z.string().min(1)).optional()
+	promptGlosses: z.array(z.string().min(1)).optional(),
+	/** Optional writing-feedback rules (WP1); free-text exercises only. */
+	rubricRules: z.array(rubricRuleSchema).optional()
 };
 
 export const mcqExerciseSchema = z.object({
@@ -189,6 +206,16 @@ export const productiveExerciseSchema = z.object({
 	minChecks: z.number().int().min(1).default(2)
 });
 
+/** Speak the phrase aloud; scored on-device by the ASR worker (WP3). */
+export const speakExerciseSchema = z.object({
+	type: z.literal('speak'),
+	...exerciseBase,
+	/** The French phrase the learner must say. */
+	phrase: z.string().min(1),
+	/** Optional different TTS model text (defaults to phrase). */
+	audioText: z.string().optional()
+});
+
 export const exerciseSchema = z.discriminatedUnion('type', [
 	mcqExerciseSchema,
 	clozeExerciseSchema,
@@ -200,7 +227,8 @@ export const exerciseSchema = z.discriminatedUnion('type', [
 	genderExerciseSchema,
 	readingExerciseSchema,
 	listeningExerciseSchema,
-	productiveExerciseSchema
+	productiveExerciseSchema,
+	speakExerciseSchema
 ]);
 export type Exercise = z.infer<typeof exerciseSchema>;
 export type ExerciseType = Exercise['type'];

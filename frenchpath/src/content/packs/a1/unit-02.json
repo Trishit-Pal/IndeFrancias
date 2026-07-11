@@ -307,7 +307,18 @@
 			"prompt": "ma famille",
 			"direction": "fr-en",
 			"answer": "my family",
-			"accept": []
+			"accept": [],
+			"rubricRules": [
+				{
+					"id": "marier-avec",
+					"match": "\\bmarier avec\\b",
+					"hint": "Say “se marier avec” or simply “épouser”, not “marier avec” on its own.",
+					"hintByLang": {
+						"hi": "“se marier avec” या “épouser” कहें, अकेले “marier avec” नहीं।"
+					},
+					"severity": "gentle"
+				}
+			]
 		},
 		{
 			"type": "matching",

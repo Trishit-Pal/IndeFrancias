@@ -8,5 +8,11 @@ export default defineConfig({
 		reuseExistingServer: !process.env.CI,
 		timeout: 180_000
 	},
-	testMatch: '**/*.e2e.{ts,js}'
+	testMatch: '**/*.e2e.{ts,js}',
+	use: {
+		launchOptions: {
+			// Let getUserMedia() succeed headlessly (no real mic in CI/automated runs).
+			args: ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream']
+		}
+	}
 });

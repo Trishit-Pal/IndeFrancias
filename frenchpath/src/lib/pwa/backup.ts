@@ -21,7 +21,7 @@ import { migrateBackup } from './migrations';
 /** Reject imports larger than this before JSON.parse (DoS guard). */
 export const MAX_BACKUP_BYTES = 5 * 1024 * 1024;
 
-const STORES = [
+export const STORES = [
 	'settings',
 	'progress',
 	'srsCards',
@@ -42,6 +42,25 @@ export interface BackupPreview {
 
 /** Lightweight parse for the import confirmation UI — does not mutate the database. */
 export async function previewBackup(json: string): Promise<BackupPreview> {
+	const { payload, exportedAt } = await validateAndParseBackup(json);
+	return {
+		exportedAt,
+		lessonCount: payload.progress.length,
+		cardCount: payload.srsCards.length
+	};
+}
+
+export interface ValidatedBackup {
+	payload: BackupPayload;
+	exportedAt: string;
+}
+
+/**
+ * The single validation gate for anything that becomes database content:
+ * size guard → JSON parse → version bounds → checksum → migrate → schema.
+ * Used by backup preview/import AND sync import so the pipelines can't drift.
+ */
+export async function validateAndParseBackup(json: string): Promise<ValidatedBackup> {
 	assertBackupSize(json);
 	const raw = parseBackupJson(json);
 	const version = raw.schemaVersion ?? raw.version;
@@ -62,15 +81,10 @@ export async function previewBackup(json: string): Promise<BackupPreview> {
 	if (!parsed.success) {
 		throw new Error(`Invalid backup file: ${parsed.error.issues[0]?.message ?? 'schema mismatch'}`);
 	}
-	const p = parsed.data.payload;
-	return {
-		exportedAt: String(raw.exportedAt ?? 'unknown'),
-		lessonCount: p.progress.length,
-		cardCount: p.srsCards.length
-	};
+	return { payload: parsed.data.payload, exportedAt: String(raw.exportedAt ?? 'unknown') };
 }
 
-function assertBackupSize(json: string): void {
+export function assertBackupSize(json: string): void {
 	const bytes = new TextEncoder().encode(json).byteLength;
 	if (bytes > MAX_BACKUP_BYTES) {
 		throw new Error(
@@ -79,7 +93,7 @@ function assertBackupSize(json: string): void {
 	}
 }
 
-function parseBackupJson(json: string): {
+export function parseBackupJson(json: string): {
 	version?: number;
 	schemaVersion?: number;
 	checksum?: string;
@@ -125,7 +139,7 @@ export async function exportBackup(): Promise<string> {
 }
 
 // JSON has no Date type, so SRS card dates come back as ISO strings on import.
-function reviveCard(c: BackupPayload['srsCards'][number]): SrsCard {
+export function reviveCard(c: BackupPayload['srsCards'][number]): SrsCard {
 	return {
 		...c,
 		due: new Date(c.due),
@@ -147,28 +161,7 @@ export async function importBackup(json: string): Promise<void> {
 }
 
 async function importBackupInner(json: string): Promise<void> {
-	assertBackupSize(json);
-	const raw = parseBackupJson(json);
-	const version = raw.schemaVersion ?? raw.version;
-	if (typeof version !== 'number' || version < 1 || version > CURRENT_BACKUP_VERSION) {
-		throw new Error(`Unsupported backup version: ${String(version)}`);
-	}
-	// v2+ files carry a checksum; verify before any migration or mutation.
-	if (version >= 2) {
-		const expected = await sha256Hex(JSON.stringify(raw.payload ?? null));
-		if (expected !== raw.checksum) {
-			throw new Error(
-				'Backup integrity check failed: checksum mismatch (corrupted or edited file).'
-			);
-		}
-	}
-
-	const migrated = await migrateBackup(raw);
-	const parsed = backupFileSchema.safeParse(migrated);
-	if (!parsed.success) {
-		throw new Error(`Invalid backup file: ${parsed.error.issues[0]?.message ?? 'schema mismatch'}`);
-	}
-	const p = parsed.data.payload;
+	const { payload: p } = await validateAndParseBackup(json);
 
 	// Validation passed — only now mutate the database, atomically.
 	// All clears + puts are inside one transaction: if any put throws, IDB rolls
@@ -190,7 +183,13 @@ async function importBackupInner(json: string): Promise<void> {
 
 		await tx.done;
 	} catch (err) {
-		tx.abort();
+		// The tx may have already auto-aborted (a failed put rejects tx.done);
+		// abort() on a finished transaction throws and would mask `err`.
+		try {
+			tx.abort();
+		} catch {
+			/* already aborted */
+		}
 		throw new Error('Restore failed — your existing data is unchanged', { cause: err });
 	}
 }

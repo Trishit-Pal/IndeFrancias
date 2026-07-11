@@ -42,6 +42,12 @@ describe('authored content', () => {
 	it('throws on an unknown unit id', async () => {
 		await expect(loadUnit('does-not-exist')).rejects.toThrow(/Unknown unit/);
 	});
+
+	it('a1-unit-01 carries the age-etre rubric rule', async () => {
+		const unit = await loadUnit('a1-unit-01');
+		const withRules = unit.exercises.filter((e) => 'rubricRules' in e && e.rubricRules?.length);
+		expect(withRules.length).toBeGreaterThan(0);
+	});
 });
 
 describe('schema acts as a validation gate', () => {

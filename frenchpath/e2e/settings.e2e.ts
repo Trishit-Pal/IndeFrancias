@@ -29,3 +29,28 @@ test('data-local notice is visible in backup section', async ({ page }) => {
 	await page.goto('/settings');
 	await expect(page.getByTestId('data-local-notice')).toBeVisible();
 });
+
+test('update check toggle is off by default and never fetches version.json', async ({ page }) => {
+	const versionRequests: string[] = [];
+	page.on('request', (req) => {
+		if (req.url().includes('version.json')) versionRequests.push(req.url());
+	});
+
+	await gotoHome(page);
+	await page.goto('/settings');
+	await expect(page.getByTestId('update-check-toggle')).not.toBeChecked();
+	await expect(page.getByTestId('update-check-now')).not.toBeVisible();
+
+	await page.goto('/');
+	await page.getByTestId('unit-card').first().click();
+	await page.getByTestId('start-lesson').click();
+	await expect(
+		page
+			.getByTestId('check')
+			.or(page.getByTestId('summary'))
+			.or(page.getByTestId('bridge-quiz-continue'))
+			.first()
+	).toBeVisible();
+
+	expect(versionRequests).toEqual([]);
+});

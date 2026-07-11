@@ -27,6 +27,8 @@
 	let skillProfiles = $state<SkillProfileRecord[]>([]);
 	let assessments = $state<AssessmentRecord[]>([]);
 	let targetExamDate = $state<string | null>(null);
+	let fsrsWeights = $state<number[] | null>(null);
+	let fsrsOptimizedReviewCount = $state(0);
 	let weekReviewed = $state(0);
 	let totalXp = $state(0);
 	let heatmap = $state<{ date: string; xp: number }[]>([]);
@@ -80,6 +82,8 @@
 	onMount(async () => {
 		const settings = await settingsRepo.getSettings();
 		targetExamDate = settings.targetExamDate;
+		fsrsWeights = settings.fsrsWeights;
+		fsrsOptimizedReviewCount = settings.fsrsOptimizedReviewCount;
 		const streakRecord = await streakRepo.getStreak();
 		streak = streakRecord.currentStreak;
 		longestStreak = streakRecord.longestStreak;
@@ -125,6 +129,16 @@
 		}
 		if (a.kind === 'cefr_milestone') return m.progress_assessment_milestone({ id: a.refId });
 		return m.progress_assessment_checkpoint({ id: a.refId });
+	}
+
+	async function resetFsrsWeights(): Promise<void> {
+		await settingsRepo.saveSettings({
+			fsrsWeights: null,
+			fsrsOptimizedAt: null,
+			fsrsOptimizedReviewCount: 0
+		});
+		fsrsWeights = null;
+		fsrsOptimizedReviewCount = 0;
 	}
 </script>
 
@@ -217,6 +231,29 @@
 			</li>
 		{/each}
 	</ul>
+
+	<section class="mt-5">
+		<div class="surface-card p-4" data-testid="fsrs-status" aria-live="polite">
+			<h2 class="text-sm font-semibold text-balance text-foreground">
+				{m.fsrs_personalized_title()}
+			</h2>
+			{#if fsrsWeights}
+				<p class="mt-1 text-xs text-muted">
+					{m.fsrs_personalized_on({ count: fsrsOptimizedReviewCount })}
+				</p>
+				<button
+					type="button"
+					class="btn-secondary mt-3 text-sm"
+					data-testid="fsrs-reset"
+					onclick={resetFsrsWeights}
+				>
+					{m.fsrs_reset_defaults()}
+				</button>
+			{:else}
+				<p class="mt-1 text-xs text-muted">{m.fsrs_personalized_off()}</p>
+			{/if}
+		</div>
+	</section>
 
 	<section class="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-1">
 		{#if skillProfiles.length > 0}

@@ -13,6 +13,7 @@
 	import ReadingExercise from './ReadingExercise.svelte';
 	import ListeningExercise from './ListeningExercise.svelte';
 	import ProductiveExercise from './ProductiveExercise.svelte';
+	import SpeakExercise from './SpeakExercise.svelte';
 
 	let {
 		exercise,
@@ -68,4 +69,6 @@
 	<ListeningExercise {exercise} bind:response {submitted} {lexicon} />
 {:else if exercise.type === 'productive'}
 	<ProductiveExercise {exercise} bind:response {submitted} {lexicon} />
+{:else if exercise.type === 'speak'}
+	<SpeakExercise {exercise} bind:response {submitted} {lexicon} />
 {/if}

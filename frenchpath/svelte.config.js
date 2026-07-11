@@ -17,7 +17,13 @@ const config = {
 			mode: 'hash',
 			directives: {
 				'default-src': ['self'],
-				'script-src': ['self'],
+				// unsafe-eval needed for vosk-browser: its Emscripten WASM runtime
+				// calls new Function() during its own startup (createNamedFunction/
+				// extendError idiom), independent of WebAssembly.instantiate itself.
+				// 'wasm-unsafe-eval' does not cover this — confirmed empirically.
+				// Approved by project owner after documented risk investigation
+				// (.superpowers/sdd/task-10-csp-fix-report.md).
+				'script-src': ['self', 'unsafe-eval'],
 				'connect-src': ['self'],
 				'img-src': ['self', 'data:'],
 				'media-src': ['self'],
@@ -26,7 +32,9 @@ const config = {
 				'base-uri': ['self'],
 				'frame-ancestors': ['none'],
 				'manifest-src': ['self'],
-				'worker-src': ['self']
+				// blob: needed for vosk-browser, which bundles and spawns its worker
+				// from a blob: URL rather than a same-origin module URL.
+				'worker-src': ['self', 'blob:']
 			}
 		}
 	}

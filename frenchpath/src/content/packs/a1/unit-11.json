@@ -335,7 +335,18 @@
 			"coachNote": "Talk about the weather and seasons and make simple small talk (A1: can describe today's weather and the seasons in short, simple phrases).",
 			"text": "En hiver à Delhi, il {{}} froid.",
 			"answer": "fait",
-			"accept": ["fait"]
+			"accept": ["fait"],
+			"rubricRules": [
+				{
+					"id": "chaud-etre",
+					"match": "\\bje suis chaud\\b",
+					"hint": "For feeling hot, French uses avoir: “j’ai chaud”, not “je suis chaud” (which means something else!).",
+					"hintByLang": {
+						"hi": "गर्मी महसूस करने के लिए avoir इस्तेमाल होता है: “j’ai chaud”, “je suis chaud” नहीं।"
+					},
+					"severity": "correction"
+				}
+			]
 		},
 		{
 			"type": "translation",
