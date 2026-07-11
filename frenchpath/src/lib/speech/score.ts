@@ -38,34 +38,54 @@ function isClose(a: string, b: string): boolean {
 	return d / Math.max(a.length, b.length, 1) <= CLOSE_RATIO;
 }
 
+/** "j'ai" / "j’ai" / "est-ce" → ["j","ai"] / ["est","ce"]. Vosk hears elisions
+ *  and hyphenations as separate words, so BOTH sides must tokenize alike.
+ *  Split the RAW text first: normalizeAnswer deletes curly ’, which would
+ *  otherwise fuse "j’ai" into "jai" with no split point left. */
+function subWords(raw: string): string[] {
+	return raw
+		.split(/['’-]+/)
+		.map(normalizeAnswer)
+		.filter((n) => n.length > 0);
+}
+
 /** Greedy in-order alignment of expected words to recognized words. */
 export function scorePronunciation(
 	expectedPhrase: string,
 	recognized: VoskWord[]
 ): PronunciationScore {
-	// Tokenize once, then derive the normalized form per-token so the two
+	// Tokenize once, then derive normalized sub-words per token so the two
 	// sequences can never drift out of alignment (see score.spec.ts mid-phrase
-	// punctuation regression test).
+	// punctuation and elision regression tests).
 	const expectedTokens = expectedPhrase
 		.split(/\s+/)
 		.filter(Boolean)
-		.map((orig) => ({ orig, norm: normalizeAnswer(orig) }))
-		.filter((t) => t.norm.length > 0);
-	const heard = recognized.map((r) => ({ ...r, norm: normalizeAnswer(r.word) }));
+		.map((orig) => ({ orig, norms: subWords(orig) }))
+		.filter((t) => t.norms.length > 0);
+	const heard = recognized.flatMap((r) => subWords(r.word).map((norm) => ({ norm, conf: r.conf })));
 	let cursor = 0;
-	const words: WordVerdict[] = expectedTokens.map(({ orig: expOrig, norm: expNorm }) => {
-		for (let i = cursor; i < heard.length; i++) {
-			const h = heard[i];
-			if (h.norm === expNorm) {
-				cursor = i + 1;
-				return { expected: expOrig, verdict: h.conf >= CONF_GOOD ? 'good' : 'unclear' };
+	const words: WordVerdict[] = expectedTokens.map(({ orig, norms }) => {
+		const verdicts = norms.map((expNorm): WordVerdict['verdict'] => {
+			for (let i = cursor; i < heard.length; i++) {
+				const h = heard[i];
+				if (h.norm === expNorm) {
+					cursor = i + 1;
+					return h.conf >= CONF_GOOD ? 'good' : 'unclear';
+				}
+				if (isClose(h.norm, expNorm)) {
+					cursor = i + 1;
+					return 'unclear';
+				}
 			}
-			if (isClose(h.norm, expNorm)) {
-				cursor = i + 1;
-				return { expected: expOrig, verdict: 'unclear' };
-			}
-		}
-		return { expected: expOrig, verdict: 'missed' };
+			return 'missed';
+		});
+		// One chip per WRITTEN word: aggregate its sub-word verdicts.
+		const verdict = verdicts.every((v) => v === 'good')
+			? 'good'
+			: verdicts.every((v) => v === 'missed')
+				? 'missed'
+				: 'unclear';
+		return { expected: orig, verdict };
 	});
 	const good = words.filter((x) => x.verdict === 'good').length;
 	const missedAll = words.every((x) => x.verdict === 'missed');

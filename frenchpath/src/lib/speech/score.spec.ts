@@ -53,4 +53,39 @@ describe('scorePronunciation', () => {
 			{ expected: 'venez', verdict: 'good' }
 		]);
 	});
+
+	it("elided expected word (j'ai) matches Vosk splitting it into two tokens", () => {
+		const r = scorePronunciation("J'ai froid", [w('j'), w('ai'), w('froid')]);
+		expect(r.words).toEqual([
+			{ expected: "J'ai", verdict: 'good' },
+			{ expected: 'froid', verdict: 'good' }
+		]);
+		expect(r.overall).toBe('good');
+	});
+
+	it('elided expected word also matches Vosk emitting it as a single token', () => {
+		const r = scorePronunciation("J'ai froid", [w("j'ai"), w('froid')]);
+		expect(r.overall).toBe('good');
+	});
+
+	it('curly-apostrophe elision (content-pack style) splits the same way', () => {
+		const r = scorePronunciation('J’ai froid', [w('j'), w('ai'), w('froid')]);
+		expect(r.overall).toBe('good');
+	});
+
+	it('hyphenated expected word (est-ce) matches split recognition', () => {
+		const r = scorePronunciation('Est-ce que ça va ?', [
+			w('est'),
+			w('ce'),
+			w('que'),
+			w('ça'),
+			w('va')
+		]);
+		expect(r.overall).toBe('good');
+	});
+
+	it('partially heard elision counts as unclear, not missed', () => {
+		const r = scorePronunciation("J'ai froid", [w('ai'), w('froid')]);
+		expect(r.words[0]).toEqual({ expected: "J'ai", verdict: 'unclear' });
+	});
 });
