@@ -61,6 +61,14 @@
 			.catch(() => (modelStatus = 'failed'));
 	});
 
+	// Cleanup microphone and AudioContext on component unmount or if recording is interrupted
+	$effect(() => {
+		return () => {
+			mediaStream?.getTracks().forEach((t) => t.stop());
+			void audioCtx?.close();
+		};
+	});
+
 	function play() {
 		playing = true;
 		speakFrench(exercise.audioText ?? exercise.phrase);
