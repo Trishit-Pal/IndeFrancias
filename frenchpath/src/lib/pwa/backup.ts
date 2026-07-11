@@ -183,7 +183,13 @@ async function importBackupInner(json: string): Promise<void> {
 
 		await tx.done;
 	} catch (err) {
-		tx.abort();
+		// The tx may have already auto-aborted (a failed put rejects tx.done);
+		// abort() on a finished transaction throws and would mask `err`.
+		try {
+			tx.abort();
+		} catch {
+			/* already aborted */
+		}
 		throw new Error('Restore failed — your existing data is unchanged', { cause: err });
 	}
 }

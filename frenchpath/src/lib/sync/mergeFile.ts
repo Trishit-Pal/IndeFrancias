@@ -115,7 +115,13 @@ async function importSyncMergeInner(fileJson: string, passphrase: string): Promi
 
 		await tx.done;
 	} catch (err) {
-		tx.abort();
+		// The tx may have already auto-aborted (a failed put rejects tx.done);
+		// abort() on a finished transaction throws and would mask `err`.
+		try {
+			tx.abort();
+		} catch {
+			/* already aborted */
+		}
 		throw new Error('Sync merge failed — your existing data is unchanged', { cause: err });
 	}
 	return summary;
