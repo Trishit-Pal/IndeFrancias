@@ -26,6 +26,7 @@
 	let playing = $state(false);
 	let loop = $state(false);
 	let fallbackTimer: ReturnType<typeof setInterval> | null = null;
+	let stopping = false; // Chrome fires onend on cancel(); don't loop-restart on our own stop
 
 	function clearFallback() {
 		if (fallbackTimer !== null) clearInterval(fallbackTimer);
@@ -42,6 +43,7 @@
 	}
 
 	function stop() {
+		stopping = true;
 		stopSpeaking();
 		clearFallback();
 		playing = false;
@@ -50,6 +52,7 @@
 
 	function play() {
 		if (tokens.length === 0) return;
+		stopping = false;
 		clearFallback();
 		playing = true;
 		currentIndex = 0;
@@ -63,7 +66,7 @@
 				clearFallback();
 				playing = false;
 				currentIndex = -1;
-				if (loop) play();
+				if (loop && !stopping) play();
 			}
 		});
 		fallbackTimer = setInterval(() => {
@@ -90,6 +93,7 @@
 			class="min-h-11 rounded-full border border-border px-4 py-2 hover:border-primary"
 			aria-pressed={playing}
 			onclick={toggle}
+			data-testid="shadow-play"
 		>
 			{playing ? m.shadow_stop() : m.shadow_start()}
 		</button>
@@ -100,6 +104,7 @@
 				: 'border-border'}"
 			aria-pressed={loop}
 			onclick={() => (loop = !loop)}
+			data-testid="shadow-loop"
 		>
 			🔁 {m.shadow_loop()}
 		</button>

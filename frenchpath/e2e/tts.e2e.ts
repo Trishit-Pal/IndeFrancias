@@ -12,6 +12,26 @@ test('TTS speed setting persists after reload', async ({ page }) => {
 });
 
 test('shadowing toggle reveals synced transcript on a dictation exercise', async ({ page }) => {
+	await page.addInitScript(() => {
+		// Minimal speechSynthesis stub mimicking Chrome: cancel() fires the
+		// active utterance's onend (the loop-restart regression trigger).
+		let active: SpeechSynthesisUtterance | null = null;
+		const stub = {
+			getVoices: () => [],
+			addEventListener: () => {},
+			removeEventListener: () => {},
+			speak: (u: SpeechSynthesisUtterance) => {
+				active = u;
+			},
+			cancel: () => {
+				const u = active;
+				active = null;
+				if (u?.onend) queueMicrotask(() => u.onend?.(new Event('end') as SpeechSynthesisEvent));
+			}
+		};
+		Object.defineProperty(window, 'speechSynthesis', { value: stub });
+	});
+
 	await gotoHome(page);
 	// a1-unit-03's first exercise is a dictation exercise; units 1-2 must be
 	// completed first to unlock it.
@@ -51,4 +71,13 @@ test('shadowing toggle reveals synced transcript on a dictation exercise', async
 	// auto-plays and its own inner button reads "stop".
 	await expect(shadowToggle).toHaveText(outerLabel ?? '');
 	await expect(shadowToggle).toHaveAttribute('aria-pressed', 'true');
+
+	// Regression (M2.6 review): stopping while loop is armed must stay stopped —
+	// Chrome fires onend on cancel(), which used to restart playback.
+	await page.getByTestId('shadow-loop').click();
+	const playBtn = page.getByTestId('shadow-play');
+	await expect(playBtn).toHaveAttribute('aria-pressed', 'true'); // auto-plays on reveal
+	await playBtn.click(); // stop
+	await page.waitForTimeout(200); // let the cancel-triggered onend land
+	await expect(playBtn).toHaveAttribute('aria-pressed', 'false');
 });
