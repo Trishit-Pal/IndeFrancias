@@ -264,5 +264,18 @@
 	"fsrs_personalized_title": "शेड्यूलिंग",
 	"fsrs_personalized_on": "व्यक्तिगत — आपकी {count} समीक्षाओं से तैयार, केवल इसी डिवाइस पर।",
 	"fsrs_personalized_off": "मानक FSRS शेड्यूलिंग। 500 समीक्षाओं के बाद अपने आप व्यक्तिगत हो जाएगी।",
-	"fsrs_reset_defaults": "मानक पर रीसेट करें"
+	"fsrs_reset_defaults": "मानक पर रीसेट करें",
+	"speak_pack_title": "बोलने का पैक",
+	"speak_pack_body": "तुरंत उच्चारण फ़ीडबैक पाने के लिए ऑन-डिवाइस स्पीच मॉडल ({size} MB) डाउनलोड करें। एक बार का डाउनलोड, आपके डिवाइस पर सहेजा जाता है, कभी कहीं भेजा नहीं जाता।",
+	"speak_pack_download": "डाउनलोड करें",
+	"speak_pack_progress": "डाउनलोड हो रहा है… {pct}%",
+	"speak_record": "🎤 रिकॉर्ड करें",
+	"speak_stop": "⏹ रोकें",
+	"speak_transcribing": "आपका उच्चारण जांचा जा रहा है…",
+	"speak_result_good": "बहुत बढ़िया कहा!",
+	"speak_result_partial": "अच्छी कोशिश — कुछ शब्दों पर और काम करें।",
+	"speak_result_retry": "फिर से कोशिश करते हैं।",
+	"speak_fallback_prompt": "हम आपका उच्चारण अपने आप जांच नहीं पाए। क्या आपको लगा कि यह सही लगा?",
+	"speak_fallback_yes": "हाँ, सही लगा",
+	"speak_fallback_retry": "फिर से कोशिश करें"
 }

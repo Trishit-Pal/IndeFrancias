@@ -385,6 +385,14 @@
 			"direction": "fr-en",
 			"answer": "hello",
 			"accept": ["good morning", "good day"]
+		},
+		{
+			"type": "speak",
+			"id": "a1u1-speak-1",
+			"cardId": "a1-greet-bonjour",
+			"hint": "Use vocabulary from this unit and the bridge note.",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce onese",
+			"phrase": "je voudrais un café"
 		}
 	]
 }

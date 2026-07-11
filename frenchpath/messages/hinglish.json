@@ -236,5 +236,18 @@
 	"fsrs_personalized_title": "Scheduling",
 	"fsrs_personalized_on": "Personalized — tuned from {count} of your reviews, on this device only.",
 	"fsrs_personalized_off": "Standard FSRS scheduling. Personalizes automatically after 500 reviews.",
-	"fsrs_reset_defaults": "Reset to standard"
+	"fsrs_reset_defaults": "Reset to standard",
+	"speak_pack_title": "Speaking pack",
+	"speak_pack_body": "Download the on-device speech model ({size} MB) to get instant pronunciation feedback. One-time download, stored on this device, never sent anywhere.",
+	"speak_pack_download": "Download",
+	"speak_pack_progress": "Downloading… {pct}%",
+	"speak_record": "🎤 Record",
+	"speak_stop": "⏹ Stop",
+	"speak_transcribing": "Checking your pronunciation…",
+	"speak_result_good": "Nicely said!",
+	"speak_result_partial": "Good try — some words need work.",
+	"speak_result_retry": "Let's try that again.",
+	"speak_fallback_prompt": "We couldn't check your pronunciation automatically. Did it sound right to you?",
+	"speak_fallback_yes": "Yes, it sounded right",
+	"speak_fallback_retry": "Try again"
 }

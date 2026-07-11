@@ -19,3 +19,13 @@ Real translation done for `hi`. English placeholder in: `hinglish`, `bn`,
 
 Keys: `updates_title`, `updates_toggle_label`, `updates_privacy_note`,
 `updates_available`, `updates_current`, `updates_check_now`.
+
+## Task 12 — SpeakExercise (2026-07-11)
+
+Real translation done for `hi`. English placeholder in: `hinglish`, `bn`,
+`ta`, `te`, `kn`, `mr`, `gu`, `pa`.
+
+Keys: `speak_pack_title`, `speak_pack_body`, `speak_pack_download`,
+`speak_pack_progress`, `speak_record`, `speak_stop`, `speak_transcribing`,
+`speak_result_good`, `speak_result_partial`, `speak_result_retry`,
+`speak_fallback_prompt`, `speak_fallback_yes`, `speak_fallback_retry`.
