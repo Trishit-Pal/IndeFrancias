@@ -88,6 +88,7 @@
 		<button
 			type="button"
 			class="min-h-11 rounded-full border border-border px-4 py-2 hover:border-primary"
+			aria-pressed={playing}
 			onclick={toggle}
 		>
 			{playing ? m.shadow_stop() : m.shadow_start()}

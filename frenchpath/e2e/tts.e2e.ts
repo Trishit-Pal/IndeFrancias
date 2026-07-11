@@ -39,9 +39,16 @@ test('shadowing toggle reveals synced transcript on a dictation exercise', async
 	const shadowToggle = page.getByTestId('shadow-toggle');
 	await expect(shadowToggle).toBeVisible();
 	await expect(page.getByTestId('shadow-transcript')).toHaveCount(0);
+	const outerLabel = await shadowToggle.textContent();
 
 	await shadowToggle.click();
 
 	await expect(page.getByTestId('shadow-transcript')).toBeVisible();
 	await expect(page.getByTestId('shadow-word')).toHaveCount(1); // audioText is "dix"
+
+	// Regression guard: the outer reveal-toggle describes panel visibility, not
+	// playback, so its label must stay fixed even while ShadowingPlayer
+	// auto-plays and its own inner button reads "stop".
+	await expect(shadowToggle).toHaveText(outerLabel ?? '');
+	await expect(shadowToggle).toHaveAttribute('aria-pressed', 'true');
 });
