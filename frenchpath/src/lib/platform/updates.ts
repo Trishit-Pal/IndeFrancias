@@ -7,14 +7,22 @@ import { z } from 'zod';
 // before release (see report). One constant, one place to change.
 export const UPDATE_BASE_URL = 'https://frenchpath.vercel.app';
 
+// Hardcoded client-side, matching scripts/emit-version-json.mjs's DOWNLOAD_URL.
+// The link target NEVER comes from the fetched version.json — that file is
+// same-origin but not a trust boundary we want to render `href` from (see
+// task-18-report.md fix-up: XSS via unvalidated downloadUrl scheme).
+export const RELEASES_URL = 'https://github.com/Trishit-Pal/IndeFrancias/releases/latest';
+
 export interface UpdateInfo {
 	version: string;
 	downloadUrl: string;
 }
 
+// downloadUrl is intentionally NOT part of this schema — even if a
+// compromised/MITM'd version.json injects one, it's stripped by zod's
+// default unknown-key behavior and never reaches UpdateInfo.
 const updateInfoSchema = z.object({
-	version: z.string(),
-	downloadUrl: z.string()
+	version: z.string()
 });
 
 export class UpdateCheckError extends Error {
@@ -66,5 +74,6 @@ export async function checkForUpdate(
 	if (!parsed.success) {
 		throw new UpdateCheckError('Malformed update response shape', { cause: parsed.error });
 	}
-	return compareVersions(parsed.data.version, currentVersion) > 0 ? parsed.data : null;
+	if (compareVersions(parsed.data.version, currentVersion) <= 0) return null;
+	return { version: parsed.data.version, downloadUrl: RELEASES_URL };
 }

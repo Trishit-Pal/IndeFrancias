@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { compareVersions, checkForUpdate, UpdateCheckError } from './updates';
+import { compareVersions, checkForUpdate, UpdateCheckError, RELEASES_URL } from './updates';
 
 describe('compareVersions', () => {
 	it('compares numerically, not lexicographically (1.2.0 vs 1.10.0)', () => {
@@ -26,11 +26,11 @@ describe('checkForUpdate', () => {
 			vi.fn().mockResolvedValue({
 				ok: true,
 				status: 200,
-				json: async () => ({ version: '2.0.0', downloadUrl: 'https://example.com/dl' })
+				json: async () => ({ version: '2.0.0' })
 			})
 		);
 		const result = await checkForUpdate('1.0.0', 'https://example.com');
-		expect(result).toEqual({ version: '2.0.0', downloadUrl: 'https://example.com/dl' });
+		expect(result).toEqual({ version: '2.0.0', downloadUrl: RELEASES_URL });
 	});
 
 	it('returns null when the fetched version is the same', async () => {
@@ -39,7 +39,7 @@ describe('checkForUpdate', () => {
 			vi.fn().mockResolvedValue({
 				ok: true,
 				status: 200,
-				json: async () => ({ version: '1.0.0', downloadUrl: 'https://example.com/dl' })
+				json: async () => ({ version: '1.0.0' })
 			})
 		);
 		const result = await checkForUpdate('1.0.0', 'https://example.com');
@@ -52,11 +52,25 @@ describe('checkForUpdate', () => {
 			vi.fn().mockResolvedValue({
 				ok: true,
 				status: 200,
-				json: async () => ({ version: '0.9.0', downloadUrl: 'https://example.com/dl' })
+				json: async () => ({ version: '0.9.0' })
 			})
 		);
 		const result = await checkForUpdate('1.0.0', 'https://example.com');
 		expect(result).toBeNull();
+	});
+
+	it('ignores a malicious downloadUrl injected into the payload — link always points at the hardcoded RELEASES_URL', async () => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockResolvedValue({
+				ok: true,
+				status: 200,
+				json: async () => ({ version: '2.0.0', downloadUrl: 'javascript:alert(1)' })
+			})
+		);
+		const result = await checkForUpdate('1.0.0', 'https://example.com');
+		expect(result?.downloadUrl).toBe(RELEASES_URL);
+		expect(result?.downloadUrl).not.toBe('javascript:alert(1)');
 	});
 
 	it('throws UpdateCheckError on malformed JSON shape', async () => {
