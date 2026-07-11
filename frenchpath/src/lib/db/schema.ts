@@ -56,6 +56,8 @@ export interface Settings {
 	fsrsWeights: number[] | null;
 	fsrsOptimizedAt: number | null;
 	fsrsOptimizedReviewCount: number;
+	/** Opt-in, default-off: fetches static version.json to check for updates. */
+	updateCheckEnabled: boolean;
 }
 
 export const SETTINGS_KEY = 'app';
@@ -83,7 +85,8 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = {
 	confidenceSnapshots: [],
 	fsrsWeights: null,
 	fsrsOptimizedAt: null,
-	fsrsOptimizedReviewCount: 0
+	fsrsOptimizedReviewCount: 0,
+	updateCheckEnabled: false
 };
 
 /** Per-lesson completion state. */

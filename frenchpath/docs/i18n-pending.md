@@ -11,3 +11,11 @@ Real translation done for `hi`. English placeholder in: `hinglish`, `bn`,
 Keys: `sync_title`, `sync_body`, `sync_export`, `sync_import`,
 `sync_passphrase_label`, `sync_passphrase_hint`, `sync_preview_title`,
 `sync_preview_body`, `sync_confirm`, `sync_wrong_passphrase`, `sync_success`.
+
+## Task 18 — Opt-in update check (2026-07-11)
+
+Real translation done for `hi`. English placeholder in: `hinglish`, `bn`,
+`ta`, `te`, `kn`, `mr`, `gu`, `pa`.
+
+Keys: `updates_title`, `updates_toggle_label`, `updates_privacy_note`,
+`updates_available`, `updates_current`, `updates_check_now`.

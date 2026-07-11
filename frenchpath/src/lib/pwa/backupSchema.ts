@@ -43,7 +43,8 @@ export const settingsSchema = z.object({
 		.optional(),
 	fsrsWeights: z.array(z.number()).nullable().optional(),
 	fsrsOptimizedAt: z.number().nullable().optional(),
-	fsrsOptimizedReviewCount: z.number().optional()
+	fsrsOptimizedReviewCount: z.number().optional(),
+	updateCheckEnabled: z.boolean().optional()
 });
 
 export const progressSchema = z.object({

@@ -40,6 +40,13 @@
 	import { applyTheme } from '$lib/theme/apply';
 	import { configureTts, listFrenchVoices, voicesReady } from '$lib/audio/tts';
 	import { revisionNotificationBody } from '$lib/pwa/revisionNotify';
+	import {
+		checkForUpdate,
+		UpdateCheckError,
+		UPDATE_BASE_URL,
+		type UpdateInfo
+	} from '$lib/platform/updates';
+	import pkg from '../../../package.json';
 	import * as m from '$lib/paraglide/messages';
 	import { getLocale, setLocale } from '$lib/paraglide/runtime';
 
@@ -58,6 +65,9 @@
 	let syncPreview = $state<MergeSummary | null>(null);
 	let pendingSyncJson = $state('');
 	let syncImporting = $state(false);
+	let updateChecking = $state(false);
+	let updateResult = $state<UpdateInfo | null>(null);
+	let updateStatus = $state('');
 
 	const languages: { value: UiLanguage; label: string }[] = [
 		{ value: 'en', label: 'English' },
@@ -316,6 +326,18 @@
 	async function rerunSetupTour() {
 		await settingsRepo.saveSettings({ onboarded: false });
 		location.href = '/';
+	}
+
+	async function runUpdateCheck() {
+		updateChecking = true;
+		updateResult = null;
+		try {
+			updateResult = await checkForUpdate(pkg.version, UPDATE_BASE_URL);
+			updateStatus = updateResult ? '' : m.updates_current();
+		} catch (error) {
+			updateStatus = error instanceof UpdateCheckError ? error.message : m.updates_current();
+		}
+		updateChecking = false;
 	}
 </script>
 
@@ -592,6 +614,48 @@
 						data-testid="reduce-motion"
 					/>
 				</label>
+			</section>
+
+			<section class="surface-card p-4" data-testid="updates-section">
+				<h2 class="font-semibold text-balance text-foreground">{m.updates_title()}</h2>
+				<label class="mt-3 flex min-h-11 items-center justify-between">
+					<span class="text-sm text-muted">{m.updates_toggle_label()}</span>
+					<input
+						type="checkbox"
+						class="h-5 w-5 accent-primary"
+						checked={settings.updateCheckEnabled}
+						onchange={(e) => update({ updateCheckEnabled: e.currentTarget.checked })}
+						data-testid="update-check-toggle"
+					/>
+				</label>
+				<p class="mt-2 text-xs text-muted">{m.updates_privacy_note()}</p>
+				{#if settings.updateCheckEnabled}
+					<button
+						type="button"
+						class="btn-secondary mt-3 text-sm"
+						onclick={runUpdateCheck}
+						disabled={updateChecking}
+						data-testid="update-check-now"
+					>
+						{m.updates_check_now()}
+					</button>
+					{#if updateResult}
+						<p class="mt-2 text-sm text-foreground" data-testid="updates-status">
+							<!-- eslint-disable svelte/no-navigation-without-resolve -- external download URL, not an app route -->
+							<a
+								href={updateResult.downloadUrl}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="underline"
+							>
+								{m.updates_available({ version: updateResult.version })}
+							</a>
+							<!-- eslint-enable svelte/no-navigation-without-resolve -->
+						</p>
+					{:else if updateStatus}
+						<p class="mt-2 text-sm text-muted" data-testid="updates-status">{updateStatus}</p>
+					{/if}
+				{/if}
 			</section>
 
 			<section class="surface-card p-4">
