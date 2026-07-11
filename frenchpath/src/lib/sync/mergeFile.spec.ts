@@ -141,4 +141,26 @@ describe('sync file export/preview/import', () => {
 	it('exports MAX_SYNC_BYTES aliased from the backup size limit', () => {
 		expect(MAX_SYNC_BYTES).toBeGreaterThan(0);
 	});
+
+	it('rejects a concurrent import while one is already in flight', async () => {
+		await progressRepo.putProgress({
+			lessonId: 'a1-u1',
+			status: 'completed',
+			score: 90,
+			attempts: 1,
+			lastVisited: 1,
+			cefrLevel: 'A1'
+		});
+		const fileJson = await exportSyncFile(PASSPHRASE);
+		await resetDatabase();
+
+		// Fire both without awaiting the first — the guard must reject the second
+		// while the first is still mid-flight, so neither call clobbers the other.
+		const first = importSyncMerge(fileJson, PASSPHRASE);
+		const second = importSyncMerge(fileJson, PASSPHRASE);
+
+		await expect(second).rejects.toThrow('Another sync import is already in progress.');
+		await expect(first).resolves.toBeDefined();
+		expect((await progressRepo.getProgress('a1-u1'))?.score).toBe(90);
+	});
 });

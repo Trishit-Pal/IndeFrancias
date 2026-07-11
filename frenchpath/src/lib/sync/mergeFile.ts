@@ -31,6 +31,8 @@ import { encryptPayload, decryptPayload, type EncryptedEnvelope } from './crypto
 
 export const MAX_SYNC_BYTES = MAX_BACKUP_BYTES;
 
+let importInFlight = false;
+
 /** Encrypts the whole DB (via the existing backup exporter) into a sync file. */
 export async function exportSyncFile(passphrase: string): Promise<string> {
 	const plaintext = await exportBackup();
@@ -79,6 +81,21 @@ export async function previewSyncMerge(fileJson: string, passphrase: string): Pr
 
 /** Decrypt + validate + merge, then write the merged result atomically. */
 export async function importSyncMerge(fileJson: string, passphrase: string): Promise<MergeSummary> {
+	if (importInFlight) {
+		throw new Error('Another sync import is already in progress.');
+	}
+	importInFlight = true;
+	try {
+		return await importSyncMergeInner(fileJson, passphrase);
+	} finally {
+		importInFlight = false;
+	}
+}
+
+async function importSyncMergeInner(
+	fileJson: string,
+	passphrase: string
+): Promise<MergeSummary> {
 	const remote = await decryptAndValidate(fileJson, passphrase);
 	const local = await currentLocalPayload();
 	const { merged, summary } = mergePayloads(local, remote);
