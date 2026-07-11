@@ -61,4 +61,6 @@ test('a wrong answer matching a rubric rule shows a hint chip', async ({ page })
 	await page.getByTestId('check').click();
 	await expect(page.getByTestId('rubric-hint')).toBeVisible();
 	await expect(page.getByTestId('rubric-hint')).toContainText('avoir');
+	// helpers.ts onboarding picks Hindi — the hi hintByLang variant must render.
+	await expect(page.getByTestId('rubric-hint')).toContainText('उम्र');
 });

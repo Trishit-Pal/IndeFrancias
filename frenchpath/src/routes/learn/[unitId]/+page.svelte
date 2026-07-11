@@ -124,7 +124,7 @@
 		submitted = true;
 		rubricHints =
 			(response.type === 'cloze' || response.type === 'translation') && !correct
-				? evaluateRubric(response.text, current)
+				? evaluateRubric(response.text, current, nativeLanguage)
 				: [];
 		if (!correct && 'coachNote' in current && current.coachNote) {
 			hintText = current.coachNote;

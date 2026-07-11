@@ -1,6 +1,7 @@
 // Pure writing-rubric evaluation: regex rules from content packs run over the
 // learner's normalized free-text answer. No DOM, no storage.
 import type { Exercise, RubricRule } from '../content/schema';
+import type { NativeLanguage } from '../db/schema';
 import { normalizeAnswer } from './engine';
 
 export interface RubricHint {
@@ -26,7 +27,11 @@ function compileRule(rule: RubricRule): RegExp | null {
 }
 
 /** Evaluates an exercise's rubric rules against a learner's answer. */
-export function evaluateRubric(answerText: string, exercise: Exercise): RubricHint[] {
+export function evaluateRubric(
+	answerText: string,
+	exercise: Exercise,
+	nativeLang?: NativeLanguage
+): RubricHint[] {
 	const rules = 'rubricRules' in exercise ? (exercise.rubricRules ?? []) : [];
 	if (rules.length === 0) return [];
 	const normalized = normalizeAnswer(answerText);
@@ -34,7 +39,11 @@ export function evaluateRubric(answerText: string, exercise: Exercise): RubricHi
 		.map((rule) => ({ rule, re: compileRule(rule) }))
 		.filter((x): x is { rule: RubricRule; re: RegExp } => x.re !== null)
 		.filter(({ re }) => re.test(normalized))
-		.map(({ rule }) => ({ ruleId: rule.id, hint: rule.hint, severity: rule.severity }))
+		.map(({ rule }) => ({
+			ruleId: rule.id,
+			hint: (nativeLang ? rule.hintByLang?.[nativeLang] : undefined) ?? rule.hint,
+			severity: rule.severity
+		}))
 		.sort((a, b) => SEVERITY_RANK[a.severity] - SEVERITY_RANK[b.severity])
 		.slice(0, MAX_HINTS);
 }

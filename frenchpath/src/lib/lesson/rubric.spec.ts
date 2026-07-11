@@ -53,4 +53,16 @@ describe('evaluateRubric', () => {
 		const bad = { id: 'bad', match: '(unclosed', hint: 'x', severity: 'gentle' };
 		expect(evaluateRubric('anything', cloze([bad, AGE_RULE]))).toEqual([]);
 	});
+
+	it('prefers the hintByLang variant for the learner language', () => {
+		const rule = { ...AGE_RULE, hintByLang: { hi: 'फ़्रेंच में उम्र avoir से बताते हैं।' } };
+		const hints = evaluateRubric('je suis 25', cloze([rule]), 'hi');
+		expect(hints[0]?.hint).toBe('फ़्रेंच में उम्र avoir से बताते हैं।');
+	});
+
+	it('falls back to the default hint when no variant exists for the language', () => {
+		const rule = { ...AGE_RULE, hintByLang: { hi: 'हिंदी संकेत' } };
+		expect(evaluateRubric('je suis 25', cloze([rule]), 'ta')[0]?.hint).toBe(AGE_RULE.hint);
+		expect(evaluateRubric('je suis 25', cloze([rule]))[0]?.hint).toBe(AGE_RULE.hint);
+	});
 });
