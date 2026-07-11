@@ -29,4 +29,16 @@ describe('sync crypto', () => {
 		expect(a.iv).not.toBe(b.iv);
 		expect(a.ciphertext).not.toBe(b.ciphertext);
 	});
+
+	it('rejects an envelope with an unbounded iteration count instead of hanging', async () => {
+		const env = await encryptPayload('secret', 'pw');
+		const bombed = { ...env, kdf: { ...env.kdf, iterations: 2_000_000_001 } };
+		await expect(decryptPayload(bombed, 'pw')).rejects.toThrow();
+	});
+
+	it('corrupt (non-base64) salt throws WrongPassphraseError, not an uncaught DOMException', async () => {
+		const env = await encryptPayload('secret', 'pw');
+		const corrupted = { ...env, kdf: { ...env.kdf, salt: 'not valid base64!!!' } };
+		await expect(decryptPayload(corrupted, 'pw')).rejects.toBeInstanceOf(WrongPassphraseError);
+	});
 });

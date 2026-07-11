@@ -17,7 +17,7 @@ export const encryptedEnvelopeSchema = z.object({
 	kdf: z.object({
 		name: z.literal('PBKDF2'),
 		hash: z.literal('SHA-256'),
-		iterations: z.number().int().min(100_000),
+		iterations: z.number().int().min(100_000).max(2_000_000),
 		salt: z.string().min(1)
 	}),
 	iv: z.string().min(1),
@@ -75,12 +75,13 @@ export async function encryptPayload(
 export async function decryptPayload(env: EncryptedEnvelope, passphrase: string): Promise<string> {
 	const parsed = encryptedEnvelopeSchema.safeParse(env);
 	if (!parsed.success) throw new Error('Not a FrenchPath sync file.');
-	const key = await deriveKey(passphrase, fromB64(env.kdf.salt), env.kdf.iterations);
+	const data = parsed.data;
 	try {
+		const key = await deriveKey(passphrase, fromB64(data.kdf.salt), data.kdf.iterations);
 		const plain = await crypto.subtle.decrypt(
-			{ name: 'AES-GCM', iv: fromB64(env.iv) as BufferSource },
+			{ name: 'AES-GCM', iv: fromB64(data.iv) as BufferSource },
 			key,
-			fromB64(env.ciphertext) as BufferSource
+			fromB64(data.ciphertext) as BufferSource
 		);
 		return new TextDecoder().decode(plain);
 	} catch {
