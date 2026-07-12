@@ -5,52 +5,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-:root,
-.light {
-	--fp-duration-fast: 150ms;
-	--fp-duration-normal: 280ms;
-	--fp-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-	--fp-background: #f8fafc;
-	--fp-foreground: #0f172a;
-	--fp-card: #ffffff;
-	--fp-muted: #64748b;
-	--fp-border: #e2e8f0;
-	--fp-subtle: #f1f5f9;
-	--fp-primary: #2563eb;
-	--fp-primary-hover: #1d4ed8;
-	--fp-primary-foreground: #ffffff;
-	--fp-nav: rgb(255 255 255 / 0.95);
-	--fp-disabled: #cbd5e1;
-	--fp-input: #f8fafc;
-	--fp-ring-offset: #ffffff;
-	--fp-elevation-1: 0 1px 2px rgb(15 23 42 / 0.06);
-	--fp-elevation-2: 0 4px 12px rgb(15 23 42 / 0.08);
-	--fp-elevation-3: 0 8px 24px rgb(15 23 42 / 0.12);
-	--fp-accent-cyan: #06b6d4;
-	--fp-accent-violet: #8b5cf6;
-	--fp-glass: rgb(255 255 255 / 0.72);
-	--fp-glow: 0 0 24px rgb(37 99 235 / 0.35);
-}
-
-.dark {
-	--fp-background: #000000;
-	--fp-foreground: #ffffff;
-	--fp-card: #111111;
-	--fp-muted: #a3a3a3;
-	--fp-border: #2a2a2a;
-	--fp-subtle: #1a1a1a;
-	--fp-primary: #60a5fa;
-	--fp-primary-hover: #93c5fd;
-	--fp-primary-foreground: #000000;
-	--fp-nav: rgb(0 0 0 / 0.95);
-	--fp-disabled: #404040;
-	--fp-input: #141414;
-	--fp-ring-offset: #000000;
-	--fp-accent-cyan: #22d3ee;
-	--fp-accent-violet: #a78bfa;
-	--fp-glass: rgb(17 17 17 / 0.85);
-	--fp-glow: 0 0 28px rgb(96 165 250 / 0.45);
-}
+/* All design tokens (both themes) live in src/lib/theme/tokens.css — the
+   single "L'Indigo Express" contract. The @theme bridge below maps them onto
+   Tailwind utility names (bg-background, text-muted, …); the utility names
+   are permanent API, the values come from tokens.css. */
 
 @theme inline {
 	--color-background: var(--fp-background);
@@ -74,7 +32,7 @@ html {
 	color: var(--fp-foreground);
 }
 
-/* Le Grand Voyage page surface (warm cream canvas). */
+/* L'Indigo Express page surface (warm paper / indigo night). */
 body {
 	background: var(--fp-canvas);
 	color: var(--fp-ink);
@@ -232,15 +190,23 @@ html:not(.reduce-motion) .fp-feedback-pulse {
 
 .fp-parallax-bg {
 	background:
-		radial-gradient(ellipse 80% 50% at 20% -10%, rgb(37 99 235 / 0.15), transparent),
-		radial-gradient(ellipse 60% 40% at 90% 10%, rgb(139 92 246 / 0.12), transparent),
+		radial-gradient(
+			ellipse 80% 50% at 20% -10%,
+			color-mix(in srgb, var(--fp-jaipur) 10%, transparent),
+			transparent
+		),
+		radial-gradient(
+			ellipse 60% 40% at 90% 10%,
+			color-mix(in srgb, var(--fp-saffron) 9%, transparent),
+			transparent
+		),
 		var(--fp-background);
 }
 
 .fp-glass-panel {
 	background: var(--fp-glass);
 	backdrop-filter: blur(12px);
-	border: 1px solid rgb(255 255 255 / 0.08);
+	border: 1px solid var(--fp-hairline-color);
 	box-shadow: var(--fp-elevation-2);
 	border-radius: 1rem;
 }
@@ -348,8 +314,9 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	height: 64px;
 	flex-shrink: 0;
 	border-radius: 50%;
-	background: conic-gradient(var(--fp-jaipur) 0% var(--pct), var(--fp-paper) var(--pct) 100%);
-	border: 2px solid var(--fp-ink);
+	background: conic-gradient(var(--fp-jaipur) 0% var(--pct), var(--fp-cream) var(--pct) 100%);
+	border: 1px solid var(--fp-border);
+	box-shadow: var(--fp-elevation-1);
 }
 .fp-goal-ring::after {
 	content: '';
@@ -376,15 +343,23 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	border-radius: var(--fp-r-pill);
 	font-size: 12px;
 	font-weight: 700;
-	border: 1.5px solid var(--fp-ink);
+	border: 1px solid var(--fp-border);
 }
 .fp-stat-badge--fire {
-	background: #fce3c4;
-	color: var(--fp-terracotta);
+	background: #fbe8cb;
+	color: #9c4a26;
+}
+.dark .fp-stat-badge--fire {
+	background: #3f2b1c;
+	color: #eba172;
 }
 .fp-stat-badge--ice {
-	background: #dcf0fc;
-	color: #2456b0;
+	background: #dde7f9;
+	color: #2b4fae;
+}
+.dark .fp-stat-badge--ice {
+	background: #223052;
+	color: #a8bff2;
 }
 
 /* XP progress bar (Coco companion, Atelier). Scoped fill keeps the standalone
@@ -392,7 +367,7 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 .fp-progress-bar {
 	height: 8px;
 	background: var(--fp-paper-warm);
-	border: 1.5px solid var(--fp-ink);
+	border: 1px solid var(--fp-border);
 	border-radius: var(--fp-r-pill);
 	overflow: hidden;
 }
@@ -416,7 +391,7 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	flex-direction: column;
 	gap: 4px;
 	background: var(--fp-paper);
-	border: 1.5px solid var(--fp-ink);
+	border: 1px solid var(--fp-border);
 	border-radius: 16px;
 	padding: 16px;
 	box-shadow: var(--fp-shadow-card);
@@ -443,7 +418,7 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 .fp-heat-cell {
 	aspect-ratio: 1;
 	border-radius: 2px;
-	border: 1px solid rgba(43, 27, 23, 0.08);
+	border: 1px solid color-mix(in srgb, var(--fp-ink) 8%, transparent);
 }
 
 /* ── Review grade buttons ── */
@@ -451,9 +426,9 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	min-height: 44px;
 	padding: 12px 6px;
 	text-align: center;
-	border: 2px solid var(--fp-ink);
+	border: 1px solid var(--fp-border);
 	border-radius: 14px;
-	box-shadow: var(--fp-shadow-card);
+	box-shadow: var(--fp-elevation-1);
 	cursor: pointer;
 	font-weight: 800;
 	font-size: 14px;
@@ -466,21 +441,36 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	outline: 2px solid var(--fp-ink);
 	outline-offset: 2px;
 }
+.fp-grade-btn:hover {
+	box-shadow: var(--fp-elevation-2);
+}
 .fp-grade-btn:active {
-	transform: translate(2px, 2px);
-	box-shadow: 2px 2px 0 var(--fp-ink);
+	transform: translateY(1px);
+	box-shadow: none;
 }
 .fp-grade-btn--again {
-	background: #fbe3e3;
+	background: #f9e0e0;
+}
+.dark .fp-grade-btn--again {
+	background: #46242c;
 }
 .fp-grade-btn--hard {
-	background: #fcefd8;
+	background: #f9edd4;
+}
+.dark .fp-grade-btn--hard {
+	background: #453a22;
 }
 .fp-grade-btn--good {
-	background: #e7f0e1;
+	background: #e5efdf;
+}
+.dark .fp-grade-btn--good {
+	background: #2b3d28;
 }
 .fp-grade-btn--easy {
-	background: #dceaf6;
+	background: #dfe8f7;
+}
+.dark .fp-grade-btn--easy {
+	background: #253352;
 }
 
 /* ── Exam mode (formal DELF/DALF) ── */
@@ -490,10 +480,13 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	align-items: center;
 	gap: 16px;
 	background: var(--fp-navy);
-	color: var(--fp-paper);
-	border: 2px solid var(--fp-ink);
+	/* Fixed warm ivory: --fp-paper flips dark in dark mode, but this panel
+	   stays a dark formal slate in both themes. */
+	color: #f2eee4;
+	border: 1px solid var(--fp-hairline-color);
 	border-radius: var(--fp-r-lg);
 	padding: 16px 22px;
+	box-shadow: var(--fp-elevation-2);
 }
 .fp-exam-eyebrow {
 	font-family: var(--fp-font-mono);
@@ -508,13 +501,13 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	font-size: 24px;
 	line-height: 1.1;
 	margin: 2px 0 0;
-	color: var(--fp-paper);
+	color: #f2eee4;
 }
 .fp-exam-badge {
 	width: 54px;
 	height: 54px;
 	flex-shrink: 0;
-	border: 2px solid var(--fp-paper);
+	border: 2px solid #f2eee4;
 	border-radius: 50%;
 	display: flex;
 	flex-direction: column;
@@ -545,9 +538,17 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	border: 3px solid #2e7d4f;
 	color: #2e7d4f;
 }
+.dark .fp-admis-stamp {
+	border-color: #7fc79a;
+	color: #7fc79a;
+}
 .fp-recale-stamp {
 	border: 3px solid #b23232;
 	color: #b23232;
+}
+.dark .fp-recale-stamp {
+	border-color: #e57373;
+	color: #e57373;
 }
 
 @layer components {
@@ -559,7 +560,7 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 
 	.surface-card {
 		background: var(--fp-paper);
-		border: 1.5px solid var(--fp-ink);
+		border: 1px solid var(--fp-border);
 		border-radius: var(--fp-r-xl);
 		box-shadow: var(--fp-shadow-card);
 	}
@@ -570,25 +571,30 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 		justify-content: center;
 		min-height: 44px;
 		background: var(--fp-jaipur);
-		color: var(--fp-paper);
-		border: 2px solid var(--fp-ink);
+		color: var(--fp-primary-foreground);
+		border: none;
 		border-radius: var(--fp-r-pill);
 		padding: 14px 24px;
 		font-weight: 800;
 		font-size: 15px;
-		box-shadow: var(--fp-shadow-card);
+		box-shadow: var(--fp-elevation-1);
 		transition:
 			transform 0.1s ease,
-			box-shadow 0.1s ease;
+			box-shadow 0.1s ease,
+			background-color 0.15s ease;
 		cursor: pointer;
+	}
+	.btn-primary:hover:not(:disabled) {
+		background: var(--fp-primary-hover);
+		box-shadow: var(--fp-elevation-2);
 	}
 	.btn-primary:focus-visible {
 		outline: 2px solid var(--fp-ink);
 		outline-offset: 2px;
 	}
 	.btn-primary:active {
-		transform: translate(2px, 2px);
-		box-shadow: 2px 2px 0 var(--fp-ink);
+		transform: translateY(1px);
+		box-shadow: none;
 	}
 	.btn-primary:disabled {
 		cursor: not-allowed;
@@ -601,10 +607,14 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 
 	.field-input {
 		@apply min-h-11 w-full px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
-		border: 1.5px solid var(--fp-ink);
+		border: 1px solid var(--fp-border);
 		border-radius: var(--fp-r-md);
-		background: var(--fp-paper);
+		background: var(--fp-input);
 		color: var(--fp-ink);
+		transition: border-color 0.15s ease;
+	}
+	.field-input:hover {
+		border-color: color-mix(in srgb, var(--fp-ink) 30%, var(--fp-paper));
 	}
 
 	.feedback-correct {

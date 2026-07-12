@@ -16,13 +16,9 @@
 	// Self-hosted fonts — served from origin to satisfy the strict
 	// `default-src 'self'` CSP and keep the app fully offline-capable.
 	// (Loading them from Google's CDN is blocked by CSP and breaks offline.)
-	import '@fontsource/instrument-serif/400.css';
-	import '@fontsource/instrument-serif/400-italic.css';
-	import '@fontsource/manrope/400.css';
-	import '@fontsource/manrope/500.css';
-	import '@fontsource/manrope/600.css';
-	import '@fontsource/manrope/700.css';
-	import '@fontsource/manrope/800.css';
+	import '@fontsource-variable/fraunces/standard.css';
+	import '@fontsource-variable/fraunces/standard-italic.css';
+	import '@fontsource-variable/manrope/wght.css';
 	import '@fontsource/dm-mono/400.css';
 	import '@fontsource/dm-mono/500.css';
 	import '@fontsource/tiro-devanagari-hindi/400.css';
@@ -112,7 +108,7 @@
 		content="Offline-first French PWA with Hindi/English bridges. Your progress stays on your device."
 	/>
 	<meta property="og:type" content="website" />
-	<meta name="theme-color" content="#2563eb" />
+	<meta name="theme-color" content="#faf7f0" />
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -- trusted build-time string -->
 	{@html webManifestLink}
 </svelte:head>
