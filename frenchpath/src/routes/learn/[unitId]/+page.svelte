@@ -208,9 +208,7 @@
 	{#if phase === 'loading'}
 		<p class="text-muted">{m.lesson_loading()}</p>
 	{:else if phase === 'error'}
-		<div
-			class="rounded-xl border border-red-300 bg-red-50 p-4 text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200"
-		>
+		<div class="rounded-xl border border-error bg-error/10 p-4 text-foreground">
 			<p class="font-semibold">Could not load the lesson</p>
 			<p class="text-sm">{errorMessage}</p>
 			<a class="mt-3 inline-block text-primary underline" href={resolve('/')}>Back to home</a>
@@ -228,9 +226,7 @@
 		</div>
 	{:else if phase === 'intro' && unit}
 		<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
-		<span
-			class="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-800 dark:bg-blue-950 dark:text-blue-200"
-		>
+		<span class="fp-neon-border ml-2 rounded-full px-2 py-0.5 text-xs font-semibold uppercase">
 			{unit.cefrLevel}
 		</span>
 		<h1 class="mt-2 text-2xl font-bold text-foreground md:text-3xl">{unit.title}</h1>
@@ -244,10 +240,11 @@
 
 		{#if unit.bridge && bridgeCopy}
 			<section
-				class="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4 dark:border-amber-700 dark:bg-amber-950"
+				class="mt-5 rounded-xl border p-4 text-foreground"
+				style="border-color: color-mix(in srgb, var(--fp-saffron) 45%, var(--fp-paper)); background: color-mix(in srgb, var(--fp-saffron) 12%, var(--fp-paper));"
 			>
-				<h2 class="font-semibold text-amber-900 dark:text-amber-200">🌉 {bridgeCopy.title}</h2>
-				<p class="mt-1 text-sm text-amber-900 dark:text-amber-200">
+				<h2 class="font-semibold">🌉 {bridgeCopy.title}</h2>
+				<p class="mt-1 text-sm">
 					<GlossMarkdown text={bridgeCopy.body} {lexicon} />
 				</p>
 			</section>
@@ -327,7 +324,7 @@
 			{/each}
 		</ul>
 		{#if bridgeQuizSubmitted && !bridgeCorrect}
-			<p class="mt-3 text-sm text-red-700 dark:text-red-300" role="alert">{m.lesson_try_again()}</p>
+			<p class="mt-3 text-sm text-error" role="alert">{m.lesson_try_again()}</p>
 		{/if}
 		<button
 			type="button"
@@ -374,7 +371,6 @@
 					class="mt-5 flex items-start gap-3 rounded-2xl p-3 text-sm font-medium {correct
 						? 'feedback-correct animate-scale-in fp-feedback-pulse'
 						: 'feedback-incorrect animate-shake'}"
-					style="border: 2px solid var(--fp-ink)"
 					data-testid="feedback"
 					role="status"
 					aria-live="polite"

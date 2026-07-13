@@ -49,7 +49,7 @@
 	</p>
 	{#if submitted && !isCorrect}
 		<p class="text-sm">
-			Correct form: <span class="text-green-700 dark:text-green-400">{exercise.answer}</span>
+			Correct form: <span class="text-sage">{exercise.answer}</span>
 		</p>
 	{/if}
 </div>

@@ -66,7 +66,7 @@
 			<button
 				animate:flip
 				type="button"
-				class="rounded-lg bg-blue-100 px-3 py-1 text-blue-900 dark:bg-blue-950 dark:text-blue-200"
+				class="rounded-lg bg-jaipur-light px-3 py-1 text-foreground"
 				onclick={() => removeAt(pos)}>{exercise.words[id]}</button
 			>
 		{/each}
@@ -86,7 +86,7 @@
 
 	{#if submitted && response && !gradeExercise(exercise, response)}
 		<p class="text-sm">
-			Correct: <span class="text-green-700 dark:text-green-400">{exercise.words.join(' ')}</span>
+			Correct: <span class="text-sage">{exercise.words.join(' ')}</span>
 		</p>
 	{/if}
 </div>

@@ -3,6 +3,7 @@
 	// playing both back. Works on all browsers with MediaRecorder; degrades to
 	// TTS-only where recording isn't available.
 	import { speakFrench, ttsAvailable } from './tts';
+	import IconButton from '$lib/components/IconButton.svelte';
 
 	let { text, label }: { text: string; label?: string } = $props();
 
@@ -42,39 +43,31 @@
 	function playBack() {
 		if (audioUrl) void new Audio(audioUrl).play();
 	}
-
-	const btn =
-		'rounded-full border border-border px-3 py-1 text-sm hover:border-primary disabled:opacity-40';
 </script>
 
 <div class="flex items-center gap-1">
 	{#if ttsAvailable()}
-		<button
-			type="button"
-			class={btn}
-			aria-label={`Listen to ${label ?? text}`}
-			onclick={() => speakFrench(text)}>🔊</button
-		>
+		<IconButton
+			icon="speaker"
+			label={`Listen to ${label ?? text}`}
+			size={16}
+			onclick={() => speakFrench(text)}
+		/>
 	{/if}
 	{#if canRecord}
-		{#if recording}
-			<button
-				type="button"
-				class="{btn} border-red-400 text-red-600"
-				aria-label="Stop recording"
-				onclick={stopRecording}>⏹</button
-			>
-		{:else}
-			<button type="button" class={btn} aria-label="Record yourself" onclick={startRecording}
-				>🎤</button
-			>
-		{/if}
-		<button
-			type="button"
-			class={btn}
-			aria-label="Play your recording"
+		<IconButton
+			icon="mic"
+			label={recording ? 'Stop recording' : 'Record yourself'}
+			pressed={recording}
+			size={16}
+			onclick={recording ? stopRecording : startRecording}
+		/>
+		<IconButton
+			icon="play"
+			label="Play your recording"
 			disabled={!audioUrl}
-			onclick={playBack}>▶</button
-		>
+			size={16}
+			onclick={playBack}
+		/>
 	{/if}
 </div>

@@ -8,6 +8,7 @@
 	import { scorePronunciation, type PronunciationScore } from '$lib/speech/score';
 	import { MODEL_SIZE_MB } from '$lib/speech/modelManifest';
 	import GlossText from '$lib/components/GlossText.svelte';
+	import IconButton from '$lib/components/IconButton.svelte';
 	import * as m from '$lib/paraglide/messages';
 
 	let {
@@ -197,18 +198,14 @@
 			{/if}
 		</div>
 	{:else if modelStatus === 'ready' && !asrFailed}
-		<button
-			type="button"
-			class="min-h-11 rounded-full border border-border px-4 py-2 hover:border-primary {recording
-				? 'fp-speak-recording'
-				: ''}"
-			data-testid="speak-record"
+		<IconButton
+			icon="mic"
+			label={recording ? m.speak_stop() : m.speak_record()}
+			pressed={recording}
 			disabled={submitted || busy}
-			aria-pressed={recording}
+			testid="speak-record"
 			onclick={toggleRecord}
-		>
-			{recording ? m.speak_stop() : m.speak_record()}
-		</button>
+		/>
 		{#if busy}
 			<p class="text-sm text-muted" aria-live="polite">{m.speak_transcribing()}</p>
 		{/if}
@@ -281,7 +278,7 @@
 		background: color-mix(in srgb, var(--fp-saffron) 30%, var(--fp-paper));
 	}
 	.fp-chip--missed {
-		background: color-mix(in srgb, var(--fp-jaipur) 30%, var(--fp-paper));
+		background: color-mix(in srgb, var(--fp-error) 24%, var(--fp-paper));
 	}
 
 	@keyframes fp-chip-in {

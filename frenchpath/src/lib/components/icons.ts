@@ -21,6 +21,7 @@ export const icons = {
 	check: 'M4.5 12.5l5 5L19.5 6.5',
 	close: 'M6 6l12 12M18 6 6 18',
 	share: 'M12 3.5V15M8 7l4-3.5L16 7M5 12.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6.5',
+	loop: 'M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3',
 	'chevron-left': 'M14.5 5.5 8 12l6.5 6.5',
 	'chevron-right': 'M9.5 5.5 16 12l-6.5 6.5',
 	/* ── Status ── */

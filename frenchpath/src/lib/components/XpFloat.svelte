@@ -12,7 +12,8 @@
 
 {#if active && visible && amount > 0}
 	<p
-		class="fp-confetti-lite pointer-events-none fixed top-1/3 left-1/2 z-50 -translate-x-1/2 text-2xl font-bold text-primary"
+		class="fp-confetti-lite pointer-events-none fixed top-1/3 left-1/2 z-50 -translate-x-1/2 text-2xl font-bold text-saffron"
+		style="text-shadow: 0 0 16px color-mix(in srgb, var(--fp-saffron) 55%, transparent)"
 		role="status"
 		data-testid="xp-float"
 	>
