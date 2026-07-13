@@ -21,6 +21,7 @@
 	import CharacterCoco from '$lib/components/CharacterCoco.svelte';
 	import GateBanner from '$lib/components/GateBanner.svelte';
 	import WeakSkillChips from '$lib/components/WeakSkillChips.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 	import AchievementToast from '$lib/components/AchievementToast.svelte';
 	import type { CelebrationRequest, CelebrationEvent } from '$lib/celebration/orchestrator';
 	import { getNextDueMs } from '$lib/srs/queue';
@@ -230,7 +231,7 @@
 						</p>
 						<div class="mt-1 flex gap-2">
 							<span class="fp-stat-badge fp-stat-badge--fire" data-testid="streak-badge">
-								<span class="fp-flame" aria-hidden="true">🔥</span>
+								<span class="fp-flame" aria-hidden="true"><Icon name="flame" size={14} /></span>
 								<span class="fp-figure">{streak}</span>
 							</span>
 							<span
@@ -238,7 +239,7 @@
 								title={m.home_streak_freezes()}
 								data-testid="freezes-badge"
 							>
-								<span aria-hidden="true">❄️</span>
+								<span aria-hidden="true"><Icon name="snowflake" size={14} /></span>
 								{freezesAvailable}
 								<span class="sr-only">{m.home_streak_freezes()}</span>
 							</span>
@@ -302,22 +303,26 @@
 				{#each openGates as gate (gate.id)}
 					<a
 						href={resolve('/checkpoint/[groupId]', { groupId: gate.id })}
-						class="btn-primary flex items-center justify-between"
+						class="btn-primary flex items-center justify-between gap-2"
 						data-testid="checkpoint-node-{gate.id}"
 					>
-						<span>📝 {gate.label}</span>
-						<span aria-hidden="true">→</span>
+						<span class="flex items-center gap-2"><Icon name="check" size={17} /> {gate.label}</span
+						>
+						<Icon name="chevron-right" size={18} />
 					</a>
 				{/each}
 
 				{#if due > 0}
 					<a
 						href={resolve('/review')}
-						class="btn-primary flex items-center justify-between"
+						class="btn-primary flex items-center justify-between gap-2"
 						data-testid="due-badge"
 					>
-						<span>🔁 {due} card{due === 1 ? '' : 's'} due for review</span>
-						<span aria-hidden="true">→</span>
+						<span class="flex items-center gap-2"
+							><Icon name="review" size={17} />
+							{due} card{due === 1 ? '' : 's'} due for review</span
+						>
+						<Icon name="chevron-right" size={18} />
 					</a>
 				{/if}
 
@@ -334,7 +339,7 @@
 									data-testid="delf-card"
 								>
 									<span>{m.delf_title()}</span>
-									<span aria-hidden="true">→</span>
+									<Icon name="chevron-right" size={16} />
 								</a>
 							{/if}
 							{#if b1Completed}
@@ -344,7 +349,7 @@
 									data-testid="delf-b1-card"
 								>
 									<span>Mock DELF B1</span>
-									<span aria-hidden="true">→</span>
+									<Icon name="chevron-right" size={16} />
 								</a>
 							{/if}
 							{#if b2Completed}
@@ -354,7 +359,7 @@
 									data-testid="delf-b2-card"
 								>
 									<span>Mock DELF B2</span>
-									<span aria-hidden="true">→</span>
+									<Icon name="chevron-right" size={16} />
 								</a>
 							{/if}
 							{#if c1ExamUnlocked}
@@ -364,7 +369,7 @@
 									data-testid="dalf-c1-card"
 								>
 									<span>Mock DALF C1</span>
-									<span aria-hidden="true">→</span>
+									<Icon name="chevron-right" size={16} />
 								</a>
 							{/if}
 						</div>
