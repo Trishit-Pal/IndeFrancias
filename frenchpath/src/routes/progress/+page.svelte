@@ -15,6 +15,8 @@
 	import { todayKey, lastNDayKeys } from '$lib/utils/date';
 	import { shareProgress } from '$lib/share/shareCard';
 	import CharacterCoco from '$lib/components/CharacterCoco.svelte';
+	import Icon from '$lib/components/Icon.svelte';
+	import type { IconName } from '$lib/components/icons';
 	import * as m from '$lib/paraglide/messages';
 
 	let streak = $state(0);
@@ -49,8 +51,15 @@
 		writing: 'var(--fp-saffron)'
 	};
 
-	// 12-week practice heatmap (GitHub-style) shading thresholds.
-	const HEAT_COLORS = ['#ede1cf', '#cfe0c2', '#9dbe85', '#5f8c46'];
+	// 12-week practice heatmap: a sage-growth ramp built from tokens with
+	// color-mix, so level 0 stays a faint neutral and 1–3 deepen toward sage —
+	// both themes adapt automatically (--fp-paper flips per theme).
+	const HEAT_COLORS = [
+		'color-mix(in srgb, var(--fp-ink) 7%, var(--fp-paper))',
+		'color-mix(in srgb, var(--fp-sage) 30%, var(--fp-paper))',
+		'color-mix(in srgb, var(--fp-sage) 58%, var(--fp-paper))',
+		'var(--fp-sage)'
+	];
 	function heatLevel(xp: number): number {
 		if (xp <= 0) return 0;
 		if (xp < 20) return 1;
@@ -112,12 +121,12 @@
 
 	const maxWeekXp = $derived(Math.max(1, ...weekXp.map((d) => d.xp)));
 
-	const stats = $derived([
-		{ label: m.stat_streak(), value: streak, icon: '🔥' },
-		{ label: m.stat_xp(), value: todayXp, icon: '⭐' },
-		{ label: m.stat_lessons(), value: completed, icon: '✅' },
-		{ label: m.stat_cards(), value: totalCards, icon: '🧠' },
-		{ label: m.stat_due(), value: due, icon: '🔁' }
+	const stats: { label: string; value: number; icon: IconName; tint: string }[] = $derived([
+		{ label: m.stat_streak(), value: streak, icon: 'flame', tint: 'var(--fp-saffron)' },
+		{ label: m.stat_xp(), value: todayXp, icon: 'spark', tint: 'var(--fp-saffron)' },
+		{ label: m.stat_lessons(), value: completed, icon: 'check', tint: 'var(--fp-sage)' },
+		{ label: m.stat_cards(), value: totalCards, icon: 'cards', tint: 'var(--fp-seine)' },
+		{ label: m.stat_due(), value: due, icon: 'review', tint: 'var(--fp-jaipur)' }
 	]);
 
 	function assessmentLabel(a: AssessmentRecord): string {
@@ -166,7 +175,7 @@
 				{#each weekXp as day (day.label)}
 					<div class="flex flex-1 flex-col items-center gap-1">
 						<div
-							class="fp-progress-fill w-full max-w-10 rounded-t bg-primary"
+							class="fp-progress-fill w-full max-w-10 rounded-t bg-saffron"
 							style="height: {Math.max(4, (day.xp / maxWeekXp) * 120)}px"
 							title="{day.xp} XP"
 							role="img"
@@ -185,10 +194,12 @@
 			<div class="surface-card p-4">
 				<p class="text-sm text-muted">{m.progress_longest_streak()}</p>
 				<p
-					class="fp-figure mt-1 text-2xl font-bold text-orange-700 dark:text-orange-400"
+					class="fp-figure mt-1 flex items-center gap-1.5 text-2xl font-bold"
+					style="color: var(--fp-saffron)"
 					data-testid="longest-streak"
 				>
-					🔥 {longestStreak}
+					<Icon name="flame" size={22} />
+					{longestStreak}
 				</p>
 			</div>
 			<div class="surface-card p-4">
@@ -225,7 +236,9 @@
 	<ul class="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
 		{#each stats as stat (stat.label)}
 			<li class="fp-stat-card">
-				<span class="text-xl md:text-2xl">{stat.icon}</span>
+				<span class="fp-stat-icon" style="color: {stat.tint}"
+					><Icon name={stat.icon} size={20} /></span
+				>
 				<span class="fp-stat-num" style="font-family: var(--fp-font-display)">{stat.value}</span>
 				<span class="fp-stat-lbl">{stat.label}</span>
 			</li>
@@ -278,7 +291,7 @@
 							</div>
 							<div
 								class="mt-1 h-2.5 overflow-hidden rounded-full"
-								style="border: 1.5px solid var(--fp-ink); background: var(--fp-paper-warm)"
+								style="border: 1px solid var(--fp-border); background: var(--fp-paper-warm)"
 							>
 								<div
 									class="fp-progress-fill h-full rounded-full"
@@ -330,7 +343,9 @@
 
 		<div class="surface-card p-4 text-center">
 			<CharacterCoco size="lg" level={cocoLevel} animate={true} />
-			<p class="text-lg" style="font-family: var(--fp-font-display)">Coco · Niveau {cocoLevel}</p>
+			<p class="mt-2 text-lg" style="font-family: var(--fp-font-display)">
+				Coco · Niveau {cocoLevel}
+			</p>
 			<div class="fp-progress-bar mt-2">
 				<div
 					class="fp-progress-fill"
@@ -347,3 +362,16 @@
 		</div>
 	</section>
 </main>
+
+<style>
+	/* Tinted glyph badge atop each stat card. */
+	.fp-stat-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 34px;
+		height: 34px;
+		border-radius: var(--fp-r-sm);
+		background: color-mix(in srgb, currentColor 14%, transparent);
+	}
+</style>
