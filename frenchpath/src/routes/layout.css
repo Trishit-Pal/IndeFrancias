@@ -24,6 +24,11 @@
 	--color-disabled: var(--fp-disabled);
 	--color-input: var(--fp-input);
 	--color-ring-offset: var(--fp-ring-offset);
+	--color-jaipur: var(--fp-jaipur);
+	--color-jaipur-light: var(--fp-jaipur-light);
+	--color-saffron: var(--fp-saffron);
+	--color-seine: var(--fp-seine);
+	--color-sage: var(--fp-sage);
 }
 
 html {

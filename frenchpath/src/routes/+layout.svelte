@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { onNavigate } from '$app/navigation';
 	import { pwaInfo } from 'virtual:pwa-info';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+	import Icon from '$lib/components/Icon.svelte';
+	import type { IconName } from '$lib/components/icons';
 	import * as m from '$lib/paraglide/messages';
 	import { network } from '$lib/stores/online.svelte';
 	import { settingsRepo } from '$lib/db';
@@ -30,13 +33,28 @@
 
 	const webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 
+	// `as const` keeps each href a string-literal type so resolve() below
+	// (which requires a known route literal) stays type-safe.
 	const tabs = [
-		{ href: '/', label: m.nav_learn, icon: '📚' },
-		{ href: '/review', label: m.nav_review, icon: '🔁' },
-		{ href: '/progress', label: m.nav_progress, icon: '📈' },
-		{ href: '/settings', label: m.nav_settings, icon: '⚙️' }
+		{ href: '/', label: m.nav_learn, icon: 'learn' as IconName },
+		{ href: '/review', label: m.nav_review, icon: 'review' as IconName },
+		{ href: '/progress', label: m.nav_progress, icon: 'progress' as IconName },
+		{ href: '/settings', label: m.nav_settings, icon: 'settings' as IconName }
 	] as const;
 	const path = $derived(page.url.pathname);
+
+	// Cross-fade between routes. Skipped entirely under reduced motion, and a
+	// no-op when the browser lacks View Transitions (Safari < 18, older WebViews).
+	onNavigate((navigation) => {
+		if (document.documentElement.classList.contains('reduce-motion')) return;
+		if (!document.startViewTransition) return;
+		return new Promise((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
+	});
 
 	async function syncTheme() {
 		const settings = await settingsRepo.getSettings();
@@ -122,7 +140,7 @@
 		<div class="flex items-center gap-3 border-b border-border px-5 py-5">
 			<img src="/icon.svg" alt="" class="h-9 w-9 rounded-lg shadow-sm" />
 			<div>
-				<p class="font-bold text-foreground">FrenchPath</p>
+				<p class="fp-wordmark text-foreground">FrenchPath</p>
 				<p class="text-xs text-muted">{m.home_subtitle()}</p>
 			</div>
 		</div>
@@ -133,12 +151,12 @@
 					<li>
 						<a
 							href={resolve(tab.href)}
-							class="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary {active
-								? 'bg-blue-50 text-primary dark:bg-blue-950'
+							class="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary {active
+								? 'bg-jaipur-light text-primary'
 								: 'text-muted hover:bg-subtle hover:text-foreground'}"
 							aria-current={active ? 'page' : undefined}
 						>
-							<span class="text-lg" aria-hidden="true">{tab.icon}</span>
+							<Icon name={tab.icon} size={19} />
 							{tab.label()}
 						</a>
 					</li>
@@ -150,7 +168,8 @@
 	<div class="flex min-h-dvh flex-1 flex-col lg:ml-64">
 		{#if !network.online}
 			<div
-				class="bg-amber-500 px-4 py-1 text-center text-xs font-medium text-amber-950 dark:bg-amber-600 dark:text-amber-50"
+				class="border-b border-amber-700/20 bg-amber-100 px-4 py-1.5 text-center text-xs font-medium text-amber-900 dark:border-amber-300/20 dark:bg-amber-950 dark:text-amber-200"
+				style="padding-top: calc(0.375rem + env(safe-area-inset-top))"
 				role="status"
 				data-testid="offline-banner"
 			>
@@ -158,7 +177,10 @@
 			</div>
 		{/if}
 
-		<div class="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-6">
+		<div
+			class="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-6"
+			style="padding-top: env(safe-area-inset-top)"
+		>
 			{@render children()}
 		</div>
 
@@ -173,12 +195,12 @@
 					<li class="flex-1">
 						<a
 							href={resolve(tab.href)}
-							class="flex min-h-11 flex-col items-center justify-center gap-0.5 py-2 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary {active
+							class="flex min-h-11 flex-col items-center justify-center gap-0.5 py-2 text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary {active
 								? 'text-primary'
 								: 'text-muted'}"
 							aria-current={active ? 'page' : undefined}
 						>
-							<span class="text-lg" aria-hidden="true">{tab.icon}</span>
+							<Icon name={tab.icon} size={21} />
 							{tab.label()}
 						</a>
 					</li>
@@ -187,3 +209,12 @@
 		</nav>
 	</div>
 </div>
+
+<style>
+	.fp-wordmark {
+		font-family: var(--fp-font-display);
+		font-weight: 560;
+		font-size: 1.05rem;
+		line-height: 1.1;
+	}
+</style>
