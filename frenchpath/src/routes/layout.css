@@ -29,6 +29,7 @@
 	--color-saffron: var(--fp-saffron);
 	--color-seine: var(--fp-seine);
 	--color-sage: var(--fp-sage);
+	--color-error: var(--fp-error);
 }
 
 html {
@@ -622,24 +623,40 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 		border-color: color-mix(in srgb, var(--fp-ink) 30%, var(--fp-paper));
 	}
 
+	/* Correct/incorrect/selected treatments share one mechanism: a sage-,
+	   error-, or jaipur-tinted surface mixed against --fp-paper, with
+	   --fp-ink text (both auto-flip per theme, so no dark: variants needed).
+	   option-correct/incorrect set border-color only (not the full border
+	   shorthand) so they compose with whatever already supplies border
+	   width/style (the `border`/`border-2` utility, .field-input,
+	   .surface-card) on each call site — feedback-correct/incorrect stand
+	   alone, so they own the full border. */
 	.feedback-correct {
-		@apply bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-200;
+		background: color-mix(in srgb, var(--fp-sage) 16%, var(--fp-paper));
+		border: 1px solid var(--fp-sage);
+		color: var(--fp-ink);
 	}
 
 	.feedback-incorrect {
-		@apply bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-200;
+		background: color-mix(in srgb, var(--fp-error) 14%, var(--fp-paper));
+		border: 1px solid var(--fp-error);
+		color: var(--fp-ink);
 	}
 
 	.option-correct {
-		@apply border-green-500 bg-green-50 text-green-900 dark:bg-green-950 dark:text-green-200;
+		border-color: var(--fp-sage);
+		background: color-mix(in srgb, var(--fp-sage) 16%, var(--fp-paper));
+		color: var(--fp-ink);
 	}
 
 	.option-incorrect {
-		@apply border-red-500 bg-red-50 text-red-900 dark:bg-red-950 dark:text-red-200;
+		border-color: var(--fp-error);
+		background: color-mix(in srgb, var(--fp-error) 14%, var(--fp-paper));
+		color: var(--fp-ink);
 	}
 
 	.option-selected {
-		@apply border-primary bg-blue-50 dark:bg-blue-950/60 dark:text-foreground;
+		@apply border-primary bg-jaipur-light text-foreground;
 	}
 
 	.option-default {
