@@ -201,11 +201,6 @@
 				class:fp-voyage-city--active={active}
 				class:fp-voyage-city--locked={!done && !active}
 			>
-				{#if active}
-					<div class="fp-city-marker" aria-hidden="true">
-						<CharacterCoco size="xs" animate={!reduceMotion} />
-					</div>
-				{/if}
 				<div class="fp-voyage-city-label">{band.city.city}</div>
 				<div class="fp-voyage-city-sublabel">
 					{band.level}{#if BETA_LEVELS.has(band.level)}&nbsp;<span class="fp-beta-badge"
@@ -217,6 +212,11 @@
 					style="--city-color:{band.city.color}"
 					class:fp-pulse={active && !reduceMotion}
 				>
+					{#if active}
+						<div class="fp-city-marker" aria-hidden="true">
+							<CharacterCoco size="xs" animate={!reduceMotion} />
+						</div>
+					{/if}
 					<svg class="fp-city-glyph" viewBox="0 0 24 24" aria-hidden="true">
 						{@render glyph(band.city.glyph)}
 					</svg>
@@ -408,9 +408,9 @@
 	.fp-city-marker {
 		position: absolute;
 		left: 50%;
-		top: -6px;
+		top: -24px;
 		transform: translateX(-50%);
-		z-index: 3;
+		z-index: 4;
 		pointer-events: none;
 	}
 	.fp-voyage-city-label {
@@ -429,6 +429,7 @@
 		margin-bottom: 10px;
 	}
 	.fp-voyage-city-node {
+		position: relative;
 		width: 56px;
 		height: 56px;
 		margin: 0 auto;
