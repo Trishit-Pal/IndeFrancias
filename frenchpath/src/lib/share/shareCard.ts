@@ -27,11 +27,17 @@ export async function renderShareCardPng(
 	const ctx = canvas.getContext('2d');
 	if (!ctx) return null;
 
+	// L'Indigo Express brand gradient (deep indigo → indigo-violet), keeping
+	// white text readable across the whole card.
 	const grad = ctx.createLinearGradient(0, 0, width, height);
-	grad.addColorStop(0, '#1e3a8a');
-	grad.addColorStop(1, '#2563eb');
+	grad.addColorStop(0, '#232044');
+	grad.addColorStop(1, '#3d2b5e');
 	ctx.fillStyle = grad;
 	ctx.fillRect(0, 0, width, height);
+
+	// Marigold accent bar echoing the map's progress line.
+	ctx.fillStyle = '#e2a13b';
+	ctx.fillRect(0, 0, 8, height);
 
 	ctx.fillStyle = '#ffffff';
 	ctx.font = 'bold 28px system-ui, sans-serif';

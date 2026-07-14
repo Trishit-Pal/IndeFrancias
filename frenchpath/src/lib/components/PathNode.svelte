@@ -51,7 +51,7 @@
 				{cefrLevel}
 			</span>
 			{#if status === 'completed'}
-				<span class="text-sm font-medium text-green-600 dark:text-green-400">✓ {score ?? 0}%</span>
+				<span class="text-sm font-medium" style="color: var(--fp-sage)">✓ {score ?? 0}%</span>
 			{:else}
 				<span class="text-sm font-medium text-primary">Start →</span>
 			{/if}

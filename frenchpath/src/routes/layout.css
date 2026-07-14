@@ -121,18 +121,6 @@ html:not(.reduce-motion) .fp-flip-inner.fp-flipped {
 	transform: rotateY(180deg);
 }
 
-.fp-path-ribbon {
-	position: absolute;
-	top: -0.75rem;
-	left: 50%;
-	z-index: 0;
-	display: block;
-	width: 2px;
-	height: 0.75rem;
-	transform: translateX(-50%);
-	background: linear-gradient(to bottom, var(--fp-border), var(--fp-primary));
-}
-
 .fp-path-glow {
 	box-shadow:
 		0 0 0 2px var(--fp-primary),
@@ -194,38 +182,11 @@ html:not(.reduce-motion) .fp-feedback-pulse {
 	}
 }
 
-.fp-parallax-bg {
-	background:
-		radial-gradient(
-			ellipse 80% 50% at 20% -10%,
-			color-mix(in srgb, var(--fp-jaipur) 10%, transparent),
-			transparent
-		),
-		radial-gradient(
-			ellipse 60% 40% at 90% 10%,
-			color-mix(in srgb, var(--fp-saffron) 9%, transparent),
-			transparent
-		),
-		var(--fp-background);
-}
-
-.fp-glass-panel {
-	background: var(--fp-glass);
-	backdrop-filter: blur(12px);
-	border: 1px solid var(--fp-hairline-color);
-	box-shadow: var(--fp-elevation-2);
-	border-radius: 1rem;
-}
-
 .fp-neon-border {
 	border: 1px solid transparent;
 	background:
 		linear-gradient(var(--fp-card), var(--fp-card)) padding-box,
 		linear-gradient(135deg, var(--fp-primary), var(--fp-accent-violet)) border-box;
-}
-
-.fp-gloss-popover {
-	box-shadow: var(--fp-glow), var(--fp-elevation-3);
 }
 
 .fp-progress-ring {
@@ -298,19 +259,6 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	50% {
 		filter: drop-shadow(0 0 12px var(--fp-accent-cyan));
 	}
-}
-
-.fp-path-band-label {
-	font-size: 0.75rem;
-	font-weight: 700;
-	letter-spacing: 0.1em;
-	text-transform: uppercase;
-	margin-bottom: 0.5rem;
-	margin-top: 1.5rem;
-	background: linear-gradient(90deg, var(--fp-primary), var(--fp-accent-violet));
-	-webkit-background-clip: text;
-	background-clip: text;
-	color: transparent;
 }
 
 /* ── Le Grand Voyage — home stat widgets ── */

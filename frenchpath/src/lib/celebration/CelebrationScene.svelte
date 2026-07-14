@@ -14,9 +14,10 @@
 		<T.DirectionalLight position={[2, 4, 2]} intensity={1} />
 		<!-- Stylised French coach: body + beret (procedural, offline-safe) -->
 		<T.Group position={[0, 0, 0]} rotation.y={bounce ? Math.sin(Date.now() / 300) * 0.15 : 0}>
+			<!-- French coach in brand colours: seine-blue body, jaipur-rose beret. -->
 			<T.Mesh position={[0, 0.9, 0]}>
 				<T.CapsuleGeometry args={[0.35, 0.7, 4, 8]} />
-				<T.MeshStandardMaterial color="#2563eb" />
+				<T.MeshStandardMaterial color="#3a63d4" />
 			</T.Mesh>
 			<T.Mesh position={[0, 1.55, 0]}>
 				<T.SphereGeometry args={[0.32, 16, 16]} />
@@ -24,7 +25,7 @@
 			</T.Mesh>
 			<T.Mesh position={[0, 1.82, 0]} rotation.x={-0.2}>
 				<T.CylinderGeometry args={[0.38, 0.38, 0.12, 16]} />
-				<T.MeshStandardMaterial color="#dc2626" />
+				<T.MeshStandardMaterial color="#dd5471" />
 			</T.Mesh>
 		</T.Group>
 	</Canvas>
