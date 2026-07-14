@@ -22,8 +22,8 @@
 	import GateBanner from '$lib/components/GateBanner.svelte';
 	import WeakSkillChips from '$lib/components/WeakSkillChips.svelte';
 	import Icon from '$lib/components/Icon.svelte';
-	import AchievementToast from '$lib/components/AchievementToast.svelte';
-	import type { CelebrationRequest, CelebrationEvent } from '$lib/celebration/orchestrator';
+	import CelebrationOverlay from '$lib/celebration/CelebrationOverlay.svelte';
+	import type { CelebrationRequest } from '$lib/celebration/orchestrator';
 	import { getNextDueMs } from '$lib/srs/queue';
 	import { dailyGoalProgress, type DailyGoal } from '$lib/gamification/activity';
 	import { ensurePersistence } from '$lib/pwa/persist';
@@ -48,6 +48,7 @@
 	let passedIds = $state<Set<string>>(new Set());
 	let nextReviewIn = $state<string | null>(null);
 	let celebration = $state<CelebrationRequest | null>(null);
+	let celebrationLevel = $state<'full' | 'minimal'>('full');
 	let skillProfiles = $state<SkillProfileRecord[]>([]);
 	let OnboardingWizard = $state<typeof OnboardingWizardComponent | null>(null);
 
@@ -98,35 +99,6 @@
 		return level ? (CITY_MAP[level] ?? '') : '';
 	});
 
-	// Map celebration events onto the AchievementToast's event vocabulary.
-	type AchievementEvent =
-		| 'level_up'
-		| 'postcard'
-		| 'streak_7'
-		| 'streak_30'
-		| 'lesson_complete'
-		| 'exam_pass';
-	function toAchievementEvent(e: CelebrationEvent | undefined): AchievementEvent | null {
-		switch (e) {
-			case 'streak_7':
-			case 'streak_30':
-			case 'lesson_complete':
-				return e;
-			case 'delf_pass':
-				return 'exam_pass';
-			case 'checkpoint_pass':
-			case 'milestone_a1':
-			case 'milestone_a2':
-			case 'milestone_b1':
-			case 'milestone_b2':
-			case 'milestone_c1':
-				return 'level_up';
-			default:
-				return null;
-		}
-	}
-	const achievementEvent = $derived(toAchievementEvent(celebration?.event));
-
 	async function checkStreakMilestones(
 		currentStreak: number,
 		celebrated: number[]
@@ -166,6 +138,7 @@
 		learningGoal = s.learningGoal;
 		targetExamDate = s.targetExamDate;
 		reduceMotion = s.reduceMotion;
+		celebrationLevel = s.celebrationLevel;
 		progressById = Object.fromEntries(all.map((p) => [p.lessonId, p]));
 		due = dueCount;
 		streak = streakRecord.currentStreak;
@@ -394,10 +367,9 @@
 	</main>
 {/if}
 
-<AchievementToast
-	event={achievementEvent}
-	title={celebration?.title ?? ''}
-	subtitle={celebration?.subtitle ?? ''}
-	{cocoLevel}
+<CelebrationOverlay
+	request={celebration}
+	{celebrationLevel}
+	{reduceMotion}
 	onDismiss={() => (celebration = null)}
 />
