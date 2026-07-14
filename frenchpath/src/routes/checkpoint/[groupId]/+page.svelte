@@ -240,7 +240,7 @@
 		</h1>
 		<p class="mt-2 text-muted">{m.checkpoint_score({ percent: result.percent })}</p>
 		{#if result.passed}
-			<p class="fp-figure font-semibold text-primary">+{result.xp} XP</p>
+			<p class="fp-figure font-semibold" style="color: var(--fp-saffron)">+{result.xp} XP</p>
 			<button
 				type="button"
 				class="btn-secondary mt-4 w-full"
