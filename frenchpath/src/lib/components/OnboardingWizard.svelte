@@ -14,6 +14,7 @@
 	import { setLocale } from '$lib/paraglide/runtime';
 	import CharacterMira from './CharacterMira.svelte';
 	import CharacterCoco from './CharacterCoco.svelte';
+	import InfoBanner from './InfoBanner.svelte';
 
 	let {
 		onComplete,
@@ -343,10 +344,7 @@
 		</div>
 	{/key}
 
-	<p
-		class="mx-auto mt-6 max-w-lg rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-center text-xs text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200"
-		role="note"
-	>
+	<InfoBanner variant="note" role="note" class="fp-onb-beta mx-auto mt-6 max-w-lg text-center">
 		{m.onb_beta()}
-	</p>
+	</InfoBanner>
 </section>

@@ -42,6 +42,7 @@
 	import { revisionNotificationBody } from '$lib/pwa/revisionNotify';
 	import { checkForUpdate, UpdateCheckError, type UpdateInfo } from '$lib/platform/updates';
 	import pkg from '../../../package.json';
+	import Modal from '$lib/components/Modal.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { getLocale, setLocale } from '$lib/paraglide/runtime';
 
@@ -738,20 +739,18 @@
 				</div>
 			</section>
 
-			<section
-				class="rounded-xl border border-red-300 bg-red-50 p-4 dark:border-red-800 dark:bg-red-950"
-			>
-				<h2 class="font-semibold text-balance text-red-900 dark:text-red-200">
+			<section class="fp-danger-zone">
+				<h2 class="fp-danger-title font-semibold text-balance">
 					{m.settings_danger_zone()}
 				</h2>
 				{#if confirmingReset}
-					<p class="mt-2 text-sm text-red-800 dark:text-red-300">
+					<p class="fp-danger-text mt-2 text-sm">
 						{m.settings_reset_confirm_desc()}
 					</p>
 					<div class="mt-2 flex gap-2">
 						<button
 							type="button"
-							class="min-h-11 rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:bg-red-500 dark:text-black"
+							class="fp-danger-btn min-h-11 rounded-lg px-3 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
 							onclick={reset}
 							data-testid="reset-confirm"
 						>
@@ -768,7 +767,7 @@
 				{:else}
 					<button
 						type="button"
-						class="mt-2 min-h-11 rounded-lg border border-red-300 px-3 py-2 text-sm font-semibold text-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:border-red-700 dark:text-red-300"
+						class="fp-danger-btn-outline mt-2 min-h-11 rounded-lg px-3 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
 						onclick={() => (confirmingReset = true)}
 						data-testid="reset-progress"
 					>
@@ -777,13 +776,13 @@
 				{/if}
 			</section>
 
-			{#if importPreview}
-				<div
-					class="surface-card border-amber-300 p-4 dark:border-amber-700"
-					role="dialog"
-					aria-labelledby="import-preview-title"
-					data-testid="import-preview"
-				>
+			<Modal
+				open={!!importPreview}
+				labelledby="import-preview-title"
+				testid="import-preview"
+				onClose={cancelImport}
+			>
+				{#if importPreview}
 					<h2 id="import-preview-title" class="font-semibold text-balance text-foreground">
 						{m.settings_import_preview_title()}
 					</h2>
@@ -797,7 +796,7 @@
 					<p class="mt-1 text-sm text-muted">
 						{m.settings_import_preview_warning()}
 					</p>
-					<div class="mt-3 flex gap-2">
+					<div class="mt-4 flex gap-2">
 						<button
 							type="button"
 							class="btn-primary text-sm"
@@ -811,16 +810,16 @@
 							{m.common_cancel()}
 						</button>
 					</div>
-				</div>
-			{/if}
+				{/if}
+			</Modal>
 
-			{#if syncPreview}
-				<div
-					class="surface-card border-amber-300 p-4 dark:border-amber-700"
-					role="dialog"
-					aria-labelledby="sync-preview-title"
-					data-testid="sync-preview"
-				>
+			<Modal
+				open={!!syncPreview}
+				labelledby="sync-preview-title"
+				testid="sync-preview"
+				onClose={cancelSyncImport}
+			>
+				{#if syncPreview}
 					<h2 id="sync-preview-title" class="font-semibold text-balance text-foreground">
 						{m.sync_preview_title()}
 					</h2>
@@ -832,7 +831,7 @@
 							assessments: syncPreview.newAssessments
 						})}
 					</p>
-					<div class="mt-3 flex gap-2">
+					<div class="mt-4 flex gap-2">
 						<button
 							type="button"
 							class="btn-primary text-sm"
@@ -846,8 +845,8 @@
 							{m.common_cancel()}
 						</button>
 					</div>
-				</div>
-			{/if}
+				{/if}
+			</Modal>
 
 			{#if message}
 				<p class="text-sm text-muted" role="alert" data-testid="settings-message">{message}</p>
@@ -855,3 +854,35 @@
 		</div>
 	{/if}
 </main>
+
+<style>
+	/* Danger zone — error token instead of raw red scale, themed both ways. */
+	.fp-danger-zone {
+		border: 1px solid color-mix(in srgb, var(--fp-error) 40%, transparent);
+		background: color-mix(in srgb, var(--fp-error) 8%, var(--fp-paper));
+		border-radius: var(--fp-r-lg);
+		padding: 1rem;
+	}
+	.fp-danger-title {
+		color: color-mix(in srgb, var(--fp-error) 75%, var(--fp-ink));
+	}
+	.fp-danger-text {
+		color: color-mix(in srgb, var(--fp-error) 65%, var(--fp-ink));
+	}
+	.fp-danger-btn {
+		background: var(--fp-error);
+		color: #fff;
+		outline-color: var(--fp-error);
+	}
+	.fp-danger-btn:hover {
+		background: color-mix(in srgb, var(--fp-error) 85%, #000);
+	}
+	.fp-danger-btn-outline {
+		border: 1px solid color-mix(in srgb, var(--fp-error) 45%, transparent);
+		color: color-mix(in srgb, var(--fp-error) 80%, var(--fp-ink));
+		outline-color: var(--fp-error);
+	}
+	.fp-danger-btn-outline:hover {
+		border-color: var(--fp-error);
+	}
+</style>
