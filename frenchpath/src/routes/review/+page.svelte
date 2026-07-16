@@ -13,6 +13,8 @@
 	import { buildLexicon } from '$lib/content/lexicon';
 	import GlossText from '$lib/components/GlossText.svelte';
 	import CharacterMira from '$lib/components/CharacterMira.svelte';
+	import Icon from '$lib/components/Icon.svelte';
+	import IconButton from '$lib/components/IconButton.svelte';
 	import { isNativePlatform } from '$lib/platform';
 	import { tapHaptic } from '$lib/platform/haptics';
 	import type { NativeLanguage } from '$lib/db/schema';
@@ -141,12 +143,11 @@
 								<GlossText text={currentItem.content.french} lexicon={reviewLexicon} />
 							</h1>
 							{#if canSpeak}
-								<button
-									type="button"
-									class="rounded-full border border-border px-3 py-1 text-base hover:border-primary"
-									aria-label="Listen"
-									onclick={() => speakFrench(currentItem.content.french)}>🔊</button
-								>
+								<IconButton
+									icon="speaker"
+									label="Listen"
+									onclick={() => speakFrench(currentItem.content.french)}
+								/>
 							{/if}
 						</div>
 						{#if currentItem.content.gender !== 'none'}
@@ -171,12 +172,11 @@
 								<GlossText text={currentItem.content.french} lexicon={reviewLexicon} />
 							</h1>
 							{#if canSpeak}
-								<button
-									type="button"
-									class="rounded-full border border-border px-3 py-1 text-base hover:border-primary"
-									aria-label="Listen"
-									onclick={() => speakFrench(currentItem.content.french)}>🔊</button
-								>
+								<IconButton
+									icon="speaker"
+									label="Listen"
+									onclick={() => speakFrench(currentItem.content.french)}
+								/>
 							{/if}
 						</div>
 						{#if currentItem.content.gender !== 'none'}
@@ -229,7 +229,7 @@
 		</div>
 	{:else if phase === 'reviewing'}
 		<div class="mt-10 text-center" data-testid="no-reviews">
-			<p class="text-5xl">✅</p>
+			<span class="fp-empty-medallion" aria-hidden="true"><Icon name="check" size={34} /></span>
 			<h1 class="fp-display-md mt-3 text-balance text-foreground">
 				{m.review_nothing_title()}
 			</h1>
@@ -267,3 +267,18 @@
 		</div>
 	{/if}
 </main>
+
+<style>
+	/* Sage "all clear" medallion for the empty review queue. */
+	.fp-empty-medallion {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 72px;
+		height: 72px;
+		border-radius: 50%;
+		color: #fff;
+		background: var(--fp-sage);
+		box-shadow: var(--fp-elevation-2);
+	}
+</style>

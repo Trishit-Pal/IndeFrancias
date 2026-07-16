@@ -57,7 +57,7 @@
 	{#if submitted && !isCorrect}
 		<p class="text-sm font-medium text-foreground">
 			{m.cloze_correct_answer()}
-			<span class="text-green-700 dark:text-green-400">{exercise.answer}</span>
+			<span class="text-sage">{exercise.answer}</span>
 		</p>
 	{/if}
 </div>

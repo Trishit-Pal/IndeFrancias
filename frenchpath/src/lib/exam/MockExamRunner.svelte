@@ -269,17 +269,21 @@
 				{/if}
 			</div>
 			{#if result.passed && xpAwarded > 0}
-				<p class="fp-figure mt-1 text-center text-sm font-medium text-primary">+{xpAwarded} XP</p>
+				<p class="fp-figure mt-1 text-center text-sm font-medium" style="color: var(--fp-saffron)">
+					+{xpAwarded} XP
+				</p>
 			{/if}
 			{#if result.eliminated && !result.passed}
-				<p class="mt-1 text-center text-sm text-red-600 dark:text-red-400">{m.exam_eliminated()}</p>
+				<p class="mt-1 text-center text-sm" style="color: var(--fp-error)">{m.exam_eliminated()}</p>
 			{/if}
 			<ul class="mt-5 space-y-3">
 				{#each Object.entries(result.perSkill) as [skill, score] (skill)}
 					<li>
 						<div class="flex justify-between text-sm">
 							<span class="text-foreground capitalize">{skill}</span>
-							<span class="fp-figure {score < 5 ? 'text-red-600 dark:text-red-400' : 'text-muted'}"
+							<span
+								class="fp-figure"
+								style="color: {score < 5 ? 'var(--fp-error)' : 'var(--fp-muted)'}"
 								>{score} / 25</span
 							>
 						</div>
@@ -287,8 +291,8 @@
 							<div
 								class="h-full rounded-full"
 								style="width: {(score / 25) * 100}%; background: {score < 5
-									? '#b23232'
-									: 'var(--fp-navy)'}"
+									? 'var(--fp-error)'
+									: 'var(--fp-primary)'}"
 							></div>
 						</div>
 					</li>

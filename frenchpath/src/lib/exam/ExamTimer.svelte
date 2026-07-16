@@ -50,10 +50,13 @@
 		font-family: var(--fp-font-mono);
 		font-size: 20px;
 		font-weight: 700;
-		color: #f2c14e;
+		color: var(--fp-saffron);
 	}
 	.fp-exam-timer--urgent .fp-timer-value {
-		color: #e94f64;
+		color: var(--fp-error);
 		animation: fp-pulse 0.8s ease-in-out infinite;
+	}
+	:global(html.reduce-motion) .fp-exam-timer--urgent .fp-timer-value {
+		animation: none;
 	}
 </style>

@@ -15,9 +15,10 @@
 	});
 	const activeRitual = $derived(ritual ?? autoRitual());
 
+	// Backgrounds live in the scoped CSS below (keyed by data-ritual) so each
+	// gets a designed dark-theme variant instead of one hardcoded gradient.
 	const rituals = {
 		morning: {
-			bg: 'linear-gradient(180deg,#FCE3C4 0%,#F7E0CE 45%,#F4EAD9 100%)',
 			labelFr: 'Café du matin',
 			labelHi: 'सुप्रभात',
 			emoji: '☀️',
@@ -25,7 +26,6 @@
 			icon: '🥐'
 		},
 		afternoon: {
-			bg: 'linear-gradient(180deg,#D9E8C8 0%,#E8EAD2 50%,#F4EAD9 100%)',
 			labelFr: 'Pique-nique',
 			labelHi: 'दोपहर',
 			emoji: '🧺',
@@ -33,7 +33,6 @@
 			icon: '🧀'
 		},
 		evening: {
-			bg: 'linear-gradient(180deg,#3A3258 0%,#5A4A63 55%,#7A5A55 100%)',
 			labelFr: 'Bistro du soir',
 			labelHi: 'शाम',
 			emoji: '🌙',
@@ -46,7 +45,7 @@
 	const isEvening = $derived(activeRitual === 'evening');
 </script>
 
-<div class="fp-daily-ritual" style="background:{r.bg}" data-ritual={activeRitual}>
+<div class="fp-daily-ritual" data-ritual={activeRitual}>
 	<div class="fp-ritual-label" style="color:{r.color}">
 		<span class="fp-ritual-cefr">{r.emoji}</span>
 		<span class="fp-ritual-fr">{r.labelFr}</span>
@@ -64,6 +63,26 @@
 		border-radius: var(--fp-r-xl);
 		padding: 20px 22px;
 		transition: background 0.8s ease;
+	}
+	/* Light: soft daylight pastels. Dark: the same hours after sunset —
+	   dawn-warmed, dusk-sage, and deep-night indigo. */
+	.fp-daily-ritual[data-ritual='morning'] {
+		background: linear-gradient(180deg, #fce3c4 0%, #f7e0ce 45%, #efe9da 100%);
+	}
+	:global(.dark) .fp-daily-ritual[data-ritual='morning'] {
+		background: linear-gradient(180deg, #43304b 0%, #382a49 45%, #211e3d 100%);
+	}
+	.fp-daily-ritual[data-ritual='afternoon'] {
+		background: linear-gradient(180deg, #d9e8c8 0%, #e8ead2 50%, #efe9da 100%);
+	}
+	:global(.dark) .fp-daily-ritual[data-ritual='afternoon'] {
+		background: linear-gradient(180deg, #2b3d38 0%, #283349 50%, #211e3d 100%);
+	}
+	.fp-daily-ritual[data-ritual='evening'] {
+		background: linear-gradient(180deg, #3a3258 0%, #5a4a63 55%, #7a5a55 100%);
+	}
+	:global(.dark) .fp-daily-ritual[data-ritual='evening'] {
+		background: linear-gradient(180deg, #1d1a38 0%, #33294f 55%, #4a3549 100%);
 	}
 	.fp-ritual-label {
 		display: flex;

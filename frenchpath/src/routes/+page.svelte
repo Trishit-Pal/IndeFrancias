@@ -21,8 +21,9 @@
 	import CharacterCoco from '$lib/components/CharacterCoco.svelte';
 	import GateBanner from '$lib/components/GateBanner.svelte';
 	import WeakSkillChips from '$lib/components/WeakSkillChips.svelte';
-	import AchievementToast from '$lib/components/AchievementToast.svelte';
-	import type { CelebrationRequest, CelebrationEvent } from '$lib/celebration/orchestrator';
+	import Icon from '$lib/components/Icon.svelte';
+	import CelebrationOverlay from '$lib/celebration/CelebrationOverlay.svelte';
+	import type { CelebrationRequest } from '$lib/celebration/orchestrator';
 	import { getNextDueMs } from '$lib/srs/queue';
 	import { dailyGoalProgress, type DailyGoal } from '$lib/gamification/activity';
 	import { ensurePersistence } from '$lib/pwa/persist';
@@ -47,6 +48,7 @@
 	let passedIds = $state<Set<string>>(new Set());
 	let nextReviewIn = $state<string | null>(null);
 	let celebration = $state<CelebrationRequest | null>(null);
+	let celebrationLevel = $state<'full' | 'minimal'>('full');
 	let skillProfiles = $state<SkillProfileRecord[]>([]);
 	let OnboardingWizard = $state<typeof OnboardingWizardComponent | null>(null);
 
@@ -97,35 +99,6 @@
 		return level ? (CITY_MAP[level] ?? '') : '';
 	});
 
-	// Map celebration events onto the AchievementToast's event vocabulary.
-	type AchievementEvent =
-		| 'level_up'
-		| 'postcard'
-		| 'streak_7'
-		| 'streak_30'
-		| 'lesson_complete'
-		| 'exam_pass';
-	function toAchievementEvent(e: CelebrationEvent | undefined): AchievementEvent | null {
-		switch (e) {
-			case 'streak_7':
-			case 'streak_30':
-			case 'lesson_complete':
-				return e;
-			case 'delf_pass':
-				return 'exam_pass';
-			case 'checkpoint_pass':
-			case 'milestone_a1':
-			case 'milestone_a2':
-			case 'milestone_b1':
-			case 'milestone_b2':
-			case 'milestone_c1':
-				return 'level_up';
-			default:
-				return null;
-		}
-	}
-	const achievementEvent = $derived(toAchievementEvent(celebration?.event));
-
 	async function checkStreakMilestones(
 		currentStreak: number,
 		celebrated: number[]
@@ -165,6 +138,7 @@
 		learningGoal = s.learningGoal;
 		targetExamDate = s.targetExamDate;
 		reduceMotion = s.reduceMotion;
+		celebrationLevel = s.celebrationLevel;
 		progressById = Object.fromEntries(all.map((p) => [p.lessonId, p]));
 		due = dueCount;
 		streak = streakRecord.currentStreak;
@@ -230,7 +204,7 @@
 						</p>
 						<div class="mt-1 flex gap-2">
 							<span class="fp-stat-badge fp-stat-badge--fire" data-testid="streak-badge">
-								<span class="fp-flame" aria-hidden="true">🔥</span>
+								<span class="fp-flame" aria-hidden="true"><Icon name="flame" size={14} /></span>
 								<span class="fp-figure">{streak}</span>
 							</span>
 							<span
@@ -238,7 +212,7 @@
 								title={m.home_streak_freezes()}
 								data-testid="freezes-badge"
 							>
-								<span aria-hidden="true">❄️</span>
+								<span aria-hidden="true"><Icon name="snowflake" size={14} /></span>
 								{freezesAvailable}
 								<span class="sr-only">{m.home_streak_freezes()}</span>
 							</span>
@@ -302,22 +276,26 @@
 				{#each openGates as gate (gate.id)}
 					<a
 						href={resolve('/checkpoint/[groupId]', { groupId: gate.id })}
-						class="btn-primary flex items-center justify-between"
+						class="btn-primary flex items-center justify-between gap-2"
 						data-testid="checkpoint-node-{gate.id}"
 					>
-						<span>📝 {gate.label}</span>
-						<span aria-hidden="true">→</span>
+						<span class="flex items-center gap-2"><Icon name="check" size={17} /> {gate.label}</span
+						>
+						<Icon name="chevron-right" size={18} />
 					</a>
 				{/each}
 
 				{#if due > 0}
 					<a
 						href={resolve('/review')}
-						class="btn-primary flex items-center justify-between"
+						class="btn-primary flex items-center justify-between gap-2"
 						data-testid="due-badge"
 					>
-						<span>🔁 {due} card{due === 1 ? '' : 's'} due for review</span>
-						<span aria-hidden="true">→</span>
+						<span class="flex items-center gap-2"
+							><Icon name="review" size={17} />
+							{due} card{due === 1 ? '' : 's'} due for review</span
+						>
+						<Icon name="chevron-right" size={18} />
 					</a>
 				{/if}
 
@@ -334,7 +312,7 @@
 									data-testid="delf-card"
 								>
 									<span>{m.delf_title()}</span>
-									<span aria-hidden="true">→</span>
+									<Icon name="chevron-right" size={16} />
 								</a>
 							{/if}
 							{#if b1Completed}
@@ -344,7 +322,7 @@
 									data-testid="delf-b1-card"
 								>
 									<span>Mock DELF B1</span>
-									<span aria-hidden="true">→</span>
+									<Icon name="chevron-right" size={16} />
 								</a>
 							{/if}
 							{#if b2Completed}
@@ -354,7 +332,7 @@
 									data-testid="delf-b2-card"
 								>
 									<span>Mock DELF B2</span>
-									<span aria-hidden="true">→</span>
+									<Icon name="chevron-right" size={16} />
 								</a>
 							{/if}
 							{#if c1ExamUnlocked}
@@ -364,7 +342,7 @@
 									data-testid="dalf-c1-card"
 								>
 									<span>Mock DALF C1</span>
-									<span aria-hidden="true">→</span>
+									<Icon name="chevron-right" size={16} />
 								</a>
 							{/if}
 						</div>
@@ -389,10 +367,9 @@
 	</main>
 {/if}
 
-<AchievementToast
-	event={achievementEvent}
-	title={celebration?.title ?? ''}
-	subtitle={celebration?.subtitle ?? ''}
-	{cocoLevel}
+<CelebrationOverlay
+	request={celebration}
+	{celebrationLevel}
+	{reduceMotion}
 	onDismiss={() => (celebration = null)}
 />

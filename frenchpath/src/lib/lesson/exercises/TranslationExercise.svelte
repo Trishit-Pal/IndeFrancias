@@ -53,7 +53,7 @@
 	/>
 	{#if submitted && !isCorrect}
 		<p class="text-sm">
-			Suggested answer: <span class="text-green-700 dark:text-green-400">{exercise.answer}</span>
+			Suggested answer: <span class="text-sage">{exercise.answer}</span>
 		</p>
 	{/if}
 </div>
