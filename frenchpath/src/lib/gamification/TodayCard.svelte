@@ -25,11 +25,12 @@
 	<h2 class="text-sm font-semibold text-balance text-foreground">{m.today_title()}</h2>
 	<p class="mt-1 text-sm text-foreground">
 		{#if plan.kind === 'review'}
-			{m.today_review({
+			{@const args = {
 				count: plan.cardCount,
 				minutes: plan.minutes,
 				mode: modeLabels[plan.mode]()
-			})}
+			}}
+			{plan.cardCount === 1 ? m.today_review_one(args) : m.today_review_many(args)}
 		{:else if plan.kind === 'lesson'}
 			{m.today_lesson()}
 		{:else}
@@ -44,7 +45,11 @@
 	{/if}
 	{#if plan.kind === 'review' && plan.fallbackHint}
 		<InfoBanner variant="info" class="mt-3">
-			<a class="underline" href={resolve('/settings')} data-testid="today-hint">
+			<a
+				class="inline-flex min-h-11 items-center underline"
+				href={resolve('/settings')}
+				data-testid="today-hint"
+			>
 				{plan.fallbackHint === 'tts' ? m.today_hint_tts() : m.today_hint_asr()}
 			</a>
 		</InfoBanner>

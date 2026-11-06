@@ -44,5 +44,7 @@ test('Today card shows rest copy when nothing is due and the goal is met', async
 	await page.goto('/progress');
 	await expect(page.getByTestId('today-card')).toBeVisible();
 	await expect(page.getByTestId('today-start')).toHaveCount(0);
-	await expect(page.getByTestId('today-card')).toContainText(/rest/i);
+	await expect(page.getByTestId('today-card')).toContainText(
+		"Today's goal is met and nothing is due. Enjoy your rest."
+	);
 });

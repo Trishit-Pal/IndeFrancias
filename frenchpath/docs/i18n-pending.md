@@ -41,7 +41,8 @@ Keys: `speak_pack_title`, `speak_pack_body`, `speak_pack_download`,
 ## Task 5 — Today coach card (2026-11-06)
 
 - all non-en locales — `today_title` — English placeholder
-- all non-en locales — `today_review` — English placeholder
+- all non-en locales — `today_review_one` — English placeholder
+- all non-en locales — `today_review_many` — English placeholder
 - all non-en locales — `today_lesson` — English placeholder
 - all non-en locales — `today_rest` — English placeholder
 - all non-en locales — `today_hint_tts` — English placeholder

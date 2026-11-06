@@ -15,9 +15,9 @@
 	import { listUnitSummaries } from '$lib/content/loader';
 	import { passedAssessmentIds } from '$lib/assessment/checkpoint';
 	import { computeUnitStates } from '$lib/lesson/progression';
-	import { dailyGoalProgress } from '$lib/gamification/activity';
+	import { dailyGoalProgress, type DailyGoal } from '$lib/gamification/activity';
 	import { buildTodayPlan, weakestSkill as pickWeakestSkill } from '$lib/gamification/todayPlan';
-	import type { TodayPlan } from '$lib/gamification/todayPlan';
+	import type { Caps } from '$lib/gamification/todayPlan';
 	import TodayCard from '$lib/gamification/TodayCard.svelte';
 	import { loadCaps } from '$lib/srs/caps';
 	import { todayKey, lastNDayKeys } from '$lib/utils/date';
@@ -80,19 +80,28 @@
 	const cocoXpPercent = $derived(((totalXp % 250) / 250) * 100);
 	const xpToNextLevel = $derived(cocoLevel >= 10 ? 0 : 250 - (totalXp % 250));
 
-	const weakestSkill = $derived.by(() => {
-		const skill = pickWeakestSkill(skillProfiles);
-		return skillProfiles.find((p) => p.skill === skill);
-	});
+	const weakestSkillName = $derived(pickWeakestSkill(skillProfiles));
+	const weakestSkill = $derived(skillProfiles.find((p) => p.skill === weakestSkillName));
 
-	let todayPlan = $state<TodayPlan | null>(null);
-	let nextUnitId = $state<string | null>(null);
+	// null = still loading. Caps can take up to 3 s (voicesReady), so the plan
+	// renders first with the uncapped focus mode and is rebuilt when caps arrive.
+	let caps = $state<Caps | null>(null);
+	let todayInputs = $state<{ goal: DailyGoal; nextUnitId: string | null } | null>(null);
+	const todayPlan = $derived(
+		todayInputs
+			? buildTodayPlan({
+					dueCount: due,
+					focusSkill: weakestSkillName,
+					caps: caps ?? { tts: true, asr: true },
+					goal: todayInputs.goal,
+					hasLessonsLeft: todayInputs.nextUnitId !== null
+				})
+			: null
+	);
 
-	// Not awaited by onMount: voicesReady() can take up to 3 s.
-	async function loadToday(profiles: SkillProfileRecord[], dueCount: number): Promise<void> {
+	async function loadTodayInputs(): Promise<void> {
 		const units = listUnitSummaries();
-		const [caps, goal, progress, passed] = await Promise.all([
-			loadCaps(),
+		const [goal, progress, passed] = await Promise.all([
 			dailyGoalProgress(),
 			progressRepo.getAllProgress(),
 			passedAssessmentIds()
@@ -102,14 +111,10 @@
 			Object.fromEntries(progress.map((p) => [p.lessonId, p])),
 			passed
 		);
-		nextUnitId = units.find((u) => states.get(u.id) === 'available')?.id ?? null;
-		todayPlan = buildTodayPlan({
-			dueCount,
-			focusSkill: pickWeakestSkill(profiles),
-			caps,
+		todayInputs = {
 			goal,
-			hasLessonsLeft: nextUnitId !== null
-		});
+			nextUnitId: units.find((u) => states.get(u.id) === 'available')?.id ?? null
+		};
 	}
 
 	const examCountdown = $derived(() => {
@@ -149,7 +154,12 @@
 		totalXp = allStats.reduce((sum, s) => sum + (s.xp ?? 0), 0);
 		heatmap = lastNDayKeys(84).map((date) => ({ date, xp: statsByDate.get(date)?.xp ?? 0 }));
 		skillProfiles = await skillProfileRepo.getAllSkillProfiles();
-		void loadToday(skillProfiles, due);
+		try {
+			await loadTodayInputs();
+		} catch (err) {
+			console.error('Today card unavailable', err); // card stays hidden
+		}
+		void loadCaps().then((c) => (caps = c));
 	});
 
 	const maxWeekXp = $derived(Math.max(1, ...weekXp.map((d) => d.xp)));
@@ -197,11 +207,11 @@
 		</p>
 	{/if}
 
-	<div class="mt-5 min-h-28">
-		{#if todayPlan}<TodayCard plan={todayPlan} {nextUnitId} />{/if}
-	</div>
+	{#if todayPlan && todayInputs}
+		<div class="mt-5"><TodayCard plan={todayPlan} nextUnitId={todayInputs.nextUnitId} /></div>
+	{/if}
 
-	<div class="lg:grid lg:grid-cols-3 lg:gap-6">
+	<div class="mt-5 lg:grid lg:grid-cols-3 lg:gap-6">
 		<section class="surface-card p-4 lg:col-span-2" aria-label={m.progress_xp_chart()}>
 			<h2 class="text-sm font-semibold text-balance text-foreground">{m.progress_xp_chart()}</h2>
 			<div
