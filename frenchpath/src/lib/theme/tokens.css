@@ -20,7 +20,7 @@
 
 	--fp-jaipur: #dd5471; /* jaipur rose — PRIMARY actions       */
 	--fp-jaipur-light: #f9e2e7; /* rose tint surface                   */
-	/* Supported legacy aliases (70+ live users; ADR-0001): --fp-terracotta,  */
+	/* Supported legacy aliases (70+ live users; ADR-8): --fp-terracotta,  */
 	/* --fp-navy and the --fp-primary* bridge below. Keep, don't extend.     */
 	--fp-terracotta: #bf5f45; /* Mira / warm supporting accent       */
 	--fp-saffron: #d99a2b; /* marigold — progress / XP / streaks  */

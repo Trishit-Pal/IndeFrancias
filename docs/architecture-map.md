@@ -57,8 +57,9 @@ Svelte 5 (runes, forced via `svelte.config.js`), SvelteKit + `@sveltejs/adapter-
 - **ADR-3 adapter-static SPA.** No SSR/runtime server; `paths.relative:false`; SPA fallback. Enables Capacitor wrap. Status: accepted.
 - **ADR-4 Strict CSP (`default-src 'self'`).** Security hardening; no external runtime requests. Status: accepted.
 - **ADR-5 Self-hosted fonts (`@fontsource`).** CSP blocks CDN fonts; Vite `assetsInlineLimit` excludes fonts so they aren't CSP-forbidden `data:` URIs. Status: accepted. (memory: `frenchpath-csp-fonts`)
-- **ADR-6 "Le Grand Voyage" UI.** Warm Mumbai→Paris journey + characters; tokens in `theme/`. Status: shipped.
+- **ADR-6 "Le Grand Voyage" UI.** Warm Mumbai→Paris journey + characters; tokens in `theme/`. Status: superseded by ADR-8.
 - **ADR-7 Mobile via Capacitor (not React Native).** Wrap the PWA → web+Android+iOS one codebase; RN prototype removed. Status: accepted. (memory: `frenchpath-mobile-capacitor`; plan: `~/.claude/plans/lovely-twirling-nest.md`)
+- **ADR-8 "L'Indigo Express" design system.** One token contract (light + complete dark) in `theme/tokens.css`; accent tokens are fills, text uses `-text` siblings (`contrast.spec.ts` enforces AA); inline-SVG icon registry; SVG `VoyageMap`; shared `Modal` (native `<dialog>`) / `InfoBanner` / `IconButton`; variable fonts. Status: accepted. Full record: [`docs/adr/0008-indigo-express-design-system.md`](adr/0008-indigo-express-design-system.md).
 
 ## See also
 `docs/product/prd.md`, `docs/product/mobile-architecture.md`, `docs/product/gtm-launch.md`, `docs/data-sovereignty.md`, `docs/content-curation.md`, `docs/ml-roadmap.md`, `docs/testing.md`, `docs/launch-checklist.md`.

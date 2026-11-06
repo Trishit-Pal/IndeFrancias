@@ -1,6 +1,6 @@
-# ADR-0001: "L'Indigo Express" unified design system
+# ADR-8: "L'Indigo Express" unified design system
 
-**Status:** Accepted (retroactive — documents decisions shipped on `feat/ui-revamp-indigo-express`, 12 commits ahead of `origin/main`)
+**Status:** Accepted — supersedes ADR-6 "Le Grand Voyage" UI (retroactive — documents decisions shipped on `feat/ui-revamp-indigo-express`, 12 commits ahead of `origin/main`)
 **Date:** 2026-11-06
 **Deciders:** Product owner (design interview, locked decisions in `docs/superpowers/plans/2026-07-12-premium-ui-revamp.md`)
 
@@ -77,4 +77,4 @@ The token contract and primitives trade a one-time migration cost for removing a
 4. [ ] Consider Playwright screenshot snapshots for home (VoyageMap) light/dark to catch visual regressions.
 5. [x] Text-safe accent tokens + contrast spec.
 6. [ ] Refresh stale test counts in `AGENTS.md` (says 188/35; now 282 unit / 43 E2E).
-7. [ ] De-flake `app.e2e.ts` "replaying a perfect lesson awards zero improvement XP": `completeLesson` answers by position while Matching/Reorder shuffle with `Math.random`, so the replay sometimes out-scores the first run (pre-existing since `67eb6d9`).
+7. [x] De-flake `app.e2e.ts` "replaying a perfect lesson awards zero improvement XP": `completeLesson` answers by position while Matching/Reorder shuffle with `Math.random`, so the replay sometimes out-scores the first run (pre-existing since `67eb6d9`). Fixed by pinning `Math.random` in that test.
