@@ -72,7 +72,7 @@
 </script>
 
 <section class="surface-card p-6 shadow-sm lg:mx-auto lg:max-w-2xl" data-testid="context-card">
-	{#if isListen && !answered}
+	{#if isListen}
 		<div class="flex justify-center">
 			<IconButton
 				icon="speaker"
@@ -161,9 +161,9 @@
 				<p class="mt-1 text-sm text-muted" style="font-family: var(--fp-font-hindi)">{gloss}</p>
 			{/if}
 			<p class="mt-1 text-sm text-muted">
-				{isCorrect
-					? m.review_context_correct()
-					: m.review_context_answer({ answer: prompt.answer })}
+				{#if submitted && typedGrade === 'hard'}{m.review_context_close({ answer: prompt.answer })}
+				{:else if isCorrect}{m.review_context_correct()}
+				{:else}{m.review_context_answer({ answer: prompt.answer })}{/if}
 			</p>
 		{/if}
 	</div>

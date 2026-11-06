@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { cardSchema, type Card } from '$lib/content/schema';
 import { listUnitSummaries, loadUnit } from '$lib/content/loader';
-import { buildContextPrompt, type CandidateCard } from './contextCard';
+import { buildContextPrompt, glossOnlyPrompt, type CandidateCard } from './contextCard';
 
 function mk(
 	id: string,
@@ -198,5 +198,20 @@ describe('buildContextPrompt', () => {
 			ratio,
 			`coverage ${(ratio * 100).toFixed(1)}%; null: ${failed.join(' ; ')}`
 		).toBeGreaterThanOrEqual(0.8);
+	});
+});
+
+describe('glossOnlyPrompt', () => {
+	it('accepts the French and its forms with no sentence or choices', () => {
+		expect(glossOnlyPrompt({ french: 'manger', forms: ['mange', 'mangeons'] })).toEqual({
+			before: '',
+			answer: 'manger',
+			after: '',
+			choices: [],
+			accepted: ['manger', 'mange', 'mangeons']
+		});
+	});
+	it('works without forms', () => {
+		expect(glossOnlyPrompt({ french: 'pain' }).accepted).toEqual(['pain']);
 	});
 });

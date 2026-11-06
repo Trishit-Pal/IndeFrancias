@@ -89,6 +89,9 @@ export default defineConfig(({ mode }) => ({
 				// copy would always compare equal to itself (see updates.ts).
 				globIgnores: ['**/models/**', '**/version.json'],
 				navigateFallback: '/',
+				// `?mode=` must not defeat the precache match for /review (else the fallback serves Home);
+				// keep workbox's defaults too.
+				ignoreURLParametersMatching: [/^utm_/, /^fbclid$/, /^mode$/],
 				navigateFallbackDenylist: [/^\/manifest\.webmanifest$/],
 				runtimeCaching: [
 					{

@@ -27,7 +27,12 @@
 	import type { ReviewGrade } from '$lib/srs/fsrs';
 	import type { ReviewMode } from '$lib/gamification/todayPlan';
 	import ContextCard from '$lib/srs/ContextCard.svelte';
-	import { buildContextPrompt, type CandidateCard, type ContextPrompt } from '$lib/srs/contextCard';
+	import {
+		buildContextPrompt,
+		glossOnlyPrompt,
+		type CandidateCard,
+		type ContextPrompt
+	} from '$lib/srs/contextCard';
 	import { maybeRunFsrsOptimizer } from '$lib/srs/optimizer';
 
 	type ReviewItem = {
@@ -107,17 +112,7 @@
 					const isSpeaking = srs.skill === 'spokenProduction' || srs.skill === 'spokenInteraction';
 					const presentation = presentationFor(srs, mode, built !== null, caps, isSpeaking);
 					// mature card without a sentence: typed recall against the gloss
-					const prompt =
-						built ??
-						(presentation === 'flip'
-							? null
-							: {
-									before: '',
-									answer: content.french,
-									after: '',
-									choices: [],
-									accepted: [content.french, ...(content.forms ?? [])]
-								});
+					const prompt = built ?? (presentation === 'flip' ? null : glossOnlyPrompt(content));
 					items.push({ srs, content, prompt, presentation });
 				}
 			} catch {

@@ -258,5 +258,6 @@
 	"today_review_many": "{count} cards to review, about {minutes} min. Focus: {mode}.",
 	"review_listen_replay": "Play again",
 	"review_recall_label": "Type the French",
-	"review_recall_check": "Check"
+	"review_recall_check": "Check",
+	"review_context_close": "Close — the answer is {answer}."
 }

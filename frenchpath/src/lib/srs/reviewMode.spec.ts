@@ -30,6 +30,15 @@ describe('presentationFor', () => {
 		['young read -> read', young, 'read', true, both, false, 'read'],
 		['young type -> type', young, 'type', true, none, false, 'type'],
 		['mature type -> type', mature, 'type', true, none, false, 'type'],
+		[
+			'mature speak, no asr -> speak (Task 7 owns the fallback)',
+			mature,
+			'speak',
+			true,
+			none,
+			true,
+			'speak'
+		],
 		['young speak -> speak', young, 'speak', true, both, true, 'speak']
 	];
 	it.each(rows)('%s', (_n, card, mode, hasPrompt, caps, speaking, expected) => {

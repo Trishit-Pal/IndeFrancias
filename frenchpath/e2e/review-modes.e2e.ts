@@ -1,6 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
 import { gotoHome, completeLesson, reviewUntilDone } from './helpers';
-// the service worker would bypass the route() fulfilment in openReviewtest.use({ serviceWorkers: 'block' });
 
 async function stubFrenchTts(page: Page) {
 	await page.addInitScript(() => {
@@ -25,17 +24,14 @@ async function stubFrenchTts(page: Page) {
 	});
 }
 
-/**
- * Client-side nav like the Today card: `vite preview` serves the home shell for a full load
- * of `/review?mode=x`, so retarget the Today link and click it.
- */
+/** Wait for the service worker so a hard load of `/review?mode=x` hits the precached shell. */
+async function swReady(page: Page) {
+	await page.evaluate(() => navigator.serviceWorker.ready.then(() => undefined));
+}
+
 async function openReview(page: Page, mode: string) {
-	await page.goto('/progress');
-	const start = page.getByTestId('today-start');
-	await expect(start).toBeVisible();
-	await start.evaluate((el, m) => el.setAttribute('href', `/review?mode=${m}`), mode);
-	await start.click();
-	await expect(page).toHaveURL(new RegExp(`mode=${mode}$`));
+	await swReady(page);
+	await page.goto(`/review?mode=${mode}`);
 }
 
 async function learnOneUnit(page: Page) {
@@ -106,4 +102,14 @@ test('mature cards use typed recall even in read mode', async ({ page }) => {
 	await page.goto('/review');
 	await expect(page.getByTestId('recall-input')).toBeVisible();
 	await reviewUntilDone(page);
+});
+
+test('hard-loading /review?mode=type with the service worker renders Review, not Home', async ({
+	page
+}) => {
+	await gotoHome(page);
+	await swReady(page);
+	await page.goto('/review?mode=type');
+	await expect(page.getByTestId('no-reviews')).toBeVisible();
+	await expect(page.getByTestId('path-scene')).toHaveCount(0);
 });

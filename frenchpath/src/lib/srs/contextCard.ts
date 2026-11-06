@@ -204,3 +204,14 @@ export function buildContextPrompt(
 		accepted: [answer, card.french, ...(card.forms ?? [])]
 	};
 }
+
+/** Typed-recall prompt for a mature card that has no sentence: the learner sees the gloss only. */
+export function glossOnlyPrompt(card: Pick<Card, 'french' | 'forms'>): ContextPrompt {
+	return {
+		before: '',
+		answer: card.french,
+		after: '',
+		choices: [],
+		accepted: [card.french, ...(card.forms ?? [])]
+	};
+}
