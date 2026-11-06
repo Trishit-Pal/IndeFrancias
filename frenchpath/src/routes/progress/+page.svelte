@@ -12,6 +12,14 @@
 	} from '$lib/db';
 	import type { AssessmentRecord, Skill, SkillProfileRecord } from '$lib/db/schema';
 	import { countDue } from '$lib/srs/queue';
+	import { listUnitSummaries } from '$lib/content/loader';
+	import { passedAssessmentIds } from '$lib/assessment/checkpoint';
+	import { computeUnitStates } from '$lib/lesson/progression';
+	import { dailyGoalProgress } from '$lib/gamification/activity';
+	import { buildTodayPlan, weakestSkill as pickWeakestSkill } from '$lib/gamification/todayPlan';
+	import type { TodayPlan } from '$lib/gamification/todayPlan';
+	import TodayCard from '$lib/gamification/TodayCard.svelte';
+	import { loadCaps } from '$lib/srs/caps';
 	import { todayKey, lastNDayKeys } from '$lib/utils/date';
 	import { shareProgress } from '$lib/share/shareCard';
 	import CharacterCoco from '$lib/components/CharacterCoco.svelte';
@@ -72,13 +80,37 @@
 	const cocoXpPercent = $derived(((totalXp % 250) / 250) * 100);
 	const xpToNextLevel = $derived(cocoLevel >= 10 ? 0 : 250 - (totalXp % 250));
 
-	const weakestSkill = $derived(
-		[...skillProfiles].sort(
-			(a, b) =>
-				['A1', 'A2', 'B1', 'B2', 'C1'].indexOf(a.estimatedLevel) -
-				['A1', 'A2', 'B1', 'B2', 'C1'].indexOf(b.estimatedLevel)
-		)[0]
-	);
+	const weakestSkill = $derived.by(() => {
+		const skill = pickWeakestSkill(skillProfiles);
+		return skillProfiles.find((p) => p.skill === skill);
+	});
+
+	let todayPlan = $state<TodayPlan | null>(null);
+	let nextUnitId = $state<string | null>(null);
+
+	// Not awaited by onMount: voicesReady() can take up to 3 s.
+	async function loadToday(profiles: SkillProfileRecord[], dueCount: number): Promise<void> {
+		const units = listUnitSummaries();
+		const [caps, goal, progress, passed] = await Promise.all([
+			loadCaps(),
+			dailyGoalProgress(),
+			progressRepo.getAllProgress(),
+			passedAssessmentIds()
+		]);
+		const states = computeUnitStates(
+			units,
+			Object.fromEntries(progress.map((p) => [p.lessonId, p])),
+			passed
+		);
+		nextUnitId = units.find((u) => states.get(u.id) === 'available')?.id ?? null;
+		todayPlan = buildTodayPlan({
+			dueCount,
+			focusSkill: pickWeakestSkill(profiles),
+			caps,
+			goal,
+			hasLessonsLeft: nextUnitId !== null
+		});
+	}
 
 	const examCountdown = $derived(() => {
 		if (!targetExamDate) return null;
@@ -117,6 +149,7 @@
 		totalXp = allStats.reduce((sum, s) => sum + (s.xp ?? 0), 0);
 		heatmap = lastNDayKeys(84).map((date) => ({ date, xp: statsByDate.get(date)?.xp ?? 0 }));
 		skillProfiles = await skillProfileRepo.getAllSkillProfiles();
+		void loadToday(skillProfiles, due);
 	});
 
 	const maxWeekXp = $derived(Math.max(1, ...weekXp.map((d) => d.xp)));
@@ -164,7 +197,11 @@
 		</p>
 	{/if}
 
-	<div class="mt-5 lg:grid lg:grid-cols-3 lg:gap-6">
+	<div class="mt-5 min-h-28">
+		{#if todayPlan}<TodayCard plan={todayPlan} {nextUnitId} />{/if}
+	</div>
+
+	<div class="lg:grid lg:grid-cols-3 lg:gap-6">
 		<section class="surface-card p-4 lg:col-span-2" aria-label={m.progress_xp_chart()}>
 			<h2 class="text-sm font-semibold text-balance text-foreground">{m.progress_xp_chart()}</h2>
 			<div

@@ -37,3 +37,17 @@ Keys: `speak_pack_title`, `speak_pack_body`, `speak_pack_download`,
 - all non-en locales — `review_context_answer` — English placeholder
 - all non-en locales — `review_context_prompt` — English placeholder
 - all non-en locales — `review_context_blank` — English placeholder
+
+## Task 5 — Today coach card (2026-11-06)
+
+- all non-en locales — `today_title` — English placeholder
+- all non-en locales — `today_review` — English placeholder
+- all non-en locales — `today_lesson` — English placeholder
+- all non-en locales — `today_rest` — English placeholder
+- all non-en locales — `today_hint_tts` — English placeholder
+- all non-en locales — `today_hint_asr` — English placeholder
+- all non-en locales — `today_start` — English placeholder
+- all non-en locales — `review_mode_read` — English placeholder
+- all non-en locales — `review_mode_listen` — English placeholder
+- all non-en locales — `review_mode_type` — English placeholder
+- all non-en locales — `review_mode_speak` — English placeholder

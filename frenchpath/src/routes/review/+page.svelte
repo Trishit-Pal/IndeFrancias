@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { page } from '$app/state';
+	import { parseReviewMode } from '$lib/srs/reviewMode';
 	import { resolve } from '$app/paths';
 	import * as m from '$lib/paraglide/messages';
 	import { getReviewQueue } from '$lib/srs/queue';
@@ -42,6 +44,7 @@
 	let cardStartedAt = Date.now();
 	let sessionDurationMs = $state(0);
 
+	const mode = $derived(parseReviewMode(page.url.searchParams.get('mode')));
 	const currentItem = $derived(queue[index] ?? null);
 	const reviewLexicon = $derived(
 		currentItem ? buildLexicon([currentItem.content], nativeLanguage) : new Map()
@@ -143,6 +146,7 @@
 				<div class="mt-4">
 					<ContextCard
 						prompt={currentItem.prompt}
+						{mode}
 						gloss={getGloss(currentItem.content, nativeLanguage).primary}
 						onAnswered={grade}
 					/>

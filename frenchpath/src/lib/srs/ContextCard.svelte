@@ -3,12 +3,12 @@
 	import { tick } from 'svelte';
 	import type { ReviewGrade } from '$lib/srs/fsrs';
 	import type { ContextPrompt } from '$lib/srs/contextCard';
+	import type { ReviewMode } from '$lib/gamification/todayPlan';
 	import { gradeChoice } from '$lib/srs/contextGrade';
 
 	interface Props {
 		prompt: ContextPrompt;
-		// ponytail: read mode only; add `mode: ReviewMode` when Task 4/6 land.
-		mode?: 'read';
+		mode?: ReviewMode;
 		gloss: string;
 		onAnswered: (grade: ReviewGrade, durationMs: number) => void;
 	}

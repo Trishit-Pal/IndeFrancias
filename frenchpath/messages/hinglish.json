@@ -255,5 +255,16 @@
 	"review_context_correct": "Nice, that's it.",
 	"review_context_answer": "The answer was {answer}.",
 	"review_context_prompt": "Choose the missing word",
-	"review_context_blank": "blank"
+	"review_context_blank": "blank",
+	"today_title": "Today",
+	"today_review": "{count} cards to review, about {minutes} min. Focus: {mode}.",
+	"today_lesson": "Nothing to review. A new lesson is a gentle way to start.",
+	"today_rest": "Today's goal is met and nothing is due. Enjoy your rest.",
+	"today_hint_tts": "Add a French voice in Settings to unlock listening practice.",
+	"today_hint_asr": "Download the speaking pack in Settings to unlock speaking practice.",
+	"today_start": "Start",
+	"review_mode_read": "reading",
+	"review_mode_listen": "listening",
+	"review_mode_type": "typing",
+	"review_mode_speak": "speaking"
 }
