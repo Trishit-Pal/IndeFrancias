@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { prefersReducedMotion } from 'svelte/motion';
 	import { onNavigate } from '$app/navigation';
 	import { pwaInfo } from 'virtual:pwa-info';
 	import { page } from '$app/state';
@@ -43,10 +44,12 @@
 	] as const;
 	const path = $derived(page.url.pathname);
 
-	// Cross-fade between routes. Skipped entirely under reduced motion, and a
-	// no-op when the browser lacks View Transitions (Safari < 18, older WebViews).
+	// Cross-fade between routes. Skipped under reduced motion (in-app setting OR
+	// OS preference), and a no-op when the browser lacks View Transitions
+	// (Safari < 18, older WebViews).
 	onNavigate((navigation) => {
 		if (document.documentElement.classList.contains('reduce-motion')) return;
+		if (prefersReducedMotion.current) return;
 		if (!document.startViewTransition) return;
 		return new Promise((resolve) => {
 			document.startViewTransition(async () => {

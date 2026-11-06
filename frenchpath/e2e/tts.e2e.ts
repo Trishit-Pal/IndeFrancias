@@ -59,7 +59,9 @@ test('shadowing toggle reveals synced transcript on a dictation exercise', async
 	const shadowToggle = page.getByTestId('shadow-toggle');
 	await expect(shadowToggle).toBeVisible();
 	await expect(page.getByTestId('shadow-transcript')).toHaveCount(0);
-	const outerLabel = await shadowToggle.textContent();
+	// Icon-only button: the accessible name lives in aria-label, not text.
+	const outerLabel = await shadowToggle.getAttribute('aria-label');
+	expect(outerLabel).toBeTruthy();
 
 	await shadowToggle.click();
 
@@ -69,7 +71,7 @@ test('shadowing toggle reveals synced transcript on a dictation exercise', async
 	// Regression guard: the outer reveal-toggle describes panel visibility, not
 	// playback, so its label must stay fixed even while ShadowingPlayer
 	// auto-plays and its own inner button reads "stop".
-	await expect(shadowToggle).toHaveText(outerLabel ?? '');
+	await expect(shadowToggle).toHaveAttribute('aria-label', outerLabel ?? '');
 	await expect(shadowToggle).toHaveAttribute('aria-pressed', 'true');
 
 	// Regression (M2.6 review): stopping while loop is armed must stay stopped —
@@ -80,4 +82,7 @@ test('shadowing toggle reveals synced transcript on a dictation exercise', async
 	await playBtn.click(); // stop
 	await page.waitForTimeout(200); // let the cancel-triggered onend land
 	await expect(playBtn).toHaveAttribute('aria-pressed', 'false');
+	// Stopped = play button shows its "start" name; it must not duplicate the
+	// toggle's name (screen readers would hear two identical buttons).
+	await expect(playBtn).not.toHaveAttribute('aria-label', outerLabel ?? '');
 });

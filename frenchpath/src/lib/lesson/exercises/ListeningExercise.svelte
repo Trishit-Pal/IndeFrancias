@@ -46,7 +46,7 @@
 			</button>
 			<IconButton
 				icon="mic"
-				label={m.shadow_start()}
+				label={m.shadow_practice()}
 				pressed={showShadow}
 				testid="shadow-toggle"
 				onclick={() => (showShadow = !showShadow)}
@@ -77,7 +77,7 @@
 	/>
 	{#if submitted && !isCorrect}
 		<p class="text-sm">
-			Correct: <span class="text-sage">{exercise.answer}</span>
+			Correct: <span class="text-sage-text">{exercise.answer}</span>
 		</p>
 	{/if}
 </div>

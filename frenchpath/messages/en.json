@@ -159,6 +159,7 @@
 	"dictation_prompt": "Listen and type what you hear",
 	"dictation_fill_blank": "Type what you hear",
 	"shadow_start": "🎧 Shadow this",
+	"shadow_practice": "Shadowing practice",
 	"shadow_stop": "⏹ Stop shadowing",
 	"shadow_hint": "Read along and repeat each word as it lights up.",
 	"shadow_loop": "Loop",

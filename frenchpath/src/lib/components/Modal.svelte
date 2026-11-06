@@ -1,5 +1,8 @@
-<!-- Modal.svelte — focused overlay dialog for confirmations.
-     Backdrop click and Escape close it; the panel takes focus on open.
+<!-- Modal.svelte — confirmation dialog on the native <dialog> + showModal().
+     The browser makes the page behind it inert (focus can't Tab out), closes
+     on Escape (routed to onClose), and returns focus to the opener on close().
+     The <dialog> stays mounted and is toggled via showModal()/close(): removing
+     an open dialog from the DOM would skip the focus restore.
      Pass `labelledby` pointing at a heading id inside the panel, and a
      `testid` that lands on the dialog element (e2e selects it). -->
 <script lang="ts">
@@ -19,45 +22,60 @@
 		children: Snippet;
 	} = $props();
 
-	let panel = $state<HTMLElement | null>(null);
+	let dialog = $state<HTMLDialogElement | null>(null);
 
 	$effect(() => {
-		if (open && panel) panel.focus();
+		if (!dialog) return;
+		if (open && !dialog.open) dialog.showModal();
+		else if (!open && dialog.open) dialog.close();
 	});
 
-	function onKeydown(event: KeyboardEvent) {
-		if (event.key === 'Escape') onClose?.();
+	function onCancel(event: Event) {
+		// Escape: let the parent own `open` instead of the browser closing it.
+		event.preventDefault();
+		onClose?.();
 	}
 </script>
 
-<svelte:window onkeydown={open ? onKeydown : undefined} />
-
-{#if open}
-	<!-- z-50: above the mobile nav (z-10) and the learn confidence sheet (z-40). -->
-	<div
-		class="fp-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
-		role="presentation"
-		onclick={(e) => {
-			if (e.target === e.currentTarget) onClose?.();
-		}}
-	>
-		<div
-			bind:this={panel}
-			class="fp-modal-panel surface-card w-full max-w-md p-5"
-			role="dialog"
-			aria-modal="true"
-			aria-labelledby={labelledby}
-			data-testid={testid}
-			tabindex="-1"
-		>
-			{@render children()}
-		</div>
+<!-- Clicks on the dialog box itself (outside the inner panel) are backdrop clicks. -->
+<dialog
+	bind:this={dialog}
+	class="fp-modal"
+	aria-labelledby={labelledby}
+	data-testid={testid}
+	oncancel={onCancel}
+	onclick={(e) => {
+		if (e.target === e.currentTarget) onClose?.();
+	}}
+>
+	<div class="fp-modal-panel surface-card w-full max-w-md p-5">
+		{@render children()}
 	</div>
-{/if}
+</dialog>
 
 <style>
-	.fp-modal-backdrop {
-		background: color-mix(in srgb, var(--fp-midnight) 55%, transparent);
+	.fp-modal {
+		/* Full-viewport transparent box so a click outside the panel hits it. */
+		position: fixed;
+		inset: 0;
+		width: 100%;
+		max-width: none;
+		height: 100%;
+		max-height: none;
+		margin: 0;
+		padding: 1rem;
+		border: 0;
+		background: transparent;
+		color: inherit;
+	}
+	.fp-modal[open] {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.fp-modal::backdrop {
+		/* Literal night scrim: older WebViews don't inherit custom props into ::backdrop. */
+		background: color-mix(in srgb, #100e20 55%, transparent);
 		backdrop-filter: blur(2px);
 	}
 	.fp-modal-panel {

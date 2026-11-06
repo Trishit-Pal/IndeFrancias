@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { gotoHome, completeLesson } from './helpers';
+import { gotoHome, completeLesson, exportBackupViaSettings, importBackupFile } from './helpers';
 
 async function reachExercisePhase(page: import('@playwright/test').Page) {
 	const check = page.getByTestId('check');
@@ -67,4 +67,33 @@ test('review grade buttons are focusable after reveal', async ({ page }) => {
 		await gradeBtn.focus();
 		await expect(gradeBtn).toBeFocused();
 	}
+});
+
+test('modal traps Tab focus and restores focus to the opener on Escape', async ({ page }) => {
+	await gotoHome(page);
+	const backupJson = await exportBackupViaSettings(page);
+
+	// Focus a known control first: showModal() must hand focus back to it on close.
+	const opener = page.getByTestId('backup-export');
+	await opener.focus();
+	await importBackupFile(page, backupJson, false);
+
+	const dialog = page.getByTestId('import-preview');
+	await expect(dialog).toBeVisible();
+
+	// Tab repeatedly: focus may briefly leave the document (browser UI → body),
+	// but must never land on a page control behind the modal.
+	for (let i = 0; i < 10; i++) {
+		await page.keyboard.press('Tab');
+		const escaped = await page.evaluate(() => {
+			const active = document.activeElement;
+			const modal = document.querySelector('[data-testid="import-preview"]');
+			return !!active && active !== document.body && !modal?.contains(active);
+		});
+		expect(escaped, `Tab #${i + 1} escaped the modal`).toBe(false);
+	}
+
+	await page.keyboard.press('Escape');
+	await expect(dialog).not.toBeVisible();
+	await expect(opener).toBeFocused();
 });

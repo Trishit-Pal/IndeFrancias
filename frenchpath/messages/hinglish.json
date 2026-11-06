@@ -130,6 +130,7 @@
 	"dictation_prompt": "Sunno aur jo aap suno use type karo",
 	"dictation_fill_blank": "Jo aap suno use type karo",
 	"shadow_start": "🎧 Shadow this",
+	"shadow_practice": "Shadowing practice",
 	"shadow_stop": "⏹ Stop shadowing",
 	"shadow_hint": "Read along and repeat each word as it lights up.",
 	"shadow_loop": "Loop",
