@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
-	import { parseReviewMode } from '$lib/srs/reviewMode';
+	import { parseReviewMode, presentationFor } from '$lib/srs/reviewMode';
+	import { loadCaps } from '$lib/srs/caps';
+	import type { Caps } from '$lib/gamification/todayPlan';
 	import { resolve } from '$app/paths';
 	import * as m from '$lib/paraglide/messages';
 	import { getReviewQueue } from '$lib/srs/queue';
@@ -23,11 +25,17 @@
 	import { speakFrench, ttsAvailable } from '$lib/audio/tts';
 	import { shareProgress } from '$lib/share/shareCard';
 	import type { ReviewGrade } from '$lib/srs/fsrs';
+	import type { ReviewMode } from '$lib/gamification/todayPlan';
 	import ContextCard from '$lib/srs/ContextCard.svelte';
 	import { buildContextPrompt, type CandidateCard, type ContextPrompt } from '$lib/srs/contextCard';
 	import { maybeRunFsrsOptimizer } from '$lib/srs/optimizer';
 
-	type ReviewItem = { srs: SrsCard; content: Card; prompt: ContextPrompt | null };
+	type ReviewItem = {
+		srs: SrsCard;
+		content: Card;
+		prompt: ContextPrompt | null;
+		presentation: ReviewMode | 'flip';
+	};
 	type Phase = 'loading' | 'reviewing' | 'done';
 
 	let phase = $state<Phase>('loading');
@@ -73,14 +81,14 @@
 		nativeLanguage = settings.nativeLanguage;
 		difficultyTier = settings.difficultyTier;
 		fsrsWeights = settings.fsrsWeights;
-		const due = await getReviewQueue();
-		queue = await resolveContent(due);
+		const [due, caps] = await Promise.all([getReviewQueue(), loadCaps()]);
+		queue = await resolveContent(due, caps);
 		phase = queue.length > 0 ? 'reviewing' : 'reviewing';
 		sessionStartedAt = Date.now();
 		cardStartedAt = Date.now();
 	});
 
-	async function resolveContent(cards: SrsCard[]): Promise<ReviewItem[]> {
+	async function resolveContent(cards: SrsCard[], caps: Caps): Promise<ReviewItem[]> {
 		const unitIds = [...new Set(cards.map((srs) => parseCardId(srs.cardId).unitId))];
 		const loaded = await Promise.all(unitIds.map((id) => loadUnit(id)));
 		const byUnitId = new Map(loaded.map((unit) => [unit.id, unit]));
@@ -95,8 +103,22 @@
 				const unit = byUnitId.get(unitId);
 				const content = unit?.cards.find((c) => c.id === contentId);
 				if (content) {
-					const prompt = buildContextPrompt(content, unitId, candidates, srs.cardId);
-					items.push({ srs, content, prompt });
+					const built = buildContextPrompt(content, unitId, candidates, srs.cardId);
+					const isSpeaking = srs.skill === 'spokenProduction' || srs.skill === 'spokenInteraction';
+					const presentation = presentationFor(srs, mode, built !== null, caps, isSpeaking);
+					// mature card without a sentence: typed recall against the gloss
+					const prompt =
+						built ??
+						(presentation === 'flip'
+							? null
+							: {
+									before: '',
+									answer: content.french,
+									after: '',
+									choices: [],
+									accepted: [content.french, ...(content.forms ?? [])]
+								});
+					items.push({ srs, content, prompt, presentation });
 				}
 			} catch {
 				// Skip cards whose unit can't be resolved (e.g. removed content).
@@ -141,12 +163,12 @@
 			{m.review_queue_progress({ current: index + 1, total: queue.length })}
 		</p>
 
-		{#if currentItem.prompt}
+		{#if currentItem.prompt && currentItem.presentation !== 'flip'}
 			{#key currentItem.srs.cardId}
 				<div class="mt-4">
 					<ContextCard
 						prompt={currentItem.prompt}
-						{mode}
+						mode={currentItem.presentation as ReviewMode}
 						gloss={getGloss(currentItem.content, nativeLanguage).primary}
 						onAnswered={grade}
 					/>

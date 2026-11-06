@@ -218,6 +218,15 @@ export async function reviewUntilDone(page: Page) {
 	await expect(ctx.or(reveal).or(done).first()).toBeVisible();
 	while (!(await done.isVisible().catch(() => false))) {
 		if (await ctx.isVisible().catch(() => false)) {
+			const recall = page.getByTestId('recall-input');
+			if (await recall.isVisible().catch(() => false)) {
+				await recall.fill('x');
+				await page.getByTestId('recall-check').click();
+				await page.getByTestId('continue').click();
+				await expect(page.getByTestId('continue')).toBeHidden();
+				await expect(ctx.or(reveal).or(done).first()).toBeVisible();
+				continue;
+			}
 			const choices = page.getByTestId('context-choice');
 			await choices.first().click();
 			for (let i = 0; i < (await choices.count()); i++) {

@@ -267,5 +267,8 @@
 	"review_mode_type": "typing",
 	"review_mode_speak": "speaking",
 	"today_review_one": "{count} card to review, about {minutes} min. Focus: {mode}.",
-	"today_review_many": "{count} cards to review, about {minutes} min. Focus: {mode}."
+	"today_review_many": "{count} cards to review, about {minutes} min. Focus: {mode}.",
+	"review_listen_replay": "Play again",
+	"review_recall_label": "Type the French",
+	"review_recall_check": "Check"
 }
