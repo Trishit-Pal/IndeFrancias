@@ -215,8 +215,14 @@ export async function reviewUntilDone(page: Page) {
 	const done = page.getByTestId('review-done');
 	const ctx = page.getByTestId('context-card');
 	const reveal = page.getByTestId('reveal');
-	await expect(ctx.or(reveal).or(done).first()).toBeVisible();
+	const gotItBtn = page.getByTestId('leech-got-it');
+	await expect(ctx.or(reveal).or(done).or(gotItBtn).first()).toBeVisible();
 	while (!(await done.isVisible().catch(() => false))) {
+		if (await gotItBtn.isVisible().catch(() => false)) {
+			await gotItBtn.click();
+			await expect(gotItBtn).toBeHidden();
+			continue;
+		}
 		if (await ctx.isVisible().catch(() => false)) {
 			const typeInstead = page.getByTestId('speak-type-instead');
 			if (await typeInstead.isVisible().catch(() => false)) await typeInstead.click();
@@ -226,7 +232,7 @@ export async function reviewUntilDone(page: Page) {
 				await page.getByTestId('recall-check').click();
 				await page.getByTestId('continue').click();
 				await expect(page.getByTestId('continue')).toBeHidden();
-				await expect(ctx.or(reveal).or(done).first()).toBeVisible();
+				await expect(ctx.or(reveal).or(done).or(gotItBtn).first()).toBeVisible();
 				continue;
 			}
 			const choices = page.getByTestId('context-choice');
@@ -241,7 +247,7 @@ export async function reviewUntilDone(page: Page) {
 			await reveal.click();
 			await page.locator('[data-grade="good"]').click();
 		}
-		await expect(ctx.or(reveal).or(done).first()).toBeVisible();
+		await expect(ctx.or(reveal).or(done).or(gotItBtn).first()).toBeVisible();
 	}
 }
 

@@ -181,3 +181,69 @@ test('speak mode requests the mic only on the Say it tap, not on mount', async (
 	await expect(say).toContainText('Stop');
 	expect(await calls()).toBe(1);
 });
+
+/** Make every card due and mature; only the first gets `lapses`, the rest get 2. */
+async function seedCards(page: Page, patch: { lapses: number }) {
+	await page.evaluate(async (lapses) => {
+		const db = await new Promise<IDBDatabase>((res, rej) => {
+			const req = indexedDB.open('frenchpath', 2);
+			req.onerror = () => rej(req.error);
+			req.onsuccess = () => res(req.result);
+		});
+		await new Promise<void>((res, rej) => {
+			const tx = db.transaction('srsCards', 'readwrite');
+			let first = true;
+			tx.objectStore('srsCards').openCursor().onsuccess = (e) => {
+				const cur = (e.target as IDBRequest<IDBCursorWithValue | null>).result;
+				if (!cur) return;
+				cur.update({
+					...cur.value,
+					lapses: first ? lapses : 2,
+					stability: 30,
+					difficulty: 5,
+					state: 2,
+					reps: 5,
+					last_review: new Date(Date.now() - 30 * 86_400_000),
+					due: new Date(Date.now() - 1000)
+				});
+				first = false;
+				cur.continue();
+			};
+			tx.oncomplete = () => {
+				db.close();
+				res();
+			};
+			tx.onerror = () => rej(tx.error);
+		});
+	}, patch.lapses);
+}
+
+test('leech card shows the rescue panel once, then the card; non-leeches skip it', async ({
+	page
+}) => {
+	await learnOneUnit(page);
+	await seedCards(page, { lapses: 3 });
+	await page.goto('/review');
+	const panel = page.getByTestId('leech-rescue');
+	await expect(panel).toBeVisible();
+	await expect(page.getByTestId('recall-input')).toHaveCount(0);
+	await page.getByTestId('leech-got-it').click();
+	await expect(panel).toHaveCount(0);
+	await expect(page.getByTestId('recall-input')).toBeVisible();
+	// once per card per session: grading moves on, and no card shows the panel a second time
+	await page.getByTestId('recall-input').fill('x');
+	await page.getByTestId('recall-check').click();
+	await page.getByTestId('continue').click();
+	await expect(
+		page.getByTestId('recall-input').or(page.getByTestId('review-done')).first()
+	).toBeVisible();
+	await expect(panel).toHaveCount(0);
+});
+
+test('non-leech cards go straight to the card', async ({ page }) => {
+	await learnOneUnit(page);
+	await seedCards(page, { lapses: 2 });
+	await page.goto('/review');
+	await expect(page.getByTestId('recall-input')).toBeVisible();
+	await expect(page.getByTestId('leech-rescue')).toHaveCount(0);
+});

@@ -278,5 +278,9 @@
 	"review_speak_type_instead": "Type instead",
 	"review_speak_denied": "We couldn't reach the microphone. You can type the answer instead.",
 	"review_speak_failed": "We couldn't catch that. Try again, or type it instead.",
-	"review_speak_hint": "Say the whole sentence."
+	"review_speak_hint": "Say the whole sentence.",
+	"leech_title": "This one's slippery",
+	"leech_body": "Here's a closer look before you try it.",
+	"leech_faux_ami": "Faux ami: it looks like an English word but means something different.",
+	"leech_got_it": "Got it"
 }
