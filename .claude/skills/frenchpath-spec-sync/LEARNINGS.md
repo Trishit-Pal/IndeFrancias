@@ -11,3 +11,4 @@
 - 2026-06-19 — For large multi-commit branch diffs (26+ commits), spec-sync should focus on the
   NEW commits added on top of the branch (since last sync), not re-derive the original 26. Use
   `git log --oneline <last-synced-sha>..HEAD` to scope the diff.
+- 2026-11-06 — docs/adr/ uses its own 000N numbering, which collides with the SPEC §7 inline ADR-1..7 index (ADR-6 = old UI). Adding an ADR file implies a §7 edit → HIGH, needs sign-off; decide numbering scheme before adding more.
