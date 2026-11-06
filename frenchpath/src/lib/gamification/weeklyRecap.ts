@@ -1,3 +1,4 @@
+import { lastNDayKeys } from '$lib/utils/date';
 import type { DailyStats, ReviewLogRecord } from '$lib/db/schema';
 
 export interface WeeklyRecap {
@@ -32,4 +33,9 @@ export function buildWeeklyRecap(input: {
 		unitsDone: input.unitsDone,
 		unitsTotal: input.unitsTotal
 	};
+}
+
+/** Epoch ms of local midnight on the first day of `lastNDayKeys(7)`, so logs and daily stats share one window. */
+export function weekStartMs(now: Date = new Date()): number {
+	return new Date(`${lastNDayKeys(7, now)[0]}T00:00:00`).getTime();
 }

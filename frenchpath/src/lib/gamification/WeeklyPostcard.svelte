@@ -5,6 +5,19 @@
 
 	let { recap }: { recap: WeeklyRecap } = $props();
 
+	let busy = $state(false);
+	async function share(): Promise<void> {
+		if (busy) return;
+		busy = true;
+		try {
+			await sharePostcard(recap, labels);
+		} catch {
+			// ponytail: failures and cancels (AbortError) stay silent; add a calm note if the share UI gains one
+		} finally {
+			busy = false;
+		}
+	}
+
 	const isEmpty = $derived(recap.reviews === 0 && recap.lessons === 0);
 	const items = $derived([
 		{ label: m.postcard_reviews(), value: String(recap.reviews) },
@@ -51,7 +64,9 @@
 		type="button"
 		class="btn-secondary mt-3 min-h-11 text-sm"
 		data-testid="share-postcard"
-		onclick={() => sharePostcard(recap, labels)}
+		disabled={busy}
+		aria-busy={busy}
+		onclick={share}
 	>
 		{m.postcard_share()}
 	</button>

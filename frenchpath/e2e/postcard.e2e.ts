@@ -13,6 +13,8 @@ test('weekly postcard shows reviews and shares via download fallback', async ({ 
 	const card = page.getByTestId('weekly-postcard');
 	await expect(card).toBeVisible();
 	await expect(card).not.toContainText(/fresh week/i);
+	const reviews = await card.locator('dd').first().innerText();
+	expect(Number(reviews)).toBeGreaterThanOrEqual(1);
 	// Chromium headless has no navigator.share on desktop: falls back to PNG download.
 	const download = page.waitForEvent('download');
 	await page.getByTestId('share-postcard').click();

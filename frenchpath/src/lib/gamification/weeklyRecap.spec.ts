@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildWeeklyRecap } from './weeklyRecap';
+import { buildWeeklyRecap, weekStartMs } from './weeklyRecap';
 import type { ReviewLogRecord, DailyStats } from '$lib/db/schema';
 
 const log = (cardId: string, grade: number): ReviewLogRecord => ({
@@ -64,5 +64,12 @@ describe('buildWeeklyRecap', () => {
 			unitsDone: 0,
 			unitsTotal: 0
 		});
+	});
+});
+
+describe('weekStartMs', () => {
+	it('is local midnight six days before today, aligned with lastNDayKeys(7)', () => {
+		const now = new Date(2026, 10, 6, 15, 30); // 6 Nov; window starts 31 Oct
+		expect(weekStartMs(now)).toBe(new Date(2026, 9, 31).getTime());
 	});
 });

@@ -138,10 +138,10 @@ export async function renderWeeklyPostcardPng(
 
 	ctx.fillStyle = '#ffffff';
 	ctx.font = 'bold 28px system-ui, sans-serif';
-	ctx.fillText(labels.title ?? '', 32, 64);
+	ctx.fillText(labels.title ?? '', 32, 64, 540);
 	ctx.font = '18px system-ui, sans-serif';
 	if (recap.reviews === 0 && recap.lessons === 0) {
-		ctx.fillText(labels.empty ?? '', 32, 112);
+		ctx.fillText(labels.empty ?? '', 32, 112, 540);
 	} else {
 		const rows = [
 			`${labels.reviews}: ${recap.reviews}`,
@@ -152,7 +152,7 @@ export async function renderWeeklyPostcardPng(
 			`${labels.streak}: ${recap.streak}`,
 			`${labels.units}: ${recap.unitsDone}/${recap.unitsTotal}`
 		];
-		rows.forEach((r, i) => ctx.fillText(r, 32 + (i % 2) * 280, 112 + Math.floor(i / 2) * 44));
+		rows.forEach((r, i) => ctx.fillText(r, 32 + (i % 2) * 280, 112 + Math.floor(i / 2) * 44, 260));
 	}
 	ctx.font = '14px system-ui, sans-serif';
 	ctx.fillStyle = 'rgba(255,255,255,0.8)';

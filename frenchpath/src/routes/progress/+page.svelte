@@ -20,7 +20,7 @@
 	import type { Caps } from '$lib/gamification/todayPlan';
 	import TodayCard from '$lib/gamification/TodayCard.svelte';
 	import WeeklyPostcard from '$lib/gamification/WeeklyPostcard.svelte';
-	import { buildWeeklyRecap, type WeeklyRecap } from '$lib/gamification/weeklyRecap';
+	import { buildWeeklyRecap, weekStartMs, type WeeklyRecap } from '$lib/gamification/weeklyRecap';
 	import { getLogsSince } from '$lib/db/repositories/reviewLog';
 	import { loadCaps } from '$lib/srs/caps';
 	import { todayKey, lastNDayKeys } from '$lib/utils/date';
@@ -108,7 +108,7 @@
 		const units = listUnitSummaries();
 		const unitIds = new Set(units.map((u) => u.id));
 		const [logs, progress] = await Promise.all([
-			getLogsSince(Date.now() - 7 * 864e5),
+			getLogsSince(weekStartMs()),
 			progressRepo.getAllProgress()
 		]);
 		const weekKeys = new Set(lastNDayKeys(7));
