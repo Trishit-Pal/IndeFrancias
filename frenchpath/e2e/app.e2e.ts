@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { gotoHome, completeLesson } from './helpers';
+import { gotoHome, completeLesson, reviewUntilDone } from './helpers';
 
 test('learner can complete the A1 lesson and see a score', async ({ page }) => {
 	await gotoHome(page);
@@ -36,16 +36,29 @@ test('completed lesson seeds the SRS queue and reviews can be graded', async ({ 
 
 	await page.getByRole('link', { name: 'Review now' }).click();
 
-	const reveal = page.getByTestId('reveal');
 	const done = page.getByTestId('review-done');
-	await expect(reveal.or(done).first()).toBeVisible();
-
-	while (!(await done.isVisible().catch(() => false))) {
-		await reveal.click();
-		await page.locator('[data-grade="good"]').click();
-		await expect(reveal.or(done).first()).toBeVisible();
-	}
+	await reviewUntilDone(page);
 	await expect(done).toBeVisible();
+});
+
+test('double-clicking a context choice grades the card exactly once', async ({ page }) => {
+	await gotoHome(page);
+	await page.getByTestId('unit-card').first().click();
+	await page.getByTestId('start-lesson').click();
+	await completeLesson(page);
+	await page.getByRole('link', { name: 'Review now' }).click();
+
+	const ctx = page.getByTestId('context-card');
+	await expect(ctx.or(page.getByTestId('reveal')).first()).toBeVisible();
+	const total = Number(
+		(await page.getByText(/^\d+ \/ \d+ due$/).innerText()).match(/\/ (\d+)/)![1]
+	);
+	await expect(ctx).toBeVisible();
+	await page.getByTestId('context-choice').first().dblclick();
+	await page.getByTestId('continue').click();
+	await expect(page.getByTestId('continue')).toBeHidden();
+	await reviewUntilDone(page);
+	await expect(page.getByTestId('review-summary-cards')).toContainText(String(total));
 });
 
 test('exposes an installable web manifest', async ({ page }) => {

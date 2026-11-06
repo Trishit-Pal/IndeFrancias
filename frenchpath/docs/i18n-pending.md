@@ -29,3 +29,10 @@ Keys: `speak_pack_title`, `speak_pack_body`, `speak_pack_download`,
 `speak_pack_progress`, `speak_record`, `speak_stop`, `speak_transcribing`,
 `speak_result_good`, `speak_result_partial`, `speak_result_retry`,
 `speak_fallback_prompt`, `speak_fallback_yes`, `speak_fallback_retry`.
+
+## Task 3 — Context review card (2026-11-06)
+
+- all non-en locales — `review_context_continue` — English placeholder
+- all non-en locales — `review_context_correct` — English placeholder
+- all non-en locales — `review_context_answer` — English placeholder
+- all non-en locales — `review_context_prompt` — English placeholder

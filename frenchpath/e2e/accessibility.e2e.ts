@@ -61,6 +61,14 @@ test('review grade buttons are focusable after reveal', async ({ page }) => {
 
 	if (await page.getByRole('link', { name: 'Review now' }).count()) {
 		await page.getByRole('link', { name: 'Review now' }).click();
+		const ctx = page.getByTestId('context-card');
+		await expect(ctx.or(page.getByTestId('reveal')).first()).toBeVisible();
+		if (await ctx.isVisible().catch(() => false)) {
+			await page.getByTestId('context-choice').first().focus();
+			await page.keyboard.press('Enter');
+			await expect(page.getByTestId('context-feedback')).toHaveAttribute('aria-live', 'polite');
+			return;
+		}
 		await page.getByTestId('reveal').click();
 		const gradeBtn = page.locator('[data-grade="good"]');
 		await expect(gradeBtn).toBeVisible();

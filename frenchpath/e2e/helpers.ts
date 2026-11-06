@@ -210,6 +210,30 @@ export async function completeLesson(page: Page) {
 	}
 }
 
+/** Grades every due review card (context card or flip card) until the done screen. */
+export async function reviewUntilDone(page: Page) {
+	const done = page.getByTestId('review-done');
+	const ctx = page.getByTestId('context-card');
+	const reveal = page.getByTestId('reveal');
+	await expect(ctx.or(reveal).or(done).first()).toBeVisible();
+	while (!(await done.isVisible().catch(() => false))) {
+		if (await ctx.isVisible().catch(() => false)) {
+			const choices = page.getByTestId('context-choice');
+			await choices.first().click();
+			for (let i = 0; i < (await choices.count()); i++) {
+				await expect(choices.nth(i)).toBeDisabled();
+			}
+			await page.getByTestId('continue').click();
+			// grading is async: wait for the answered card to be replaced
+			await expect(page.getByTestId('continue')).toBeHidden();
+		} else {
+			await reveal.click();
+			await page.locator('[data-grade="good"]').click();
+		}
+		await expect(ctx.or(reveal).or(done).first()).toBeVisible();
+	}
+}
+
 /** Click the speak-record toggle to start, wait for it to actually start
  * (avoids racing the async getUserMedia() call), then click again to stop
  * and trigger the stubbed transcription. */

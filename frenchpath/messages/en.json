@@ -278,5 +278,9 @@
 	"speak_result_retry": "Let's try that again.",
 	"speak_fallback_prompt": "We couldn't check your pronunciation automatically. Did it sound right to you?",
 	"speak_fallback_yes": "Yes, it sounded right",
-	"speak_fallback_retry": "Try again"
+	"speak_fallback_retry": "Try again",
+	"review_context_continue": "Continue",
+	"review_context_correct": "Nice, that's it.",
+	"review_context_answer": "The answer was {answer}.",
+	"review_context_prompt": "Choose the missing word"
 }

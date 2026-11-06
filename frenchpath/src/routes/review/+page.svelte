@@ -21,9 +21,11 @@
 	import { speakFrench, ttsAvailable } from '$lib/audio/tts';
 	import { shareProgress } from '$lib/share/shareCard';
 	import type { ReviewGrade } from '$lib/srs/fsrs';
+	import ContextCard from '$lib/srs/ContextCard.svelte';
+	import { buildContextPrompt, type CandidateCard, type ContextPrompt } from '$lib/srs/contextCard';
 	import { maybeRunFsrsOptimizer } from '$lib/srs/optimizer';
 
-	type ReviewItem = { srs: SrsCard; content: Card };
+	type ReviewItem = { srs: SrsCard; content: Card; prompt: ContextPrompt | null };
 	type Phase = 'loading' | 'reviewing' | 'done';
 
 	let phase = $state<Phase>('loading');
@@ -80,13 +82,19 @@
 		const loaded = await Promise.all(unitIds.map((id) => loadUnit(id)));
 		const byUnitId = new Map(loaded.map((unit) => [unit.id, unit]));
 
+		const candidates: CandidateCard[] = loaded.flatMap((unit) =>
+			unit.cards.map((card) => ({ card, unitId: unit.id }))
+		);
 		const items: ReviewItem[] = [];
 		for (const srs of cards) {
 			const { unitId, contentId } = parseCardId(srs.cardId);
 			try {
 				const unit = byUnitId.get(unitId);
 				const content = unit?.cards.find((c) => c.id === contentId);
-				if (content) items.push({ srs, content });
+				if (content) {
+					const prompt = buildContextPrompt(content, unitId, candidates, srs.cardId);
+					items.push({ srs, content, prompt });
+				}
 			} catch {
 				// Skip cards whose unit can't be resolved (e.g. removed content).
 			}
@@ -94,14 +102,14 @@
 		return items;
 	}
 
-	async function grade(grade: ReviewGrade) {
+	async function grade(grade: ReviewGrade, measuredMs?: number) {
 		const item = currentItem;
 		if (!item) return;
 		if (isNativePlatform()) void tapHaptic();
 		else if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
 		await recordReview(item.srs, grade, {
 			targetRetention,
-			durationMs: Date.now() - cardStartedAt,
+			durationMs: measuredMs ?? Date.now() - cardStartedAt,
 			weights: fsrsWeights
 		});
 		reviewedCount += 1;
@@ -130,97 +138,112 @@
 			{m.review_queue_progress({ current: index + 1, total: queue.length })}
 		</p>
 
-		<div class="fp-flip-card mt-4 lg:mx-auto lg:max-w-2xl">
-			<div class="fp-flip-inner" class:fp-flipped={revealed}>
-				<section class="fp-flip-front surface-card p-6 text-center shadow-sm">
-					{#if difficultyTier === 'hard' && !revealed}
-						<p class="text-3xl font-bold text-muted" data-testid="hard-prompt">
-							{m.review_hard_prompt()}
-						</p>
-					{:else}
-						<div class="flex items-center justify-center gap-2">
-							<h1 class="fp-display-lg text-balance text-foreground">
-								<GlossText text={currentItem.content.french} lexicon={reviewLexicon} />
-							</h1>
-							{#if canSpeak}
-								<IconButton
-									icon="speaker"
-									label="Listen"
-									onclick={() => speakFrench(currentItem.content.french)}
-								/>
-							{/if}
-						</div>
-						{#if currentItem.content.gender !== 'none'}
-							<p class="mt-1 text-xs text-muted">{currentItem.content.gender}</p>
-						{/if}
-					{/if}
-
-					{#if difficultyTier === 'easy' && !revealed}
-						{@const gloss = getGloss(currentItem.content, nativeLanguage)}
-						<p class="mt-3 text-sm text-muted" data-testid="easy-gloss-hint">{gloss.primary}</p>
-					{/if}
-				</section>
-
-				<section
-					class="fp-flip-back surface-card p-6 text-center shadow-sm"
-					data-testid="card-back"
-				>
-					{#if currentItem}
-						{@const gloss = getGloss(currentItem.content, nativeLanguage)}
-						<div class="flex items-center justify-center gap-2">
-							<h1 class="fp-display-lg text-balance text-foreground">
-								<GlossText text={currentItem.content.french} lexicon={reviewLexicon} />
-							</h1>
-							{#if canSpeak}
-								<IconButton
-									icon="speaker"
-									label="Listen"
-									onclick={() => speakFrench(currentItem.content.french)}
-								/>
-							{/if}
-						</div>
-						{#if currentItem.content.gender !== 'none'}
-							<p class="mt-1 text-xs text-muted">{currentItem.content.gender}</p>
-						{/if}
-						<div class="mt-4 border-t border-border pt-4 text-left">
-							<p
-								class="text-foreground"
-								style="font-family: var(--fp-font-hindi); color: var(--fp-terracotta)"
-							>
-								{gloss.primary}
-							</p>
-							{#if gloss.secondary}
-								<p class="text-muted">{gloss.secondary}</p>
-							{/if}
-							{#if currentItem.content.example}
-								<p class="mt-3 text-sm text-muted italic">
-									"{currentItem.content.example.french}"
-								</p>
-							{/if}
-						</div>
-					{/if}
-				</section>
-			</div>
-		</div>
-
-		{#if revealed}
-			<div class="mt-5 grid grid-cols-4 gap-2 lg:mx-auto lg:max-w-2xl" data-testid="grade-buttons">
-				{#each grades as g (g.grade)}
-					<button
-						type="button"
-						class="fp-grade-btn fp-grade-btn--{g.grade}"
-						data-grade={g.grade}
-						onclick={() => grade(g.grade)}>{g.label()}</button
-					>
-				{/each}
-			</div>
+		{#if currentItem.prompt}
+			{#key currentItem.srs.cardId}
+				<div class="mt-4">
+					<ContextCard
+						prompt={currentItem.prompt}
+						gloss={getGloss(currentItem.content, nativeLanguage).primary}
+						onAnswered={grade}
+					/>
+				</div>
+			{/key}
 		{:else}
-			<button
-				type="button"
-				class="btn-primary mt-5 w-full lg:mx-auto lg:block lg:max-w-2xl"
-				data-testid="reveal"
-				onclick={() => (revealed = true)}>{m.review_show_answer()}</button
-			>
+			<div class="fp-flip-card mt-4 lg:mx-auto lg:max-w-2xl">
+				<div class="fp-flip-inner" class:fp-flipped={revealed}>
+					<section class="fp-flip-front surface-card p-6 text-center shadow-sm">
+						{#if difficultyTier === 'hard' && !revealed}
+							<p class="text-3xl font-bold text-muted" data-testid="hard-prompt">
+								{m.review_hard_prompt()}
+							</p>
+						{:else}
+							<div class="flex items-center justify-center gap-2">
+								<h1 class="fp-display-lg text-balance text-foreground">
+									<GlossText text={currentItem.content.french} lexicon={reviewLexicon} />
+								</h1>
+								{#if canSpeak}
+									<IconButton
+										icon="speaker"
+										label="Listen"
+										onclick={() => speakFrench(currentItem.content.french)}
+									/>
+								{/if}
+							</div>
+							{#if currentItem.content.gender !== 'none'}
+								<p class="mt-1 text-xs text-muted">{currentItem.content.gender}</p>
+							{/if}
+						{/if}
+
+						{#if difficultyTier === 'easy' && !revealed}
+							{@const gloss = getGloss(currentItem.content, nativeLanguage)}
+							<p class="mt-3 text-sm text-muted" data-testid="easy-gloss-hint">{gloss.primary}</p>
+						{/if}
+					</section>
+
+					<section
+						class="fp-flip-back surface-card p-6 text-center shadow-sm"
+						data-testid="card-back"
+					>
+						{#if currentItem}
+							{@const gloss = getGloss(currentItem.content, nativeLanguage)}
+							<div class="flex items-center justify-center gap-2">
+								<h1 class="fp-display-lg text-balance text-foreground">
+									<GlossText text={currentItem.content.french} lexicon={reviewLexicon} />
+								</h1>
+								{#if canSpeak}
+									<IconButton
+										icon="speaker"
+										label="Listen"
+										onclick={() => speakFrench(currentItem.content.french)}
+									/>
+								{/if}
+							</div>
+							{#if currentItem.content.gender !== 'none'}
+								<p class="mt-1 text-xs text-muted">{currentItem.content.gender}</p>
+							{/if}
+							<div class="mt-4 border-t border-border pt-4 text-left">
+								<p
+									class="text-foreground"
+									style="font-family: var(--fp-font-hindi); color: var(--fp-terracotta)"
+								>
+									{gloss.primary}
+								</p>
+								{#if gloss.secondary}
+									<p class="text-muted">{gloss.secondary}</p>
+								{/if}
+								{#if currentItem.content.example}
+									<p class="mt-3 text-sm text-muted italic">
+										"{currentItem.content.example.french}"
+									</p>
+								{/if}
+							</div>
+						{/if}
+					</section>
+				</div>
+			</div>
+
+			{#if revealed}
+				<div
+					class="mt-5 grid grid-cols-4 gap-2 lg:mx-auto lg:max-w-2xl"
+					data-testid="grade-buttons"
+				>
+					{#each grades as g (g.grade)}
+						<button
+							type="button"
+							class="fp-grade-btn fp-grade-btn--{g.grade}"
+							data-grade={g.grade}
+							onclick={() => grade(g.grade)}>{g.label()}</button
+						>
+					{/each}
+				</div>
+			{:else}
+				<button
+					type="button"
+					class="btn-primary mt-5 w-full lg:mx-auto lg:block lg:max-w-2xl"
+					data-testid="reveal"
+					onclick={() => (revealed = true)}>{m.review_show_answer()}</button
+				>
+			{/if}
 		{/if}
 
 		<div class="mt-5 flex items-center gap-2 lg:mx-auto lg:max-w-2xl">
