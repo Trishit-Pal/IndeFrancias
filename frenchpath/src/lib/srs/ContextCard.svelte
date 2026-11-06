@@ -38,6 +38,8 @@
 	let durationMs = 0;
 	let finished = false;
 	let recorder: Recording | null = null;
+	let abortCtl: AbortController | null = null; // cancels a getUserMedia still pending
+	let sayBtn = $state<HTMLButtonElement>();
 	let starting = false; // guards the async gap between tap and recording=true
 	let recording = $state(false);
 	let checking = $state(false);
@@ -59,17 +61,23 @@
 	});
 
 	// leaving the card or page mid-recording must release the mic
-	onDestroy(() => recorder?.cancel());
+	onDestroy(() => {
+		abortCtl?.abort();
+		recorder?.cancel();
+	});
 
 	async function toggleSpeak() {
 		if (submitted || checking || starting) return;
 		if (recording) return stopSpeak();
 		starting = true;
 		speakNote = null;
+		const ctl = new AbortController();
+		abortCtl = ctl;
 		try {
-			recorder = await startRecording();
-		} catch {
-			speakNote = 'denied';
+			recorder = await startRecording(ctl.signal);
+		} catch (err) {
+			// an abort (card left / Type instead) is silent: no copy, no grade
+			if (!(err instanceof DOMException && err.name === 'AbortError')) speakNote = 'denied';
 			return;
 		} finally {
 			starting = false;
@@ -94,10 +102,13 @@
 			speakNote = 'failed';
 		} finally {
 			checking = false;
+			// disabled={checking} dropped focus; give it back so retry is one keypress away
+			if (!submitted) void tick().then(() => sayBtn?.focus());
 		}
 	}
 
 	async function switchToTyping() {
+		abortCtl?.abort();
 		recorder?.cancel();
 		recorder = null;
 		recording = false;
@@ -164,12 +175,14 @@
 	{/if}
 
 	{#if isSpeak && !answered}
-		<div class="mt-5 flex flex-wrap items-center justify-center gap-2">
+		<p class="mt-5 text-center text-sm text-muted" id="speak-hint">{m.review_speak_hint()}</p>
+		<div class="mt-2 flex flex-wrap items-center justify-center gap-2">
 			<button
+				bind:this={sayBtn}
 				type="button"
 				class="btn-primary inline-flex min-h-11 items-center gap-2"
 				data-testid="speak-answer"
-				aria-pressed={recording}
+				aria-describedby="speak-hint"
 				disabled={checking}
 				onclick={toggleSpeak}
 			>
@@ -189,6 +202,8 @@
 			{:else if speakNote === 'denied'}{m.review_speak_denied()}
 			{:else if speakNote === 'failed'}{m.review_speak_failed()}{/if}
 		</p>
+	{:else if isSpeak}
+		<!-- answered by voice: nothing to type or pick -->
 	{:else if isType || isGlossOnly}
 		<form
 			class="mt-5 flex gap-2"

@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { MODEL_URL_PATH } from '../src/lib/speech/modelManifest';
 import { gotoHome, completeLesson, reviewUntilDone } from './helpers';
 
 async function stubFrenchTts(page: Page) {
@@ -100,10 +101,8 @@ test('mature cards use typed recall even in read mode', async ({ page }) => {
 		});
 	});
 	await page.goto('/review');
-	// the e2e build bundles the speech model, so a speaking-tagged mature card may be speak
-	await expect(
-		page.getByTestId('recall-input').or(page.getByTestId('speak-answer')).first()
-	).toBeVisible();
+	await expect(page.getByTestId('recall-input')).toBeVisible();
+	await expect(page.getByTestId('context-choice')).toHaveCount(0);
 	await reviewUntilDone(page);
 });
 
@@ -117,6 +116,16 @@ test('hard-loading /review?mode=type with the service worker renders Review, not
 	await expect(page.getByTestId('path-scene')).toHaveCount(0);
 });
 
+/** Web has no bundled model: make getModelStatus() honestly report ready via Cache Storage. */
+async function seedModelCache(page: Page) {
+	await page.addInitScript(
+		([cacheName, path]) => {
+			void caches.open(cacheName).then((c) => c.put(path, new Response('x')));
+		},
+		['fp-asr-model', MODEL_URL_PATH]
+	);
+}
+
 async function stubAsr(page: Page) {
 	await page.addInitScript(() => {
 		localStorage.setItem('fp-e2e-stub-asr', JSON.stringify([{ word: 'bonjour', conf: 1 }]));
@@ -125,13 +134,14 @@ async function stubAsr(page: Page) {
 
 test('speak mode records, scores and shows feedback; type instead falls back', async ({ page }) => {
 	await stubAsr(page);
+	await seedModelCache(page);
 	await learnOneUnit(page);
 	await openReview(page, 'speak');
 	const say = page.getByTestId('speak-answer');
 	await expect(say).toBeVisible();
 	await expect(page.getByTestId('recall-input')).toHaveCount(0);
 	await say.click();
-	await expect(say).toHaveAttribute('aria-pressed', 'true');
+	await expect(say).toContainText('Stop');
 	await say.click();
 	await expect(page.getByTestId('context-feedback')).not.toBeEmpty();
 	await page.getByTestId('continue').click();
@@ -139,10 +149,35 @@ test('speak mode records, scores and shows feedback; type instead falls back', a
 
 test('speak mode: Type instead switches to typed recall', async ({ page }) => {
 	await stubAsr(page);
+	await seedModelCache(page);
 	await learnOneUnit(page);
 	await openReview(page, 'speak');
 	await page.getByTestId('speak-type-instead').click();
 	await expect(page.getByTestId('recall-input')).toBeVisible();
 	await expect(page.getByTestId('speak-answer')).toHaveCount(0);
 	await reviewUntilDone(page);
+});
+
+test('speak mode requests the mic only on the Say it tap, not on mount', async ({ page }) => {
+	await stubAsr(page);
+	await seedModelCache(page);
+	await page.addInitScript(() => {
+		const w = window as unknown as { __gumCalls: number };
+		w.__gumCalls = 0;
+		const md = navigator.mediaDevices;
+		const real = md.getUserMedia.bind(md);
+		md.getUserMedia = (c) => {
+			w.__gumCalls++;
+			return real(c);
+		};
+	});
+	await learnOneUnit(page);
+	await openReview(page, 'speak');
+	const say = page.getByTestId('speak-answer');
+	await expect(say).toBeVisible();
+	const calls = () => page.evaluate(() => (window as unknown as { __gumCalls: number }).__gumCalls);
+	expect(await calls()).toBe(0);
+	await say.click();
+	await expect(say).toContainText('Stop');
+	expect(await calls()).toBe(1);
 });

@@ -265,5 +265,6 @@
 	"review_speak_checking": "Checking…",
 	"review_speak_type_instead": "Type instead",
 	"review_speak_denied": "We couldn't reach the microphone. You can type the answer instead.",
-	"review_speak_failed": "We couldn't catch that. Try again, or type it instead."
+	"review_speak_failed": "We couldn't catch that. Try again, or type it instead.",
+	"review_speak_hint": "Say the whole sentence."
 }

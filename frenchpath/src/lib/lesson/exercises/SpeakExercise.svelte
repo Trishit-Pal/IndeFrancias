@@ -35,6 +35,7 @@
 	let playing = $state(false);
 
 	let recorder: Recording | null = null;
+	let abortCtl: AbortController | null = null; // cancels a getUserMedia still pending
 	let starting = false; // guards the async gap between tap and recording=true
 
 	const canSpeak = ttsAvailable();
@@ -55,6 +56,7 @@
 	// Cleanup microphone and AudioContext on component unmount or if recording is interrupted
 	$effect(() => {
 		return () => {
+			abortCtl?.abort();
 			recorder?.cancel();
 		};
 	});
@@ -83,12 +85,17 @@
 			return;
 		}
 		starting = true;
+		const ctl = new AbortController();
+		abortCtl = ctl;
 		try {
-			recorder = await startRecording();
-		} catch {
-			asrFailed = true;
+			recorder = await startRecording(ctl.signal);
+		} catch (err) {
+			// aborted by unmount: stay silent
+			if (!(err instanceof DOMException && err.name === 'AbortError')) asrFailed = true;
 			return;
 		} finally {
+			// Safe: the only code between here and recording=true is synchronous,
+			// so no second tap can interleave once the guard drops.
 			starting = false;
 		}
 		recording = true;

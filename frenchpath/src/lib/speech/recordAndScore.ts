@@ -12,12 +12,19 @@ export interface Recording {
 
 /**
  * Opens the mic and starts capturing. Rejects if permission is denied.
+ * If `signal` aborts while the permission prompt or setup is pending, the
+ * stream is released and this rejects with an AbortError (no mic leak).
  * Callers own the double-tap guard around the async gap before this resolves
  * (a second call during the pending getUserMedia would leak a second stream).
  */
-export async function startRecording(): Promise<Recording> {
+export async function startRecording(signal?: AbortSignal): Promise<Recording> {
 	const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 	const releaseTracks = () => stream.getTracks().forEach((t) => t.stop());
+	const abortError = () => new DOMException('Recording aborted', 'AbortError');
+	if (signal?.aborted) {
+		releaseTracks();
+		throw abortError();
+	}
 	let ctx: AudioContext;
 	const chunks: Float32Array[] = [];
 	try {
@@ -30,6 +37,11 @@ export async function startRecording(): Promise<Recording> {
 	} catch (err) {
 		releaseTracks();
 		throw err;
+	}
+	if (signal?.aborted) {
+		releaseTracks();
+		await ctx.close().catch(() => undefined);
+		throw abortError();
 	}
 
 	let released = false;
