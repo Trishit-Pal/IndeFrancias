@@ -140,6 +140,13 @@ test('UI language toggle switches the interface to Hindi', async ({ page }) => {
 });
 
 test('replaying a perfect lesson awards zero improvement XP', async ({ page }) => {
+	// completeLesson answers by position, and Matching/Reorder shuffle with
+	// Math.random — so the replay could out-score the first run (flaky). A
+	// constant Math.random makes Fisher-Yates yield the same order every time,
+	// so both runs score identically. Only those two shuffles use Math.random.
+	await page.addInitScript(() => {
+		Math.random = () => 0;
+	});
 	await gotoHome(page);
 	await page.getByTestId('unit-card').first().click();
 	await page.getByTestId('start-lesson').click();
