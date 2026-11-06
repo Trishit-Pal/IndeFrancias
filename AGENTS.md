@@ -40,7 +40,7 @@ Static SvelteKit PWA → client IndexedDB → pure domain logic (Node-tested) �
 
 - **Spec (SSOT):** `docs/spec/SPEC.md` — the mother book; single source of truth.
 - Product README: `frenchpath/README.md`
-- **Testing & regression:** `docs/testing.md` (188 unit + 35 E2E, workflows, security matrix)
+- **Testing & regression:** `docs/testing.md` (363 unit + 56 E2E, workflows, security matrix)
 - Data hardening spec: `docs/superpowers/specs/2026-06-08-data-safety-security-retention-hardening-design.md`
 - ML roadmap (post-launch): `docs/ml-roadmap.md`
 

@@ -39,7 +39,7 @@ Svelte 5 (runes, forced via `svelte.config.js`), SvelteKit + `@sveltejs/adapter-
 - **i18n** — paraglide; messages in `messages/{locale}.json` (10 locales: en, hi, hinglish, bn, ta, te, kn, mr, gu, pa; base `en`). Generated code in `src/lib/paraglide` (**gitignored**, regen on build).
 - **CSP** — strict, in `svelte.config.js` (`default-src 'self'`). Blocks CDN fonts → fonts self-hosted via `@fontsource` (see ADR-5). e2e enforces "no CSP violations."
 - **Offline** — bundled assets + SW; IndexedDB on-device; no network for core flows.
-- **Testing** — Vitest unit (`src/**/*.spec.ts`), Playwright e2e (`e2e/*.e2e.ts`, builds + previews on :4173). Baseline: **188 unit + 35 e2e green**.
+- **Testing** — Vitest unit (`src/**/*.spec.ts`), Playwright e2e (`e2e/*.e2e.ts`, builds + previews on :4173). Baseline: **363 unit + 56 e2e green**.
 
 ## Invariants (do not break)
 1. Don't modify `db/`, `srs/`, `lesson/engine.ts`, `pwa/backup*.ts` logic without explicit intent + the offline-data-safety review.
