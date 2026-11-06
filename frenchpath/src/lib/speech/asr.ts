@@ -18,6 +18,11 @@ async function getModel(): Promise<Model> {
 	return modelPromise;
 }
 
+/** True when the e2e ASR stub is installed (also stands in for "model ready"). */
+export function hasAsrStub(): boolean {
+	return typeof localStorage !== 'undefined' && localStorage.getItem(E2E_STUB_KEY) !== null;
+}
+
 /** Warm the model while the learner reads the prompt. */
 export async function preloadAsr(): Promise<void> {
 	if (typeof localStorage !== 'undefined' && localStorage.getItem(E2E_STUB_KEY)) return;

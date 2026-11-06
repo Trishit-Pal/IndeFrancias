@@ -218,6 +218,8 @@ export async function reviewUntilDone(page: Page) {
 	await expect(ctx.or(reveal).or(done).first()).toBeVisible();
 	while (!(await done.isVisible().catch(() => false))) {
 		if (await ctx.isVisible().catch(() => false)) {
+			const typeInstead = page.getByTestId('speak-type-instead');
+			if (await typeInstead.isVisible().catch(() => false)) await typeInstead.click();
 			const recall = page.getByTestId('recall-input');
 			if (await recall.isVisible().catch(() => false)) {
 				await recall.fill('x');

@@ -1,5 +1,6 @@
 import type { Caps } from '$lib/gamification/todayPlan';
 import { ttsAvailable, voicesReady, isFrenchVoice } from '$lib/audio/tts';
+import { hasAsrStub } from '$lib/speech/asr';
 import { getModelStatus } from '$lib/speech/modelSource';
 
 /** Device capabilities for review modes. Never downloads or prompts. */
@@ -12,7 +13,7 @@ export async function loadCaps(): Promise<Caps> {
 		tts = false;
 	}
 	try {
-		asr = (await getModelStatus()) === 'ready';
+		asr = hasAsrStub() || (await getModelStatus()) === 'ready';
 	} catch {
 		asr = false;
 	}

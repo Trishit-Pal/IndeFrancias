@@ -56,6 +56,7 @@
 	let sessionStartedAt = Date.now();
 	let cardStartedAt = Date.now();
 	let sessionDurationMs = $state(0);
+	let asrReady = $state(false);
 
 	const mode = $derived(parseReviewMode(page.url.searchParams.get('mode')));
 	const currentItem = $derived(queue[index] ?? null);
@@ -87,6 +88,7 @@
 		difficultyTier = settings.difficultyTier;
 		fsrsWeights = settings.fsrsWeights;
 		const [due, caps] = await Promise.all([getReviewQueue(), loadCaps()]);
+		asrReady = caps.asr;
 		queue = await resolveContent(due, caps);
 		phase = queue.length > 0 ? 'reviewing' : 'reviewing';
 		sessionStartedAt = Date.now();
@@ -165,6 +167,7 @@
 						prompt={currentItem.prompt}
 						mode={currentItem.presentation as ReviewMode}
 						gloss={getGloss(currentItem.content, nativeLanguage).primary}
+						asr={asrReady}
 						onAnswered={grade}
 					/>
 				</div>

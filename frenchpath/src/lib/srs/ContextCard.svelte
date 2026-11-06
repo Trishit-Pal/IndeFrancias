@@ -1,24 +1,29 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages';
-	import { onMount, tick } from 'svelte';
+	import { onDestroy, onMount, tick } from 'svelte';
 	import IconButton from '$lib/components/IconButton.svelte';
+	import Icon from '$lib/components/Icon.svelte';
+	import { startRecording, type Recording } from '$lib/speech/recordAndScore';
 	import { speakFrench } from '$lib/audio/tts';
 	import type { ReviewGrade } from '$lib/srs/fsrs';
 	import type { ContextPrompt } from '$lib/srs/contextCard';
 	import type { ReviewMode } from '$lib/gamification/todayPlan';
-	import { gradeChoice, gradeTyped } from '$lib/srs/contextGrade';
+	import { gradeChoice, gradeSpoken, gradeTyped } from '$lib/srs/contextGrade';
 
 	interface Props {
 		prompt: ContextPrompt;
 		mode?: ReviewMode;
 		gloss: string;
+		/** On-device speech recognition is ready; without it `speak` renders as typed recall. */
+		asr?: boolean;
 		onAnswered: (grade: ReviewGrade, durationMs: number) => void;
 	}
-	let { prompt, mode = 'read', gloss, onAnswered }: Props = $props();
+	let { prompt, mode = 'read', gloss, asr = false, onAnswered }: Props = $props();
 
-	// speak lands in Task 7; it renders as typed recall until then
 	const isListen = $derived(mode === 'listen');
-	const isType = $derived(mode === 'type' || mode === 'speak');
+	let typeInstead = $state(false);
+	const isSpeak = $derived(mode === 'speak' && asr && !typeInstead);
+	const isType = $derived(mode === 'type' || (mode === 'speak' && !isSpeak));
 	// mature card with no sentence: gloss prompts, learner types the French
 	const isGlossOnly = $derived(prompt.choices.length === 0);
 	const fullSentence = $derived(`${prompt.before}${prompt.answer}${prompt.after}`);
@@ -32,6 +37,11 @@
 	let inputEl = $state<HTMLInputElement>();
 	let durationMs = 0;
 	let finished = false;
+	let recorder: Recording | null = null;
+	let starting = false; // guards the async gap between tap and recording=true
+	let recording = $state(false);
+	let checking = $state(false);
+	let speakNote = $state<'denied' | 'failed' | null>(null);
 	const answered = $derived(picked !== null || submitted);
 	const isCorrect = $derived(submitted ? typedGrade !== 'again' : picked === prompt.answer);
 
@@ -47,6 +57,55 @@
 		if (isListen) replay();
 		else if (isType || isGlossOnly) inputEl?.focus();
 	});
+
+	// leaving the card or page mid-recording must release the mic
+	onDestroy(() => recorder?.cancel());
+
+	async function toggleSpeak() {
+		if (submitted || checking || starting) return;
+		if (recording) return stopSpeak();
+		starting = true;
+		speakNote = null;
+		try {
+			recorder = await startRecording();
+		} catch {
+			speakNote = 'denied';
+			return;
+		} finally {
+			starting = false;
+		}
+		recording = true;
+	}
+
+	async function stopSpeak() {
+		const active = recorder;
+		recorder = null;
+		recording = false;
+		if (!active) return;
+		checking = true;
+		try {
+			const score = await active.stop(fullSentence);
+			durationMs = Math.round(performance.now() - startedAt);
+			typedGrade = gradeSpoken(score.overall);
+			submitted = true;
+			void tick().then(() => continueBtn?.focus());
+		} catch {
+			// never grade on error; the learner can retry or type instead
+			speakNote = 'failed';
+		} finally {
+			checking = false;
+		}
+	}
+
+	async function switchToTyping() {
+		recorder?.cancel();
+		recorder = null;
+		recording = false;
+		speakNote = null;
+		typeInstead = true;
+		await tick();
+		inputEl?.focus();
+	}
 
 	function check() {
 		if (submitted) return;
@@ -104,7 +163,33 @@
 		</p>
 	{/if}
 
-	{#if isType || isGlossOnly}
+	{#if isSpeak && !answered}
+		<div class="mt-5 flex flex-wrap items-center justify-center gap-2">
+			<button
+				type="button"
+				class="btn-primary inline-flex min-h-11 items-center gap-2"
+				data-testid="speak-answer"
+				aria-pressed={recording}
+				disabled={checking}
+				onclick={toggleSpeak}
+			>
+				<Icon name="mic" size={18} />
+				{recording ? m.review_speak_stop() : m.review_speak_say()}
+			</button>
+			<button
+				type="button"
+				class="btn-secondary min-h-11"
+				data-testid="speak-type-instead"
+				disabled={checking}
+				onclick={switchToTyping}>{m.review_speak_type_instead()}</button
+			>
+		</div>
+		<p class="mt-2 min-h-5 text-center text-sm text-muted" aria-live="polite">
+			{#if checking}{m.review_speak_checking()}
+			{:else if speakNote === 'denied'}{m.review_speak_denied()}
+			{:else if speakNote === 'failed'}{m.review_speak_failed()}{/if}
+		</p>
+	{:else if isType || isGlossOnly}
 		<form
 			class="mt-5 flex gap-2"
 			onsubmit={(e) => {

@@ -299,5 +299,11 @@
 	"review_listen_replay": "Play again",
 	"review_recall_label": "Type the French",
 	"review_recall_check": "Check",
-	"review_context_close": "Close — the answer is {answer}."
+	"review_context_close": "Close — the answer is {answer}.",
+	"review_speak_say": "Say it",
+	"review_speak_stop": "Stop",
+	"review_speak_checking": "Checking…",
+	"review_speak_type_instead": "Type instead",
+	"review_speak_denied": "We couldn't reach the microphone. You can type the answer instead.",
+	"review_speak_failed": "We couldn't catch that. Try again, or type it instead."
 }

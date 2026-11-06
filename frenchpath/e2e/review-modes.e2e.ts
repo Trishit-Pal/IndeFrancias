@@ -100,7 +100,10 @@ test('mature cards use typed recall even in read mode', async ({ page }) => {
 		});
 	});
 	await page.goto('/review');
-	await expect(page.getByTestId('recall-input')).toBeVisible();
+	// the e2e build bundles the speech model, so a speaking-tagged mature card may be speak
+	await expect(
+		page.getByTestId('recall-input').or(page.getByTestId('speak-answer')).first()
+	).toBeVisible();
 	await reviewUntilDone(page);
 });
 
@@ -112,4 +115,34 @@ test('hard-loading /review?mode=type with the service worker renders Review, not
 	await page.goto('/review?mode=type');
 	await expect(page.getByTestId('no-reviews')).toBeVisible();
 	await expect(page.getByTestId('path-scene')).toHaveCount(0);
+});
+
+async function stubAsr(page: Page) {
+	await page.addInitScript(() => {
+		localStorage.setItem('fp-e2e-stub-asr', JSON.stringify([{ word: 'bonjour', conf: 1 }]));
+	});
+}
+
+test('speak mode records, scores and shows feedback; type instead falls back', async ({ page }) => {
+	await stubAsr(page);
+	await learnOneUnit(page);
+	await openReview(page, 'speak');
+	const say = page.getByTestId('speak-answer');
+	await expect(say).toBeVisible();
+	await expect(page.getByTestId('recall-input')).toHaveCount(0);
+	await say.click();
+	await expect(say).toHaveAttribute('aria-pressed', 'true');
+	await say.click();
+	await expect(page.getByTestId('context-feedback')).not.toBeEmpty();
+	await page.getByTestId('continue').click();
+});
+
+test('speak mode: Type instead switches to typed recall', async ({ page }) => {
+	await stubAsr(page);
+	await learnOneUnit(page);
+	await openReview(page, 'speak');
+	await page.getByTestId('speak-type-instead').click();
+	await expect(page.getByTestId('recall-input')).toBeVisible();
+	await expect(page.getByTestId('speak-answer')).toHaveCount(0);
+	await reviewUntilDone(page);
 });
