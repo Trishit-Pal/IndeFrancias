@@ -270,5 +270,15 @@
 	"leech_title": "This one's slippery",
 	"leech_body": "Here's a closer look before you try it.",
 	"leech_faux_ami": "Faux ami: it looks like an English word but means something different.",
-	"leech_got_it": "Got it"
+	"leech_got_it": "Got it",
+	"postcard_title": "This week",
+	"postcard_empty": "A fresh week — your recap fills in as you practise",
+	"postcard_reviews": "Reviews",
+	"postcard_accuracy": "Recall rate",
+	"postcard_words": "Words recalled",
+	"postcard_xp": "XP earned",
+	"postcard_lessons": "Lessons",
+	"postcard_streak": "Day streak",
+	"postcard_units": "Units finished",
+	"postcard_share": "Share this week"
 }

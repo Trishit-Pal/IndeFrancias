@@ -10,7 +10,7 @@
 		assessmentsRepo,
 		settingsRepo
 	} from '$lib/db';
-	import type { AssessmentRecord, Skill, SkillProfileRecord } from '$lib/db/schema';
+	import type { AssessmentRecord, DailyStats, Skill, SkillProfileRecord } from '$lib/db/schema';
 	import { countDue } from '$lib/srs/queue';
 	import { listUnitSummaries } from '$lib/content/loader';
 	import { passedAssessmentIds } from '$lib/assessment/checkpoint';
@@ -19,6 +19,9 @@
 	import { buildTodayPlan, weakestSkill as pickWeakestSkill } from '$lib/gamification/todayPlan';
 	import type { Caps } from '$lib/gamification/todayPlan';
 	import TodayCard from '$lib/gamification/TodayCard.svelte';
+	import WeeklyPostcard from '$lib/gamification/WeeklyPostcard.svelte';
+	import { buildWeeklyRecap, type WeeklyRecap } from '$lib/gamification/weeklyRecap';
+	import { getLogsSince } from '$lib/db/repositories/reviewLog';
 	import { loadCaps } from '$lib/srs/caps';
 	import { todayKey, lastNDayKeys } from '$lib/utils/date';
 	import { shareProgress } from '$lib/share/shareCard';
@@ -99,6 +102,25 @@
 			: null
 	);
 
+	let recap = $state<WeeklyRecap | null>(null);
+
+	async function loadRecap(allStats: DailyStats[], streakNow: number): Promise<void> {
+		const units = listUnitSummaries();
+		const unitIds = new Set(units.map((u) => u.id));
+		const [logs, progress] = await Promise.all([
+			getLogsSince(Date.now() - 7 * 864e5),
+			progressRepo.getAllProgress()
+		]);
+		const weekKeys = new Set(lastNDayKeys(7));
+		recap = buildWeeklyRecap({
+			logs,
+			stats: allStats.filter((s) => weekKeys.has(s.date)),
+			streak: streakNow,
+			unitsDone: progress.filter((p) => p.status === 'completed' && unitIds.has(p.lessonId)).length,
+			unitsTotal: units.length
+		});
+	}
+
 	async function loadTodayInputs(): Promise<void> {
 		const units = listUnitSummaries();
 		const [goal, progress, passed] = await Promise.all([
@@ -159,6 +181,11 @@
 		} catch (err) {
 			console.error('Today card unavailable', err); // card stays hidden
 		}
+		try {
+			await loadRecap(allStats, streak);
+		} catch (err) {
+			console.error('Weekly postcard unavailable', err); // postcard stays hidden
+		}
 		void loadCaps().then((c) => (caps = c));
 	});
 
@@ -209,6 +236,10 @@
 
 	{#if todayPlan && todayInputs}
 		<div class="mt-5"><TodayCard plan={todayPlan} nextUnitId={todayInputs.nextUnitId} /></div>
+	{/if}
+
+	{#if recap}
+		<div class="mt-5"><WeeklyPostcard {recap} /></div>
 	{/if}
 
 	<div class="mt-5 lg:grid lg:grid-cols-3 lg:gap-6">
