@@ -57,33 +57,70 @@ function displayForm(french: string): string {
 	return french.split(' / ')[0].replace(ARTICLE, '').trim() || french;
 }
 
-/** Word-key sequences a card can appear as: each " / " variant, with and without its article. */
-function targetPhrases(french: string): string[][] {
-	const out: string[][] = [];
-	for (const variant of french.split(' / ')) {
-		if (variant.includes('…')) continue;
-		for (const v of new Set([variant, variant.replace(ARTICLE, '')])) {
-			const ks = tokenizeFrench(v.replace(/[’‘]/g, "'"))
-				.filter((t) => t.type === 'word')
-				.map((t) => key(t.value))
-				.filter(Boolean);
-			if (ks.length) out.push(ks);
-		}
-	}
-	// Longest first so "il y a" wins over a shorter overlap.
-	return out.sort((a, b) => b.length - a.length);
+interface Target {
+	keys: string[];
+	/** Index into card.forms, or -1 when it comes from card.french. */
+	formIndex: number;
 }
 
-// ponytail: single-word fuzz = plural -s and regular -er endings only; irregular conjugations need `forms` in content.
-function wordMatches(word: string, target: string, isSingle: boolean): boolean {
-	if (word === target) return true;
-	if (!isSingle) return false;
-	if (word === `${target}s`) return true;
+/** Article-stripped word-key sequences per " / " variant, so the article stays outside the blank. */
+function targetPhrases(french: string, formIndex: number): Target[] {
+	const out: Target[] = [];
+	for (const variant of french.split(' / ')) {
+		if (variant.includes('…')) continue;
+		const bare = variant.replace(ARTICLE, '') || variant;
+		const keys = tokenizeFrench(bare.replace(/[’‘]/g, "'"))
+			.filter((t) => t.type === 'word')
+			.map((t) => key(t.value))
+			.filter(Boolean);
+		if (keys.length) out.push({ keys, formIndex });
+	}
+	return out;
+}
+
+// Normalized (accent-free) regular -er endings: present, imparfait, futur, participe.
+const ER_SUFFIX =
+	/^(?:e|es|ent|ons|ez|ai|as|ais|ait|ions|iez|aient|erai|eras|era|erons|erez|eront|ee|ees)$/;
+
+type Fuzz = 'exact' | 'plural' | 'er';
+
+// ponytail: single-word fuzz = plural -s and regular -er endings only, tried only when no exact hit; irregular conjugations need `forms` in content.
+function fuzzOf(word: string, target: string): Fuzz | null {
+	if (word === target) return 'exact';
+	if (word === `${target}s`) return 'plural';
 	if (target.length > 4 && target.endsWith('er')) {
 		const stem = target.slice(0, -2);
-		return word.startsWith(stem) && word.length - stem.length <= 3;
+		if (word.startsWith(stem) && ER_SUFFIX.test(word.slice(stem.length))) return 'er';
 	}
-	return false;
+	return null;
+}
+
+interface Hit {
+	index: number;
+	length: number;
+	fuzz: Fuzz;
+	target: Target;
+}
+
+function findHit(words: { key: string }[], targets: Target[], fuzzy: boolean): Hit | null {
+	for (let i = 0; i < words.length; i++) {
+		for (const target of targets) {
+			if (i + target.keys.length > words.length) continue;
+			if (target.keys.length === 1) {
+				const fuzz = fuzzOf(words[i].key, target.keys[0]);
+				if (fuzz && (fuzz === 'exact') !== fuzzy) return { index: i, length: 1, fuzz, target };
+			} else if (!fuzzy && target.keys.every((k, j) => words[i + j].key === k)) {
+				return { index: i, length: target.keys.length, fuzz: 'exact', target };
+			}
+		}
+	}
+	return null;
+}
+
+/** Infinitive-looking single word ("parler", "se lever" -> "lever"), else null. */
+function erInfinitive(french: string): string | null {
+	const d = displayForm(french);
+	return /^\p{L}{3,}er$/u.test(d) ? d : null;
 }
 
 /**
@@ -101,32 +138,26 @@ export function buildContextPrompt(
 
 	// Same length as the original, so token offsets map back onto `sentence`.
 	const tokens = tokenizeFrench(sentence.replace(/[’‘]/g, "'"));
-	const words: { start: number; end: number; value: string; key: string }[] = [];
+	const words: { end: number; value: string; key: string }[] = [];
 	let pos = 0;
 	for (const t of tokens) {
-		if (t.type === 'word')
-			words.push({ start: pos, end: pos + t.value.length, value: t.value, key: key(t.value) });
 		pos += t.value.length;
+		if (t.type === 'word') words.push({ end: pos, value: t.value, key: key(t.value) });
 	}
 
-	const targets = [card.french, ...(card.forms ?? [])].flatMap(targetPhrases);
-	let before = '';
-	let answer = '';
-	let after = '';
-	for (let i = 0; i < words.length && !answer; i++) {
-		for (const target of targets) {
-			const last = words[i + target.length - 1];
-			if (!last || !target.every((k, j) => wordMatches(words[i + j].key, k, target.length === 1)))
-				continue;
-			const first = words[i];
-			const start = first.end - stripContraction(first.value).length;
-			before = sentence.slice(0, start);
-			answer = sentence.slice(start, last.end);
-			after = sentence.slice(last.end);
-			break;
-		}
-	}
-	if (!answer) return null;
+	const targets = [card.french, ...(card.forms ?? [])]
+		.flatMap((f, i) => targetPhrases(f, i - 1))
+		// Longest first so "il y a" wins over a shorter overlap.
+		.sort((a, b) => b.keys.length - a.keys.length);
+	const hit = findHit(words, targets, false) ?? findHit(words, targets, true);
+	if (!hit) return null;
+
+	const first = words[hit.index];
+	const last = words[hit.index + hit.length - 1];
+	const start = first.end - stripContraction(first.value).length;
+	const before = sentence.slice(0, start);
+	const answer = sentence.slice(start, last.end);
+	const after = sentence.slice(last.end);
 
 	const sentenceKeys = words.map((w) => w.key);
 	const taken = new Set([key(answer), ...sentenceKeys]);
@@ -138,12 +169,23 @@ export function buildContextPrompt(
 		.sort((a, b) => rank(a.c) - rank(b.c) || a.i - b.i)
 		.map(({ c }) => c);
 
+	// Distractors must look like the answer: same inflection of -er verbs, same form slot of `forms`.
+	const erSuffix = hit.fuzz === 'er' ? answer.slice(hit.target.keys[0].length - 2) : null;
 	const distractors: string[] = [];
 	for (const { card: other } of ordered) {
 		if (distractors.length === CHOICE_COUNT - 1) break;
 		if (other.id === card.id) continue;
 		if (card.gender !== 'none' && other.gender !== card.gender) continue;
-		const shown = displayForm(other.french);
+		let shown: string | undefined;
+		if (erSuffix !== null) {
+			const inf = erInfinitive(other.french);
+			shown = inf ? inf.slice(0, -2) + erSuffix : undefined;
+		} else if (hit.fuzz === 'exact' && hit.target.formIndex >= 0) {
+			shown = other.forms?.[hit.target.formIndex];
+		} else {
+			shown = displayForm(other.french);
+		}
+		if (!shown) continue;
 		const k = key(shown);
 		if (taken.has(k)) continue;
 		taken.add(k);

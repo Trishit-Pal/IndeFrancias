@@ -38,7 +38,11 @@ describe('buildContextPrompt', () => {
 
 	it('matches via forms and keeps the surface form', () => {
 		const etre = mk('etre', 'être', { forms: ['suis', 'es'], example: 'Je suis indien.' });
-		const p = buildContextPrompt(etre, U, pool, 's')!;
+		const withForms = ['avoir', 'aller', 'faire'].map((w, i) => ({
+			card: mk(`f${i}`, w, { forms: [`f${i}a`, `f${i}b`] }),
+			unitId: U
+		}));
+		const p = buildContextPrompt(etre, U, withForms, 's')!;
 		expect(p.answer).toBe('suis');
 		expect(p.accepted).toEqual(['suis', 'être', 'suis', 'es']);
 	});
@@ -81,6 +85,71 @@ describe('buildContextPrompt', () => {
 		];
 		const p = buildContextPrompt(target, U, cands, 's')!;
 		expect([...p.choices].sort()).toEqual(['chaise', 'pomme', 'porte', 'table']);
+	});
+
+	it('leaves the article in before; answer is the bare noun', () => {
+		const the = mk('the', 'le thé', { gender: 'masculine', example: 'Arjun aime le thé masala.' });
+		const masc = pool.map((c, i) => ({
+			...c,
+			card: mk(`g${i}`, c.card.french, { gender: 'masculine' })
+		}));
+		const p = buildContextPrompt(the, U, masc, 's')!;
+		expect(p.before).toBe('Arjun aime le ');
+		expect(p.answer).toBe('thé');
+		expect(p.choices.some((c) => /^(le|la|les) /i.test(c))).toBe(false);
+	});
+
+	it('matches " / " variants', () => {
+		const vert = mk('vert', 'vert / verte', { example: 'Une robe verte.' });
+		expect(buildContextPrompt(vert, U, pool, 's')!.answer).toBe('verte');
+	});
+
+	it('prefers an exact hit over an earlier fuzzy one', () => {
+		const jouer = mk('jouer', 'jouer', {
+			forms: ['joue'],
+			example: 'Chaque jour, je joue au cricket.'
+		});
+		const withForms = ['avoir', 'aller', 'faire'].map((w, i) => ({
+			card: mk(`f${i}`, w, { forms: [`f${i}a`] }),
+			unitId: U
+		}));
+		expect(buildContextPrompt(jouer, U, withForms, 's')!.answer).toBe('joue');
+		const jouer2 = mk('jouer', 'jouer', { example: 'Chaque jour, je joue au cricket.' });
+		const verbs = ['parler', 'habiter', 'laver'].map((w, i) => ({
+			card: mk(`v${i}`, w),
+			unitId: U
+		}));
+		// no exact hit: fuzzy -er rule still blanks the inflection ("jour" is 1 char short of the stem)
+		expect(buildContextPrompt(jouer2, U, verbs, 's')!.answer).toBe('joue');
+	});
+
+	it('blanks a plural inflection', () => {
+		const parent = mk('p', 'parent', { example: 'Mes parents habitent à Chennai.' });
+		expect(buildContextPrompt(parent, U, pool, 's')!.answer).toBe('parents');
+	});
+
+	it('conjugates -er distractors with the answer suffix (R5a)', () => {
+		const parler = mk('parler', 'parler', { example: 'Je parle un peu français.' });
+		const verbs = ['habiter', 'laver', 'se lever', 'chat'].map((w, i) => ({
+			card: mk(`v${i}`, w),
+			unitId: U
+		}));
+		const p = buildContextPrompt(parler, U, verbs, 's')!;
+		expect(p.answer).toBe('parle');
+		expect([...p.choices].sort()).toEqual(['habite', 'lave', 'leve', 'parle']);
+	});
+
+	it('uses the same forms slot for distractors (R5b)', () => {
+		const etre = mk('etre', 'être', { forms: ['suis', 'es'], example: 'Tu es indien.' });
+		const others = [
+			mk('a', 'avoir', { forms: ['ai', 'as'] }),
+			mk('b', 'aller', { forms: ['vais', 'vas'] }),
+			mk('c', 'faire', { forms: ['fais', 'fais2'] }),
+			mk('d', 'dire')
+		].map((card) => ({ card, unitId: U }));
+		const p = buildContextPrompt(etre, U, others, 's')!;
+		expect(p.answer).toBe('es');
+		expect([...p.choices].sort()).toEqual(['as', 'es', 'fais2', 'vas']);
 	});
 
 	it('same seed gives same order; different seeds vary', () => {
