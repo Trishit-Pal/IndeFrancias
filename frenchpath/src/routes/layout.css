@@ -29,6 +29,8 @@
 	--color-saffron: var(--fp-saffron);
 	--color-seine: var(--fp-seine);
 	--color-sage: var(--fp-sage);
+	--color-saffron-text: var(--fp-saffron-text);
+	--color-sage-text: var(--fp-sage-text);
 	--color-error: var(--fp-error);
 }
 

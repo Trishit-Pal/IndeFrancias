@@ -269,7 +269,10 @@
 				{/if}
 			</div>
 			{#if result.passed && xpAwarded > 0}
-				<p class="fp-figure mt-1 text-center text-sm font-medium" style="color: var(--fp-saffron)">
+				<p
+					class="fp-figure mt-1 text-center text-sm font-medium"
+					style="color: var(--fp-saffron-text)"
+				>
 					+{xpAwarded} XP
 				</p>
 			{/if}

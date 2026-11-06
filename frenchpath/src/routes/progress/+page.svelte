@@ -195,7 +195,7 @@
 				<p class="text-sm text-muted">{m.progress_longest_streak()}</p>
 				<p
 					class="fp-figure mt-1 flex items-center gap-1.5 text-2xl font-bold"
-					style="color: var(--fp-saffron)"
+					style="color: var(--fp-saffron-text)"
 					data-testid="longest-streak"
 				>
 					<Icon name="flame" size={22} />

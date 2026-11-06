@@ -871,7 +871,7 @@
 	}
 	.fp-danger-btn {
 		background: var(--fp-error);
-		color: #fff;
+		color: var(--fp-on-error);
 		outline-color: var(--fp-error);
 	}
 	.fp-danger-btn:hover {

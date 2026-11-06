@@ -20,14 +20,21 @@
 
 	--fp-jaipur: #dd5471; /* jaipur rose — PRIMARY actions       */
 	--fp-jaipur-light: #f9e2e7; /* rose tint surface                   */
+	/* Supported legacy aliases (70+ live users; ADR-0001): --fp-terracotta,  */
+	/* --fp-navy and the --fp-primary* bridge below. Keep, don't extend.     */
 	--fp-terracotta: #bf5f45; /* Mira / warm supporting accent       */
 	--fp-saffron: #d99a2b; /* marigold — progress / XP / streaks  */
 	--fp-sage: #6f9a60; /* success / complete                  */
 	--fp-seine: #3a63d4; /* Léo / French blue — links / info    */
 	--fp-seine-light: #dde6f8; /* light blue tint surface             */
 	--fp-navy: #2e2b52; /* exam mode / formal panels           */
-	--fp-midnight: #1d1a38; /* evening ritual bg start             */
 	--fp-error: #c23d3d; /* incorrect / danger                  */
+	--fp-on-error: #ffffff; /* text on --fp-error fills            */
+
+	/* Text-safe accents: saffron/sage are FILL colors (2.4:1 / 3.2:1 as text). */
+	/* Use these for any text; contrast.spec.ts enforces >= 4.5:1.            */
+	--fp-saffron-text: #8f5e0e;
+	--fp-sage-text: #4a7340;
 
 	/* ── Typography ── */
 	--fp-font-display: 'Fraunces Variable', Georgia, serif;
@@ -96,8 +103,10 @@
 	--fp-seine: #7d9bf0;
 	--fp-seine-light: #28315a;
 	--fp-navy: #353160;
-	--fp-midnight: #100e20;
 	--fp-error: #e57373;
+	--fp-on-error: #16142b;
+	--fp-saffron-text: #f0b452; /* brightened fills already pass on night */
+	--fp-sage-text: #93bf83;
 
 	--fp-elevation-1: 0 1px 2px rgb(0 0 0 / 0.3), 0 1px 3px rgb(0 0 0 / 0.25);
 	--fp-elevation-2: 0 2px 4px rgb(0 0 0 / 0.3), 0 6px 16px rgb(0 0 0 / 0.35);

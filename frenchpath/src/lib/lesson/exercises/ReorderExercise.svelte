@@ -86,7 +86,7 @@
 
 	{#if submitted && response && !gradeExercise(exercise, response)}
 		<p class="text-sm">
-			Correct: <span class="text-sage">{exercise.words.join(' ')}</span>
+			Correct: <span class="text-sage-text">{exercise.words.join(' ')}</span>
 		</p>
 	{/if}
 </div>

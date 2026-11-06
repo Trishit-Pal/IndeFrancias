@@ -50,7 +50,7 @@
 		font-family: var(--fp-font-mono);
 		font-size: 20px;
 		font-weight: 700;
-		color: var(--fp-saffron);
+		color: var(--fp-saffron-text);
 	}
 	.fp-exam-timer--urgent .fp-timer-value {
 		color: var(--fp-error);
