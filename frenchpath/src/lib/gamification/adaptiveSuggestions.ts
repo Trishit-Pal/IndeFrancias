@@ -1,13 +1,7 @@
 import type { UnitSummary } from '$lib/content/schema';
 import type { Skill, SkillProfileRecord } from '$lib/db/schema';
 import type { LessonStatus } from '$lib/db/schema';
-
-const CEFR_ORDER = ['A1', 'A2', 'B1', 'B2', 'C1'] as const;
-
-function cefrIndex(level: string): number {
-	const idx = CEFR_ORDER.indexOf(level as (typeof CEFR_ORDER)[number]);
-	return idx === -1 ? 0 : idx;
-}
+import { cefrIndex, weakestSkill } from './todayPlan';
 
 /** Recommend a unit targeting the learner's weakest estimated skill. */
 export function suggestUnitForWeakSkill(
@@ -15,11 +9,8 @@ export function suggestUnitForWeakSkill(
 	skillProfiles: readonly SkillProfileRecord[],
 	states: Map<string, LessonStatus>
 ): { unit: UnitSummary; skill: Skill; reason: string } | null {
-	if (skillProfiles.length === 0) return null;
-
-	const weakest = [...skillProfiles].sort(
-		(a, b) => cefrIndex(a.estimatedLevel) - cefrIndex(b.estimatedLevel)
-	)[0];
+	const weakestName = weakestSkill(skillProfiles);
+	const weakest = skillProfiles.find((p) => p.skill === weakestName);
 	if (!weakest) return null;
 
 	const available = units.filter((u) => (states.get(u.id) ?? 'locked') !== 'locked');
