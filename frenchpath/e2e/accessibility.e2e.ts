@@ -67,6 +67,7 @@ test('review grade buttons are focusable after reveal', async ({ page }) => {
 			await page.getByTestId('context-choice').first().focus();
 			await page.keyboard.press('Enter');
 			await expect(page.getByTestId('context-feedback')).toHaveAttribute('aria-live', 'polite');
+			await expect(page.getByTestId('context-feedback')).not.toBeEmpty();
 			return;
 		}
 		await page.getByTestId('reveal').click();

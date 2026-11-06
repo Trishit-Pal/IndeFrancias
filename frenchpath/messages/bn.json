@@ -242,5 +242,6 @@
 	"review_context_continue": "Continue",
 	"review_context_correct": "Nice, that's it.",
 	"review_context_answer": "The answer was {answer}.",
-	"review_context_prompt": "Choose the missing word"
+	"review_context_prompt": "Choose the missing word",
+	"review_context_blank": "blank"
 }

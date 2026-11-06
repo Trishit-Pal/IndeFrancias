@@ -58,7 +58,7 @@ test('double-clicking a context choice grades the card exactly once', async ({ p
 	await page.getByTestId('continue').click();
 	await expect(page.getByTestId('continue')).toBeHidden();
 	await reviewUntilDone(page);
-	await expect(page.getByTestId('review-summary-cards')).toContainText(String(total));
+	await expect(page.getByTestId('review-summary-cards')).toHaveText(`Cards reviewed: ${total}`);
 });
 
 test('exposes an installable web manifest', async ({ page }) => {

@@ -36,3 +36,4 @@ Keys: `speak_pack_title`, `speak_pack_body`, `speak_pack_download`,
 - all non-en locales — `review_context_correct` — English placeholder
 - all non-en locales — `review_context_answer` — English placeholder
 - all non-en locales — `review_context_prompt` — English placeholder
+- all non-en locales — `review_context_blank` — English placeholder
