@@ -383,7 +383,10 @@
 		stroke: color-mix(in srgb, var(--fp-ink) 32%, transparent);
 		stroke-width: 2.5;
 		stroke-linecap: round;
-		stroke-dasharray: 0.1 6;
+		/* pathLength="1" makes these fractions of the route: a near-zero dash +
+		   round cap = a dot, one every 4% of the route (~25 dots; 2% merges
+		   into a solid line at desktop width). */
+		stroke-dasharray: 0.0001 0.04;
 		vector-effect: non-scaling-stroke;
 	}
 	.fp-route-progress {

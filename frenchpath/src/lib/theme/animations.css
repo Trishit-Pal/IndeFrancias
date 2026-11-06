@@ -115,16 +115,6 @@
 		opacity: 0;
 	}
 }
-@keyframes fp-march {
-	to {
-		background-position: 24px 0;
-	}
-}
-@keyframes fp-march-v {
-	to {
-		background-position: 50% 24px;
-	}
-}
 @keyframes fp-shimmer {
 	0% {
 		background-position: -200% 0;
@@ -165,22 +155,6 @@
 	filter: drop-shadow(0 0 12px rgba(233, 79, 100, 0.55));
 }
 
-/* ── Dashed marching route lines ── */
-.fp-route {
-	background-image: repeating-linear-gradient(90deg, var(--fp-ink) 0 6px, transparent 6px 12px);
-	background-size: 24px 2px;
-	background-repeat: repeat-x;
-	background-position: 0 50%;
-	animation: fp-march 1.4s linear infinite;
-}
-.fp-route-v {
-	background-image: repeating-linear-gradient(0deg, var(--fp-ink) 0 6px, transparent 6px 12px);
-	background-size: 2px 24px;
-	background-repeat: repeat-y;
-	background-position: 50% 0;
-	animation: fp-march-v 1.6s linear infinite;
-}
-
 /* ── Paper grain texture overlay ── */
 .fp-paper-grain {
 	background-image: radial-gradient(rgba(43, 27, 23, 0.045) 1px, transparent 1px);
@@ -213,8 +187,6 @@
 	.fp-flame,
 	.fp-blink,
 	.fp-pulse,
-	.fp-route,
-	.fp-route-v,
 	.fp-badge-earned,
 	.fp-transition {
 		animation: none !important;
@@ -227,7 +199,6 @@
 .reduce-motion .fp-bob,
 .reduce-motion .fp-flutter,
 .reduce-motion .fp-flame,
-.reduce-motion .fp-route,
 .reduce-motion .fp-badge-earned,
 .reduce-motion .fp-transition {
 	animation: none !important;
