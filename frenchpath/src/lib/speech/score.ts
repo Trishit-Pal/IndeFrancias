@@ -33,7 +33,7 @@ function editDistance(a: string, b: string): number {
 	return dp[a.length];
 }
 
-function isClose(a: string, b: string): boolean {
+export function isClose(a: string, b: string): boolean {
 	const d = editDistance(a, b);
 	return d / Math.max(a.length, b.length, 1) <= CLOSE_RATIO;
 }
