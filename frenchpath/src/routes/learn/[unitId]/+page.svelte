@@ -26,6 +26,7 @@
 	import LessonShell from '$lib/components/LessonShell.svelte';
 	import ExerciseChrome from '$lib/components/ExerciseChrome.svelte';
 	import LessonComplete from '$lib/components/LessonComplete.svelte';
+	import Modal from '$lib/components/Modal.svelte';
 	import CharacterLeo from '$lib/components/CharacterLeo.svelte';
 	import CharacterMira from '$lib/components/CharacterMira.svelte';
 	import { fly, fade } from 'svelte/transition';
@@ -195,6 +196,13 @@
 			{ unitId: unit!.id, index, choice }
 		].slice(-20);
 		await settingsRepo.saveSettings({ confidenceSnapshots: snapshots });
+		await dismissConfidence();
+	}
+
+	/** Escape / backdrop: skip the question without recording a snapshot. */
+	async function dismissConfidence() {
+		showConfidencePulse = false;
+		confidenceAnswered = true;
 		if (pendingAdvance) {
 			pendingAdvance = false;
 			await continueAdvance();
@@ -427,40 +435,40 @@
 	{/if}
 </main>
 
-{#if showConfidencePulse}
-	<div
-		class="fixed inset-0 z-40 flex items-end justify-center bg-black/40 p-4 sm:items-center"
-		role="dialog"
-		aria-labelledby="confidence-title"
-		data-testid="confidence-pulse"
-	>
-		<div class="surface-card w-full max-w-sm p-5 text-center">
-			<h2 id="confidence-title" class="text-lg font-semibold text-foreground">
-				{m.confidence_pulse_title()}
-			</h2>
-			<div class="mt-4 grid grid-cols-3 gap-2">
-				<button
-					type="button"
-					class="btn-secondary text-sm"
-					data-testid="confidence-low"
-					onclick={() => answerConfidence('low')}>{m.confidence_low()}</button
-				>
-				<button
-					type="button"
-					class="btn-primary text-sm"
-					data-testid="confidence-ok"
-					onclick={() => answerConfidence('ok')}>{m.confidence_ok()}</button
-				>
-				<button
-					type="button"
-					class="btn-secondary text-sm"
-					data-testid="confidence-high"
-					onclick={() => answerConfidence('high')}>{m.confidence_high()}</button
-				>
-			</div>
+<!-- Mid-lesson confidence pulse on the shared native <dialog>: focus is trapped,
+     Escape and backdrop clicks skip the question (no snapshot recorded). -->
+<Modal
+	open={showConfidencePulse}
+	labelledby="confidence-title"
+	testid="confidence-pulse"
+	onClose={() => void dismissConfidence()}
+>
+	<div class="text-center">
+		<h2 id="confidence-title" class="text-lg font-semibold text-foreground">
+			{m.confidence_pulse_title()}
+		</h2>
+		<div class="mt-4 grid grid-cols-3 gap-2">
+			<button
+				type="button"
+				class="btn-secondary text-sm"
+				data-testid="confidence-low"
+				onclick={() => answerConfidence('low')}>{m.confidence_low()}</button
+			>
+			<button
+				type="button"
+				class="btn-primary text-sm"
+				data-testid="confidence-ok"
+				onclick={() => answerConfidence('ok')}>{m.confidence_ok()}</button
+			>
+			<button
+				type="button"
+				class="btn-secondary text-sm"
+				data-testid="confidence-high"
+				onclick={() => answerConfidence('high')}>{m.confidence_high()}</button
+			>
 		</div>
 	</div>
-{/if}
+</Modal>
 
 {#if xpFloat > 0}
 	<XpFloat amount={xpFloat} />

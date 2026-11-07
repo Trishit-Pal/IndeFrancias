@@ -200,3 +200,31 @@ for (const scene of SCENES) {
 	});
 }
 
+// ── shell: skip link + route-change focus ───────────────────────────────────
+test('skip link is the first Tab stop and moves focus to the content region', async ({ page }) => {
+	await gotoHome(page);
+	await page.keyboard.press('Tab');
+	const skip = page.getByRole('link', { name: /skip to content/i });
+	await expect(skip).toBeFocused();
+	await expect(skip).toBeVisible();
+	await page.keyboard.press('Enter');
+	await expect(page.locator('#main')).toBeFocused();
+});
+
+test('navigating via the tab bar moves focus to the content region and announces the title', async ({
+	page
+}) => {
+	await gotoHome(page);
+	const announcer = page.locator('[role="status"][aria-live="polite"]').first();
+	await expect(announcer).toHaveText('');
+	// Sidebar (lg+) or bottom bar (<lg): take whichever Review link is visible.
+	await page
+		.getByRole('link', { name: /^review$/i })
+		.filter({ visible: true })
+		.first()
+		.click();
+	await expect(page).toHaveURL(/\/review/);
+	await expect(page.locator('#main')).toBeFocused();
+	await expect(announcer).not.toHaveText('');
+	await expect(announcer).toHaveText(await page.title());
+});

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { prefersReducedMotion } from 'svelte/motion';
-	import { onNavigate } from '$app/navigation';
+	import { afterNavigate, onNavigate } from '$app/navigation';
 	import { pwaInfo } from 'virtual:pwa-info';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
@@ -12,10 +12,10 @@
 	import { settingsRepo } from '$lib/db';
 	import { countDue } from '$lib/srs/queue';
 	import { shouldNotify, revisionNotificationBody } from '$lib/pwa/revisionNotify';
-	import { applyTheme, watchSystemTheme } from '$lib/theme/apply';
+	import { applyTheme, isDarkTheme, watchSystemTheme } from '$lib/theme/apply';
 	import { configureTts } from '$lib/audio/tts';
 	import { isNativePlatform, isDesktopPlatform } from '$lib/platform';
-	import { initNativeShell } from '$lib/platform/shell';
+	import { initNativeShell, syncNativeStatusBar } from '$lib/platform/shell';
 	import { showRevisionNotification } from '$lib/platform/notifications';
 	// Self-hosted fonts — served from origin to satisfy the strict
 	// `default-src 'self'` CSP and keep the app fully offline-capable.
@@ -59,9 +59,19 @@
 		});
 	});
 
+	// Route changes: move focus to the content region and announce the new page
+	// title, so keyboard and screen-reader users don't land on a stale spot.
+	let routeAnnouncement = $state('');
+	afterNavigate((navigation) => {
+		if (!navigation.from) return; // initial load: leave the browser's focus alone
+		document.getElementById('main')?.focus({ preventScroll: true });
+		routeAnnouncement = document.title;
+	});
+
 	async function syncTheme() {
 		const settings = await settingsRepo.getSettings();
 		applyTheme(settings.theme);
+		if (isNativePlatform()) void syncNativeStatusBar(isDarkTheme(settings.theme));
 	}
 
 	onMount(() => {
@@ -135,6 +145,12 @@
 </svelte:head>
 
 <div class="min-h-dvh bg-background text-foreground lg:flex">
+	<a
+		href="#main"
+		class="btn-secondary sr-only bg-card focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50"
+		>{m.skip_to_content()}</a
+	>
+	<div role="status" aria-live="polite" class="sr-only">{routeAnnouncement}</div>
 	<!-- Desktop sidebar (lg+) -->
 	<aside
 		class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-border lg:bg-card"
@@ -171,7 +187,7 @@
 	<div class="flex min-h-dvh flex-1 flex-col lg:ml-64">
 		{#if !network.online}
 			<div
-				class="border-b border-amber-700/20 bg-amber-100 px-4 py-1.5 text-center text-xs font-medium text-amber-900 dark:border-amber-300/20 dark:bg-amber-950 dark:text-amber-200"
+				class="border-b border-saffron/40 bg-saffron/15 px-4 py-1.5 text-center text-xs font-medium text-saffron-text"
 				style="padding-top: calc(0.375rem + env(safe-area-inset-top))"
 				role="status"
 				data-testid="offline-banner"
@@ -181,7 +197,9 @@
 		{/if}
 
 		<div
-			class="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-6"
+			id="main"
+			tabindex="-1"
+			class="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))] outline-none lg:pb-6"
 			style="padding-top: env(safe-area-inset-top)"
 		>
 			{@render children()}
