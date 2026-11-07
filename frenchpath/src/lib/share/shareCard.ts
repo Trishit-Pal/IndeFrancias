@@ -72,7 +72,7 @@ export async function renderShareCardPng(
 }
 
 /** Share via Web Share, else download the PNG, else copy text. */
-async function shareBlob(
+export async function shareBlob(
 	blob: Blob | null,
 	text: string,
 	title: string,
@@ -88,8 +88,9 @@ async function shareBlob(
 		try {
 			await navigator.share({ title, text, files: files as File[] | undefined });
 			return true;
-		} catch {
-			// user cancelled
+		} catch (err) {
+			// a cancel is the learner's answer: no PNG download behind their back
+			if (err instanceof DOMException && err.name === 'AbortError') return false;
 		}
 	}
 

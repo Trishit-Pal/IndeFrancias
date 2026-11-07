@@ -41,7 +41,9 @@ test('completed lesson seeds the SRS queue and reviews can be graded', async ({ 
 	await expect(done).toBeVisible();
 });
 
-test('double-clicking a context choice grades the card exactly once', async ({ page }) => {
+test('double-clicking Continue grades the card exactly once and moves focus into the next card', async ({
+	page
+}) => {
 	await gotoHome(page);
 	await page.getByTestId('unit-card').first().click();
 	await page.getByTestId('start-lesson').click();
@@ -54,11 +56,39 @@ test('double-clicking a context choice grades the card exactly once', async ({ p
 		(await page.getByText(/^\d+ \/ \d+ due$/).innerText()).match(/\/ (\d+)/)![1]
 	);
 	await expect(ctx).toBeVisible();
-	await page.getByTestId('context-choice').first().dblclick();
-	await page.getByTestId('continue').click();
+	await page.getByTestId('context-choice').first().click();
+	// two synchronous clicks: a real dblclick can land after the first grade has already unmounted the card
+	await page.getByTestId('continue').evaluate((el: HTMLElement) => {
+		el.click();
+		el.click();
+	});
 	await expect(page.getByTestId('continue')).toBeHidden();
+	if (total > 1 && (await ctx.isVisible())) {
+		// the answered card unmounted; focus must land inside the new card, not <body>
+		await expect
+			.poll(() =>
+				page.evaluate(() => !!document.activeElement?.closest('[data-testid=context-card]'))
+			)
+			.toBe(true);
+	}
 	await reviewUntilDone(page);
 	await expect(page.getByTestId('review-summary-cards')).toHaveText(`Cards reviewed: ${total}`);
+
+	// a double grade also skips the next card, so row count alone can match: require one row per distinct card
+	const cardIds = await page.evaluate(
+		() =>
+			new Promise<string[]>((resolve, reject) => {
+				const open = indexedDB.open('frenchpath');
+				open.onerror = () => reject(open.error);
+				open.onsuccess = () => {
+					const req = open.result.transaction('reviewLog').objectStore('reviewLog').getAll();
+					req.onsuccess = () => resolve(req.result.map((r: { cardId: string }) => r.cardId));
+					req.onerror = () => reject(req.error);
+				};
+			})
+	);
+	expect(cardIds).toHaveLength(total);
+	expect(new Set(cardIds).size).toBe(total);
 });
 
 test('exposes an installable web manifest', async ({ page }) => {

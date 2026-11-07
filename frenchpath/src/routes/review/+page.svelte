@@ -9,6 +9,7 @@
 	import * as m from '$lib/paraglide/messages';
 	import { getReviewQueue } from '$lib/srs/queue';
 	import { recordReview, parseCardId } from '$lib/srs/review';
+	import { isRecalled } from '$lib/srs/contextGrade';
 	import { effectiveRetention } from '$lib/assessment/checkpoint';
 	import { settingsRepo } from '$lib/db';
 	import type { SrsCard } from '$lib/db/schema';
@@ -155,7 +156,7 @@
 			weights: fsrsWeights
 		});
 		reviewedCount += 1;
-		if (grade === 'good' || grade === 'easy') goodCount += 1;
+		if (isRecalled(grade)) goodCount += 1;
 		if (index + 1 < queue.length) {
 			index += 1;
 			revealed = false;

@@ -28,7 +28,8 @@
 	const isGlossOnly = $derived(prompt.choices.length === 0);
 	const fullSentence = $derived(`${prompt.before}${prompt.answer}${prompt.after}`);
 
-	const startedAt = performance.now();
+	// listen mode restarts this when playback ends, so TTS time isn't answer time
+	let startedAt = performance.now();
 	let picked = $state<string | null>(null);
 	let continueBtn = $state<HTMLButtonElement>();
 	let typed = $state('');
@@ -40,6 +41,8 @@
 	let recorder: Recording | null = null;
 	let abortCtl: AbortController | null = null; // cancels a getUserMedia still pending
 	let sayBtn = $state<HTMLButtonElement>();
+	let choicesEl = $state<HTMLDivElement>();
+	let replayWrap = $state<HTMLDivElement>();
 	let starting = false; // guards the async gap between tap and recording=true
 	let recording = $state(false);
 	let checking = $state(false);
@@ -49,15 +52,20 @@
 
 	function replay() {
 		try {
-			speakFrench(fullSentence);
+			speakFrench(fullSentence, { onEnd: () => (startedAt = performance.now()) });
 		} catch {
 			// caps gate listen; a failing voice just stays silent
 		}
 	}
 
 	onMount(() => {
-		if (isListen) replay();
-		else if (isType || isGlossOnly) inputEl?.focus();
+		// a new card must own focus, else it falls to <body> after the previous card unmounts
+		if (isListen) {
+			replay();
+			replayWrap?.querySelector('button')?.focus();
+		} else if (isType || isGlossOnly) inputEl?.focus();
+		else if (isSpeak) sayBtn?.focus();
+		else choicesEl?.querySelector('button')?.focus();
 	});
 
 	// leaving the card or page mid-recording must release the mic
@@ -143,7 +151,7 @@
 
 <section class="surface-card p-6 shadow-sm lg:mx-auto lg:max-w-2xl" data-testid="context-card">
 	{#if isListen}
-		<div class="flex justify-center">
+		<div class="flex justify-center" bind:this={replayWrap}>
 			<IconButton
 				icon="speaker"
 				label={m.review_listen_replay()}
@@ -232,15 +240,14 @@
 		</form>
 	{:else}
 		<div
+			bind:this={choicesEl}
 			class="mt-5 grid grid-cols-2 gap-2"
-			role="radiogroup"
+			role="group"
 			aria-label={m.review_context_prompt()}
 		>
 			{#each prompt.choices as choice (choice)}
 				<button
 					type="button"
-					role="radio"
-					aria-checked={picked === choice}
 					class="fp-context-choice"
 					class:fp-context-right={picked !== null && choice === prompt.answer}
 					class:fp-context-wrong={picked === choice && choice !== prompt.answer}

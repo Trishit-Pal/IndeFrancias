@@ -24,3 +24,6 @@ const SPOKEN: Record<'good' | 'partial' | 'retry', ReviewGrade> = {
 	retry: 'again'
 };
 export const gradeSpoken = (overall: 'good' | 'partial' | 'retry'): ReviewGrade => SPOKEN[overall];
+
+/** Session summary, weekly postcard and card feedback all count anything but `again` as recalled. */
+export const isRecalled = (grade: ReviewGrade): boolean => grade !== 'again';

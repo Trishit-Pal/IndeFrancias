@@ -54,7 +54,7 @@ Interview outcome (2026-11-06):
     | `writing` | `type` | — |
     | `spokenProduction` / `spokenInteraction` | `speak` | `type` if the Vosk model isn't downloaded (`caps.asr` via `modelSource.getModelStatus`) |
 
-    When it falls back, the coach shows one calm hint, such as "Download the voice model in Settings to practise speaking". It never auto-prompts.
+    When it falls back, the coach shows one calm hint, such as "Download the speaking pack from any speaking exercise in a lesson" (Settings has no download or voice install, so the hint is plain text with no link). It never auto-prompts.
 - **UI:**
   - A new `TodayCard.svelte` (`InfoBanner`, `IconButton`, tokens) at the top of `/progress`.
   - Its button links to `/review?mode=<mode>`, or to the next lesson.

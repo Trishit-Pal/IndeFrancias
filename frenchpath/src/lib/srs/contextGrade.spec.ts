@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { SLOW_MS, gradeChoice, gradeSpoken, gradeTyped } from './contextGrade';
+import { SLOW_MS, isRecalled, gradeChoice, gradeSpoken, gradeTyped } from './contextGrade';
 
 describe('gradeChoice', () => {
 	it('wrong → again', () => expect(gradeChoice(false, 1000)).toBe('again'));
@@ -26,4 +26,13 @@ describe('gradeSpoken', () => {
 it('never returns easy', () => {
 	const all = [gradeChoice(true, 0), gradeTyped('dix', ['dix']), gradeSpoken('good')];
 	expect(all).not.toContain('easy');
+});
+
+describe('isRecalled', () => {
+	it('counts hard as recalled; only again is a miss', () => {
+		expect(isRecalled('again')).toBe(false);
+		expect(isRecalled('hard')).toBe(true);
+		expect(isRecalled('good')).toBe(true);
+		expect(isRecalled('easy')).toBe(true);
+	});
 });

@@ -247,3 +247,11 @@ test('non-leech cards go straight to the card', async ({ page }) => {
 	await expect(page.getByTestId('recall-input')).toBeVisible();
 	await expect(page.getByTestId('leech-rescue')).toHaveCount(0);
 });
+
+test('speak mode without the speaking pack renders typed recall', async ({ page }) => {
+	await learnOneUnit(page);
+	await openReview(page, 'speak');
+	await expect(page.getByTestId('context-card')).toBeVisible();
+	await expect(page.getByTestId('recall-input')).toBeVisible();
+	await expect(page.getByTestId('speak-answer')).toHaveCount(0);
+});

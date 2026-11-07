@@ -45,13 +45,9 @@
 	{/if}
 	{#if plan.kind === 'review' && plan.fallbackHint}
 		<InfoBanner variant="info" class="mt-3">
-			<a
-				class="inline-flex min-h-11 items-center underline"
-				href={resolve('/settings')}
-				data-testid="today-hint"
-			>
+			<span data-testid="today-hint">
 				{plan.fallbackHint === 'tts' ? m.today_hint_tts() : m.today_hint_asr()}
-			</a>
+			</span>
 		</InfoBanner>
 	{/if}
 </section>
