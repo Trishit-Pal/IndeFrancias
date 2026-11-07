@@ -14,7 +14,7 @@ Offline-first French-learning PWA for Indian learners. All UI lives under `frenc
 
 - SvelteKit 2 + **Svelte 5 runes** (`$state`, `$derived`, `$props`, `$bindable`)
 - Tailwind CSS v4 (`src/routes/layout.css`)
-- Paraglide i18n: `en`, `hi`, `hinglish` — import via `$lib/paraglide/messages`
+- Paraglide i18n: 10 locales (`en`, `hi`, `hinglish`, `bn`, `ta`, `te`, `kn`, `mr`, `gu`, `pa`) — import via `$lib/paraglide/messages`
 - Static prerender + client SPA fallback
 
 ## Conventions
@@ -30,13 +30,16 @@ Offline-first French-learning PWA for Indian learners. All UI lives under `frenc
 
 When adding user-visible strings:
 
-1. Add key to `messages/en.json`, `messages/hi.json`, `messages/hinglish.json`
+1. Add the key to all 10 `messages/*.json` (real text for `en` + `hi`; English placeholder for the rest, logged one row per locale in `docs/i18n-pending.md` as `` - `<locale>.json` — `<key>` — "<placeholder>" ``)
 2. Use `m.key_name()` in components
 3. Run dev/build so Paraglide regenerates
 
 ## Accessibility
 
 - Touch targets ≥ 44px on buttons
+- Dialogs use `$lib/components/Modal.svelte` (native `<dialog>`: focus trap, Escape, focus restore) — never a hand-rolled `role="dialog"` overlay
+- Icons come from `Icon.svelte` / `icons.ts` — no emoji standing in for an icon
+- Text on fills uses the `*-text` tokens (`--fp-jaipur-text`, `--fp-saffron-text`, `--fp-sage-text`, `--fp-seine-text`); `contrast.spec.ts` guards the pairs and `e2e/accessibility.e2e.ts` runs axe WCAG A/AA on every core route in both Playwright projects
 - `aria-label` on icon-only controls
 - `role="status"` + `aria-live="polite"` on exercise feedback
 - Respect `reduceMotion` from settings for transitions
@@ -49,7 +52,7 @@ From `frenchpath/`:
 ```bash
 npm run check
 npm run lint
-npm run test:e2e   # if routes/exercises/settings changed
+npm run test:e2e   # if routes/exercises/settings changed (desktop + mobile projects; PORT=4174 if 4173 is busy)
 ```
 
 E2E files: `e2e/app.e2e.ts`, `backup.e2e.ts`, `progression.e2e.ts`, `settings.e2e.ts`, `review.e2e.ts`, `accessibility.e2e.ts`. Helpers: `e2e/helpers.ts`.

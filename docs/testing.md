@@ -8,8 +8,8 @@ when adding features, reviewing PRs, or preparing a release.
 
 ```bash
 npm run check && npm run lint
-npm run test:unit -- --run    # 256 unit tests
-npm run test:e2e              # 42 Playwright scenarios (build + preview first)
+npm run test:unit -- --run    # 380 unit tests (53 files)
+npm run test:e2e              # 73 Playwright scenarios: `desktop` project (all) + curated `mobile` project (a11y + mobile specs) (build + preview first); set PORT=4174 if 4173 is taken
 npm run content:proofread:launch  # A1/A2 launch gate only
 ```
 
@@ -195,7 +195,9 @@ All E2E files live in `frenchpath/e2e/`. Shared helpers: `helpers.ts`.
 | `checkpoint.e2e.ts` | 2 | Gate banner after units 1–3; passing g1 unlocks unit 4 |
 | `settings.e2e.ts` | 4 | Dark theme; daily goal on home; reduce motion class; data-local notice |
 | `review.e2e.ts` | 2 | Empty review state; due badge after lesson |
-| `accessibility.e2e.ts` | 2 | Keyboard MCQ path; review grade button focus |
+| `accessibility.e2e.ts` | 3 + 5 axe | Keyboard MCQ path; review grade button focus; modal focus trap; **axe WCAG A/AA scans** on onboarding, home, review, progress, settings, lesson (light/en + dark/hinglish) |
+| `mobile.e2e.ts` | 2 | `mobile` project only: bottom nav present, every tab ≥44×44; next-lesson hero CTA (`voyage-next`) inside an 844px viewport without scrolling |
+| `lesson-shell.e2e.ts` | 2 | Lesson exit control (immediate before any answer, confirm Modal once there is progress); Enter inside a text answer submits |
 | `onboarding.e2e.ts` | 1 | Full v2 wizard → home path |
 | `gloss.e2e.ts` | 2 | Tap-to-gloss in exercises and bridge markdown |
 | `hints.e2e.ts` | 1 | Lesson hint decrements and coach note |
@@ -204,14 +206,20 @@ All E2E files live in `frenchpath/e2e/`. Shared helpers: `helpers.ts`.
 | `exam-b1.e2e.ts` | 1 | Mock DELF B1 intro → section flow |
 | `celebration.e2e.ts` | 1 | Celebration overlay dismiss |
 
+**Projects.** `playwright.config.ts` defines two projects: `desktop` (Desktop Chrome, every spec) and `mobile` (Pixel 7 emulation, curated `testMatch`: `accessibility.e2e.ts`, `mobile.e2e.ts`). Run one with `npx playwright test --project=mobile`. Widen the mobile `testMatch` once CI time is measured.
+
+**axe policy.** `-core/playwright` with tags `wcag2a`,`wcag2aa`. `critical`/`serious` fail; `moderate`/`minor` are report-only test annotations. Exclude a selector (`.exclude(...)`) for surfaces axe cannot compute (e.g. `color-mix` backgrounds) and comment why; never `disableRules('color-contrast')`.
+
 ### 3.1 `data-testid` contract
 
 Settings and critical flows use stable test IDs (add new ones when extending E2E):
 
 | Test ID | Location |
 |---------|----------|
-| `onboarding-start` | `Onboarding.svelte` |
+| `onboarding-start` (hands off into lesson 1) | `OnboardingWizard.svelte` |
 | `unit-card`, `streak-badge`, `daily-goal`, `due-badge`, `delf-card` | Home `+page.svelte` |
+| `voyage-hero`, `voyage-next` (next-lesson CTA; **not** a `unit-card` — suites rely on `unit-card.first()` being unit 1) | `VoyageMap.svelte` |
+| `lesson-exit`, `lesson-exit-confirm`, `lesson-exit-stay`, `lesson-exit-leave`, `confidence-pulse` (native `<dialog>` Modal) | Lesson `+page.svelte` / `LessonShell.svelte` |
 | `locked`, `start-lesson`, `check`, `continue`, `summary`, `xp-awarded`, `practice-note` | Lesson `+page.svelte` |
 | `reveal`, `review-done`, `no-reviews`, `grade-buttons` | Review `+page.svelte` |
 | `language-select`, `theme-select`, `goal-select`, `retention-select`, `reduce-motion` | Settings |
@@ -223,7 +231,7 @@ Settings and critical flows use stable test IDs (add new ones when extending E2E
 
 ### 3.2 E2E helpers (`e2e/helpers.ts`)
 
-- `gotoHome(page)` — skip onboarding via IDB for stable flows
+- `gotoHome(page, overrides?)` — skip onboarding via IDB for stable flows; `overrides` merges into the seeded settings (e.g. `{ theme: 'dark', uiLanguage: 'hinglish' }`)
 - `completeOnboarding(page)` — drive full v2 wizard (tested in `onboarding.e2e.ts`)
 - `completeLesson(page)` — drive exercise loop until summary
 - `completeCheckpoint(page)` — answer deterministic gate pool and finish checkpoint

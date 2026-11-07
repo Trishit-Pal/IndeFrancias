@@ -1,28 +1,28 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { prefersReducedMotion } from 'svelte/motion';
+	import { afterNavigate, onNavigate } from '$app/navigation';
 	import { pwaInfo } from 'virtual:pwa-info';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+	import Icon from '$lib/components/Icon.svelte';
+	import type { IconName } from '$lib/components/icons';
 	import * as m from '$lib/paraglide/messages';
 	import { network } from '$lib/stores/online.svelte';
 	import { settingsRepo } from '$lib/db';
 	import { countDue } from '$lib/srs/queue';
 	import { shouldNotify, revisionNotificationBody } from '$lib/pwa/revisionNotify';
-	import { applyTheme, watchSystemTheme } from '$lib/theme/apply';
+	import { applyTheme, isDarkTheme, watchSystemTheme } from '$lib/theme/apply';
 	import { configureTts } from '$lib/audio/tts';
 	import { isNativePlatform, isDesktopPlatform } from '$lib/platform';
-	import { initNativeShell } from '$lib/platform/shell';
+	import { initNativeShell, syncNativeStatusBar } from '$lib/platform/shell';
 	import { showRevisionNotification } from '$lib/platform/notifications';
 	// Self-hosted fonts — served from origin to satisfy the strict
 	// `default-src 'self'` CSP and keep the app fully offline-capable.
 	// (Loading them from Google's CDN is blocked by CSP and breaks offline.)
-	import '@fontsource/instrument-serif/400.css';
-	import '@fontsource/instrument-serif/400-italic.css';
-	import '@fontsource/manrope/400.css';
-	import '@fontsource/manrope/500.css';
-	import '@fontsource/manrope/600.css';
-	import '@fontsource/manrope/700.css';
-	import '@fontsource/manrope/800.css';
+	import '@fontsource-variable/fraunces/standard.css';
+	import '@fontsource-variable/fraunces/standard-italic.css';
+	import '@fontsource-variable/manrope/wght.css';
 	import '@fontsource/dm-mono/400.css';
 	import '@fontsource/dm-mono/500.css';
 	import '@fontsource/tiro-devanagari-hindi/400.css';
@@ -34,17 +34,44 @@
 
 	const webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 
+	// `as const` keeps each href a string-literal type so resolve() below
+	// (which requires a known route literal) stays type-safe.
 	const tabs = [
-		{ href: '/', label: m.nav_learn, icon: '📚' },
-		{ href: '/review', label: m.nav_review, icon: '🔁' },
-		{ href: '/progress', label: m.nav_progress, icon: '📈' },
-		{ href: '/settings', label: m.nav_settings, icon: '⚙️' }
+		{ href: '/', label: m.nav_learn, icon: 'learn' as IconName },
+		{ href: '/review', label: m.nav_review, icon: 'review' as IconName },
+		{ href: '/progress', label: m.nav_progress, icon: 'progress' as IconName },
+		{ href: '/settings', label: m.nav_settings, icon: 'settings' as IconName }
 	] as const;
 	const path = $derived(page.url.pathname);
+
+	// Cross-fade between routes. Skipped under reduced motion (in-app setting OR
+	// OS preference), and a no-op when the browser lacks View Transitions
+	// (Safari < 18, older WebViews).
+	onNavigate((navigation) => {
+		if (document.documentElement.classList.contains('reduce-motion')) return;
+		if (prefersReducedMotion.current) return;
+		if (!document.startViewTransition) return;
+		return new Promise((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
+	});
+
+	// Route changes: move focus to the content region and announce the new page
+	// title, so keyboard and screen-reader users don't land on a stale spot.
+	let routeAnnouncement = $state('');
+	afterNavigate((navigation) => {
+		if (!navigation.from) return; // initial load: leave the browser's focus alone
+		document.getElementById('main')?.focus({ preventScroll: true });
+		routeAnnouncement = document.title;
+	});
 
 	async function syncTheme() {
 		const settings = await settingsRepo.getSettings();
 		applyTheme(settings.theme);
+		if (isNativePlatform()) void syncNativeStatusBar(isDarkTheme(settings.theme));
 	}
 
 	onMount(() => {
@@ -112,12 +139,18 @@
 		content="Offline-first French PWA with Hindi/English bridges. Your progress stays on your device."
 	/>
 	<meta property="og:type" content="website" />
-	<meta name="theme-color" content="#2563eb" />
+	<meta name="theme-color" content="#faf7f0" />
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -- trusted build-time string -->
 	{@html webManifestLink}
 </svelte:head>
 
 <div class="min-h-dvh bg-background text-foreground lg:flex">
+	<a
+		href="#main"
+		class="btn-secondary sr-only bg-card focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50"
+		>{m.skip_to_content()}</a
+	>
+	<div role="status" aria-live="polite" class="sr-only">{routeAnnouncement}</div>
 	<!-- Desktop sidebar (lg+) -->
 	<aside
 		class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-border lg:bg-card"
@@ -126,7 +159,7 @@
 		<div class="flex items-center gap-3 border-b border-border px-5 py-5">
 			<img src="/icon.svg" alt="" class="h-9 w-9 rounded-lg shadow-sm" />
 			<div>
-				<p class="font-bold text-foreground">FrenchPath</p>
+				<p class="fp-wordmark text-foreground">FrenchPath</p>
 				<p class="text-xs text-muted">{m.home_subtitle()}</p>
 			</div>
 		</div>
@@ -137,12 +170,12 @@
 					<li>
 						<a
 							href={resolve(tab.href)}
-							class="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary {active
-								? 'bg-blue-50 text-primary dark:bg-blue-950'
+							class="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary {active
+								? 'bg-jaipur-light text-primary'
 								: 'text-muted hover:bg-subtle hover:text-foreground'}"
 							aria-current={active ? 'page' : undefined}
 						>
-							<span class="text-lg" aria-hidden="true">{tab.icon}</span>
+							<Icon name={tab.icon} size={19} />
 							{tab.label()}
 						</a>
 					</li>
@@ -154,7 +187,8 @@
 	<div class="flex min-h-dvh flex-1 flex-col lg:ml-64">
 		{#if !network.online}
 			<div
-				class="bg-amber-500 px-4 py-1 text-center text-xs font-medium text-amber-950 dark:bg-amber-600 dark:text-amber-50"
+				class="border-b border-saffron/40 bg-saffron/15 px-4 py-1.5 text-center text-xs font-medium text-saffron-text"
+				style="padding-top: calc(0.375rem + env(safe-area-inset-top))"
 				role="status"
 				data-testid="offline-banner"
 			>
@@ -162,7 +196,12 @@
 			</div>
 		{/if}
 
-		<div class="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-6">
+		<div
+			id="main"
+			tabindex="-1"
+			class="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))] outline-none lg:pb-6"
+			style="padding-top: env(safe-area-inset-top)"
+		>
 			{@render children()}
 		</div>
 
@@ -177,12 +216,12 @@
 					<li class="flex-1">
 						<a
 							href={resolve(tab.href)}
-							class="flex min-h-11 flex-col items-center justify-center gap-0.5 py-2 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary {active
+							class="flex min-h-11 flex-col items-center justify-center gap-0.5 py-2 text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary {active
 								? 'text-primary'
 								: 'text-muted'}"
 							aria-current={active ? 'page' : undefined}
 						>
-							<span class="text-lg" aria-hidden="true">{tab.icon}</span>
+							<Icon name={tab.icon} size={21} />
 							{tab.label()}
 						</a>
 					</li>
@@ -191,3 +230,12 @@
 		</nav>
 	</div>
 </div>
+
+<style>
+	.fp-wordmark {
+		font-family: var(--fp-font-display);
+		font-weight: 560;
+		font-size: 1.05rem;
+		line-height: 1.1;
+	}
+</style>

@@ -3,12 +3,15 @@
 	import type { ExerciseResponse } from '$lib/lesson/engine';
 	import type { Lexicon } from '$lib/content/lexicon';
 	import { speakFrench, ttsAvailable } from '$lib/audio/tts';
-	import { transcribe, preloadAsr } from '$lib/speech/asr';
+	import { preloadAsr, hasAsrStub } from '$lib/speech/asr';
+	import { startRecording, type Recording } from '$lib/speech/recordAndScore';
 	import { getModelStatus, downloadModel } from '$lib/speech/modelSource';
-	import { scorePronunciation, type PronunciationScore } from '$lib/speech/score';
+	import type { PronunciationScore } from '$lib/speech/score';
 	import { MODEL_SIZE_MB } from '$lib/speech/modelManifest';
 	import GlossText from '$lib/components/GlossText.svelte';
+	import IconButton from '$lib/components/IconButton.svelte';
 	import * as m from '$lib/paraglide/messages';
+	import Icon from '$lib/components/Icon.svelte';
 
 	let {
 		exercise,
@@ -23,16 +26,6 @@
 		lexicon: Lexicon;
 	} = $props();
 
-	// ponytail: asr.ts's e2e stub bypasses real transcription, but
-	// modelSource.ts's getModelStatus() is a real (network + Cache Storage)
-	// check with no test hook of its own. Treat the stub's presence as
-	// "model ready" here too, so e2e can drive record→transcribe without a
-	// real model file. Doesn't touch the reviewed Task 10 modules.
-	const E2E_STUB_KEY = 'fp-e2e-stub-asr';
-	function hasAsrStub(): boolean {
-		return typeof localStorage !== 'undefined' && localStorage.getItem(E2E_STUB_KEY) !== null;
-	}
-
 	type ModelStatus = 'checking' | 'ready' | 'needs-download' | 'downloading' | 'failed';
 	let modelStatus = $state<ModelStatus>('checking');
 	let downloadPct = $state(0);
@@ -42,9 +35,8 @@
 	let asrFailed = $state(false);
 	let playing = $state(false);
 
-	let mediaStream: MediaStream | null = null;
-	let audioCtx: AudioContext | null = null;
-	let chunks: Float32Array[] = [];
+	let recorder: Recording | null = null;
+	let abortCtl: AbortController | null = null; // cancels a getUserMedia still pending
 	let starting = false; // guards the async gap between tap and recording=true
 
 	const canSpeak = ttsAvailable();
@@ -65,8 +57,8 @@
 	// Cleanup microphone and AudioContext on component unmount or if recording is interrupted
 	$effect(() => {
 		return () => {
-			mediaStream?.getTracks().forEach((t) => t.stop());
-			void audioCtx?.close();
+			abortCtl?.abort();
+			recorder?.cancel();
 		};
 	});
 
@@ -94,44 +86,30 @@
 			return;
 		}
 		starting = true;
-		chunks = [];
+		const ctl = new AbortController();
+		abortCtl = ctl;
 		try {
-			mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-		} catch {
-			asrFailed = true;
+			recorder = await startRecording(ctl.signal);
+		} catch (err) {
+			// aborted by unmount: stay silent
+			if (!(err instanceof DOMException && err.name === 'AbortError')) asrFailed = true;
 			return;
 		} finally {
-			// Safe: everything from here through recording=true is synchronous,
+			// Safe: the only code between here and recording=true is synchronous,
 			// so no second tap can interleave once the guard drops.
 			starting = false;
 		}
-		audioCtx = new AudioContext({ sampleRate: 16000 });
-		const source = audioCtx.createMediaStreamSource(mediaStream);
-		const proc = audioCtx.createScriptProcessor(4096, 1, 1);
-		proc.onaudioprocess = (e) => chunks.push(new Float32Array(e.inputBuffer.getChannelData(0)));
-		source.connect(proc);
-		proc.connect(audioCtx.destination);
 		recording = true;
 	}
 
 	async function stopRecording() {
+		const active = recorder;
+		recorder = null;
 		recording = false;
-		mediaStream?.getTracks().forEach((t) => t.stop());
-		mediaStream = null;
-		await audioCtx?.close();
-		audioCtx = null;
-		const total = chunks.reduce((n, c) => n + c.length, 0);
-		const audio = new Float32Array(total);
-		let offset = 0;
-		for (const c of chunks) {
-			audio.set(c, offset);
-			offset += c.length;
-		}
-		chunks = [];
+		if (!active) return;
 		busy = true;
 		try {
-			const words = await transcribe(audio, 16000);
-			score = scorePronunciation(exercise.phrase, words);
+			score = await active.stop(exercise.phrase);
 			response = { type: 'speak', overall: score.overall };
 		} catch {
 			asrFailed = true;
@@ -162,8 +140,9 @@
 					: ''}"
 				onclick={play}
 				data-testid="speak-play"
+				aria-label={m.audio_play()}
 			>
-				🔊
+				<Icon name="speaker" size={18} />
 			</button>
 		{/if}
 	</div>
@@ -197,18 +176,14 @@
 			{/if}
 		</div>
 	{:else if modelStatus === 'ready' && !asrFailed}
-		<button
-			type="button"
-			class="min-h-11 rounded-full border border-border px-4 py-2 hover:border-primary {recording
-				? 'fp-speak-recording'
-				: ''}"
-			data-testid="speak-record"
+		<IconButton
+			icon="mic"
+			label={recording ? m.speak_stop() : m.speak_record()}
+			pressed={recording}
 			disabled={submitted || busy}
-			aria-pressed={recording}
+			testid="speak-record"
 			onclick={toggleRecord}
-		>
-			{recording ? m.speak_stop() : m.speak_record()}
-		</button>
+		/>
 		{#if busy}
 			<p class="text-sm text-muted" aria-live="polite">{m.speak_transcribing()}</p>
 		{/if}
@@ -281,7 +256,7 @@
 		background: color-mix(in srgb, var(--fp-saffron) 30%, var(--fp-paper));
 	}
 	.fp-chip--missed {
-		background: color-mix(in srgb, var(--fp-jaipur) 30%, var(--fp-paper));
+		background: color-mix(in srgb, var(--fp-error) 24%, var(--fp-paper));
 	}
 
 	@keyframes fp-chip-in {

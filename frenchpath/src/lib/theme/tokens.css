@@ -1,39 +1,54 @@
-/* FrenchPath Design Tokens — generated from Le Grand Voyage redesign */
-/* Imported via src/routes/layout.css.                                       */
+/* FrenchPath Design Tokens — "L'Indigo Express" (premium revamp)             */
+/* THE single token contract: every color/type/elevation/motion value for     */
+/* BOTH themes lives here. Imported via src/routes/layout.css.                */
 /* NOTE: Fonts are self-hosted via @fontsource imports in src/routes/         */
 /* +layout.svelte (NOT a CDN <link> or @import url()). The strict CSP         */
 /* (default-src 'self') blocks fonts.googleapis.com/gstatic.com, so any CDN   */
 /* font reference here would silently fail and fall back to the system stack. */
 
-:root {
+/* Light: indigo ink on warm paper. Dark: indigo night lit by marigold.       */
+:root,
+.light {
 	/* ── Palette ── */
-	--fp-cream: #f7efe3; /* page background         */
-	--fp-paper: #fffbf3; /* card / surface          */
-	--fp-paper-warm: #f4ead9; /* inset / stripe          */
-	--fp-ink: #2b1b17; /* primary text / borders  */
-	--fp-ink-soft: #4a352d; /* body text               */
-	--fp-muted: #7a5d52; /* secondary labels        */
+	--fp-canvas: #faf7f0; /* app background (warm gallery white) */
+	--fp-paper: #fffdf8; /* card / raised surface               */
+	--fp-cream: #f4f0e5; /* subtle inset background             */
+	--fp-paper-warm: #efe9da; /* deeper inset / stripe               */
+	--fp-ink: #232044; /* deep indigo — text / hairlines      */
+	--fp-ink-soft: #3d3963; /* body text                           */
+	--fp-muted: #615c84; /* secondary labels (single source)    */
 
-	--fp-jaipur: #e94f64; /* primary accent (Jaipur pink)   */
-	--fp-jaipur-light: #f4d5c2; /* tinted surface                 */
-	--fp-terracotta: #c75b3d; /* Mira / warm accent             */
-	--fp-saffron: #d4a24c; /* gold / XP / postcard           */
-	--fp-sage: #8aa67a; /* success / complete             */
-	--fp-seine: #2d6cdf; /* Léo / French blue accent       */
-	--fp-seine-light: #a8c5f0; /* light blue surface             */
-	--fp-navy: #1f2a44; /* exam mode / formal             */
-	--fp-midnight: #3a3258; /* evening ritual bg start        */
+	--fp-jaipur: #dd5471; /* jaipur rose — accent fills, strokes, tints */
+	--fp-jaipur-light: #fcedf0; /* rose tint surface (holds jaipur-text at AA) */
+	/* Rose as TEXT or as a FILL under white text: #dd5471 is only 3.76:1 against
+	   white, so buttons and rose labels use this deeper cut (5.2:1 vs white,
+	   4.85:1 on canvas). contrast.spec.ts enforces all three pairs. */
+	--fp-jaipur-text: #c23a58;
+	/* Supported legacy aliases (70+ live users; ADR-8): --fp-terracotta,  */
+	/* --fp-navy and the --fp-primary* bridge below. Keep, don't extend.     */
+	--fp-terracotta: #bf5f45; /* Mira / warm supporting accent       */
+	--fp-saffron: #d99a2b; /* marigold — progress / XP / streaks  */
+	--fp-sage: #6f9a60; /* success / complete                  */
+	--fp-seine: #3a63d4; /* Léo / French blue — links / info    */
+	--fp-seine-light: #dde6f8; /* light blue tint surface             */
+	--fp-seine-text: #2b4fae; /* Seine as text on tints/canvas (AA)  */
+	--fp-navy: #2e2b52; /* exam mode / formal panels           */
+	--fp-error: #c23d3d; /* incorrect / danger                  */
+	--fp-on-error: #ffffff; /* text on --fp-error fills            */
+	--fp-ivory: #f2eee4; /* theme-fixed: text on the exam slate */
 
-	/* ── Canvas ── */
-	--fp-canvas: #e5dacf; /* outermost page BG              */
+	/* Text-safe accents: saffron/sage are FILL colors (2.4:1 / 3.2:1 as text). */
+	/* Use these for any text; contrast.spec.ts enforces >= 4.5:1.            */
+	--fp-saffron-text: #8f5e0e;
+	--fp-sage-text: #4a7340;
 
 	/* ── Typography ── */
-	--fp-font-display: 'Instrument Serif', Georgia, serif;
+	--fp-font-display: 'Fraunces Variable', Georgia, serif;
 	--fp-font-hindi: 'Tiro Devanagari Hindi', serif;
-	--fp-font-ui: 'Manrope', system-ui, sans-serif;
+	--fp-font-ui: 'Manrope Variable', system-ui, sans-serif;
 	--fp-font-mono: 'DM Mono', 'Courier New', monospace;
 
-	/* ── Spacing scale ── */
+	/* ── Radii ── */
 	--fp-r-sm: 12px;
 	--fp-r-md: 16px;
 	--fp-r-lg: 20px;
@@ -41,41 +56,109 @@
 	--fp-r-2xl: 32px;
 	--fp-r-pill: 999px;
 
-	/* ── Shadows ── */
-	--fp-shadow-card: 4px 4px 0 var(--fp-ink);
-	--fp-shadow-float: 0 30px 50px -20px rgba(43, 27, 23, 0.35);
+	/* ── Elevation (soft, indigo-tinted; replaces the old hard offsets) ── */
+	--fp-elevation-1: 0 1px 2px rgb(35 32 68 / 0.05), 0 1px 3px rgb(35 32 68 / 0.07);
+	--fp-elevation-2: 0 2px 4px rgb(35 32 68 / 0.05), 0 6px 16px rgb(35 32 68 / 0.09);
+	--fp-elevation-3: 0 4px 8px rgb(35 32 68 / 0.06), 0 16px 32px rgb(35 32 68 / 0.14);
+	--fp-shadow-card: var(--fp-elevation-2);
+	--fp-shadow-float: var(--fp-elevation-3);
+	--fp-hairline-color: color-mix(in srgb, var(--fp-ink) 15%, transparent);
 
-	/* ── Motion (M2.5 editorial pass) ── */
+	/* ── Motion ── */
 	--fp-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-	--fp-duration-sm: 200ms;
-	--fp-duration-md: 300ms;
+	--fp-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+	--fp-duration-fast: 150ms;
+	--fp-duration-normal: 280ms;
+
+	/* ── Semantic aliases (Tailwind bridge targets — names are permanent) ── */
+	--fp-background: var(--fp-canvas);
+	--fp-foreground: var(--fp-ink);
+	--fp-card: var(--fp-paper);
+	--fp-border: color-mix(in srgb, var(--fp-ink) 15%, var(--fp-paper));
+	--fp-subtle: var(--fp-cream);
+	--fp-primary: var(--fp-jaipur-text);
+	--fp-primary-hover: #ad3350;
+	--fp-primary-foreground: #ffffff;
+	--fp-nav: rgb(255 253 248 / 0.92);
+	--fp-disabled: color-mix(in srgb, var(--fp-ink) 25%, var(--fp-canvas));
+	--fp-input: var(--fp-paper);
+	--fp-ring-offset: var(--fp-canvas);
+}
+
+/* Indigo night: a designed second scene, not inverted grays. */
+.dark {
+	--fp-canvas: #16142b;
+	--fp-paper: #211e3d;
+	--fp-cream: #1c1936;
+	--fp-paper-warm: #2a2650;
+	--fp-ink: #f2eee4; /* warm ivory */
+	--fp-ink-soft: #d8d3c6;
+	--fp-muted: #a59fc8;
+
+	--fp-jaipur: #ef7189;
+	--fp-jaipur-light: #3d2438;
+	--fp-jaipur-text: #ef7189; /* bright rose already clears AA on indigo night */
+	--fp-terracotta: #d98a6a;
+	--fp-saffron: #f0b452; /* marigold brightens after dark */
+	--fp-sage: #93bf83;
+	--fp-seine: #7d9bf0;
+	--fp-seine-light: #28315a;
+	--fp-seine-text: #a8bff2;
+	--fp-navy: #353160;
+	--fp-error: #e57373;
+	--fp-on-error: #16142b;
+	--fp-saffron-text: #f0b452; /* brightened fills already pass on night */
+	--fp-sage-text: #93bf83;
+
+	--fp-elevation-1: 0 1px 2px rgb(0 0 0 / 0.3), 0 1px 3px rgb(0 0 0 / 0.25);
+	--fp-elevation-2: 0 2px 4px rgb(0 0 0 / 0.3), 0 6px 16px rgb(0 0 0 / 0.35);
+	--fp-elevation-3: 0 4px 8px rgb(0 0 0 / 0.35), 0 16px 32px rgb(0 0 0 / 0.45);
+	--fp-hairline-color: color-mix(in srgb, var(--fp-ink) 18%, transparent);
+
+	--fp-border: color-mix(in srgb, var(--fp-ink) 18%, var(--fp-paper));
+	--fp-primary-hover: #f48ba0;
+	--fp-primary-foreground: #2b1020;
+	--fp-nav: rgb(33 30 61 / 0.92);
 }
 
 /* ── Exam-mode overrides ──                                                  */
-/* Phase 7 toggles `.fp-exam-mode` on <body>; defining the vars on a          */
+/* MockExamRunner toggles `.fp-exam-mode` on <body>; defining the vars on a   */
 /* standalone class (not :root&) lets them cascade from <body> to the         */
-/* exam subtree. The original `:root { &.fp-exam-mode }` compiled to          */
-/* `html.fp-exam-mode` and would never match the body-level class.            */
+/* exam subtree. Formal slate-indigo replaces the playful rose.               */
 .fp-exam-mode {
-	--fp-jaipur: #1f2a44;
-	--fp-paper: #fbf7ee;
-	--fp-font-display: 'Instrument Serif', Georgia, serif;
+	--fp-jaipur: #2e2b52;
+	--fp-primary: #2e2b52;
+	--fp-primary-hover: #232044;
+	--fp-paper: #fbf8f1;
+	--fp-font-display: 'Fraunces Variable', Georgia, serif;
+}
+.dark .fp-exam-mode {
+	--fp-jaipur: #9aa8e0;
+	--fp-primary: #9aa8e0;
+	--fp-primary-hover: #b3bfe9;
+	--fp-primary-foreground: #16142b;
+	--fp-paper: #211e3d;
 }
 
-/* ── Editorial type utilities (M2.5) ── */
+/* ── Editorial type utilities ── */
 .fp-display-lg {
 	font-family: var(--fp-font-display);
-	font-weight: 400;
+	font-weight: 460;
+	font-optical-sizing: auto;
 	font-size: clamp(2rem, 1.5rem + 2vw, 3.25rem);
 	line-height: 1.05;
 	letter-spacing: -0.01em;
 }
 .fp-display-md {
 	font-family: var(--fp-font-display);
-	font-weight: 400;
+	font-weight: 460;
+	font-optical-sizing: auto;
 	font-size: clamp(1.5rem, 1.25rem + 1vw, 2.25rem);
 	line-height: 1.1;
 	letter-spacing: -0.01em;
+}
+.fp-serif {
+	font-family: var(--fp-font-display);
 }
 .fp-quote-fr {
 	font-family: var(--fp-font-display);
@@ -96,6 +179,56 @@
 }
 .fp-hairline {
 	border: 0;
-	border-top: 1px solid var(--fp-ink);
-	opacity: 0.15;
+	border-top: 1px solid var(--fp-hairline-color);
+}
+
+/* ── Indic UI scripts ──                                                     */
+/* body reads --fp-font-ui, so the override has to be on the token, not on a  */
+/* competing html[lang] font-family rule. Latin stays Manrope; the script's   */
+/* glyphs come from the system Noto family (Android / Windows 11 ship them).  */
+/* ponytail: no bundled Indic fonts; add @fontsource lazily if phone QA shows */
+/* tofu. Glossed native text (--fp-font-hindi) follows the same script.      */
+html[lang='bn'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Bengali', system-ui, sans-serif;
+	--fp-font-hindi: 'Noto Serif Bengali', 'Noto Sans Bengali', serif;
+}
+html[lang='ta'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Tamil', system-ui, sans-serif;
+	--fp-font-hindi: 'Noto Serif Tamil', 'Noto Sans Tamil', serif;
+}
+html[lang='te'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Telugu', system-ui, sans-serif;
+	--fp-font-hindi: 'Noto Serif Telugu', 'Noto Sans Telugu', serif;
+}
+html[lang='kn'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Kannada', system-ui, sans-serif;
+	--fp-font-hindi: 'Noto Serif Kannada', 'Noto Sans Kannada', serif;
+}
+html[lang='gu'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Gujarati', system-ui, sans-serif;
+	--fp-font-hindi: 'Noto Serif Gujarati', 'Noto Sans Gujarati', serif;
+}
+html[lang='pa'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Gurmukhi', system-ui, sans-serif;
+	--fp-font-hindi: 'Noto Serif Gurmukhi', 'Noto Sans Gurmukhi', serif;
+}
+/* Devanagari (hi, mr): the bundled Tiro face serves glossed text; UI labels
+   fall back to the system Devanagari sans inside the Manrope stack. */
+html[lang='hi'],
+html[lang='mr'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Devanagari', system-ui, sans-serif;
+}
+/* Indic scripts carry taller ascenders/descenders than Latin. */
+html:is(
+		[lang='bn'],
+		[lang='ta'],
+		[lang='te'],
+		[lang='kn'],
+		[lang='gu'],
+		[lang='pa'],
+		[lang='hi'],
+		[lang='mr']
+	)
+	body {
+	line-height: 1.65;
 }

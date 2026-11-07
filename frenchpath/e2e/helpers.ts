@@ -34,22 +34,22 @@ async function stubAsrDefault(page: Page) {
 }
 
 /** Opens the home path map, completing multi-step onboarding if shown. */
-export async function gotoHome(page: Page) {
+export async function gotoHome(page: Page, overrides: Record<string, unknown> = {}) {
 	await stubAsrDefault(page);
 	await page.goto('/');
 	await expect(
 		page.getByTestId('onboarding-wizard').or(page.getByTestId('unit-card').first())
 	).toBeVisible({ timeout: 15_000 });
 	if (await page.getByTestId('onboarding-wizard').isVisible()) {
-		await skipOnboardingViaIdb(page);
+		await skipOnboardingViaIdb(page, overrides);
 		await page.reload();
 	}
 	await expect(page.getByTestId('unit-card').first()).toBeVisible({ timeout: 15_000 });
 }
 
 /** Seed onboarded settings for stable E2E (UI wizard tested separately). */
-export async function skipOnboardingViaIdb(page: Page) {
-	await page.evaluate(async () => {
+export async function skipOnboardingViaIdb(page: Page, overrides: Record<string, unknown> = {}) {
+	await page.evaluate(async (overrides) => {
 		const settings = {
 			uiLanguage: 'en',
 			targetRetention: 0.9,
@@ -68,7 +68,8 @@ export async function skipOnboardingViaIdb(page: Page) {
 			celebrationLevel: 'minimal',
 			syncEnabled: false,
 			revisionNotifications: false,
-			difficultyTier: 'easy'
+			difficultyTier: 'easy',
+			...overrides
 		};
 
 		const db = await new Promise<IDBDatabase>((resolve, reject) => {
@@ -96,7 +97,7 @@ export async function skipOnboardingViaIdb(page: Page) {
 			};
 			tx.onerror = () => reject(tx.error);
 		});
-	});
+	}, overrides);
 
 	await page.waitForFunction(async () => {
 		const db = await new Promise<IDBDatabase>((resolve, reject) => {
@@ -138,7 +139,8 @@ export async function completeOnboarding(page: Page) {
 	await expect(wizard.getByTestId('onboarding-start')).toBeVisible();
 	await wizard.getByTestId('onboarding-start').click();
 	await expect(page.getByTestId('onboarding-wizard')).not.toBeVisible({ timeout: 15_000 });
-	await expect(page.getByTestId('path-scene')).toBeVisible({ timeout: 15_000 });
+	// The wizard hands off straight into lesson 1 (intro screen).
+	await expect(page.getByTestId('start-lesson')).toBeVisible({ timeout: 15_000 });
 }
 
 /**
@@ -207,6 +209,47 @@ export async function completeLesson(page: Page) {
 	const dismiss = page.getByTestId('celebration-skip');
 	if (await dismiss.isVisible().catch(() => false)) {
 		await dismiss.click();
+	}
+}
+
+/** Grades every due review card (context card or flip card) until the done screen. */
+export async function reviewUntilDone(page: Page) {
+	const done = page.getByTestId('review-done');
+	const ctx = page.getByTestId('context-card');
+	const reveal = page.getByTestId('reveal');
+	const gotItBtn = page.getByTestId('leech-got-it');
+	await expect(ctx.or(reveal).or(done).or(gotItBtn).first()).toBeVisible();
+	while (!(await done.isVisible().catch(() => false))) {
+		if (await gotItBtn.isVisible().catch(() => false)) {
+			await gotItBtn.click();
+			await expect(gotItBtn).toBeHidden();
+			continue;
+		}
+		if (await ctx.isVisible().catch(() => false)) {
+			const typeInstead = page.getByTestId('speak-type-instead');
+			if (await typeInstead.isVisible().catch(() => false)) await typeInstead.click();
+			const recall = page.getByTestId('recall-input');
+			if (await recall.isVisible().catch(() => false)) {
+				await recall.fill('x');
+				await page.getByTestId('recall-check').click();
+				await page.getByTestId('continue').click();
+				await expect(page.getByTestId('continue')).toBeHidden();
+				await expect(ctx.or(reveal).or(done).or(gotItBtn).first()).toBeVisible();
+				continue;
+			}
+			const choices = page.getByTestId('context-choice');
+			await choices.first().click();
+			for (let i = 0; i < (await choices.count()); i++) {
+				await expect(choices.nth(i)).toBeDisabled();
+			}
+			await page.getByTestId('continue').click();
+			// grading is async: wait for the answered card to be replaced
+			await expect(page.getByTestId('continue')).toBeHidden();
+		} else {
+			await reveal.click();
+			await page.locator('[data-grade="good"]').click();
+		}
+		await expect(ctx.or(reveal).or(done).or(gotItBtn).first()).toBeVisible();
 	}
 }
 

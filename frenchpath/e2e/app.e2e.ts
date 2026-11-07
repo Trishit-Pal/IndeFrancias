@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { gotoHome, completeLesson } from './helpers';
+import { gotoHome, completeLesson, reviewUntilDone } from './helpers';
 
 test('learner can complete the A1 lesson and see a score', async ({ page }) => {
 	await gotoHome(page);
@@ -36,16 +36,59 @@ test('completed lesson seeds the SRS queue and reviews can be graded', async ({ 
 
 	await page.getByRole('link', { name: 'Review now' }).click();
 
-	const reveal = page.getByTestId('reveal');
 	const done = page.getByTestId('review-done');
-	await expect(reveal.or(done).first()).toBeVisible();
-
-	while (!(await done.isVisible().catch(() => false))) {
-		await reveal.click();
-		await page.locator('[data-grade="good"]').click();
-		await expect(reveal.or(done).first()).toBeVisible();
-	}
+	await reviewUntilDone(page);
 	await expect(done).toBeVisible();
+});
+
+test('double-clicking Continue grades the card exactly once and moves focus into the next card', async ({
+	page
+}) => {
+	await gotoHome(page);
+	await page.getByTestId('unit-card').first().click();
+	await page.getByTestId('start-lesson').click();
+	await completeLesson(page);
+	await page.getByRole('link', { name: 'Review now' }).click();
+
+	const ctx = page.getByTestId('context-card');
+	await expect(ctx.or(page.getByTestId('reveal')).first()).toBeVisible();
+	const total = Number(
+		(await page.getByText(/^\d+ \/ \d+ due$/).innerText()).match(/\/ (\d+)/)![1]
+	);
+	await expect(ctx).toBeVisible();
+	await page.getByTestId('context-choice').first().click();
+	// two synchronous clicks: a real dblclick can land after the first grade has already unmounted the card
+	await page.getByTestId('continue').evaluate((el: HTMLElement) => {
+		el.click();
+		el.click();
+	});
+	await expect(page.getByTestId('continue')).toBeHidden();
+	if (total > 1 && (await ctx.isVisible())) {
+		// the answered card unmounted; focus must land inside the new card, not <body>
+		await expect
+			.poll(() =>
+				page.evaluate(() => !!document.activeElement?.closest('[data-testid=context-card]'))
+			)
+			.toBe(true);
+	}
+	await reviewUntilDone(page);
+	await expect(page.getByTestId('review-summary-cards')).toHaveText(`Cards reviewed: ${total}`);
+
+	// a double grade also skips the next card, so row count alone can match: require one row per distinct card
+	const cardIds = await page.evaluate(
+		() =>
+			new Promise<string[]>((resolve, reject) => {
+				const open = indexedDB.open('frenchpath');
+				open.onerror = () => reject(open.error);
+				open.onsuccess = () => {
+					const req = open.result.transaction('reviewLog').objectStore('reviewLog').getAll();
+					req.onsuccess = () => resolve(req.result.map((r: { cardId: string }) => r.cardId));
+					req.onerror = () => reject(req.error);
+				};
+			})
+	);
+	expect(cardIds).toHaveLength(total);
+	expect(new Set(cardIds).size).toBe(total);
 });
 
 test('exposes an installable web manifest', async ({ page }) => {
@@ -140,6 +183,13 @@ test('UI language toggle switches the interface to Hindi', async ({ page }) => {
 });
 
 test('replaying a perfect lesson awards zero improvement XP', async ({ page }) => {
+	// completeLesson answers by position, and Matching/Reorder shuffle with
+	// Math.random — so the replay could out-score the first run (flaky). A
+	// constant Math.random makes Fisher-Yates yield the same order every time,
+	// so both runs score identically. Only those two shuffles use Math.random.
+	await page.addInitScript(() => {
+		Math.random = () => 0;
+	});
 	await gotoHome(page);
 	await page.getByTestId('unit-card').first().click();
 	await page.getByTestId('start-lesson').click();

@@ -60,8 +60,8 @@ export default defineConfig(({ mode }) => ({
 				description:
 					'Offline-first French learning for Indian learners (A1–C1) with spaced repetition. No account needed.',
 				lang: 'en',
-				theme_color: '#1d4ed8',
-				background_color: '#0b1220',
+				theme_color: '#faf7f0',
+				background_color: '#faf7f0',
 				display: 'standalone',
 				orientation: 'portrait',
 				start_url: '/',
@@ -89,6 +89,9 @@ export default defineConfig(({ mode }) => ({
 				// copy would always compare equal to itself (see updates.ts).
 				globIgnores: ['**/models/**', '**/version.json'],
 				navigateFallback: '/',
+				// `?mode=` must not defeat the precache match for /review (else the fallback serves Home);
+				// keep workbox's defaults too.
+				ignoreURLParametersMatching: [/^utm_/, /^fbclid$/, /^mode$/],
 				navigateFallbackDenylist: [/^\/manifest\.webmanifest$/],
 				runtimeCaching: [
 					{

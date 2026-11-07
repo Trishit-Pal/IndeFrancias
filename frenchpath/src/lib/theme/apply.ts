@@ -1,7 +1,7 @@
 import type { Theme } from '$lib/db/schema';
 
-const THEME_COLOR_LIGHT = '#2563eb';
-const THEME_COLOR_DARK = '#000000';
+const THEME_COLOR_LIGHT = '#faf7f0';
+const THEME_COLOR_DARK = '#16142b';
 
 /** Resolve whether the UI should render in dark mode. */
 export function isDarkTheme(theme: Theme): boolean {

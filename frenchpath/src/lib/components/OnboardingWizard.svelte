@@ -14,6 +14,7 @@
 	import { setLocale } from '$lib/paraglide/runtime';
 	import CharacterMira from './CharacterMira.svelte';
 	import CharacterCoco from './CharacterCoco.svelte';
+	import InfoBanner from './InfoBanner.svelte';
 
 	let {
 		onComplete,
@@ -99,13 +100,17 @@
 	}
 </script>
 
-<section
+<main
 	class="page-shell flex min-h-dvh flex-col justify-center py-8"
 	data-testid="onboarding-wizard"
 >
 	<div
 		class="mb-6 flex justify-center gap-1.5"
 		role="progressbar"
+		aria-label={m.onboarding_step_progress({
+			current: String(stepIndex + 1),
+			total: String(STEPS.length)
+		})}
 		aria-valuemin={1}
 		aria-valuemax={STEPS.length}
 		aria-valuenow={stepIndex + 1}
@@ -323,10 +328,7 @@
 					<div class="flex justify-center {reduceMotion ? '' : 'fp-confetti-lite'}">
 						<CharacterCoco size="xl" animate={!reduceMotion} level={1} />
 					</div>
-					<h2
-						class="mt-4 text-foreground"
-						style="font-family: var(--fp-font-display); font-size: 30px; font-weight: 400"
-					>
+					<h2 class="fp-serif mt-4 text-3xl font-normal text-foreground">
 						{m.onb_ready_title()}
 					</h2>
 					<p class="mt-2 text-muted">{m.onb_ready_desc()}</p>
@@ -343,10 +345,7 @@
 		</div>
 	{/key}
 
-	<p
-		class="mx-auto mt-6 max-w-lg rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-center text-xs text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200"
-		role="note"
-	>
+	<InfoBanner variant="note" role="note" class="fp-onb-beta mx-auto mt-6 max-w-lg text-center">
 		{m.onb_beta()}
-	</p>
-</section>
+	</InfoBanner>
+</main>

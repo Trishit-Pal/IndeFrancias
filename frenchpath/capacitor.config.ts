@@ -7,19 +7,19 @@ const config: CapacitorConfig = {
 	appId: 'app.frenchpath',
 	appName: 'FrenchPath',
 	webDir: 'build',
-	backgroundColor: '#E5DACF', // Grand Voyage canvas
+	backgroundColor: '#faf7f0', // --fp-canvas (light); the WebView repaints for dark once the app boots
 	android: {
-		backgroundColor: '#E5DACF'
+		backgroundColor: '#faf7f0'
 	},
 	ios: {
-		backgroundColor: '#E5DACF',
+		backgroundColor: '#faf7f0',
 		// App is fully on-device; default WKWebView is fine.
 		contentInset: 'always'
 	},
 	plugins: {
 		SplashScreen: {
 			launchShowDuration: 800,
-			backgroundColor: '#E5DACF',
+			backgroundColor: '#faf7f0',
 			showSpinner: false
 		}
 	}

@@ -8,16 +8,26 @@
 		regular: 'Regular',
 		hard: 'Hard'
 	};
-	const colors: Record<DifficultyTier, string> = {
-		easy: 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-200',
-		regular: 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200',
-		hard: 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-200'
+	// tint = the difficulty's accent token; the pill mixes it into the surface
+	// so it stays legible in both themes (see scoped styles).
+	const tint: Record<DifficultyTier, string> = {
+		easy: 'var(--fp-sage)',
+		regular: 'var(--fp-seine)',
+		hard: 'var(--fp-terracotta)'
 	};
 </script>
 
 <span
-	class="inline-flex rounded-full px-2 py-0.5 text-xs font-semibold {colors[tier]}"
+	class="fp-tier-badge inline-flex rounded-full px-2 py-0.5 text-xs font-semibold"
+	style="--tier: {tint[tier]}"
 	data-testid="tier-badge"
 >
 	{labels[tier]}
 </span>
+
+<style>
+	.fp-tier-badge {
+		background: color-mix(in srgb, var(--tier) 18%, var(--fp-paper));
+		color: color-mix(in srgb, var(--tier) 72%, var(--fp-ink));
+	}
+</style>

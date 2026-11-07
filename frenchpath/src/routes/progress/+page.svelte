@@ -10,11 +10,24 @@
 		assessmentsRepo,
 		settingsRepo
 	} from '$lib/db';
-	import type { AssessmentRecord, Skill, SkillProfileRecord } from '$lib/db/schema';
+	import type { AssessmentRecord, DailyStats, Skill, SkillProfileRecord } from '$lib/db/schema';
 	import { countDue } from '$lib/srs/queue';
+	import { listUnitSummaries } from '$lib/content/loader';
+	import { passedAssessmentIds } from '$lib/assessment/checkpoint';
+	import { computeUnitStates } from '$lib/lesson/progression';
+	import { dailyGoalProgress, type DailyGoal } from '$lib/gamification/activity';
+	import { buildTodayPlan, weakestSkill as pickWeakestSkill } from '$lib/gamification/todayPlan';
+	import type { Caps } from '$lib/gamification/todayPlan';
+	import TodayCard from '$lib/gamification/TodayCard.svelte';
+	import WeeklyPostcard from '$lib/gamification/WeeklyPostcard.svelte';
+	import { buildWeeklyRecap, weekStartMs, type WeeklyRecap } from '$lib/gamification/weeklyRecap';
+	import { getLogsSince } from '$lib/db/repositories/reviewLog';
+	import { loadCaps } from '$lib/srs/caps';
 	import { todayKey, lastNDayKeys } from '$lib/utils/date';
 	import { shareProgress } from '$lib/share/shareCard';
 	import CharacterCoco from '$lib/components/CharacterCoco.svelte';
+	import Icon from '$lib/components/Icon.svelte';
+	import type { IconName } from '$lib/components/icons';
 	import * as m from '$lib/paraglide/messages';
 
 	let streak = $state(0);
@@ -49,8 +62,15 @@
 		writing: 'var(--fp-saffron)'
 	};
 
-	// 12-week practice heatmap (GitHub-style) shading thresholds.
-	const HEAT_COLORS = ['#ede1cf', '#cfe0c2', '#9dbe85', '#5f8c46'];
+	// 12-week practice heatmap: a sage-growth ramp built from tokens with
+	// color-mix, so level 0 stays a faint neutral and 1–3 deepen toward sage —
+	// both themes adapt automatically (--fp-paper flips per theme).
+	const HEAT_COLORS = [
+		'color-mix(in srgb, var(--fp-ink) 7%, var(--fp-paper))',
+		'color-mix(in srgb, var(--fp-sage) 30%, var(--fp-paper))',
+		'color-mix(in srgb, var(--fp-sage) 58%, var(--fp-paper))',
+		'var(--fp-sage)'
+	];
 	function heatLevel(xp: number): number {
 		if (xp <= 0) return 0;
 		if (xp < 20) return 1;
@@ -63,13 +83,61 @@
 	const cocoXpPercent = $derived(((totalXp % 250) / 250) * 100);
 	const xpToNextLevel = $derived(cocoLevel >= 10 ? 0 : 250 - (totalXp % 250));
 
-	const weakestSkill = $derived(
-		[...skillProfiles].sort(
-			(a, b) =>
-				['A1', 'A2', 'B1', 'B2', 'C1'].indexOf(a.estimatedLevel) -
-				['A1', 'A2', 'B1', 'B2', 'C1'].indexOf(b.estimatedLevel)
-		)[0]
+	const weakestSkillName = $derived(pickWeakestSkill(skillProfiles));
+	const weakestSkill = $derived(skillProfiles.find((p) => p.skill === weakestSkillName));
+
+	// null = still loading. Caps can take up to 3 s (voicesReady), so the plan
+	// renders first with the uncapped focus mode and is rebuilt when caps arrive.
+	let caps = $state<Caps | null>(null);
+	let todayInputs = $state<{ goal: DailyGoal; nextUnitId: string | null } | null>(null);
+	const todayPlan = $derived(
+		todayInputs
+			? buildTodayPlan({
+					dueCount: due,
+					focusSkill: weakestSkillName,
+					caps: caps ?? { tts: true, asr: true },
+					goal: todayInputs.goal,
+					hasLessonsLeft: todayInputs.nextUnitId !== null
+				})
+			: null
 	);
+
+	let recap = $state<WeeklyRecap | null>(null);
+
+	async function loadRecap(allStats: DailyStats[], streakNow: number): Promise<void> {
+		const units = listUnitSummaries();
+		const unitIds = new Set(units.map((u) => u.id));
+		const [logs, progress] = await Promise.all([
+			getLogsSince(weekStartMs()),
+			progressRepo.getAllProgress()
+		]);
+		const weekKeys = new Set(lastNDayKeys(7));
+		recap = buildWeeklyRecap({
+			logs,
+			stats: allStats.filter((s) => weekKeys.has(s.date)),
+			streak: streakNow,
+			unitsDone: progress.filter((p) => p.status === 'completed' && unitIds.has(p.lessonId)).length,
+			unitsTotal: units.length
+		});
+	}
+
+	async function loadTodayInputs(): Promise<void> {
+		const units = listUnitSummaries();
+		const [goal, progress, passed] = await Promise.all([
+			dailyGoalProgress(),
+			progressRepo.getAllProgress(),
+			passedAssessmentIds()
+		]);
+		const states = computeUnitStates(
+			units,
+			Object.fromEntries(progress.map((p) => [p.lessonId, p])),
+			passed
+		);
+		todayInputs = {
+			goal,
+			nextUnitId: units.find((u) => states.get(u.id) === 'available')?.id ?? null
+		};
+	}
 
 	const examCountdown = $derived(() => {
 		if (!targetExamDate) return null;
@@ -108,16 +176,27 @@
 		totalXp = allStats.reduce((sum, s) => sum + (s.xp ?? 0), 0);
 		heatmap = lastNDayKeys(84).map((date) => ({ date, xp: statsByDate.get(date)?.xp ?? 0 }));
 		skillProfiles = await skillProfileRepo.getAllSkillProfiles();
+		try {
+			await loadTodayInputs();
+		} catch (err) {
+			console.error('Today card unavailable', err); // card stays hidden
+		}
+		try {
+			await loadRecap(allStats, streak);
+		} catch (err) {
+			console.error('Weekly postcard unavailable', err); // postcard stays hidden
+		}
+		void loadCaps().then((c) => (caps = c));
 	});
 
 	const maxWeekXp = $derived(Math.max(1, ...weekXp.map((d) => d.xp)));
 
-	const stats = $derived([
-		{ label: m.stat_streak(), value: streak, icon: '🔥' },
-		{ label: m.stat_xp(), value: todayXp, icon: '⭐' },
-		{ label: m.stat_lessons(), value: completed, icon: '✅' },
-		{ label: m.stat_cards(), value: totalCards, icon: '🧠' },
-		{ label: m.stat_due(), value: due, icon: '🔁' }
+	const stats: { label: string; value: number; icon: IconName; tint: string }[] = $derived([
+		{ label: m.stat_streak(), value: streak, icon: 'flame', tint: 'var(--fp-saffron)' },
+		{ label: m.stat_xp(), value: todayXp, icon: 'spark', tint: 'var(--fp-saffron)' },
+		{ label: m.stat_lessons(), value: completed, icon: 'check', tint: 'var(--fp-sage)' },
+		{ label: m.stat_cards(), value: totalCards, icon: 'cards', tint: 'var(--fp-seine)' },
+		{ label: m.stat_due(), value: due, icon: 'review', tint: 'var(--fp-jaipur)' }
 	]);
 
 	function assessmentLabel(a: AssessmentRecord): string {
@@ -155,6 +234,14 @@
 		</p>
 	{/if}
 
+	{#if todayPlan && todayInputs}
+		<div class="mt-5"><TodayCard plan={todayPlan} nextUnitId={todayInputs.nextUnitId} /></div>
+	{/if}
+
+	{#if recap}
+		<div class="mt-5"><WeeklyPostcard {recap} /></div>
+	{/if}
+
 	<div class="mt-5 lg:grid lg:grid-cols-3 lg:gap-6">
 		<section class="surface-card p-4 lg:col-span-2" aria-label={m.progress_xp_chart()}>
 			<h2 class="text-sm font-semibold text-balance text-foreground">{m.progress_xp_chart()}</h2>
@@ -166,7 +253,7 @@
 				{#each weekXp as day (day.label)}
 					<div class="flex flex-1 flex-col items-center gap-1">
 						<div
-							class="fp-progress-fill w-full max-w-10 rounded-t bg-primary"
+							class="fp-progress-fill w-full max-w-10 rounded-t bg-saffron"
 							style="height: {Math.max(4, (day.xp / maxWeekXp) * 120)}px"
 							title="{day.xp} XP"
 							role="img"
@@ -185,10 +272,12 @@
 			<div class="surface-card p-4">
 				<p class="text-sm text-muted">{m.progress_longest_streak()}</p>
 				<p
-					class="fp-figure mt-1 text-2xl font-bold text-orange-700 dark:text-orange-400"
+					class="fp-figure mt-1 flex items-center gap-1.5 text-2xl font-bold"
+					style="color: var(--fp-saffron-text)"
 					data-testid="longest-streak"
 				>
-					🔥 {longestStreak}
+					<Icon name="flame" size={22} />
+					{longestStreak}
 				</p>
 			</div>
 			<div class="surface-card p-4">
@@ -225,8 +314,10 @@
 	<ul class="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
 		{#each stats as stat (stat.label)}
 			<li class="fp-stat-card">
-				<span class="text-xl md:text-2xl">{stat.icon}</span>
-				<span class="fp-stat-num" style="font-family: var(--fp-font-display)">{stat.value}</span>
+				<span class="fp-stat-icon" style="color: {stat.tint}"
+					><Icon name={stat.icon} size={20} /></span
+				>
+				<span class="fp-stat-num fp-serif">{stat.value}</span>
 				<span class="fp-stat-lbl">{stat.label}</span>
 			</li>
 		{/each}
@@ -278,11 +369,13 @@
 							</div>
 							<div
 								class="mt-1 h-2.5 overflow-hidden rounded-full"
-								style="border: 1.5px solid var(--fp-ink); background: var(--fp-paper-warm)"
+								style="border: 1px solid var(--fp-border); background: var(--fp-paper-warm)"
 							>
 								<div
 									class="fp-progress-fill h-full rounded-full"
 									role="progressbar"
+									aria-label={skillLabel(profile.skill)}
+									aria-valuetext={profile.estimatedLevel}
 									aria-valuenow={pct}
 									aria-valuemin={0}
 									aria-valuemax={100}
@@ -314,9 +407,7 @@
 
 	<section class="mt-5 grid gap-5 lg:grid-cols-3">
 		<div class="surface-card p-4 lg:col-span-2">
-			<h2 class="text-lg text-balance" style="font-family: var(--fp-font-display)">
-				Activité · 12 semaines
-			</h2>
+			<h2 class="fp-serif text-lg text-balance">Activité · 12 semaines</h2>
 			<div class="fp-heatmap mt-3" role="img" aria-label="Practice activity, last 84 days">
 				{#each heatmap as cell (cell.date)}
 					<span
@@ -330,20 +421,37 @@
 
 		<div class="surface-card p-4 text-center">
 			<CharacterCoco size="lg" level={cocoLevel} animate={true} />
-			<p class="text-lg" style="font-family: var(--fp-font-display)">Coco · Niveau {cocoLevel}</p>
+			<p class="fp-serif mt-2 text-lg">{m.home_coco_level({ level: String(cocoLevel) })}</p>
 			<div class="fp-progress-bar mt-2">
 				<div
 					class="fp-progress-fill"
 					role="progressbar"
+					aria-label={m.home_coco_level({ level: String(cocoLevel) })}
 					aria-valuenow={cocoXpPercent}
 					aria-valuemin={0}
 					aria-valuemax={100}
 					style="width: {cocoXpPercent}%"
 				></div>
 			</div>
-			<p class="mt-1.5 text-xs text-muted" style="font-family: var(--fp-font-mono)">
-				{#if cocoLevel < 10}{xpToNextLevel} XP → Niveau {cocoLevel + 1}{:else}Niveau max ⭐{/if}
+			<p class="fp-figure mt-1.5 text-xs text-muted">
+				{#if cocoLevel < 10}{m.progress_xp_to_next({
+						xp: String(xpToNextLevel),
+						level: String(cocoLevel + 1)
+					})}{:else}{m.progress_level_max()}{/if}
 			</p>
 		</div>
 	</section>
 </main>
+
+<style>
+	/* Tinted glyph badge atop each stat card. */
+	.fp-stat-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 34px;
+		height: 34px;
+		border-radius: var(--fp-r-sm);
+		background: color-mix(in srgb, currentColor 14%, transparent);
+	}
+</style>

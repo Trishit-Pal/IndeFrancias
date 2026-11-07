@@ -6,6 +6,7 @@
 	// per-word timer paced by the user's configured speech rate.
 	import { onMount } from 'svelte';
 	import { speakFrench, stopSpeaking, getConfiguredRate } from '$lib/audio/tts';
+	import IconButton from '$lib/components/IconButton.svelte';
 	import * as m from '$lib/paraglide/messages';
 
 	let { audioText }: { audioText: string } = $props();
@@ -88,26 +89,20 @@
 <div class="space-y-2">
 	<p class="text-sm text-muted">{m.shadow_hint()}</p>
 	<div class="flex items-center gap-2">
-		<button
-			type="button"
-			class="min-h-11 rounded-full border border-border px-4 py-2 hover:border-primary"
-			aria-pressed={playing}
+		<IconButton
+			icon={playing ? 'pause' : 'play'}
+			label={playing ? m.shadow_stop() : m.shadow_start()}
+			pressed={playing}
+			testid="shadow-play"
 			onclick={toggle}
-			data-testid="shadow-play"
-		>
-			{playing ? m.shadow_stop() : m.shadow_start()}
-		</button>
-		<button
-			type="button"
-			class="min-h-11 rounded-full border px-3 py-2 text-sm {loop
-				? 'border-primary text-primary'
-				: 'border-border'}"
-			aria-pressed={loop}
+		/>
+		<IconButton
+			icon="loop"
+			label={`🔁 ${m.shadow_loop()}`}
+			pressed={loop}
+			testid="shadow-loop"
 			onclick={() => (loop = !loop)}
-			data-testid="shadow-loop"
-		>
-			🔁 {m.shadow_loop()}
-		</button>
+		/>
 	</div>
 	<div
 		class="fp-shadow-transcript flex flex-wrap gap-1 rounded-lg bg-subtle px-3 py-2"

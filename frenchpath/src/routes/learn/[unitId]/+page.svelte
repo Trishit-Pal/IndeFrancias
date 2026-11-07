@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+	import { beforeNavigate, goto } from '$app/navigation';
+	import { tick } from 'svelte';
+	import { tapHaptic } from '$lib/platform/haptics';
 	import { loadUnit, listUnitSummaries, buildLessonLexicon } from '$lib/content/loader';
 	import GlossMarkdown from '$lib/components/GlossMarkdown.svelte';
 	import type { Unit } from '$lib/content/schema';
@@ -26,6 +29,7 @@
 	import LessonShell from '$lib/components/LessonShell.svelte';
 	import ExerciseChrome from '$lib/components/ExerciseChrome.svelte';
 	import LessonComplete from '$lib/components/LessonComplete.svelte';
+	import Modal from '$lib/components/Modal.svelte';
 	import CharacterLeo from '$lib/components/CharacterLeo.svelte';
 	import CharacterMira from '$lib/components/CharacterMira.svelte';
 	import { fly, fade } from 'svelte/transition';
@@ -117,11 +121,53 @@
 		void loadLesson(unitId);
 	});
 
+	let showExitConfirm = $state(false);
+	/** Where a confirmed exit goes: the tab the learner tapped, or home from the close glyph. */
+	let exitTarget = $state<string | null>(null);
+	let leaving = false;
+	const hasProgress = () => index > 0 || response !== null || submitted;
+
+	/** Exit control: leave at once if nothing has been attempted, otherwise confirm. */
+	function requestExit() {
+		exitTarget = null;
+		if (hasProgress()) showExitConfirm = true;
+		else void goto(resolve('/'));
+	}
+
+	function confirmExit() {
+		leaving = true;
+		// exitTarget is the pathname SvelteKit handed us in beforeNavigate (already app-resolved).
+		// eslint-disable-next-line svelte/no-navigation-without-resolve
+		void goto(exitTarget ?? resolve('/'));
+	}
+
+	// The global tab bar and the browser's back button stay live during a lesson;
+	// route every mid-lesson departure through the same confirm as the close glyph.
+	beforeNavigate((navigation) => {
+		if (leaving || phase !== 'exercise' || !hasProgress()) return;
+		if (navigation.type === 'leave') return; // tab close / reload: the browser owns that prompt
+		navigation.cancel();
+		exitTarget = navigation.to?.url.pathname ?? null;
+		showExitConfirm = true;
+	});
+
+	/** After grading, focus the feedback so a reflex second Enter can't skip past it. */
+	let feedbackEl = $state<HTMLElement | null>(null);
+
+	/** Enter inside the exercise form submits the answer, or continues once graded. */
+	function onAnswerSubmit(event: SubmitEvent) {
+		event.preventDefault();
+		if (submitted) void advance();
+		else if (response !== null) check();
+	}
+
 	function check() {
 		if (!current || !response) return;
 		correct = gradeExercise(current, response);
 		if (correct) correctCount += 1;
 		submitted = true;
+		void tapHaptic();
+		void tick().then(() => feedbackEl?.focus({ preventScroll: true }));
 		rubricHints =
 			(response.type === 'cloze' || response.type === 'translation') && !correct
 				? evaluateRubric(response.text, current, nativeLanguage)
@@ -136,14 +182,12 @@
 	function hintForExercise(ex: typeof current): string | null {
 		if (!ex) return null;
 		if ('hint' in ex && ex.hint) return ex.hint;
-		if (ex.type === 'mcq')
-			return ex.explanation ?? 'Eliminate options that do not fit the grammar rule.';
-		if (ex.type === 'cloze' || ex.type === 'dictation')
-			return 'Think about the vocabulary from this unit.';
-		if (ex.type === 'translation') return 'Use words you learned in this lesson.';
-		if (ex.type === 'conjugation') return `Recall the conjugation pattern for « ${ex.verb} ».`;
-		if (ex.type === 'gender') return 'Masculine nouns often take le/un; feminine take la/une.';
-		return 'Review the bridge note and new words before answering.';
+		if (ex.type === 'mcq') return ex.explanation ?? m.hint_fallback_mcq();
+		if (ex.type === 'cloze' || ex.type === 'dictation') return m.hint_fallback_vocab();
+		if (ex.type === 'translation') return m.hint_fallback_translation();
+		if (ex.type === 'conjugation') return m.hint_fallback_conjugation({ verb: ex.verb });
+		if (ex.type === 'gender') return m.hint_fallback_gender();
+		return m.hint_fallback_default();
 	}
 
 	function applyHint() {
@@ -195,6 +239,13 @@
 			{ unitId: unit!.id, index, choice }
 		].slice(-20);
 		await settingsRepo.saveSettings({ confidenceSnapshots: snapshots });
+		await dismissConfidence();
+	}
+
+	/** Escape / backdrop: skip the question without recording a snapshot. */
+	async function dismissConfidence() {
+		showConfidencePulse = false;
+		confidenceAnswered = true;
 		if (pendingAdvance) {
 			pendingAdvance = false;
 			await continueAdvance();
@@ -208,9 +259,7 @@
 	{#if phase === 'loading'}
 		<p class="text-muted">{m.lesson_loading()}</p>
 	{:else if phase === 'error'}
-		<div
-			class="rounded-xl border border-red-300 bg-red-50 p-4 text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200"
-		>
+		<div class="rounded-xl border border-error bg-error/10 p-4 text-foreground">
 			<p class="font-semibold">Could not load the lesson</p>
 			<p class="text-sm">{errorMessage}</p>
 			<a class="mt-3 inline-block text-primary underline" href={resolve('/')}>Back to home</a>
@@ -228,9 +277,7 @@
 		</div>
 	{:else if phase === 'intro' && unit}
 		<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
-		<span
-			class="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-800 dark:bg-blue-950 dark:text-blue-200"
-		>
+		<span class="fp-skill-chip ml-2 rounded-full px-2 py-0.5 text-xs font-semibold uppercase">
 			{unit.cefrLevel}
 		</span>
 		<h1 class="mt-2 text-2xl font-bold text-foreground md:text-3xl">{unit.title}</h1>
@@ -244,10 +291,11 @@
 
 		{#if unit.bridge && bridgeCopy}
 			<section
-				class="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4 dark:border-amber-700 dark:bg-amber-950"
+				class="mt-5 rounded-xl border p-4 text-foreground"
+				style="border-color: color-mix(in srgb, var(--fp-saffron) 45%, var(--fp-paper)); background: color-mix(in srgb, var(--fp-saffron) 12%, var(--fp-paper));"
 			>
-				<h2 class="font-semibold text-amber-900 dark:text-amber-200">🌉 {bridgeCopy.title}</h2>
-				<p class="mt-1 text-sm text-amber-900 dark:text-amber-200">
+				<h2 class="font-semibold">🌉 {bridgeCopy.title}</h2>
+				<p class="mt-1 text-sm">
 					<GlossMarkdown text={bridgeCopy.body} {lexicon} />
 				</p>
 			</section>
@@ -327,7 +375,7 @@
 			{/each}
 		</ul>
 		{#if bridgeQuizSubmitted && !bridgeCorrect}
-			<p class="mt-3 text-sm text-red-700 dark:text-red-300" role="alert">{m.lesson_try_again()}</p>
+			<p class="mt-3 text-sm text-error" role="alert">{m.lesson_try_again()}</p>
 		{/if}
 		<button
 			type="button"
@@ -339,81 +387,103 @@
 			{m.lesson_continue_exercises()}
 		</button>
 	{:else if phase === 'exercise' && current && unit}
-		<LessonShell {progress} {reducedMotion} current={index + 1} {total}>
+		<LessonShell {progress} current={index + 1} {total} onExit={requestExit}>
 			<ExerciseChrome
 				{unit}
 				exercise={current}
-				{index}
-				{total}
 				hintsRemaining={MAX_LESSON_HINTS - hintsUsed}
 				onHint={applyHint}
 				hintDisabled={submitted || hintsUsed >= MAX_LESSON_HINTS}
 			/>
 
-			<div class="grid grid-cols-1 grid-rows-1">
-				{#key current.id}
-					<div
-						class="surface-card col-start-1 row-start-1 p-4"
-						in:fly={{ x: 20, duration: reducedMotion ? 0 : 300 }}
-					>
-						<Exercise
-							exercise={current}
-							bind:response
-							{submitted}
-							{hintText}
-							{lexicon}
-							coachNote={current.coachNote ?? null}
-						/>
-					</div>
-				{/key}
-			</div>
-
-			{#if submitted}
-				<div
-					transition:fade={{ duration: reducedMotion ? 0 : 200 }}
-					class="mt-5 flex items-start gap-3 rounded-2xl p-3 text-sm font-medium {correct
-						? 'feedback-correct animate-scale-in fp-feedback-pulse'
-						: 'feedback-incorrect animate-shake'}"
-					style="border: 2px solid var(--fp-ink)"
-					data-testid="feedback"
-					role="status"
-					aria-live="polite"
-				>
-					{#if correct}
-						<CharacterLeo size="sm" animate={!reducedMotion} />
-					{:else}
-						<CharacterMira size="sm" animate={!reducedMotion} />
-					{/if}
-					<div class="flex flex-col gap-2">
-						<span>{correct ? m.lesson_correct() : m.lesson_incorrect()}</span>
-						{#each rubricHints as h (h.ruleId)}
-							<p class="fp-rubric-hint" data-testid="rubric-hint" aria-live="polite">
-								<span class="fp-rubric-hint__label">{m.rubric_hint_label()}</span>
-								{h.hint}
-							</p>
-						{/each}
-					</div>
+			<!-- One form so Enter in any input submits (check) or continues once graded. -->
+			<form onsubmit={onAnswerSubmit}>
+				<div class="grid grid-cols-1 grid-rows-1">
+					{#key current.id}
+						<div
+							class="surface-card col-start-1 row-start-1 p-4"
+							in:fly={{ x: 20, duration: reducedMotion ? 0 : 300 }}
+						>
+							<Exercise
+								exercise={current}
+								bind:response
+								{submitted}
+								{hintText}
+								{lexicon}
+								coachNote={current.coachNote ?? null}
+							/>
+						</div>
+					{/key}
 				</div>
-				<button
-					type="button"
-					class="btn-primary mt-4 w-full"
-					data-testid="continue"
-					onclick={advance}
-				>
-					{index + 1 < total ? m.lesson_continue() : m.lesson_finish()}
-				</button>
-			{:else}
-				<button
-					type="button"
-					class="btn-primary mt-6 w-full"
-					data-testid="check"
-					disabled={response === null}
-					onclick={check}
-				>
-					{m.lesson_check()}
-				</button>
-			{/if}
+
+				{#if submitted}
+					<div
+						transition:fade={{ duration: reducedMotion ? 0 : 200 }}
+						class="mt-5 flex items-start gap-3 rounded-2xl p-3 text-sm font-medium outline-none {correct
+							? 'feedback-correct animate-scale-in fp-feedback-pulse'
+							: 'feedback-incorrect animate-shake'}"
+						data-testid="feedback"
+						role="status"
+						aria-live="polite"
+						tabindex="-1"
+						bind:this={feedbackEl}
+					>
+						{#if correct}
+							<CharacterLeo size="sm" animate={!reducedMotion} />
+						{:else}
+							<CharacterMira size="sm" animate={!reducedMotion} />
+						{/if}
+						<div class="flex flex-col gap-2">
+							<span>{correct ? m.lesson_correct() : m.lesson_incorrect()}</span>
+							{#each rubricHints as h (h.ruleId)}
+								<p class="fp-rubric-hint" data-testid="rubric-hint" aria-live="polite">
+									<span class="fp-rubric-hint__label">{m.rubric_hint_label()}</span>
+									{h.hint}
+								</p>
+							{/each}
+						</div>
+					</div>
+					<button type="submit" class="btn-primary mt-4 w-full" data-testid="continue">
+						{index + 1 < total ? m.lesson_continue() : m.lesson_finish()}
+					</button>
+				{:else}
+					<button
+						type="submit"
+						class="btn-primary mt-6 w-full"
+						data-testid="check"
+						disabled={response === null}
+					>
+						{m.lesson_check()}
+					</button>
+				{/if}
+			</form>
 		</LessonShell>
+
+		<Modal
+			open={showExitConfirm}
+			labelledby="lesson-exit-title"
+			testid="lesson-exit-confirm"
+			onClose={() => (showExitConfirm = false)}
+		>
+			<h2 id="lesson-exit-title" class="text-lg font-semibold text-foreground">
+				{m.lesson_exit_title()}
+			</h2>
+			<p class="mt-2 text-sm text-muted">{m.lesson_exit_body()}</p>
+			<div class="mt-5 flex flex-wrap justify-end gap-2">
+				<button
+					type="button"
+					class="btn-secondary text-sm"
+					data-testid="lesson-exit-stay"
+					onclick={() => (showExitConfirm = false)}>{m.lesson_exit_stay()}</button
+				>
+				<button
+					type="button"
+					class="btn-primary text-sm"
+					data-testid="lesson-exit-leave"
+					onclick={confirmExit}>{m.lesson_exit_confirm()}</button
+				>
+			</div>
+		</Modal>
 	{:else if phase === 'finished'}
 		<LessonComplete
 			{score}
@@ -431,40 +501,40 @@
 	{/if}
 </main>
 
-{#if showConfidencePulse}
-	<div
-		class="fixed inset-0 z-40 flex items-end justify-center bg-black/40 p-4 sm:items-center"
-		role="dialog"
-		aria-labelledby="confidence-title"
-		data-testid="confidence-pulse"
-	>
-		<div class="surface-card w-full max-w-sm p-5 text-center">
-			<h2 id="confidence-title" class="text-lg font-semibold text-foreground">
-				{m.confidence_pulse_title()}
-			</h2>
-			<div class="mt-4 grid grid-cols-3 gap-2">
-				<button
-					type="button"
-					class="btn-secondary text-sm"
-					data-testid="confidence-low"
-					onclick={() => answerConfidence('low')}>{m.confidence_low()}</button
-				>
-				<button
-					type="button"
-					class="btn-primary text-sm"
-					data-testid="confidence-ok"
-					onclick={() => answerConfidence('ok')}>{m.confidence_ok()}</button
-				>
-				<button
-					type="button"
-					class="btn-secondary text-sm"
-					data-testid="confidence-high"
-					onclick={() => answerConfidence('high')}>{m.confidence_high()}</button
-				>
-			</div>
+<!-- Mid-lesson confidence pulse on the shared native <dialog>: focus is trapped,
+     Escape and backdrop clicks skip the question (no snapshot recorded). -->
+<Modal
+	open={showConfidencePulse}
+	labelledby="confidence-title"
+	testid="confidence-pulse"
+	onClose={() => void dismissConfidence()}
+>
+	<div class="text-center">
+		<h2 id="confidence-title" class="text-lg font-semibold text-foreground">
+			{m.confidence_pulse_title()}
+		</h2>
+		<div class="mt-4 grid grid-cols-3 gap-2">
+			<button
+				type="button"
+				class="btn-secondary text-sm"
+				data-testid="confidence-low"
+				onclick={() => answerConfidence('low')}>{m.confidence_low()}</button
+			>
+			<button
+				type="button"
+				class="btn-primary text-sm"
+				data-testid="confidence-ok"
+				onclick={() => answerConfidence('ok')}>{m.confidence_ok()}</button
+			>
+			<button
+				type="button"
+				class="btn-secondary text-sm"
+				data-testid="confidence-high"
+				onclick={() => answerConfidence('high')}>{m.confidence_high()}</button
+			>
 		</div>
 	</div>
-{/if}
+</Modal>
 
 {#if xpFloat > 0}
 	<XpFloat amount={xpFloat} />

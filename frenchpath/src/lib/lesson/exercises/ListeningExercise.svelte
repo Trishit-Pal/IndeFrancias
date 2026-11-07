@@ -6,7 +6,9 @@
 	import type { Lexicon } from '$lib/content/lexicon';
 	import GlossText from '$lib/components/GlossText.svelte';
 	import ShadowingPlayer from '$lib/lesson/ShadowingPlayer.svelte';
+	import IconButton from '$lib/components/IconButton.svelte';
 	import * as m from '$lib/paraglide/messages';
+	import Icon from '$lib/components/Icon.svelte';
 
 	let {
 		exercise,
@@ -41,17 +43,16 @@
 				class="rounded-full border border-border px-4 py-2 hover:border-primary"
 				onclick={() => speakFrench(exercise.audioText)}
 			>
-				🔊 Play passage
+				<Icon name="speaker" size={16} />
+				{m.audio_play_passage()}
 			</button>
-			<button
-				type="button"
-				class="min-h-11 rounded-full border border-border px-4 py-2 hover:border-primary"
-				aria-pressed={showShadow}
+			<IconButton
+				icon="mic"
+				label={m.shadow_practice()}
+				pressed={showShadow}
+				testid="shadow-toggle"
 				onclick={() => (showShadow = !showShadow)}
-				data-testid="shadow-toggle"
-			>
-				{m.shadow_start()}
-			</button>
+			/>
 		</div>
 		{#if showShadow}
 			<ShadowingPlayer audioText={exercise.audioText} />
@@ -78,7 +79,7 @@
 	/>
 	{#if submitted && !isCorrect}
 		<p class="text-sm">
-			Correct: <span class="text-green-700 dark:text-green-400">{exercise.answer}</span>
+			Correct: <span class="text-sage-text">{exercise.answer}</span>
 		</p>
 	{/if}
 </div>

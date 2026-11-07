@@ -19,3 +19,8 @@ export async function countReviews(): Promise<number> {
 export async function getAllReviewLogs(): Promise<ReviewLogRecord[]> {
 	return (await getDB()).getAll('reviewLog');
 }
+
+/** Read-only: logs with `ts` at or after the bound (uses the `ts` index). */
+export async function getLogsSince(ts: number): Promise<ReviewLogRecord[]> {
+	return (await getDB()).getAllFromIndex('reviewLog', 'ts', IDBKeyRange.lowerBound(ts));
+}
