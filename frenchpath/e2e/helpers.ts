@@ -139,7 +139,8 @@ export async function completeOnboarding(page: Page) {
 	await expect(wizard.getByTestId('onboarding-start')).toBeVisible();
 	await wizard.getByTestId('onboarding-start').click();
 	await expect(page.getByTestId('onboarding-wizard')).not.toBeVisible({ timeout: 15_000 });
-	await expect(page.getByTestId('path-scene')).toBeVisible({ timeout: 15_000 });
+	// The wizard hands off straight into lesson 1 (intro screen).
+	await expect(page.getByTestId('start-lesson')).toBeVisible({ timeout: 15_000 });
 }
 
 /**

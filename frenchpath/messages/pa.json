@@ -58,6 +58,8 @@
 	"grade_easy": "Easy",
 	"home_subtitle": "French for Indian learners · A1 → C1",
 	"home_daily_goal": "Daily goal",
+	"progress_xp_to_next": "{xp} XP to Level {level}",
+	"progress_level_max": "Top level reached",
 	"voyage_here": "You are here",
 	"voyage_done": "Complete",
 	"voyage_ahead": "Ahead",

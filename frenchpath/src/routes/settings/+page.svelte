@@ -849,13 +849,40 @@
 			</Modal>
 
 			{#if message}
-				<p class="text-sm text-muted" role="alert" data-testid="settings-message">{message}</p>
+				<!-- Sticky so feedback is visible next to whatever control triggered it, not at the page foot. -->
+				<div class="fp-settings-feedback">
+					<p class="text-sm text-foreground" role="alert" data-testid="settings-message">
+						{message}
+					</p>
+				</div>
 			{/if}
+		</div>
+	{:else}
+		<div class="mt-5 space-y-6" aria-busy="true">
+			<p class="sr-only" role="status">{m.common_loading()}</p>
+			<div class="fp-skeleton h-40 w-full"></div>
+			<div class="fp-skeleton h-28 w-full"></div>
+			<div class="fp-skeleton h-28 w-full"></div>
 		</div>
 	{/if}
 </main>
 
 <style>
+	.fp-settings-feedback {
+		position: sticky;
+		bottom: calc(5.5rem + env(safe-area-inset-bottom));
+		z-index: 5;
+		padding: 10px 14px;
+		background: var(--fp-paper);
+		border: 1px solid var(--fp-border);
+		border-radius: var(--fp-r-md);
+		box-shadow: var(--fp-elevation-2);
+	}
+	@media (min-width: 1024px) {
+		.fp-settings-feedback {
+			bottom: 1rem;
+		}
+	}
 	/* Danger zone — error token instead of raw red scale, themed both ways. */
 	.fp-danger-zone {
 		border: 1px solid color-mix(in srgb, var(--fp-error) 40%, transparent);

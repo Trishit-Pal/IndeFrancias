@@ -58,6 +58,8 @@
 	"grade_easy": "आसान",
 	"home_subtitle": "भारतीय शिक्षार्थियों के लिए फ़्रेंच · A1 → C1",
 	"home_daily_goal": "रोज़ का लक्ष्य",
+	"progress_xp_to_next": "स्तर {level} तक {xp} XP",
+	"progress_level_max": "अधिकतम स्तर पर",
 	"voyage_here": "आप यहाँ हैं",
 	"voyage_done": "पूर्ण",
 	"voyage_ahead": "आगे",

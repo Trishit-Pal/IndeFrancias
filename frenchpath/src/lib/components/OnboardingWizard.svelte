@@ -100,7 +100,7 @@
 	}
 </script>
 
-<section
+<main
 	class="page-shell flex min-h-dvh flex-col justify-center py-8"
 	data-testid="onboarding-wizard"
 >
@@ -328,10 +328,7 @@
 					<div class="flex justify-center {reduceMotion ? '' : 'fp-confetti-lite'}">
 						<CharacterCoco size="xl" animate={!reduceMotion} level={1} />
 					</div>
-					<h2
-						class="mt-4 text-foreground"
-						style="font-family: var(--fp-font-display); font-size: 30px; font-weight: 400"
-					>
+					<h2 class="fp-serif mt-4 text-3xl font-normal text-foreground">
 						{m.onb_ready_title()}
 					</h2>
 					<p class="mt-2 text-muted">{m.onb_ready_desc()}</p>
@@ -351,4 +348,4 @@
 	<InfoBanner variant="note" role="note" class="fp-onb-beta mx-auto mt-6 max-w-lg text-center">
 		{m.onb_beta()}
 	</InfoBanner>
-</section>
+</main>

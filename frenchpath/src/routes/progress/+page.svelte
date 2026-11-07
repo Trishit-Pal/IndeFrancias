@@ -317,7 +317,7 @@
 				<span class="fp-stat-icon" style="color: {stat.tint}"
 					><Icon name={stat.icon} size={20} /></span
 				>
-				<span class="fp-stat-num" style="font-family: var(--fp-font-display)">{stat.value}</span>
+				<span class="fp-stat-num fp-serif">{stat.value}</span>
 				<span class="fp-stat-lbl">{stat.label}</span>
 			</li>
 		{/each}
@@ -407,9 +407,7 @@
 
 	<section class="mt-5 grid gap-5 lg:grid-cols-3">
 		<div class="surface-card p-4 lg:col-span-2">
-			<h2 class="text-lg text-balance" style="font-family: var(--fp-font-display)">
-				Activité · 12 semaines
-			</h2>
+			<h2 class="fp-serif text-lg text-balance">Activité · 12 semaines</h2>
 			<div class="fp-heatmap mt-3" role="img" aria-label="Practice activity, last 84 days">
 				{#each heatmap as cell (cell.date)}
 					<span
@@ -423,22 +421,23 @@
 
 		<div class="surface-card p-4 text-center">
 			<CharacterCoco size="lg" level={cocoLevel} animate={true} />
-			<p class="mt-2 text-lg" style="font-family: var(--fp-font-display)">
-				Coco · Niveau {cocoLevel}
-			</p>
+			<p class="fp-serif mt-2 text-lg">{m.home_coco_level({ level: String(cocoLevel) })}</p>
 			<div class="fp-progress-bar mt-2">
 				<div
 					class="fp-progress-fill"
 					role="progressbar"
-					aria-label="Coco · Niveau {cocoLevel}"
+					aria-label={m.home_coco_level({ level: String(cocoLevel) })}
 					aria-valuenow={cocoXpPercent}
 					aria-valuemin={0}
 					aria-valuemax={100}
 					style="width: {cocoXpPercent}%"
 				></div>
 			</div>
-			<p class="mt-1.5 text-xs text-muted" style="font-family: var(--fp-font-mono)">
-				{#if cocoLevel < 10}{xpToNextLevel} XP → Niveau {cocoLevel + 1}{:else}Niveau max ⭐{/if}
+			<p class="fp-figure mt-1.5 text-xs text-muted">
+				{#if cocoLevel < 10}{m.progress_xp_to_next({
+						xp: String(xpToNextLevel),
+						level: String(cocoLevel + 1)
+					})}{:else}{m.progress_level_max()}{/if}
 			</p>
 		</div>
 	</section>

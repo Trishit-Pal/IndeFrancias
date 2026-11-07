@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
+	import { goto } from '$app/navigation';
 	import { listUnitSummaries } from '$lib/content/loader';
 	import { progressRepo, streakRepo, settingsRepo, skillProfileRepo } from '$lib/db';
 	import type { ProgressRecord } from '$lib/db/schema';
@@ -162,6 +163,11 @@
 		await settingsRepo.saveSettings(profile);
 		goal = await dailyGoalProgress();
 		void ensurePersistence();
+		// Hand off straight into the first lesson: the wizard's "start" means start.
+		// Awaited: the wizard calls setLocale() (a reload) right after this resolves,
+		// so the URL must already be the lesson's.
+		const first = currentUnitId ?? units[0]?.id;
+		if (first) await goto(resolve('/learn/[unitId]', { unitId: first }));
 	}
 </script>
 
