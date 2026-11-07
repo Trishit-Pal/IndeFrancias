@@ -8,8 +8,8 @@ when adding features, reviewing PRs, or preparing a release.
 
 ```bash
 npm run check && npm run lint
-npm run test:unit -- --run    # 378 unit tests (52 files)
-npm run test:e2e              # 63 Playwright scenarios: `desktop` project + curated `mobile` project (build + preview first); set PORT=4174 if 4173 is taken
+npm run test:unit -- --run    # 380 unit tests (53 files)
+npm run test:e2e              # 73 Playwright scenarios: `desktop` project (all) + curated `mobile` project (a11y + mobile specs) (build + preview first); set PORT=4174 if 4173 is taken
 npm run content:proofread:launch  # A1/A2 launch gate only
 ```
 

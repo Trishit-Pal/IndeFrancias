@@ -109,7 +109,7 @@ same build for a Windows desktop shell (beta). **No backend.**
 
 Detail: appendix [architecture-map](../architecture-map.md), [mobile-architecture](../product/mobile-architecture.md).
 
-**Test baseline:** 363 unit + 56 e2e green (the authoritative count; supersedes any differing
+**Test baseline:** 380 unit + 73 e2e green (the authoritative count; supersedes any differing
 figure in other docs).
 
 ## §6 Domain module index
@@ -220,3 +220,4 @@ This spec is kept honest by the `frenchpath-spec-sync` skill + `/spec-sync` comm
 | 2026-11-06 | spec-sync: Today coach + contextual review. CAP-SRS gains contextual 4-choice review (read/listen/type/speak modes, mature-card recall upgrade, leech rescue panel) and shared `recordAndScore` (extracted from SpeakExercise); CAP-GAME gains the Today coach card (`todayPlan`) and weekly postcard recap + share. No network, account, runtime-AI, CSP, schema or dependency change. Test baseline 282/43 -> 363 unit + 56 e2e (clean worktree at e0b30e6). | §4, §5, §11 | MEDIUM |
 
 | 2026-11-07 | UI/UX refinement pass (Operate mode; strengthens invariant 6, no invariant/ADR edit). Verification: `mobile` Playwright project (Pixel 7) + axe WCAG A/AA scans in `e2e/accessibility.e2e.ts` (both projects), PORT-configurable e2e. Tokens: rose-as-text/fill fixed at the token level (`--fp-jaipur-text` backs `--fp-primary`; `--fp-seine-text`, `--fp-ivory`), glass/neon tokens retired, raw hex gone from `layout.css`, Indic UI font cascade moved onto `--fp-font-ui` per `html[lang]`. Shell: skip link, route-change focus + announcer, theme-aware native status bar. CAP-LESSON: exit control + `beforeNavigate` guard, Enter-to-submit, one progress bar, i18n chips/hints/play. CAP-PATH: hero (today's stop + next lesson + due link), Mumbai departure stop, pixel-measured SVG route (fixes stray ink at 0%). CAP-REVIEW: load-error + retry, `createOnceGate` double-grade fix. CAP-ONB → lesson 1; CAP-SETTINGS skeleton + sticky feedback; home/review/progress loading & error states; 60+ new message keys (en+hi, placeholders logged). Critique snapshots 26/25/24 in `.impeccable/critique/`; `DESIGN.md` documented. | §4 | MEDIUM |
+| 2026-11-07 | Test baseline reconciled after the UI/UX pass: 380 unit (53 files) + 73 e2e (desktop runs all; mobile project re-runs the a11y + mobile specs). | §5 | LOW |
