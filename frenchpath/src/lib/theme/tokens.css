@@ -18,8 +18,12 @@
 	--fp-ink-soft: #3d3963; /* body text                           */
 	--fp-muted: #615c84; /* secondary labels (single source)    */
 
-	--fp-jaipur: #dd5471; /* jaipur rose — PRIMARY actions       */
-	--fp-jaipur-light: #f9e2e7; /* rose tint surface                   */
+	--fp-jaipur: #dd5471; /* jaipur rose — accent fills, strokes, tints */
+	--fp-jaipur-light: #fcedf0; /* rose tint surface (holds jaipur-text at AA) */
+	/* Rose as TEXT or as a FILL under white text: #dd5471 is only 3.76:1 against
+	   white, so buttons and rose labels use this deeper cut (5.2:1 vs white,
+	   4.85:1 on canvas). contrast.spec.ts enforces all three pairs. */
+	--fp-jaipur-text: #c23a58;
 	/* Supported legacy aliases (70+ live users; ADR-8): --fp-terracotta,  */
 	/* --fp-navy and the --fp-primary* bridge below. Keep, don't extend.     */
 	--fp-terracotta: #bf5f45; /* Mira / warm supporting accent       */
@@ -72,8 +76,8 @@
 	--fp-card: var(--fp-paper);
 	--fp-border: color-mix(in srgb, var(--fp-ink) 15%, var(--fp-paper));
 	--fp-subtle: var(--fp-cream);
-	--fp-primary: var(--fp-jaipur);
-	--fp-primary-hover: #c74763;
+	--fp-primary: var(--fp-jaipur-text);
+	--fp-primary-hover: #ad3350;
 	--fp-primary-foreground: #ffffff;
 	--fp-nav: rgb(255 253 248 / 0.92);
 	--fp-disabled: color-mix(in srgb, var(--fp-ink) 25%, var(--fp-canvas));
@@ -97,6 +101,7 @@
 
 	--fp-jaipur: #ef7189;
 	--fp-jaipur-light: #3d2438;
+	--fp-jaipur-text: #ef7189; /* bright rose already clears AA on indigo night */
 	--fp-terracotta: #d98a6a;
 	--fp-saffron: #f0b452; /* marigold brightens after dark */
 	--fp-sage: #93bf83;

@@ -258,7 +258,6 @@
 					class:fp-voyage-city--active={active}
 					class:fp-voyage-city--locked={!done && !active}
 					class:fp-pulse={active && !reduceMotion}
-					aria-label="{band.city.city} {band.level}"
 				>
 					{#if active}
 						<div class="fp-city-marker fp-city-marker--v" aria-hidden="true">
@@ -490,11 +489,11 @@
 		margin-top: 8px;
 	}
 	.fp-voyage-city--active .fp-voyage-city-label {
-		color: var(--fp-jaipur);
+		color: var(--fp-jaipur-text);
 		font-size: 20px;
 	}
 	.fp-voyage-city--active .fp-voyage-city-status {
-		color: var(--fp-jaipur);
+		color: var(--fp-jaipur-text);
 	}
 
 	/* ── Vertical (mobile) winding route ── */
@@ -554,7 +553,7 @@
 		color: var(--fp-ink);
 	}
 	.fp-active-city {
-		color: var(--fp-jaipur);
+		color: var(--fp-jaipur-text);
 		font-size: 18px;
 	}
 	.fp-city-cefr {
@@ -743,11 +742,18 @@
 		border-color: var(--fp-saffron);
 		color: var(--fp-ink);
 	}
+	/* Locked stubs dim the icon, not the text: text stays --fp-muted (AA). */
 	.fp-lesson-node--locked {
 		border-style: dashed;
-		opacity: 0.62;
 		box-shadow: none;
 		pointer-events: none;
 		cursor: not-allowed;
+	}
+	.fp-lesson-node--locked .fp-lesson-node-title {
+		color: var(--fp-muted);
+		font-weight: 500;
+	}
+	.fp-lesson-node--locked .fp-lesson-node-icon {
+		opacity: 0.6;
 	}
 </style>

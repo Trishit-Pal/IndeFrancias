@@ -374,6 +374,8 @@
 								<div
 									class="fp-progress-fill h-full rounded-full"
 									role="progressbar"
+									aria-label={skillLabel(profile.skill)}
+									aria-valuetext={profile.estimatedLevel}
 									aria-valuenow={pct}
 									aria-valuemin={0}
 									aria-valuemax={100}
@@ -428,6 +430,7 @@
 				<div
 					class="fp-progress-fill"
 					role="progressbar"
+					aria-label="Coco · Niveau {cocoLevel}"
 					aria-valuenow={cocoXpPercent}
 					aria-valuemin={0}
 					aria-valuemax={100}

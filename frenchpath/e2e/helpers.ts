@@ -34,22 +34,22 @@ async function stubAsrDefault(page: Page) {
 }
 
 /** Opens the home path map, completing multi-step onboarding if shown. */
-export async function gotoHome(page: Page) {
+export async function gotoHome(page: Page, overrides: Record<string, unknown> = {}) {
 	await stubAsrDefault(page);
 	await page.goto('/');
 	await expect(
 		page.getByTestId('onboarding-wizard').or(page.getByTestId('unit-card').first())
 	).toBeVisible({ timeout: 15_000 });
 	if (await page.getByTestId('onboarding-wizard').isVisible()) {
-		await skipOnboardingViaIdb(page);
+		await skipOnboardingViaIdb(page, overrides);
 		await page.reload();
 	}
 	await expect(page.getByTestId('unit-card').first()).toBeVisible({ timeout: 15_000 });
 }
 
 /** Seed onboarded settings for stable E2E (UI wizard tested separately). */
-export async function skipOnboardingViaIdb(page: Page) {
-	await page.evaluate(async () => {
+export async function skipOnboardingViaIdb(page: Page, overrides: Record<string, unknown> = {}) {
+	await page.evaluate(async (overrides) => {
 		const settings = {
 			uiLanguage: 'en',
 			targetRetention: 0.9,
@@ -68,7 +68,8 @@ export async function skipOnboardingViaIdb(page: Page) {
 			celebrationLevel: 'minimal',
 			syncEnabled: false,
 			revisionNotifications: false,
-			difficultyTier: 'easy'
+			difficultyTier: 'easy',
+			...overrides
 		};
 
 		const db = await new Promise<IDBDatabase>((resolve, reject) => {
@@ -96,7 +97,7 @@ export async function skipOnboardingViaIdb(page: Page) {
 			};
 			tx.onerror = () => reject(tx.error);
 		});
-	});
+	}, overrides);
 
 	await page.waitForFunction(async () => {
 		const db = await new Promise<IDBDatabase>((resolve, reject) => {

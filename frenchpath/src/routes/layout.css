@@ -526,7 +526,7 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 		align-items: center;
 		justify-content: center;
 		min-height: 44px;
-		background: var(--fp-jaipur);
+		background: var(--fp-primary);
 		color: var(--fp-primary-foreground);
 		border: none;
 		border-radius: var(--fp-r-pill);

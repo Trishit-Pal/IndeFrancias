@@ -58,7 +58,7 @@
 	}
 	.fp-icon-btn:hover:not(:disabled) {
 		border-color: var(--fp-jaipur);
-		color: var(--fp-jaipur);
+		color: var(--fp-jaipur-text);
 	}
 	.fp-icon-btn:focus-visible {
 		outline: 2px solid var(--fp-ink);
@@ -73,7 +73,7 @@
 	.fp-icon-btn[aria-pressed='true'] {
 		background: var(--fp-jaipur-light);
 		border-color: var(--fp-jaipur);
-		color: var(--fp-jaipur);
+		color: var(--fp-jaipur-text);
 	}
 	.fp-icon-btn:disabled {
 		cursor: not-allowed;

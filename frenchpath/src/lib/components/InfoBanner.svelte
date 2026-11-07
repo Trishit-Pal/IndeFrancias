@@ -32,7 +32,8 @@
 	.fp-info-banner--note {
 		background: color-mix(in srgb, var(--fp-saffron) 14%, var(--fp-paper));
 		border-color: color-mix(in srgb, var(--fp-saffron) 45%, transparent);
-		color: color-mix(in srgb, var(--fp-saffron) 70%, var(--fp-ink));
+		/* The saffron/ink mix lands at 3.6:1 on the tinted ground; the text-safe cut passes AA. */
+		color: var(--fp-saffron-text);
 	}
 	.fp-info-banner--info {
 		background: color-mix(in srgb, var(--fp-seine) 12%, var(--fp-paper));

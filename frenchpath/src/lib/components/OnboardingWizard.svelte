@@ -107,6 +107,10 @@
 	<div
 		class="mb-6 flex justify-center gap-1.5"
 		role="progressbar"
+		aria-label={m.onboarding_step_progress({
+			current: String(stepIndex + 1),
+			total: String(STEPS.length)
+		})}
 		aria-valuemin={1}
 		aria-valuemax={STEPS.length}
 		aria-valuenow={stepIndex + 1}

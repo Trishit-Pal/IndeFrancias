@@ -8,8 +8,8 @@ when adding features, reviewing PRs, or preparing a release.
 
 ```bash
 npm run check && npm run lint
-npm run test:unit -- --run    # 256 unit tests
-npm run test:e2e              # 42 Playwright scenarios (build + preview first)
+npm run test:unit -- --run    # 374 unit tests (52 files)
+npm run test:e2e              # 63 Playwright scenarios: `desktop` project + curated `mobile` project (build + preview first); set PORT=4174 if 4173 is taken
 npm run content:proofread:launch  # A1/A2 launch gate only
 ```
 
@@ -195,7 +195,8 @@ All E2E files live in `frenchpath/e2e/`. Shared helpers: `helpers.ts`.
 | `checkpoint.e2e.ts` | 2 | Gate banner after units 1–3; passing g1 unlocks unit 4 |
 | `settings.e2e.ts` | 4 | Dark theme; daily goal on home; reduce motion class; data-local notice |
 | `review.e2e.ts` | 2 | Empty review state; due badge after lesson |
-| `accessibility.e2e.ts` | 2 | Keyboard MCQ path; review grade button focus |
+| `accessibility.e2e.ts` | 3 + 5 axe | Keyboard MCQ path; review grade button focus; modal focus trap; **axe WCAG A/AA scans** on onboarding, home, review, progress, settings, lesson (light/en + dark/hinglish) |
+| `mobile.e2e.ts` | 2 | `mobile` project only: bottom nav present, every tab ≥44×44; next-lesson CTA in first viewport (fixme until VoyageMap first-viewport lands) |
 | `onboarding.e2e.ts` | 1 | Full v2 wizard → home path |
 | `gloss.e2e.ts` | 2 | Tap-to-gloss in exercises and bridge markdown |
 | `hints.e2e.ts` | 1 | Lesson hint decrements and coach note |
@@ -203,6 +204,10 @@ All E2E files live in `frenchpath/e2e/`. Shared helpers: `helpers.ts`.
 | `b1-unlock.e2e.ts` | 1 | B1 band visible after A2 milestone |
 | `exam-b1.e2e.ts` | 1 | Mock DELF B1 intro → section flow |
 | `celebration.e2e.ts` | 1 | Celebration overlay dismiss |
+
+**Projects.** `playwright.config.ts` defines two projects: `desktop` (Desktop Chrome, every spec) and `mobile` (Pixel 7 emulation, curated `testMatch`: `accessibility.e2e.ts`, `mobile.e2e.ts`). Run one with `npx playwright test --project=mobile`. Widen the mobile `testMatch` once CI time is measured.
+
+**axe policy.** `-core/playwright` with tags `wcag2a`,`wcag2aa`. `critical`/`serious` fail; `moderate`/`minor` are report-only test annotations. Exclude a selector (`.exclude(...)`) for surfaces axe cannot compute (e.g. `color-mix` backgrounds) and comment why; never `disableRules('color-contrast')`.
 
 ### 3.1 `data-testid` contract
 
@@ -223,7 +228,7 @@ Settings and critical flows use stable test IDs (add new ones when extending E2E
 
 ### 3.2 E2E helpers (`e2e/helpers.ts`)
 
-- `gotoHome(page)` — skip onboarding via IDB for stable flows
+- `gotoHome(page, overrides?)` — skip onboarding via IDB for stable flows; `overrides` merges into the seeded settings (e.g. `{ theme: 'dark', uiLanguage: 'hinglish' }`)
 - `completeOnboarding(page)` — drive full v2 wizard (tested in `onboarding.e2e.ts`)
 - `completeLesson(page)` — drive exercise loop until summary
 - `completeCheckpoint(page)` — answer deterministic gate pool and finish checkpoint

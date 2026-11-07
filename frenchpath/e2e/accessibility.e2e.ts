@@ -106,3 +106,97 @@ test('modal traps Tab focus and restores focus to the opener on Escape', async (
 	await expect(dialog).not.toBeVisible();
 	await expect(opener).toBeFocused();
 });
+
+// ── axe-core scans ──────────────────────────────────────────────────────────
+// WCAG 2.x A/AA rules on every core route. `critical`/`serious` fail the test;
+// `moderate`/`minor` are attached as annotations so they show in the report
+// without blocking. Scenes pair a theme with a locale so both themes and the
+// priority locale (Hinglish) are covered without the full 2×2 matrix.
+import AxeBuilder from '@axe-core/playwright';
+
+type Scene = { label: string; overrides: Record<string, unknown> };
+const SCENES: Scene[] = [
+	{ label: 'light/en', overrides: { theme: 'light', uiLanguage: 'en' } },
+	{ label: 'dark/hinglish', overrides: { theme: 'dark', uiLanguage: 'hinglish' } }
+];
+
+// Paraglide resolves the UI locale from its own localStorage key, not from IDB settings.
+async function seedLocale(page: import('@playwright/test').Page, scene: Scene) {
+	// Settle entrance motion before sampling colours: a mid-fade frame reads as low contrast.
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	const locale = String(scene.overrides.uiLanguage ?? 'en');
+	await page.addInitScript((l) => localStorage.setItem('PARAGLIDE_LOCALE', l), locale);
+}
+
+async function expectNoBlockingA11yViolations(
+	page: import('@playwright/test').Page,
+	label: string
+) {
+	const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
+	const describe = (v: (typeof results.violations)[number]) =>
+		`${v.id} (${v.impact}) ×${v.nodes.length} — ${(process.env.AXE_VERBOSE
+			? v.nodes
+			: v.nodes.slice(0, 1)
+		)
+			.map((n) =>
+				process.env.AXE_VERBOSE
+					? `${n.target.join(' ')} ${JSON.stringify(n.any[0]?.data ?? {})}`
+					: n.target.join(' ')
+			)
+			.join(' | ')} — ${v.help}`;
+	const blocking = results.violations.filter(
+		(v) => v.impact === 'critical' || v.impact === 'serious'
+	);
+	for (const v of results.violations) {
+		if (blocking.includes(v)) continue;
+		test.info().annotations.push({ type: `axe-advisory ${label}`, description: describe(v) });
+	}
+	expect(blocking.map(describe), `${label}: critical/serious axe violations`).toEqual([]);
+}
+
+test('axe: onboarding wizard (first visit)', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/');
+	await expect(page.getByTestId('onboarding-wizard')).toBeVisible({ timeout: 15_000 });
+	await expectNoBlockingA11yViolations(page, 'onboarding');
+});
+
+for (const scene of SCENES) {
+	test.describe(`axe ${scene.label}`, () => {
+		test('home, review, progress, settings', async ({ page }) => {
+			await seedLocale(page, scene);
+			await gotoHome(page, scene.overrides);
+			await expectNoBlockingA11yViolations(page, `${scene.label} /`);
+
+			await page.goto('/review');
+			await expect(
+				page
+					.getByTestId('no-reviews')
+					.or(page.getByTestId('reveal'))
+					.or(page.getByTestId('context-card'))
+					.first()
+			).toBeVisible({ timeout: 15_000 });
+			await expectNoBlockingA11yViolations(page, `${scene.label} /review`);
+
+			await page.goto('/progress');
+			await expect(page.locator('main').first()).toBeVisible({ timeout: 15_000 });
+			await expectNoBlockingA11yViolations(page, `${scene.label} /progress`);
+
+			await page.goto('/settings');
+			await expect(page.getByTestId('theme-select')).toBeVisible({ timeout: 15_000 });
+			await expectNoBlockingA11yViolations(page, `${scene.label} /settings`);
+		});
+
+		test('lesson intro and exercise phase', async ({ page }) => {
+			await seedLocale(page, scene);
+			await gotoHome(page, scene.overrides);
+			await page.getByTestId('unit-card').first().click();
+			await expect(page.getByTestId('start-lesson')).toBeVisible({ timeout: 15_000 });
+			await expectNoBlockingA11yViolations(page, `${scene.label} /learn intro`);
+			await page.getByTestId('start-lesson').click();
+			await reachExercisePhase(page);
+			await expectNoBlockingA11yViolations(page, `${scene.label} /learn exercise`);
+		});
+	});
+}
+

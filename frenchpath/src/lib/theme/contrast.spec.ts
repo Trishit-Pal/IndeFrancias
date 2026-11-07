@@ -29,7 +29,7 @@ function contrast(a: string, b: string): number {
 }
 
 const AA = 4.5;
-const TEXT_TOKENS = ['--fp-ink', '--fp-saffron-text', '--fp-sage-text'];
+const TEXT_TOKENS = ['--fp-ink', '--fp-saffron-text', '--fp-sage-text', '--fp-jaipur-text'];
 const themes = { light: block('.light'), dark: block('.dark') };
 
 describe('token contrast (WCAG AA)', () => {
@@ -48,6 +48,15 @@ describe('token contrast (WCAG AA)', () => {
 		}
 		it(`${theme}: --fp-on-error on --fp-error >= ${AA}`, () => {
 			expect(contrast(t['--fp-on-error'], t['--fp-error'])).toBeGreaterThanOrEqual(AA);
+		});
+		// --fp-primary resolves to --fp-jaipur-text (light) / --fp-jaipur (dark, same hex); test the literal.
+		it(`${theme}: --fp-primary-foreground on --fp-jaipur-text (button fill) >= ${AA}`, () => {
+			expect(contrast(t['--fp-primary-foreground'], t['--fp-jaipur-text'])).toBeGreaterThanOrEqual(
+				AA
+			);
+		});
+		it(`${theme}: --fp-jaipur-text on --fp-jaipur-light (chips, active nav) >= ${AA}`, () => {
+			expect(contrast(t['--fp-jaipur-text'], t['--fp-jaipur-light'])).toBeGreaterThanOrEqual(AA);
 		});
 	}
 });

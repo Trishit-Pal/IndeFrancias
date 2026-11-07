@@ -227,6 +227,7 @@
 							class="fp-goal-ring"
 							style="--pct:{goalPercent}%"
 							role="progressbar"
+							aria-label={m.home_daily_goal()}
 							aria-valuenow={goal.xp}
 							aria-valuemin="0"
 							aria-valuemax={goal.goal}
