@@ -29,6 +29,7 @@
 	import { ensurePersistence } from '$lib/pwa/persist';
 	import type OnboardingWizardComponent from '$lib/components/OnboardingWizard.svelte';
 	import CoachTip from '$lib/components/CoachTip.svelte';
+	import InfoBanner from '$lib/components/InfoBanner.svelte';
 	import { suggestUnitForWeakSkill } from '$lib/gamification/adaptiveSuggestions';
 	import type { SkillProfileRecord } from '$lib/db/schema';
 	import { homeSubtitleForGoal } from '$lib/profile/goalCopy';
@@ -109,8 +110,8 @@
 			if (currentStreak >= milestone && !updated.includes(milestone)) {
 				celebration = {
 					event: milestone === 7 ? 'streak_7' : 'streak_30',
-					title: `${milestone}-day streak!`,
-					subtitle: 'Keep the momentum going.'
+					title: m.celebration_streak_title({ days: String(milestone) }),
+					subtitle: m.celebration_streak_subtitle()
 				};
 				updated = [...updated, milestone];
 			}
@@ -121,7 +122,20 @@
 		return updated;
 	}
 
+	let loadError = $state(false);
+
 	onMount(async () => {
+		try {
+			await loadHome();
+		} catch {
+			// IndexedDB unavailable or corrupt read: show a recoverable error, never a blank page.
+			loadError = true;
+		} finally {
+			loaded = true;
+		}
+	});
+
+	async function loadHome() {
 		const [s, all, dueCount, streakRecord, goalProgress, passed, profiles, nextDue] =
 			await Promise.all([
 				settingsRepo.getSettings(),
@@ -152,8 +166,7 @@
 			const mod = await import('$lib/components/OnboardingWizard.svelte');
 			OnboardingWizard = mod.default;
 		}
-		loaded = true;
-	});
+	}
 
 	async function finishOnboarding(profile: Partial<import('$lib/db/schema').Settings>) {
 		onboarded = true;
@@ -168,8 +181,20 @@
 <svelte:head><title>FrenchPath — Learn French</title></svelte:head>
 
 {#if !loaded}
+	<main class="page-shell" aria-busy="true">
+		<p class="sr-only" role="status">{m.common_loading()}</p>
+		<div class="fp-skeleton h-8 w-44"></div>
+		<div class="fp-skeleton mt-6 h-40 w-full"></div>
+		<div class="fp-skeleton mt-4 h-24 w-full"></div>
+	</main>
+{:else if loadError}
 	<main class="page-shell">
-		<p class="text-muted">Loading…</p>
+		<InfoBanner variant="error" role="alert" class="mt-2">
+			<p>{m.home_load_error()}</p>
+			<button type="button" class="btn-secondary mt-3 text-sm" onclick={() => location.reload()}>
+				{m.common_retry()}
+			</button>
+		</InfoBanner>
 	</main>
 {:else if !onboarded && OnboardingWizard}
 	<OnboardingWizard onComplete={finishOnboarding} {reduceMotion} />
@@ -196,10 +221,7 @@
 				<div class="surface-card flex items-center gap-3 p-4">
 					<CharacterMira size="sm" animate={!reduceMotion} />
 					<div class="flex-1">
-						<p
-							class="text-sm font-semibold"
-							style="font-family:var(--fp-font-display);font-style:italic"
-						>
+						<p class="fp-quote-fr text-sm font-semibold">
 							{homeSubtitle}
 						</p>
 						<div class="mt-1 flex gap-2">
@@ -221,7 +243,7 @@
 				</div>
 
 				<!-- Daily goal ring -->
-				<section class="surface-card p-4" aria-label="Daily goal">
+				<section class="surface-card p-4" aria-label={m.home_daily_goal()}>
 					<div class="flex items-center gap-4">
 						<div
 							class="fp-goal-ring"
@@ -232,15 +254,13 @@
 							aria-valuemin="0"
 							aria-valuemax={goal.goal}
 						>
-							<span class="fp-goal-ring-value" style="font-family:var(--fp-font-display)"
-								>{goal.xp}</span
-							>
+							<span class="fp-goal-ring-value fp-serif">{goal.xp}</span>
 						</div>
 						<div>
-							<p class="font-semibold" style="font-family:var(--fp-font-display);font-size:17px">
+							<p class="fp-serif text-[17px] font-semibold">
 								{m.home_daily_goal()}
 							</p>
-							<p class="text-sm" style="color:var(--fp-muted)" data-testid="daily-goal">
+							<p class="text-sm text-muted" data-testid="daily-goal">
 								{goal.xp} / {goal.goal} XP {goal.met ? '✓' : ''}
 							</p>
 						</div>
@@ -250,9 +270,7 @@
 				<!-- Coco companion -->
 				<div class="surface-card p-4 text-center">
 					<CharacterCoco size="md" animate={!reduceMotion} level={cocoLevel} />
-					<p style="font-family:var(--fp-font-display);font-size:14px;margin-top:6px">
-						Coco · Lvl {cocoLevel}
-					</p>
+					<p class="fp-serif mt-1.5 text-sm">{m.home_coco_level({ level: String(cocoLevel) })}</p>
 					<div class="fp-progress-bar mt-2">
 						<div class="fp-progress-fill" style="width:{cocoXpPercent}%"></div>
 					</div>
@@ -294,17 +312,17 @@
 					>
 						<span class="flex items-center gap-2"
 							><Icon name="review" size={17} />
-							{due} card{due === 1 ? '' : 's'} due for review</span
+							{due === 1
+								? m.home_cards_due_one()
+								: m.home_cards_due_other({ count: String(due) })}</span
 						>
 						<Icon name="chevron-right" size={18} />
 					</a>
 				{/if}
 
 				{#if a2Completed || b1Completed || b2Completed || c1ExamUnlocked}
-					<section class="surface-card p-4" aria-label="Mock exams">
-						<p class="mb-2 text-sm font-semibold" style="font-family:var(--fp-font-display)">
-							Examens blancs
-						</p>
+					<section class="surface-card p-4" aria-label={m.home_mock_exams()}>
+						<p class="fp-serif mb-2 text-sm font-semibold">{m.home_mock_exams()}</p>
 						<div class="space-y-2">
 							{#if a2Completed}
 								<a
@@ -322,7 +340,7 @@
 									class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
 									data-testid="delf-b1-card"
 								>
-									<span>Mock DELF B1</span>
+									<span>{m.home_mock_exam_label({ exam: 'DELF B1' })}</span>
 									<Icon name="chevron-right" size={16} />
 								</a>
 							{/if}
@@ -332,7 +350,7 @@
 									class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
 									data-testid="delf-b2-card"
 								>
-									<span>Mock DELF B2</span>
+									<span>{m.home_mock_exam_label({ exam: 'DELF B2' })}</span>
 									<Icon name="chevron-right" size={16} />
 								</a>
 							{/if}
@@ -342,7 +360,7 @@
 									class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
 									data-testid="dalf-c1-card"
 								>
-									<span>Mock DALF C1</span>
+									<span>{m.home_mock_exam_label({ exam: 'DALF C1' })}</span>
 									<Icon name="chevron-right" size={16} />
 								</a>
 							{/if}
@@ -355,11 +373,7 @@
 				<div class="mb-2 flex items-baseline justify-between">
 					<h2 class="fp-display-md text-balance">Le Voyage</h2>
 					{#if currentCity}
-						<span
-							style="font-family:var(--fp-font-mono);font-size:12px;color:var(--fp-muted);text-transform:uppercase;letter-spacing:.18em"
-						>
-							{currentCity}
-						</span>
+						<span class="fp-eyebrow">{currentCity}</span>
 					{/if}
 				</div>
 				<VoyageMap {units} {states} {lockReasons} {currentUnitId} {reduceMotion} />

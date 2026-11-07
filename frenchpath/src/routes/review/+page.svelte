@@ -23,6 +23,7 @@
 	import IconButton from '$lib/components/IconButton.svelte';
 	import { isNativePlatform } from '$lib/platform';
 	import { tapHaptic } from '$lib/platform/haptics';
+	import InfoBanner from '$lib/components/InfoBanner.svelte';
 	import type { NativeLanguage } from '$lib/db/schema';
 	import { speakFrench, ttsAvailable } from '$lib/audio/tts';
 	import { shareProgress } from '$lib/share/shareCard';
@@ -45,7 +46,7 @@
 		prompt: ContextPrompt | null;
 		presentation: ReviewMode | 'flip';
 	};
-	type Phase = 'loading' | 'reviewing' | 'done';
+	type Phase = 'loading' | 'reviewing' | 'done' | 'error';
 
 	let phase = $state<Phase>('loading');
 	let queue = $state<ReviewItem[]>([]);
@@ -93,18 +94,23 @@
 	}
 
 	onMount(async () => {
-		const settings = await settingsRepo.getSettings();
-		targetRetention = effectiveRetention(settings.targetRetention, settings.difficultyTier);
-		nativeLanguage = settings.nativeLanguage;
-		difficultyTier = settings.difficultyTier;
-		fsrsWeights = settings.fsrsWeights;
-		const [due, caps] = await Promise.all([getReviewQueue(), loadCaps()]);
-		asrReady = caps.asr;
-		ttsReady = caps.tts;
-		queue = await resolveContent(due, caps);
-		phase = queue.length > 0 ? 'reviewing' : 'reviewing';
-		sessionStartedAt = Date.now();
-		cardStartedAt = Date.now();
+		try {
+			const settings = await settingsRepo.getSettings();
+			targetRetention = effectiveRetention(settings.targetRetention, settings.difficultyTier);
+			nativeLanguage = settings.nativeLanguage;
+			difficultyTier = settings.difficultyTier;
+			fsrsWeights = settings.fsrsWeights;
+			const [due, caps] = await Promise.all([getReviewQueue(), loadCaps()]);
+			asrReady = caps.asr;
+			ttsReady = caps.tts;
+			queue = await resolveContent(due, caps);
+			phase = 'reviewing';
+			sessionStartedAt = Date.now();
+			cardStartedAt = Date.now();
+		} catch {
+			// A failed IndexedDB read or content load must not leave the page on "Loading…" forever.
+			phase = 'error';
+		}
 	});
 
 	async function resolveContent(cards: SrsCard[], caps: Caps): Promise<ReviewItem[]> {
@@ -175,7 +181,14 @@
 	<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
 
 	{#if phase === 'loading'}
-		<p class="mt-6 text-muted">{m.review_loading()}</p>
+		<p class="mt-6 text-muted" role="status">{m.review_loading()}</p>
+	{:else if phase === 'error'}
+		<InfoBanner variant="error" role="alert" class="mt-6">
+			<p>{m.review_load_error()}</p>
+			<button type="button" class="btn-secondary mt-3 text-sm" onclick={() => location.reload()}>
+				{m.common_retry()}
+			</button>
+		</InfoBanner>
 	{:else if phase === 'reviewing' && currentItem}
 		<p class="mt-2 text-sm text-muted">
 			{m.review_queue_progress({ current: index + 1, total: queue.length })}
@@ -283,7 +296,7 @@
 
 				{#if revealed}
 					<div
-						class="mt-5 grid grid-cols-4 gap-2 lg:mx-auto lg:max-w-2xl"
+						class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:mx-auto lg:max-w-2xl"
 						data-testid="grade-buttons"
 					>
 						{#each grades as g (g.grade)}

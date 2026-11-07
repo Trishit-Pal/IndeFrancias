@@ -8,6 +8,7 @@
 	import ShadowingPlayer from '$lib/lesson/ShadowingPlayer.svelte';
 	import IconButton from '$lib/components/IconButton.svelte';
 	import * as m from '$lib/paraglide/messages';
+	import Icon from '$lib/components/Icon.svelte';
 
 	let {
 		exercise,
@@ -42,7 +43,8 @@
 				class="rounded-full border border-border px-4 py-2 hover:border-primary"
 				onclick={() => speakFrench(exercise.audioText)}
 			>
-				🔊 Play passage
+				<Icon name="speaker" size={16} />
+				{m.audio_play_passage()}
 			</button>
 			<IconButton
 				icon="mic"

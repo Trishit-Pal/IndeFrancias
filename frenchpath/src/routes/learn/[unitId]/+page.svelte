@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+	import { goto } from '$app/navigation';
+	import { tapHaptic } from '$lib/platform/haptics';
 	import { loadUnit, listUnitSummaries, buildLessonLexicon } from '$lib/content/loader';
 	import GlossMarkdown from '$lib/components/GlossMarkdown.svelte';
 	import type { Unit } from '$lib/content/schema';
@@ -118,11 +120,27 @@
 		void loadLesson(unitId);
 	});
 
+	let showExitConfirm = $state(false);
+
+	/** Exit control: leave at once if nothing has been attempted, otherwise confirm. */
+	function requestExit() {
+		if (index > 0 || response !== null || submitted) showExitConfirm = true;
+		else void goto(resolve('/'));
+	}
+
+	/** Enter inside the exercise form submits the answer, or continues once graded. */
+	function onAnswerSubmit(event: SubmitEvent) {
+		event.preventDefault();
+		if (submitted) void advance();
+		else if (response !== null) check();
+	}
+
 	function check() {
 		if (!current || !response) return;
 		correct = gradeExercise(current, response);
 		if (correct) correctCount += 1;
 		submitted = true;
+		void tapHaptic();
 		rubricHints =
 			(response.type === 'cloze' || response.type === 'translation') && !correct
 				? evaluateRubric(response.text, current, nativeLanguage)
@@ -137,14 +155,12 @@
 	function hintForExercise(ex: typeof current): string | null {
 		if (!ex) return null;
 		if ('hint' in ex && ex.hint) return ex.hint;
-		if (ex.type === 'mcq')
-			return ex.explanation ?? 'Eliminate options that do not fit the grammar rule.';
-		if (ex.type === 'cloze' || ex.type === 'dictation')
-			return 'Think about the vocabulary from this unit.';
-		if (ex.type === 'translation') return 'Use words you learned in this lesson.';
-		if (ex.type === 'conjugation') return `Recall the conjugation pattern for « ${ex.verb} ».`;
-		if (ex.type === 'gender') return 'Masculine nouns often take le/un; feminine take la/une.';
-		return 'Review the bridge note and new words before answering.';
+		if (ex.type === 'mcq') return ex.explanation ?? m.hint_fallback_mcq();
+		if (ex.type === 'cloze' || ex.type === 'dictation') return m.hint_fallback_vocab();
+		if (ex.type === 'translation') return m.hint_fallback_translation();
+		if (ex.type === 'conjugation') return m.hint_fallback_conjugation({ verb: ex.verb });
+		if (ex.type === 'gender') return m.hint_fallback_gender();
+		return m.hint_fallback_default();
 	}
 
 	function applyHint() {
@@ -344,80 +360,101 @@
 			{m.lesson_continue_exercises()}
 		</button>
 	{:else if phase === 'exercise' && current && unit}
-		<LessonShell {progress} current={index + 1} {total}>
+		<LessonShell {progress} current={index + 1} {total} onExit={requestExit}>
 			<ExerciseChrome
 				{unit}
 				exercise={current}
-				{index}
-				{total}
 				hintsRemaining={MAX_LESSON_HINTS - hintsUsed}
 				onHint={applyHint}
 				hintDisabled={submitted || hintsUsed >= MAX_LESSON_HINTS}
 			/>
 
-			<div class="grid grid-cols-1 grid-rows-1">
-				{#key current.id}
-					<div
-						class="surface-card col-start-1 row-start-1 p-4"
-						in:fly={{ x: 20, duration: reducedMotion ? 0 : 300 }}
-					>
-						<Exercise
-							exercise={current}
-							bind:response
-							{submitted}
-							{hintText}
-							{lexicon}
-							coachNote={current.coachNote ?? null}
-						/>
-					</div>
-				{/key}
-			</div>
-
-			{#if submitted}
-				<div
-					transition:fade={{ duration: reducedMotion ? 0 : 200 }}
-					class="mt-5 flex items-start gap-3 rounded-2xl p-3 text-sm font-medium {correct
-						? 'feedback-correct animate-scale-in fp-feedback-pulse'
-						: 'feedback-incorrect animate-shake'}"
-					data-testid="feedback"
-					role="status"
-					aria-live="polite"
-				>
-					{#if correct}
-						<CharacterLeo size="sm" animate={!reducedMotion} />
-					{:else}
-						<CharacterMira size="sm" animate={!reducedMotion} />
-					{/if}
-					<div class="flex flex-col gap-2">
-						<span>{correct ? m.lesson_correct() : m.lesson_incorrect()}</span>
-						{#each rubricHints as h (h.ruleId)}
-							<p class="fp-rubric-hint" data-testid="rubric-hint" aria-live="polite">
-								<span class="fp-rubric-hint__label">{m.rubric_hint_label()}</span>
-								{h.hint}
-							</p>
-						{/each}
-					</div>
+			<!-- One form so Enter in any input submits (check) or continues once graded. -->
+			<form onsubmit={onAnswerSubmit}>
+				<div class="grid grid-cols-1 grid-rows-1">
+					{#key current.id}
+						<div
+							class="surface-card col-start-1 row-start-1 p-4"
+							in:fly={{ x: 20, duration: reducedMotion ? 0 : 300 }}
+						>
+							<Exercise
+								exercise={current}
+								bind:response
+								{submitted}
+								{hintText}
+								{lexicon}
+								coachNote={current.coachNote ?? null}
+							/>
+						</div>
+					{/key}
 				</div>
-				<button
-					type="button"
-					class="btn-primary mt-4 w-full"
-					data-testid="continue"
-					onclick={advance}
-				>
-					{index + 1 < total ? m.lesson_continue() : m.lesson_finish()}
-				</button>
-			{:else}
-				<button
-					type="button"
-					class="btn-primary mt-6 w-full"
-					data-testid="check"
-					disabled={response === null}
-					onclick={check}
-				>
-					{m.lesson_check()}
-				</button>
-			{/if}
+
+				{#if submitted}
+					<div
+						transition:fade={{ duration: reducedMotion ? 0 : 200 }}
+						class="mt-5 flex items-start gap-3 rounded-2xl p-3 text-sm font-medium {correct
+							? 'feedback-correct animate-scale-in fp-feedback-pulse'
+							: 'feedback-incorrect animate-shake'}"
+						data-testid="feedback"
+						role="status"
+						aria-live="polite"
+					>
+						{#if correct}
+							<CharacterLeo size="sm" animate={!reducedMotion} />
+						{:else}
+							<CharacterMira size="sm" animate={!reducedMotion} />
+						{/if}
+						<div class="flex flex-col gap-2">
+							<span>{correct ? m.lesson_correct() : m.lesson_incorrect()}</span>
+							{#each rubricHints as h (h.ruleId)}
+								<p class="fp-rubric-hint" data-testid="rubric-hint" aria-live="polite">
+									<span class="fp-rubric-hint__label">{m.rubric_hint_label()}</span>
+									{h.hint}
+								</p>
+							{/each}
+						</div>
+					</div>
+					<button type="submit" class="btn-primary mt-4 w-full" data-testid="continue">
+						{index + 1 < total ? m.lesson_continue() : m.lesson_finish()}
+					</button>
+				{:else}
+					<button
+						type="submit"
+						class="btn-primary mt-6 w-full"
+						data-testid="check"
+						disabled={response === null}
+					>
+						{m.lesson_check()}
+					</button>
+				{/if}
+			</form>
 		</LessonShell>
+
+		<Modal
+			open={showExitConfirm}
+			labelledby="lesson-exit-title"
+			testid="lesson-exit-confirm"
+			onClose={() => (showExitConfirm = false)}
+		>
+			<h2 id="lesson-exit-title" class="text-lg font-semibold text-foreground">
+				{m.lesson_exit_title()}
+			</h2>
+			<p class="mt-2 text-sm text-muted">{m.lesson_exit_body()}</p>
+			<div class="mt-5 flex flex-wrap justify-end gap-2">
+				<button
+					type="button"
+					class="btn-secondary text-sm"
+					data-testid="lesson-exit-stay"
+					onclick={() => (showExitConfirm = false)}>{m.lesson_exit_stay()}</button
+				>
+				<button
+					type="button"
+					class="btn-primary text-sm"
+					data-testid="lesson-exit-leave"
+					onclick={() => void goto(resolve('/'))}>{m.lesson_exit_confirm()}</button
+				>
+			</div>
+		</Modal>
 	{:else if phase === 'finished'}
 		<LessonComplete
 			{score}

@@ -11,6 +11,7 @@
 	import GlossText from '$lib/components/GlossText.svelte';
 	import IconButton from '$lib/components/IconButton.svelte';
 	import * as m from '$lib/paraglide/messages';
+	import Icon from '$lib/components/Icon.svelte';
 
 	let {
 		exercise,
@@ -139,8 +140,9 @@
 					: ''}"
 				onclick={play}
 				data-testid="speak-play"
+				aria-label={m.audio_play()}
 			>
-				🔊
+				<Icon name="speaker" size={18} />
 			</button>
 		{/if}
 	</div>

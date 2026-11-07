@@ -8,6 +8,7 @@
 	import ShadowingPlayer from '$lib/lesson/ShadowingPlayer.svelte';
 	import IconButton from '$lib/components/IconButton.svelte';
 	import * as m from '$lib/paraglide/messages';
+	import Icon from '$lib/components/Icon.svelte';
 
 	let {
 		exercise,
@@ -51,7 +52,8 @@
 				onclick={play}
 				data-testid="dictation-play"
 			>
-				🔊 Play
+				<Icon name="speaker" size={16} />
+				{m.audio_play()}
 			</button>
 			<div
 				class="fp-dictation-wave flex h-8 items-end gap-0.5 {playing

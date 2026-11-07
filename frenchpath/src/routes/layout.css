@@ -166,23 +166,6 @@ html:not(.reduce-motion) .fp-feedback-pulse {
 	color: var(--fp-jaipur-text);
 }
 
-.fp-progress-ring {
-	background: conic-gradient(
-		var(--fp-primary) calc(var(--fp-progress, 0) * 1%),
-		var(--fp-subtle) 0
-	);
-	border-radius: 9999px;
-	padding: 3px;
-}
-
-.fp-progress-ring::before {
-	content: '';
-	position: absolute;
-	inset: 3px;
-	border-radius: inherit;
-	background: var(--fp-card);
-}
-
 html:not(.reduce-motion) .fp-tts-pulse {
 	animation: fp-pulse 0.8s ease infinite;
 }
@@ -602,4 +585,18 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 .reduce-motion *::after {
 	animation: none !important;
 	transition: none !important;
+}
+
+/* ── Loading skeletons (Operate: placeholders in the content's own shape, not a spinner) ── */
+.fp-skeleton {
+	background: var(--fp-paper-warm);
+	border-radius: var(--fp-r-md);
+}
+html:not(.reduce-motion) .fp-skeleton {
+	animation: fp-skeleton-pulse 1.4s ease-in-out infinite;
+}
+@keyframes fp-skeleton-pulse {
+	50% {
+		opacity: 0.55;
+	}
 }

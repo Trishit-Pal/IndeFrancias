@@ -10,7 +10,7 @@
 		class: cls = '',
 		children
 	}: {
-		variant?: 'note' | 'info';
+		variant?: 'note' | 'info' | 'error';
 		role?: string;
 		class?: string;
 		children: Snippet;
@@ -34,6 +34,11 @@
 		border-color: color-mix(in srgb, var(--fp-saffron) 45%, transparent);
 		/* The saffron/ink mix lands at 3.6:1 on the tinted ground; the text-safe cut passes AA. */
 		color: var(--fp-saffron-text);
+	}
+	.fp-info-banner--error {
+		background: color-mix(in srgb, var(--fp-error) 12%, var(--fp-paper));
+		border-color: color-mix(in srgb, var(--fp-error) 40%, transparent);
+		color: var(--fp-error);
 	}
 	.fp-info-banner--info {
 		background: color-mix(in srgb, var(--fp-seine) 12%, var(--fp-paper));

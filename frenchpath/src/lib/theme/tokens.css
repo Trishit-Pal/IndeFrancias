@@ -157,6 +157,9 @@
 	line-height: 1.1;
 	letter-spacing: -0.01em;
 }
+.fp-serif {
+	font-family: var(--fp-font-display);
+}
 .fp-quote-fr {
 	font-family: var(--fp-font-display);
 	font-style: italic;
