@@ -93,3 +93,20 @@ test('Enter inside a text answer submits it', async ({ page }) => {
 	}
 	test.skip(true, 'no text exercise in the first lesson');
 });
+
+test('tab-bar navigation mid-lesson asks before discarding progress', async ({ page }) => {
+	await startFirstLesson(page);
+	const mcq = page.getByTestId('mcq-option');
+	if (await mcq.count()) await mcq.first().click();
+	else await page.getByTestId('text-answer').or(page.getByTestId('cloze-input')).first().fill('x');
+	// The global nav stays live during a lesson; leaving through it must confirm too.
+	await page
+		.getByRole('link', { name: /^review$/i })
+		.filter({ visible: true })
+		.first()
+		.click();
+	await expect(page.getByTestId('lesson-exit-confirm')).toBeVisible();
+	await expect(page).toHaveURL(/\/learn\//);
+	await page.getByTestId('lesson-exit-leave').click();
+	await expect(page).toHaveURL(/\/review/);
+});

@@ -8,7 +8,7 @@ when adding features, reviewing PRs, or preparing a release.
 
 ```bash
 npm run check && npm run lint
-npm run test:unit -- --run    # 374 unit tests (52 files)
+npm run test:unit -- --run    # 378 unit tests (52 files)
 npm run test:e2e              # 63 Playwright scenarios: `desktop` project + curated `mobile` project (build + preview first); set PORT=4174 if 4173 is taken
 npm run content:proofread:launch  # A1/A2 launch gate only
 ```
@@ -196,7 +196,8 @@ All E2E files live in `frenchpath/e2e/`. Shared helpers: `helpers.ts`.
 | `settings.e2e.ts` | 4 | Dark theme; daily goal on home; reduce motion class; data-local notice |
 | `review.e2e.ts` | 2 | Empty review state; due badge after lesson |
 | `accessibility.e2e.ts` | 3 + 5 axe | Keyboard MCQ path; review grade button focus; modal focus trap; **axe WCAG A/AA scans** on onboarding, home, review, progress, settings, lesson (light/en + dark/hinglish) |
-| `mobile.e2e.ts` | 2 | `mobile` project only: bottom nav present, every tab ≥44×44; next-lesson CTA in first viewport (fixme until VoyageMap first-viewport lands) |
+| `mobile.e2e.ts` | 2 | `mobile` project only: bottom nav present, every tab ≥44×44; next-lesson hero CTA (`voyage-next`) inside an 844px viewport without scrolling |
+| `lesson-shell.e2e.ts` | 2 | Lesson exit control (immediate before any answer, confirm Modal once there is progress); Enter inside a text answer submits |
 | `onboarding.e2e.ts` | 1 | Full v2 wizard → home path |
 | `gloss.e2e.ts` | 2 | Tap-to-gloss in exercises and bridge markdown |
 | `hints.e2e.ts` | 1 | Lesson hint decrements and coach note |
@@ -215,8 +216,10 @@ Settings and critical flows use stable test IDs (add new ones when extending E2E
 
 | Test ID | Location |
 |---------|----------|
-| `onboarding-start` | `Onboarding.svelte` |
+| `onboarding-start` (hands off into lesson 1) | `OnboardingWizard.svelte` |
 | `unit-card`, `streak-badge`, `daily-goal`, `due-badge`, `delf-card` | Home `+page.svelte` |
+| `voyage-hero`, `voyage-next` (next-lesson CTA; **not** a `unit-card` — suites rely on `unit-card.first()` being unit 1) | `VoyageMap.svelte` |
+| `lesson-exit`, `lesson-exit-confirm`, `lesson-exit-stay`, `lesson-exit-leave`, `confidence-pulse` (native `<dialog>` Modal) | Lesson `+page.svelte` / `LessonShell.svelte` |
 | `locked`, `start-lesson`, `check`, `continue`, `summary`, `xp-awarded`, `practice-note` | Lesson `+page.svelte` |
 | `reveal`, `review-done`, `no-reviews`, `grade-buttons` | Review `+page.svelte` |
 | `language-select`, `theme-select`, `goal-select`, `retention-select`, `reduce-motion` | Settings |

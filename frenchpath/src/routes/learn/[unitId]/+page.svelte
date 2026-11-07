@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
+	import { tick } from 'svelte';
 	import { tapHaptic } from '$lib/platform/haptics';
 	import { loadUnit, listUnitSummaries, buildLessonLexicon } from '$lib/content/loader';
 	import GlossMarkdown from '$lib/components/GlossMarkdown.svelte';
@@ -121,12 +122,37 @@
 	});
 
 	let showExitConfirm = $state(false);
+	/** Where a confirmed exit goes: the tab the learner tapped, or home from the close glyph. */
+	let exitTarget = $state<string | null>(null);
+	let leaving = false;
+	const hasProgress = () => index > 0 || response !== null || submitted;
 
 	/** Exit control: leave at once if nothing has been attempted, otherwise confirm. */
 	function requestExit() {
-		if (index > 0 || response !== null || submitted) showExitConfirm = true;
+		exitTarget = null;
+		if (hasProgress()) showExitConfirm = true;
 		else void goto(resolve('/'));
 	}
+
+	function confirmExit() {
+		leaving = true;
+		// exitTarget is the pathname SvelteKit handed us in beforeNavigate (already app-resolved).
+		// eslint-disable-next-line svelte/no-navigation-without-resolve
+		void goto(exitTarget ?? resolve('/'));
+	}
+
+	// The global tab bar and the browser's back button stay live during a lesson;
+	// route every mid-lesson departure through the same confirm as the close glyph.
+	beforeNavigate((navigation) => {
+		if (leaving || phase !== 'exercise' || !hasProgress()) return;
+		if (navigation.type === 'leave') return; // tab close / reload: the browser owns that prompt
+		navigation.cancel();
+		exitTarget = navigation.to?.url.pathname ?? null;
+		showExitConfirm = true;
+	});
+
+	/** After grading, focus the feedback so a reflex second Enter can't skip past it. */
+	let feedbackEl = $state<HTMLElement | null>(null);
 
 	/** Enter inside the exercise form submits the answer, or continues once graded. */
 	function onAnswerSubmit(event: SubmitEvent) {
@@ -141,6 +167,7 @@
 		if (correct) correctCount += 1;
 		submitted = true;
 		void tapHaptic();
+		void tick().then(() => feedbackEl?.focus({ preventScroll: true }));
 		rubricHints =
 			(response.type === 'cloze' || response.type === 'translation') && !correct
 				? evaluateRubric(response.text, current, nativeLanguage)
@@ -392,12 +419,14 @@
 				{#if submitted}
 					<div
 						transition:fade={{ duration: reducedMotion ? 0 : 200 }}
-						class="mt-5 flex items-start gap-3 rounded-2xl p-3 text-sm font-medium {correct
+						class="mt-5 flex items-start gap-3 rounded-2xl p-3 text-sm font-medium outline-none {correct
 							? 'feedback-correct animate-scale-in fp-feedback-pulse'
 							: 'feedback-incorrect animate-shake'}"
 						data-testid="feedback"
 						role="status"
 						aria-live="polite"
+						tabindex="-1"
+						bind:this={feedbackEl}
 					>
 						{#if correct}
 							<CharacterLeo size="sm" animate={!reducedMotion} />
@@ -451,7 +480,7 @@
 					type="button"
 					class="btn-primary text-sm"
 					data-testid="lesson-exit-leave"
-					onclick={() => void goto(resolve('/'))}>{m.lesson_exit_confirm()}</button
+					onclick={confirmExit}>{m.lesson_exit_confirm()}</button
 				>
 			</div>
 		</Modal>

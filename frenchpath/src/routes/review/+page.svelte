@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { parseReviewMode, presentationFor } from '$lib/srs/reviewMode';
+	import { createOnceGate } from '$lib/srs/onceGate';
 	import { loadCaps } from '$lib/srs/caps';
 	import type { Caps } from '$lib/gamification/todayPlan';
 	import { resolve } from '$app/paths';
@@ -107,8 +108,9 @@
 			phase = 'reviewing';
 			sessionStartedAt = Date.now();
 			cardStartedAt = Date.now();
-		} catch {
+		} catch (error) {
 			// A failed IndexedDB read or content load must not leave the page on "Loading…" forever.
+			console.error('[review] load failed', error);
 			phase = 'error';
 		}
 	});
@@ -151,9 +153,25 @@
 		first?.focus();
 	}
 
+	// Grading awaits an IndexedDB write; a second tap in that window must not
+	// record the same card twice (it would corrupt the FSRS state).
+	const gradeGate = createOnceGate();
+	let grading = $state(false); // mirrors the gate for the disabled attribute
+
 	async function grade(grade: ReviewGrade, measuredMs?: number) {
 		const item = currentItem;
 		if (!item) return;
+		await gradeGate.run(async () => {
+			grading = true;
+			try {
+				await gradeItem(item, grade, measuredMs);
+			} finally {
+				grading = false;
+			}
+		});
+	}
+
+	async function gradeItem(item: ReviewItem, grade: ReviewGrade, measuredMs?: number) {
 		if (isNativePlatform()) void tapHaptic();
 		else if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
 		await recordReview(item.srs, grade, {
@@ -236,13 +254,17 @@
 									{#if canSpeak}
 										<IconButton
 											icon="speaker"
-											label="Listen"
+											label={m.audio_play()}
 											onclick={() => speakFrench(currentItem.content.french)}
 										/>
 									{/if}
 								</div>
 								{#if currentItem.content.gender !== 'none'}
-									<p class="mt-1 text-xs text-muted">{currentItem.content.gender}</p>
+									<p class="mt-1 text-xs text-muted">
+										{currentItem.content.gender === 'masculine'
+											? m.review_gender_masculine()
+											: m.review_gender_feminine()}
+									</p>
 								{/if}
 							{/if}
 
@@ -265,13 +287,17 @@
 									{#if canSpeak}
 										<IconButton
 											icon="speaker"
-											label="Listen"
+											label={m.audio_play()}
 											onclick={() => speakFrench(currentItem.content.french)}
 										/>
 									{/if}
 								</div>
 								{#if currentItem.content.gender !== 'none'}
-									<p class="mt-1 text-xs text-muted">{currentItem.content.gender}</p>
+									<p class="mt-1 text-xs text-muted">
+										{currentItem.content.gender === 'masculine'
+											? m.review_gender_masculine()
+											: m.review_gender_feminine()}
+									</p>
 								{/if}
 								<div class="mt-4 border-t border-border pt-4 text-left">
 									<p
@@ -304,6 +330,7 @@
 								type="button"
 								class="fp-grade-btn fp-grade-btn--{g.grade}"
 								data-grade={g.grade}
+								disabled={grading}
 								onclick={() => grade(g.grade)}>{g.label()}</button
 							>
 						{/each}

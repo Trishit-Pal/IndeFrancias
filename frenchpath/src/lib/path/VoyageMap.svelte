@@ -19,13 +19,16 @@
 		states,
 		lockReasons,
 		currentUnitId,
-		reduceMotion = false
+		reduceMotion = false,
+		dueCount = 0
 	}: {
 		units: UnitSummary[];
 		states: Map<string, LessonStatus>;
 		lockReasons: Map<string, string | null>;
 		currentUnitId: string | undefined;
 		reduceMotion: boolean;
+		/** Cards due for review; >0 adds the review link to the hero (the loop's other half). */
+		dueCount?: number;
 	} = $props();
 
 	// ── Voyage city config (line-art glyph keyed by `glyph`) ──
@@ -78,10 +81,12 @@
 	});
 	// Fraction of the route the marigold line reveals: reach the current city, or
 	// the whole way once every band is complete.
+	// The route starts at Mumbai (departure stop), so there are bands.length
+	// segments and the ink reaches the current city at (currentIndex + 1) of them.
 	const progressFraction = $derived.by(() => {
-		if (bands.length <= 1) return bands.length === 1 && bandDone(bands[0]) ? 1 : 0;
+		if (bands.length === 0) return 0;
 		if (bands.every(bandDone)) return 1;
-		return currentIndex / (bands.length - 1);
+		return (currentIndex + 1) / bands.length;
 	});
 
 	// ── SVG route geometry ──
@@ -96,6 +101,8 @@
 	let vRail = $state<HTMLElement | null>(null);
 	let hNodeEls = $state<HTMLElement[]>([]);
 	let vNodeEls = $state<HTMLElement[]>([]);
+	let hOriginEl = $state<HTMLElement | null>(null);
+	let vOriginEl = $state<HTMLElement | null>(null);
 	let hBox = $state<Box>({ w: 0, h: 0 });
 	let vBox = $state<Box>({ w: 0, h: 0 });
 	let hCenters = $state<Pt[]>([]);
@@ -134,12 +141,12 @@
 		};
 		watch(
 			hRail,
-			() => hNodeEls,
+			() => [hOriginEl, ...hNodeEls].filter((el): el is HTMLElement => !!el),
 			(m) => ((hBox = m.box), (hCenters = m.pts))
 		);
 		watch(
 			vRail,
-			() => vNodeEls,
+			() => [vOriginEl, ...vNodeEls].filter((el): el is HTMLElement => !!el),
 			(m) => ((vBox = m.box), (vCenters = m.pts))
 		);
 		return () => cleanups.forEach((c) => c());
@@ -191,10 +198,10 @@
 
 	// The marigold "train" starts at the first stop and arrives at today's as the ink draws.
 	const hMarker = $derived<Pt | null>(
-		(drawn || reduceMotion ? hCenters[currentIndex] : hCenters[0]) ?? null
+		(drawn || reduceMotion ? hCenters[currentIndex + 1] : hCenters[0]) ?? null
 	);
 	const vMarker = $derived<Pt | null>(
-		(drawn || reduceMotion ? vCenters[currentIndex] : vCenters[0]) ?? null
+		(drawn || reduceMotion ? vCenters[currentIndex + 1] : vCenters[0]) ?? null
 	);
 
 	// Hero: today's stop and the next lesson, first in the first viewport.
@@ -205,7 +212,12 @@
 </script>
 
 {#snippet glyph(key: string)}
-	{#if key === 'marseille'}
+	{#if key === 'mumbai'}
+		<path d="M4.5 20V11.5a7.5 7.5 0 0 1 15 0V20" />
+		<path d="M8.5 20v-5.5a3.5 3.5 0 0 1 7 0V20" />
+		<path d="M3 20h18" />
+		<path d="M12 2.5V4" />
+	{:else if key === 'marseille'}
 		<path d="M4.5 16.5 H19.5 L17.5 20 H6.5 Z" />
 		<path d="M12 4 V16.5" />
 		<path d="M12 5 L18 15 H12 Z" />
@@ -287,6 +299,17 @@
 			{:else}
 				<p class="fp-voyage-hero-complete">{m.voyage_complete()}</p>
 			{/if}
+			{#if dueCount > 0}
+				<a class="fp-voyage-hero-due" href={resolve('/review')} data-testid="voyage-review-due">
+					<Icon name="review" size={16} />
+					<span
+						>{dueCount === 1
+							? m.home_cards_due_one()
+							: m.home_cards_due_other({ count: String(dueCount) })}</span
+					>
+					<Icon name="chevron-right" size={16} />
+				</a>
+			{/if}
 		</section>
 	{/if}
 
@@ -329,6 +352,16 @@
 			</svg>
 		{/if}
 
+		<div class="fp-voyage-city fp-voyage-city--done fp-voyage-city--origin">
+			<div class="fp-voyage-city-label">Mumbai</div>
+			<div class="fp-voyage-city-sublabel">{m.voyage_departed()}</div>
+			<div class="fp-voyage-city-node" style="--city-color:var(--fp-saffron)" bind:this={hOriginEl}>
+				<svg class="fp-city-glyph" viewBox="0 0 24 24" aria-hidden="true">
+					{@render glyph('mumbai')}
+				</svg>
+			</div>
+			<div class="fp-voyage-city-status"><Icon name="check" size={12} /></div>
+		</div>
 		{#each bands as band, hi (band.level)}
 			{@const done = bandDone(band)}
 			{@const active = isCurrentLevel(band.level)}
@@ -360,9 +393,12 @@
 					</svg>
 				</div>
 				<div class="fp-voyage-city-status">
-					{#if done}✓ {completedCount(band)}/{band.units.length}{:else if active}▶ {completedCount(
-							band
-						)}/{band.units.length}{:else}<Icon name="lock" size={13} />{/if}
+					{#if done}<Icon name="check" size={12} />
+						{completedCount(band)}/{band.units.length}{:else if active}<Icon
+							name="play"
+							size={12}
+						/>
+						{completedCount(band)}/{band.units.length}{:else}<Icon name="lock" size={13} />{/if}
 				</div>
 			</div>
 		{/each}
@@ -370,6 +406,21 @@
 
 	<!-- Mobile: vertical winding route -->
 	<div class="fp-voyage-v-rail" bind:this={vRail}>
+		<svg class="fp-jali fp-jali--v" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+			<defs>
+				<pattern
+					id="fp-jali-tile-v"
+					width="30"
+					height="30"
+					patternUnits="userSpaceOnUse"
+					patternTransform="rotate(45)"
+				>
+					<circle cx="15" cy="15" r="6.5" fill="none" stroke="currentColor" stroke-width="1" />
+					<path d="M15 0 V30 M0 15 H30" stroke="currentColor" stroke-width="0.6" />
+				</pattern>
+			</defs>
+			<rect width="100%" height="100%" fill="url(#fp-jali-tile-v)" />
+		</svg>
 		{#if vBox.w > 0}
 			<svg class="fp-route-v-svg" viewBox="0 0 {vBox.w} {vBox.h}" aria-hidden="true">
 				<path class="fp-route-base" d={routeVD} pathLength="1" />
@@ -388,10 +439,25 @@
 				{/if}
 			</svg>
 		{/if}
+		<div class="fp-voyage-city-row fp-row-left">
+			<div class="fp-voyage-city-info">
+				<span class="fp-city-name">Mumbai</span>
+				<span class="fp-city-cefr">{m.voyage_departed()}</span>
+			</div>
+			<div
+				class="fp-voyage-city-node-v fp-voyage-city--done"
+				style="--city-color:var(--fp-saffron)"
+				bind:this={vOriginEl}
+			>
+				<svg class="fp-city-glyph" viewBox="0 0 24 24" aria-hidden="true">
+					{@render glyph('mumbai')}
+				</svg>
+			</div>
+		</div>
 		{#each bands as band, bi (band.level)}
 			{@const done = bandDone(band)}
 			{@const active = isCurrentLevel(band.level)}
-			<div class="fp-voyage-city-row {bi % 2 === 0 ? 'fp-row-left' : 'fp-row-right'}">
+			<div class="fp-voyage-city-row {bi % 2 === 0 ? 'fp-row-right' : 'fp-row-left'}">
 				<div class="fp-voyage-city-info">
 					<span class="fp-city-name" class:fp-active-city={active}>{band.city.city}</span>
 					<span class="fp-city-cefr"
@@ -451,8 +517,8 @@
 							class:fp-pulse={isCur && !reduceMotion}
 							data-testid="unit-card"
 							aria-label={st === 'locked'
-								? `${unit.title} – locked. ${lockReasons.get(unit.id) ?? ''}`
-								: `${unit.title} – ${st}`}
+								? `${unit.title} – ${m.voyage_locked()}. ${lockReasons.get(unit.id) ?? ''}`
+								: `${unit.title} – ${st === 'completed' ? m.voyage_done() : m.voyage_available()}`}
 						>
 							<span class="fp-lesson-node-icon" aria-hidden="true">
 								{#if st === 'completed'}✓{:else if isCur}<Icon name="play" size={14} />{:else}<Icon
@@ -517,11 +583,11 @@
 		width: 100%;
 		height: 100%;
 		color: var(--fp-ink);
-		opacity: 0.045;
+		opacity: 0.08;
 		pointer-events: none;
 	}
 	:global(.dark) .fp-jali {
-		opacity: 0.07;
+		opacity: 0.1;
 	}
 
 	.fp-route-svg {
@@ -926,7 +992,7 @@
 		margin: 0;
 		font-family: var(--fp-font-display);
 		font-weight: 500;
-		font-size: 22px;
+		font-size: 24px;
 		line-height: 1.1;
 		color: var(--fp-ink);
 		text-wrap: balance;
@@ -975,6 +1041,40 @@
 		overflow: hidden;
 		font-size: 15px;
 		line-height: 1.25;
+	}
+	.fp-voyage-hero-due {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin-top: 10px;
+		min-height: 44px;
+		padding: 0 4px;
+		font-size: 14px;
+		font-weight: 600;
+		color: var(--fp-jaipur-text);
+		text-decoration: none;
+	}
+	.fp-voyage-hero-due span {
+		flex: 1;
+	}
+	.fp-voyage-hero-due:focus-visible {
+		outline: 2px solid var(--fp-ink);
+		outline-offset: 2px;
+		border-radius: var(--fp-r-sm);
+	}
+	.fp-jali--v {
+		opacity: 0.06;
+	}
+	:global(.dark) .fp-jali--v {
+		opacity: 0.09;
+	}
+	.fp-voyage-city--origin .fp-voyage-city-node {
+		width: 48px;
+		height: 48px;
+	}
+	.fp-voyage-city--origin .fp-city-glyph {
+		width: 26px;
+		height: 26px;
 	}
 	.fp-voyage-hero-complete {
 		margin: 12px 0 0;

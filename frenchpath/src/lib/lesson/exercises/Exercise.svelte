@@ -14,6 +14,7 @@
 	import ListeningExercise from './ListeningExercise.svelte';
 	import ProductiveExercise from './ProductiveExercise.svelte';
 	import SpeakExercise from './SpeakExercise.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 
 	let {
 		exercise,
@@ -35,7 +36,10 @@
 </script>
 
 {#if coachNote}
-	<p class="mb-2 text-sm text-muted" data-testid="exercise-coach-note">💬 {coachNote}</p>
+	<p class="mb-2 flex items-start gap-1.5 text-sm text-muted" data-testid="exercise-coach-note">
+		<Icon name="coach" size={15} class="mt-0.5 shrink-0" />
+		<span>{coachNote}</span>
+	</p>
 {/if}
 
 {#if hintText}
@@ -44,7 +48,7 @@
 		style="border-color: color-mix(in srgb, var(--fp-saffron) 45%, var(--fp-paper)); background: color-mix(in srgb, var(--fp-saffron) 14%, var(--fp-paper));"
 		data-testid="exercise-hint"
 	>
-		💡 {hintText}
+		<Icon name="hint" size={15} class="mr-1 inline-block align-text-bottom" />{hintText}
 	</p>
 {/if}
 

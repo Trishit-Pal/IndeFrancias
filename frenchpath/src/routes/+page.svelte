@@ -115,8 +115,9 @@
 	onMount(async () => {
 		try {
 			await loadHome();
-		} catch {
+		} catch (error) {
 			// IndexedDB unavailable or corrupt read: show a recoverable error, never a blank page.
+			console.error('[home] load failed', error);
 			loadError = true;
 		} finally {
 			loaded = true;
@@ -214,11 +215,13 @@
 				<div class="surface-card flex items-center gap-3 p-4">
 					<CharacterMira size="sm" animate={!reduceMotion} />
 					<div class="flex-1">
-						<p class="fp-quote-fr text-sm font-semibold">
-							{homeSubtitle}
-						</p>
-						<div class="mt-1 flex gap-2">
-							<span class="fp-stat-badge fp-stat-badge--fire" data-testid="streak-badge">
+						<div class="flex gap-2">
+							<span
+								class="fp-stat-badge fp-stat-badge--fire"
+								role="img"
+								aria-label={m.home_streak_label({ count: String(streak) })}
+								data-testid="streak-badge"
+							>
 								<span class="fp-flame" aria-hidden="true"><Icon name="flame" size={14} /></span>
 								<span class="fp-figure">{streak}</span>
 							</span>
@@ -363,8 +366,8 @@
 			</div>
 
 			<section class="order-1 lg:order-2">
-				<h2 class="fp-display-md mb-2 text-balance">Le Voyage</h2>
-				<VoyageMap {units} {states} {lockReasons} {currentUnitId} {reduceMotion} />
+				<h2 class="fp-serif mb-2 text-2xl text-balance">Le Voyage</h2>
+				<VoyageMap {units} {states} {lockReasons} {currentUnitId} {reduceMotion} dueCount={due} />
 			</section>
 		</div>
 	</main>
