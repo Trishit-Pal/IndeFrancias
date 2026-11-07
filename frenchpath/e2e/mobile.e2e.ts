@@ -20,10 +20,9 @@ test.describe('mobile shell', () => {
 		}
 	});
 
-	test.fixme('next-lesson CTA is in the first viewport without scrolling', async ({ page }) => {
-		// Enabled by the VoyageMap first-viewport work (plan Phase 4).
+	test('next-lesson CTA is in the first viewport without scrolling', async ({ page }) => {
 		await gotoHome(page);
-		const cta = page.getByTestId('unit-card').first();
+		const cta = page.getByTestId('voyage-next');
 		const box = await cta.boundingBox();
 		const viewport = page.viewportSize()!;
 		expect(box).not.toBeNull();

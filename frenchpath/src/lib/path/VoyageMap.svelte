@@ -85,20 +85,64 @@
 	});
 
 	// ── SVG route geometry ──
-	// City points in the route svg's viewBox (0 0 100 24, preserveAspectRatio
-	// none). x is placed to sit under each equal-width HTML column's centre; the
-	// rail svg spans 6%..94% of the rail, so we remap column centres into it.
+	// The route is drawn in each rail's own pixel space: every city node's centre
+	// is measured (and re-measured on resize) and the svg's viewBox equals the
+	// rail's size, 1:1. A stretched viewBox + non-scaling stroke made Chromium
+	// mis-place the pathLength dash pattern (stray marigold dashes at 0%).
 	type Pt = { x: number; y: number };
-	const railInset = 6; // % — must match .fp-route-svg left/right
-	const cityPoints = $derived.by<Pt[]>(() => {
-		const n = bands.length;
-		if (n === 0) return [];
-		return bands.map((_, i) => {
-			const centrePct = ((i + 0.5) / n) * 100; // column centre, % of full rail
-			const x = ((centrePct - railInset) / (100 - railInset * 2)) * 100;
-			const y = 12 + (i % 2 === 0 ? -4.5 : 4.5); // gentle wave
-			return { x, y };
+	type Box = { w: number; h: number };
+	type Measured = { box: Box; pts: Pt[] };
+	let hRail = $state<HTMLElement | null>(null);
+	let vRail = $state<HTMLElement | null>(null);
+	let hNodeEls = $state<HTMLElement[]>([]);
+	let vNodeEls = $state<HTMLElement[]>([]);
+	let hBox = $state<Box>({ w: 0, h: 0 });
+	let vBox = $state<Box>({ w: 0, h: 0 });
+	let hCenters = $state<Pt[]>([]);
+	let vCenters = $state<Pt[]>([]);
+
+	function measure(rail: HTMLElement, nodes: HTMLElement[]): Measured {
+		const r = rail.getBoundingClientRect();
+		const pts = nodes.filter(Boolean).map((el) => {
+			const b = el.getBoundingClientRect();
+			return { x: b.left - r.left + b.width / 2, y: b.top - r.top + b.height / 2 };
 		});
+		return { box: { w: r.width, h: r.height }, pts };
+	}
+
+	$effect(() => {
+		void bands.length; // re-measure when the set of stops changes
+		const cleanups: (() => void)[] = [];
+		const watch = (
+			rail: HTMLElement | null,
+			nodes: () => HTMLElement[],
+			apply: (m: Measured) => void
+		) => {
+			if (!rail) return;
+			let raf = 0;
+			const run = () => {
+				cancelAnimationFrame(raf);
+				raf = requestAnimationFrame(() => apply(measure(rail, nodes())));
+			};
+			run();
+			const ro = new ResizeObserver(run);
+			ro.observe(rail);
+			cleanups.push(() => {
+				ro.disconnect();
+				cancelAnimationFrame(raf);
+			});
+		};
+		watch(
+			hRail,
+			() => hNodeEls,
+			(m) => ((hBox = m.box), (hCenters = m.pts))
+		);
+		watch(
+			vRail,
+			() => vNodeEls,
+			(m) => ((vBox = m.box), (vCenters = m.pts))
+		);
+		return () => cleanups.forEach((c) => c());
 	});
 
 	/** Catmull-Rom → cubic Bézier for a smooth route through the points. */
@@ -118,7 +162,24 @@
 		}
 		return d;
 	}
-	const routeD = $derived(smoothPath(cityPoints));
+
+	/** A gentle alternating bulge between stops so the line reads as a route, not a ruler. */
+	function withBulges(pts: Pt[], axis: 'x' | 'y', amount: number): Pt[] {
+		const out: Pt[] = [];
+		pts.forEach((p, i) => {
+			out.push(p);
+			const n = pts[i + 1];
+			if (!n) return;
+			const mid = { x: (p.x + n.x) / 2, y: (p.y + n.y) / 2 };
+			const sign = i % 2 === 0 ? -1 : 1;
+			out.push(
+				axis === 'y' ? { ...mid, y: mid.y + sign * amount } : { ...mid, x: mid.x - sign * amount }
+			);
+		});
+		return out;
+	}
+	const routeD = $derived(smoothPath(withBulges(hCenters, 'y', 10)));
+	const routeVD = $derived(smoothPath(withBulges(vCenters, 'x', Math.min(28, vBox.w * 0.12))));
 
 	// Draw-in: progress line reveals from nothing to progressFraction on mount.
 	// Under reduced motion it starts revealed (no flash, no transition).
@@ -127,6 +188,20 @@
 		drawn = true;
 	});
 	const progressOffset = $derived(drawn || reduceMotion ? 1 - progressFraction : 1);
+
+	// The marigold "train" starts at the first stop and arrives at today's as the ink draws.
+	const hMarker = $derived<Pt | null>(
+		(drawn || reduceMotion ? hCenters[currentIndex] : hCenters[0]) ?? null
+	);
+	const vMarker = $derived<Pt | null>(
+		(drawn || reduceMotion ? vCenters[currentIndex] : vCenters[0]) ?? null
+	);
+
+	// Hero: today's stop and the next lesson, first in the first viewport.
+	const currentUnit = $derived(units.find((u) => u.id === currentUnitId) ?? null);
+	const legDone = $derived(activeBand ? completedCount(activeBand) : 0);
+	const legTotal = $derived(activeBand?.units.length ?? 0);
+	const legPct = $derived(legTotal === 0 ? 0 : Math.round((legDone / legTotal) * 100));
 </script>
 
 {#snippet glyph(key: string)}
@@ -162,8 +237,61 @@
 {/snippet}
 
 <div class="fp-voyage-map" class:reduce-motion={reduceMotion} data-testid="path-scene">
+	<!-- Hero: where you are on the way to Paris, and the next lesson, in one glance -->
+	{#if activeBand}
+		<section
+			class="fp-voyage-hero"
+			aria-labelledby="fp-voyage-hero-title"
+			data-testid="voyage-hero"
+		>
+			<div class="fp-voyage-hero-head">
+				<svg
+					class="fp-voyage-hero-glyph"
+					viewBox="0 0 24 24"
+					aria-hidden="true"
+					style="--city-color:{activeBand.city.color}"
+				>
+					{@render glyph(activeBand.city.glyph)}
+				</svg>
+				<div class="min-w-0">
+					<h3 id="fp-voyage-hero-title" class="fp-voyage-hero-city">
+						{m.voyage_you_are_in({ city: activeBand.city.city })}
+					</h3>
+					<p class="fp-voyage-hero-meta">
+						<span class="fp-figure"
+							>{m.voyage_leg({ n: String(currentIndex + 1), total: String(bands.length) })}</span
+						>
+						· {m.voyage_lessons_done({ done: String(legDone), total: String(legTotal) })}
+						{#if BETA_LEVELS.has(activeBand.level)}&nbsp;<span class="fp-beta-badge"
+								>{m.beta_badge()}</span
+							>{/if}
+					</p>
+				</div>
+			</div>
+			<div class="fp-voyage-hero-bar" aria-hidden="true">
+				<div class="fp-voyage-hero-fill" style="width:{drawn || reduceMotion ? legPct : 0}%"></div>
+			</div>
+			{#if currentUnit}
+				<a
+					class="btn-primary fp-voyage-hero-cta"
+					href={resolve('/learn/[unitId]', { unitId: currentUnit.id })}
+					data-testid="voyage-next"
+				>
+					<Icon name="play" size={18} />
+					<span class="fp-voyage-hero-cta-text">
+						<span class="fp-voyage-hero-cta-label">{m.voyage_next()}</span>
+						<span class="fp-voyage-hero-cta-title">{currentUnit.title}</span>
+					</span>
+					<Icon name="chevron-right" size={18} />
+				</a>
+			{:else}
+				<p class="fp-voyage-hero-complete">{m.voyage_complete()}</p>
+			{/if}
+		</section>
+	{/if}
+
 	<!-- Desktop: horizontal route panorama -->
-	<div class="fp-voyage-h-rail">
+	<div class="fp-voyage-h-rail" bind:this={hRail}>
 		<!-- Jali lattice backdrop (one of two places the texture appears app-wide) -->
 		<svg class="fp-jali" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
 			<defs>
@@ -181,18 +309,27 @@
 			<rect width="100%" height="100%" fill="url(#fp-jali-tile)" />
 		</svg>
 
-		<!-- Route: dotted base + marigold progress fill -->
-		<svg class="fp-route-svg" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true">
-			<path class="fp-route-base" d={routeD} pathLength="1" />
-			<path
-				class="fp-route-progress"
-				d={routeD}
-				pathLength="1"
-				style="stroke-dashoffset:{progressOffset}"
-			/>
-		</svg>
+		<!-- Route: dotted base + marigold progress ink + the arriving train dot -->
+		{#if hBox.w > 0}
+			<svg class="fp-route-svg" viewBox="0 0 {hBox.w} {hBox.h}" aria-hidden="true">
+				<path class="fp-route-base" d={routeD} pathLength="1" />
+				<path
+					class="fp-route-progress"
+					d={routeD}
+					pathLength="1"
+					style="stroke-dashoffset:{progressOffset}"
+				/>
+				{#if hMarker}
+					<circle
+						class="fp-route-marker"
+						r="5"
+						style="transform: translate({hMarker.x}px, {hMarker.y}px)"
+					/>
+				{/if}
+			</svg>
+		{/if}
 
-		{#each bands as band (band.level)}
+		{#each bands as band, hi (band.level)}
 			{@const done = bandDone(band)}
 			{@const active = isCurrentLevel(band.level)}
 			<div
@@ -211,6 +348,7 @@
 					class="fp-voyage-city-node"
 					style="--city-color:{band.city.color}"
 					class:fp-pulse={active && !reduceMotion}
+					bind:this={hNodeEls[hi]}
 				>
 					{#if active}
 						<div class="fp-city-marker" aria-hidden="true">
@@ -231,23 +369,38 @@
 	</div>
 
 	<!-- Mobile: vertical winding route -->
-	<div class="fp-voyage-v-rail">
-		<div class="fp-route-v-track" aria-hidden="true">
-			<div class="fp-route-v-fill" style="height:{progressFraction * 100}%"></div>
-		</div>
+	<div class="fp-voyage-v-rail" bind:this={vRail}>
+		{#if vBox.w > 0}
+			<svg class="fp-route-v-svg" viewBox="0 0 {vBox.w} {vBox.h}" aria-hidden="true">
+				<path class="fp-route-base" d={routeVD} pathLength="1" />
+				<path
+					class="fp-route-progress"
+					d={routeVD}
+					pathLength="1"
+					style="stroke-dashoffset:{progressOffset}"
+				/>
+				{#if vMarker}
+					<circle
+						class="fp-route-marker"
+						r="5"
+						style="transform: translate({vMarker.x}px, {vMarker.y}px)"
+					/>
+				{/if}
+			</svg>
+		{/if}
 		{#each bands as band, bi (band.level)}
 			{@const done = bandDone(band)}
 			{@const active = isCurrentLevel(band.level)}
 			<div class="fp-voyage-city-row {bi % 2 === 0 ? 'fp-row-left' : 'fp-row-right'}">
-				<div class="fp-voyage-city-info" class:fp-text-right={bi % 2 === 0}>
+				<div class="fp-voyage-city-info">
 					<span class="fp-city-name" class:fp-active-city={active}>{band.city.city}</span>
 					<span class="fp-city-cefr"
-						>{band.level}{active
-							? ' · vous êtes ici'
+						>{band.level} · {active
+							? m.voyage_here()
 							: done
-								? ' · complet'
-								: ' · à venir'}{#if BETA_LEVELS.has(band.level)}&nbsp;<span class="fp-beta-badge"
-								>{m.beta_badge()}</span
+								? m.voyage_done()
+								: m.voyage_ahead()}{#if BETA_LEVELS.has(band.level)}&nbsp;<span
+								class="fp-beta-badge">{m.beta_badge()}</span
 							>{/if}</span
 					>
 				</div>
@@ -258,6 +411,7 @@
 					class:fp-voyage-city--active={active}
 					class:fp-voyage-city--locked={!done && !active}
 					class:fp-pulse={active && !reduceMotion}
+					bind:this={vNodeEls[bi]}
 				>
 					{#if active}
 						<div class="fp-city-marker fp-city-marker--v" aria-hidden="true">
@@ -309,7 +463,9 @@
 							<span class="fp-lesson-node-text">
 								<span class="fp-lesson-node-title">{unit.title}</span>
 								{#if st === 'locked'}
-									<span class="fp-lesson-node-reason">{lockReasons.get(unit.id) ?? 'Locked'}</span>
+									<span class="fp-lesson-node-reason"
+										>{lockReasons.get(unit.id) ?? m.voyage_locked()}</span
+									>
 								{/if}
 							</span>
 						</a>
@@ -370,10 +526,9 @@
 
 	.fp-route-svg {
 		position: absolute;
-		left: 6%;
-		right: 6%;
-		top: 56%;
-		height: 64px;
+		inset: 0;
+		width: 100%;
+		height: 100%;
 		pointer-events: none;
 		overflow: visible;
 	}
@@ -386,7 +541,6 @@
 		   round cap = a dot, one every 4% of the route (~25 dots; 2% merges
 		   into a solid line at desktop width). */
 		stroke-dasharray: 0.0001 0.04;
-		vector-effect: non-scaling-stroke;
 	}
 	.fp-route-progress {
 		fill: none;
@@ -394,7 +548,6 @@
 		stroke-width: 3;
 		stroke-linecap: round;
 		stroke-dasharray: 1;
-		vector-effect: non-scaling-stroke;
 		transition: stroke-dashoffset 1.2s var(--fp-ease-out);
 		filter: drop-shadow(0 1px 2px color-mix(in srgb, var(--fp-saffron) 45%, transparent));
 	}
@@ -497,53 +650,37 @@
 	}
 
 	/* ── Vertical (mobile) winding route ── */
-	.fp-route-v-track {
-		position: absolute;
-		left: 50%;
-		top: 26px;
-		bottom: 26px;
-		width: 2px;
-		transform: translateX(-1px);
-		background-image: repeating-linear-gradient(
-			0deg,
-			color-mix(in srgb, var(--fp-ink) 32%, transparent) 0 2px,
-			transparent 2px 8px
-		);
-		pointer-events: none;
-	}
-	.fp-route-v-fill {
-		position: absolute;
-		inset: 0 auto auto 0;
-		width: 100%;
-		background: var(--fp-saffron);
-		border-radius: 2px;
-		transition: height 1.2s var(--fp-ease-out);
-	}
-	:global(html.reduce-motion) .fp-route-v-fill {
-		transition: none;
-	}
+	/* Rows are a 1fr / 46px / 1fr grid so every node sits on the centre spine the SVG draws. */
 	.fp-voyage-city-row {
-		display: flex;
+		display: grid;
+		grid-template-columns: 1fr 46px 1fr;
 		align-items: center;
-		gap: 10px;
+		column-gap: 10px;
 		margin-bottom: 14px;
 		position: relative;
 		z-index: 2;
 	}
-	.fp-row-left {
-		flex-direction: row;
+	.fp-voyage-city-row:last-child {
+		margin-bottom: 0;
 	}
-	.fp-row-right {
-		flex-direction: row-reverse;
+	.fp-row-left .fp-voyage-city-info {
+		grid-column: 1;
+		grid-row: 1;
+		text-align: right;
+	}
+	.fp-row-right .fp-voyage-city-info {
+		grid-column: 3;
+		grid-row: 1;
+	}
+	.fp-voyage-city-node-v {
+		grid-column: 2;
+		grid-row: 1;
 	}
 	.fp-voyage-city-info {
 		flex: 1;
 		display: flex;
 		flex-direction: column;
 		gap: 2px;
-	}
-	.fp-text-right {
-		text-align: right;
 	}
 	.fp-city-name {
 		font-family: var(--fp-font-display);
@@ -559,8 +696,7 @@
 	.fp-city-cefr {
 		font-family: var(--fp-font-mono);
 		font-size: 11px;
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
+		letter-spacing: 0.06em;
 		color: var(--fp-muted);
 	}
 	/* Quiet, factual "beta" marker on AI-drafted levels — a hairline pill in the
@@ -755,5 +891,116 @@
 	}
 	.fp-lesson-node--locked .fp-lesson-node-icon {
 		opacity: 0.6;
+	}
+
+	/* ── Hero: today's stop + next lesson (all breakpoints; first thing on a phone) ── */
+	.fp-voyage-hero {
+		margin-bottom: 14px;
+		padding: 16px;
+		background: var(--fp-paper);
+		border: 1px solid var(--fp-border);
+		border-radius: var(--fp-r-xl);
+		box-shadow: var(--fp-elevation-2);
+	}
+	.fp-voyage-hero-head {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+	.fp-voyage-hero-glyph {
+		width: 48px;
+		height: 48px;
+		flex-shrink: 0;
+		padding: 9px;
+		border-radius: 50%;
+		background: color-mix(in srgb, var(--city-color) 20%, var(--fp-paper));
+		border: 1px solid var(--city-color);
+		color: color-mix(in srgb, var(--city-color) 75%, var(--fp-ink));
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.6;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.fp-voyage-hero-city {
+		margin: 0;
+		font-family: var(--fp-font-display);
+		font-weight: 500;
+		font-size: 22px;
+		line-height: 1.1;
+		color: var(--fp-ink);
+		text-wrap: balance;
+	}
+	.fp-voyage-hero-meta {
+		margin: 4px 0 0;
+		font-size: 12px;
+		color: var(--fp-muted);
+	}
+	.fp-voyage-hero-bar {
+		margin-top: 12px;
+		height: 6px;
+		border-radius: 3px;
+		background: var(--fp-paper-warm);
+		overflow: hidden;
+	}
+	.fp-voyage-hero-fill {
+		height: 100%;
+		border-radius: 3px;
+		background: var(--fp-saffron);
+		transition: width 1.2s var(--fp-ease-out);
+	}
+	.fp-voyage-hero-cta {
+		margin-top: 14px;
+		width: 100%;
+		justify-content: space-between;
+		gap: 10px;
+		text-align: left;
+	}
+	.fp-voyage-hero-cta-text {
+		display: flex;
+		flex: 1;
+		min-width: 0;
+		flex-direction: column;
+	}
+	.fp-voyage-hero-cta-label {
+		/* No opacity: white on the rose fill is 5.2:1 only at full strength. */
+		font-size: 12px;
+		font-weight: 500;
+	}
+	.fp-voyage-hero-cta-title {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+		overflow: hidden;
+		font-size: 15px;
+		line-height: 1.25;
+	}
+	.fp-voyage-hero-complete {
+		margin: 12px 0 0;
+		font-family: var(--fp-font-display);
+		font-style: italic;
+		color: var(--fp-sage-text);
+	}
+
+	/* ── Vertical route: same stroke-dashoffset ink as the desktop rail, plus the train dot ── */
+	.fp-route-v-svg {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		overflow: visible;
+	}
+	.fp-route-marker {
+		fill: var(--fp-saffron);
+		stroke: var(--fp-paper);
+		stroke-width: 2;
+		filter: drop-shadow(0 1px 2px color-mix(in srgb, var(--fp-ink) 30%, transparent));
+		transition: transform 1.2s var(--fp-ease-out);
+	}
+	:global(html.reduce-motion) .fp-route-marker,
+	:global(html.reduce-motion) .fp-voyage-hero-fill {
+		transition: none;
 	}
 </style>

@@ -87,19 +87,6 @@
 	const cocoLevel = $derived(Math.min(10, Math.floor(goal.xp / 250) + 1));
 	const cocoXpPercent = $derived(((goal.xp % 250) / 250) * 100);
 
-	// Voyage city label for the current CEFR band.
-	const CITY_MAP: Record<string, string> = {
-		A1: 'Marseille',
-		A2: 'Lyon',
-		B1: 'Bordeaux',
-		B2: 'Strasbourg',
-		C1: 'Paris'
-	};
-	const currentCity = $derived.by(() => {
-		const level = units.find((u) => u.id === currentUnitId)?.cefrLevel;
-		return level ? (CITY_MAP[level] ?? '') : '';
-	});
-
 	async function checkStreakMilestones(
 		currentStreak: number,
 		celebrated: number[]
@@ -370,12 +357,7 @@
 			</div>
 
 			<section class="order-1 lg:order-2">
-				<div class="mb-2 flex items-baseline justify-between">
-					<h2 class="fp-display-md text-balance">Le Voyage</h2>
-					{#if currentCity}
-						<span class="fp-eyebrow">{currentCity}</span>
-					{/if}
-				</div>
+				<h2 class="fp-display-md mb-2 text-balance">Le Voyage</h2>
 				<VoyageMap {units} {states} {lockReasons} {currentUnitId} {reduceMotion} />
 			</section>
 		</div>

@@ -17,7 +17,8 @@ test('completing unit 1 unlocks unit 2 on the path map', async ({ page }) => {
 	await page.reload();
 
 	await expect(page.getByTestId('unit-card').first()).toContainText('✓');
-	await expect(page.locator('a[href*="/learn/a1-unit-02"]')).toBeVisible();
+	// Hero CTA and the leg stub both link to the newly unlocked unit.
+	await expect(page.locator('a[href*="/learn/a1-unit-02"]').first()).toBeVisible();
 });
 
 test('DELF card is hidden before any A2 unit is completed', async ({ page }) => {
