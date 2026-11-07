@@ -5,13 +5,11 @@
 		progress,
 		current,
 		total,
-		reducedMotion = false,
 		children
 	}: {
 		progress: number;
 		current: number;
 		total: number;
-		reducedMotion?: boolean;
 		children: import('svelte').Snippet;
 	} = $props();
 </script>
@@ -19,7 +17,7 @@
 <div class="fp-lesson-shell">
 	<div class="mb-4 flex items-center gap-4">
 		<div
-			class="fp-progress-ring relative h-14 w-14 shrink-0 {reducedMotion ? '' : 'fp-ring-glow'}"
+			class="fp-progress-ring relative h-14 w-14 shrink-0"
 			style="--fp-progress: {progress}%"
 			role="progressbar"
 			aria-valuenow={progress}

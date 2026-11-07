@@ -31,9 +31,11 @@
 	--fp-sage: #6f9a60; /* success / complete                  */
 	--fp-seine: #3a63d4; /* Léo / French blue — links / info    */
 	--fp-seine-light: #dde6f8; /* light blue tint surface             */
+	--fp-seine-text: #2b4fae; /* Seine as text on tints/canvas (AA)  */
 	--fp-navy: #2e2b52; /* exam mode / formal panels           */
 	--fp-error: #c23d3d; /* incorrect / danger                  */
 	--fp-on-error: #ffffff; /* text on --fp-error fills            */
+	--fp-ivory: #f2eee4; /* theme-fixed: text on the exam slate */
 
 	/* Text-safe accents: saffron/sage are FILL colors (2.4:1 / 3.2:1 as text). */
 	/* Use these for any text; contrast.spec.ts enforces >= 4.5:1.            */
@@ -65,8 +67,6 @@
 	/* ── Motion ── */
 	--fp-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 	--fp-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-	--fp-duration-sm: 200ms;
-	--fp-duration-md: 300ms;
 	--fp-duration-fast: 150ms;
 	--fp-duration-normal: 280ms;
 
@@ -83,10 +83,6 @@
 	--fp-disabled: color-mix(in srgb, var(--fp-ink) 25%, var(--fp-canvas));
 	--fp-input: var(--fp-paper);
 	--fp-ring-offset: var(--fp-canvas);
-	--fp-accent-cyan: var(--fp-seine);
-	--fp-accent-violet: #7b6fc4;
-	--fp-glass: rgb(255 253 248 / 0.78);
-	--fp-glow: 0 0 24px rgb(221 84 113 / 0.22);
 }
 
 /* Indigo night: a designed second scene, not inverted grays. */
@@ -107,6 +103,7 @@
 	--fp-sage: #93bf83;
 	--fp-seine: #7d9bf0;
 	--fp-seine-light: #28315a;
+	--fp-seine-text: #a8bff2;
 	--fp-navy: #353160;
 	--fp-error: #e57373;
 	--fp-on-error: #16142b;
@@ -122,8 +119,6 @@
 	--fp-primary-hover: #f48ba0;
 	--fp-primary-foreground: #2b1020;
 	--fp-nav: rgb(33 30 61 / 0.92);
-	--fp-glass: rgb(33 30 61 / 0.82);
-	--fp-glow: 0 0 28px rgb(239 113 137 / 0.28);
 }
 
 /* ── Exam-mode overrides ──                                                  */
@@ -182,4 +177,55 @@
 .fp-hairline {
 	border: 0;
 	border-top: 1px solid var(--fp-hairline-color);
+}
+
+/* ── Indic UI scripts ──                                                     */
+/* body reads --fp-font-ui, so the override has to be on the token, not on a  */
+/* competing html[lang] font-family rule. Latin stays Manrope; the script's   */
+/* glyphs come from the system Noto family (Android / Windows 11 ship them).  */
+/* ponytail: no bundled Indic fonts; add @fontsource lazily if phone QA shows */
+/* tofu. Glossed native text (--fp-font-hindi) follows the same script.      */
+html[lang='bn'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Bengali', system-ui, sans-serif;
+	--fp-font-hindi: 'Noto Serif Bengali', 'Noto Sans Bengali', serif;
+}
+html[lang='ta'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Tamil', system-ui, sans-serif;
+	--fp-font-hindi: 'Noto Serif Tamil', 'Noto Sans Tamil', serif;
+}
+html[lang='te'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Telugu', system-ui, sans-serif;
+	--fp-font-hindi: 'Noto Serif Telugu', 'Noto Sans Telugu', serif;
+}
+html[lang='kn'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Kannada', system-ui, sans-serif;
+	--fp-font-hindi: 'Noto Serif Kannada', 'Noto Sans Kannada', serif;
+}
+html[lang='gu'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Gujarati', system-ui, sans-serif;
+	--fp-font-hindi: 'Noto Serif Gujarati', 'Noto Sans Gujarati', serif;
+}
+html[lang='pa'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Gurmukhi', system-ui, sans-serif;
+	--fp-font-hindi: 'Noto Serif Gurmukhi', 'Noto Sans Gurmukhi', serif;
+}
+/* Devanagari (hi, mr): the bundled Tiro face serves glossed text; UI labels
+   fall back to the system Devanagari sans inside the Manrope stack. */
+html[lang='hi'],
+html[lang='mr'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Devanagari', system-ui, sans-serif;
+}
+/* Indic scripts carry taller ascenders/descenders than Latin. */
+html:is(
+		[lang='bn'],
+		[lang='ta'],
+		[lang='te'],
+		[lang='kn'],
+		[lang='gu'],
+		[lang='pa'],
+		[lang='hi'],
+		[lang='mr']
+	)
+	body {
+	line-height: 1.65;
 }

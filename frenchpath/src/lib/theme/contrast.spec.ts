@@ -29,7 +29,13 @@ function contrast(a: string, b: string): number {
 }
 
 const AA = 4.5;
-const TEXT_TOKENS = ['--fp-ink', '--fp-saffron-text', '--fp-sage-text', '--fp-jaipur-text'];
+const TEXT_TOKENS = [
+	'--fp-ink',
+	'--fp-saffron-text',
+	'--fp-sage-text',
+	'--fp-jaipur-text',
+	'--fp-seine-text'
+];
 const themes = { light: block('.light'), dark: block('.dark') };
 
 describe('token contrast (WCAG AA)', () => {

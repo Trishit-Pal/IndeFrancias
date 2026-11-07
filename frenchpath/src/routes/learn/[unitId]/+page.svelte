@@ -234,7 +234,7 @@
 		</div>
 	{:else if phase === 'intro' && unit}
 		<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
-		<span class="fp-neon-border ml-2 rounded-full px-2 py-0.5 text-xs font-semibold uppercase">
+		<span class="fp-skill-chip ml-2 rounded-full px-2 py-0.5 text-xs font-semibold uppercase">
 			{unit.cefrLevel}
 		</span>
 		<h1 class="mt-2 text-2xl font-bold text-foreground md:text-3xl">{unit.title}</h1>
@@ -344,7 +344,7 @@
 			{m.lesson_continue_exercises()}
 		</button>
 	{:else if phase === 'exercise' && current && unit}
-		<LessonShell {progress} {reducedMotion} current={index + 1} {total}>
+		<LessonShell {progress} current={index + 1} {total}>
 			<ExerciseChrome
 				{unit}
 				exercise={current}

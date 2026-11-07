@@ -78,17 +78,6 @@
 		transform: translateY(0);
 	}
 }
-@keyframes fp-pulse {
-	0%,
-	100% {
-		transform: scale(1);
-		box-shadow: 0 0 0 0 rgba(233, 79, 100, 0.5);
-	}
-	50% {
-		transform: scale(1.04);
-		box-shadow: 0 0 0 14px rgba(233, 79, 100, 0);
-	}
-}
 @keyframes fp-steam {
 	0% {
 		opacity: 0;
@@ -113,14 +102,6 @@
 	100% {
 		transform: translateY(400px) rotate(720deg);
 		opacity: 0;
-	}
-}
-@keyframes fp-shimmer {
-	0% {
-		background-position: -200% 0;
-	}
-	100% {
-		background-position: 200% 0;
 	}
 }
 @keyframes fp-tail {
@@ -169,15 +150,8 @@
 	transform: translateY(-6px) rotate(-2deg) scale(1.03);
 }
 
-/* ── Shimmer badge ── */
-.fp-badge-earned {
-	background: linear-gradient(120deg, #f4d5c2 0%, #fcefd8 50%, #f4d5c2 100%);
-	background-size: 200% 100%;
-	animation: fp-shimmer 3s linear infinite;
-}
-
 .fp-transition {
-	transition: all var(--fp-duration-md) var(--fp-ease-out);
+	transition: all var(--fp-duration-normal) var(--fp-ease-out);
 }
 
 /* ── Reduce-motion override ── */

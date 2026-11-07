@@ -80,7 +80,7 @@
 	}
 	.fp-modal-panel {
 		box-shadow: var(--fp-elevation-3);
-		animation: fp-modal-in var(--fp-duration-md) var(--fp-ease-out);
+		animation: fp-modal-in var(--fp-duration-normal) var(--fp-ease-out);
 	}
 	@keyframes fp-modal-in {
 		from {

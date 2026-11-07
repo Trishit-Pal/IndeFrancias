@@ -25,7 +25,7 @@
 
 <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
 	<div class="flex flex-wrap items-center gap-2">
-		<span class="fp-neon-border rounded-full px-2 py-0.5 text-xs font-semibold uppercase">
+		<span class="fp-skill-chip rounded-full px-2 py-0.5 text-xs font-semibold uppercase">
 			{unit.cefrLevel}
 		</span>
 		<span class="fp-eyebrow rounded-full bg-subtle px-2 py-0.5 normal-case">{skillLabel}</span>

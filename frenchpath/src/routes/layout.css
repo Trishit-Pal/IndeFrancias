@@ -48,30 +48,6 @@ body {
 	-webkit-font-smoothing: antialiased;
 }
 
-html[lang='bn'] {
-	font-family: system-ui, 'Noto Sans Bengali', 'Segoe UI', sans-serif;
-}
-
-html[lang='ta'] {
-	font-family: system-ui, 'Noto Sans Tamil', 'Segoe UI', sans-serif;
-}
-
-html[lang='te'] {
-	font-family: system-ui, 'Noto Sans Telugu', 'Segoe UI', sans-serif;
-}
-
-html[lang='kn'] {
-	font-family: system-ui, 'Noto Sans Kannada', 'Segoe UI', sans-serif;
-}
-
-html[lang='gu'] {
-	font-family: system-ui, 'Noto Sans Gujarati', 'Segoe UI', sans-serif;
-}
-
-html[lang='pa'] {
-	font-family: system-ui, 'Noto Sans Gurmukhi', 'Segoe UI', sans-serif;
-}
-
 html:not(.reduce-motion) .fp-motion-safe-bounce-in {
 	animation: fp-bounce-in var(--fp-duration-normal) var(--fp-ease-spring) both;
 }
@@ -184,11 +160,10 @@ html:not(.reduce-motion) .fp-feedback-pulse {
 	}
 }
 
-.fp-neon-border {
-	border: 1px solid transparent;
-	background:
-		linear-gradient(var(--fp-card), var(--fp-card)) padding-box,
-		linear-gradient(135deg, var(--fp-primary), var(--fp-accent-violet)) border-box;
+.fp-skill-chip {
+	border: 1px solid color-mix(in srgb, var(--fp-jaipur) 45%, transparent);
+	background: var(--fp-jaipur-light);
+	color: var(--fp-jaipur-text);
 }
 
 .fp-progress-ring {
@@ -208,10 +183,6 @@ html:not(.reduce-motion) .fp-feedback-pulse {
 	background: var(--fp-card);
 }
 
-html:not(.reduce-motion) .fp-ring-glow {
-	animation: fp-ring-pulse 2.5s ease-in-out infinite;
-}
-
 html:not(.reduce-motion) .fp-tts-pulse {
 	animation: fp-pulse 0.8s ease infinite;
 }
@@ -221,7 +192,7 @@ html:not(.reduce-motion) .fp-tts-pulse {
 	width: 4px;
 	height: calc(8px + 20px * var(--fp-bar, 0.5));
 	border-radius: 2px;
-	background: var(--fp-accent-cyan);
+	background: var(--fp-seine);
 	opacity: 0.35;
 }
 
@@ -250,16 +221,6 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	to {
 		opacity: 1;
 		transform: scaleY(1);
-	}
-}
-
-@keyframes fp-ring-pulse {
-	0%,
-	100% {
-		filter: drop-shadow(0 0 4px var(--fp-primary));
-	}
-	50% {
-		filter: drop-shadow(0 0 12px var(--fp-accent-cyan));
 	}
 }
 
@@ -301,21 +262,15 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	font-weight: 700;
 	border: 1px solid var(--fp-border);
 }
+/* Tints mix against --fp-paper and text uses the *-text cuts, so both themes
+   derive from tokens (no .dark overrides needed). */
 .fp-stat-badge--fire {
-	background: #fbe8cb;
-	color: #9c4a26;
-}
-.dark .fp-stat-badge--fire {
-	background: #3f2b1c;
-	color: #eba172;
+	background: color-mix(in srgb, var(--fp-saffron) 18%, var(--fp-paper));
+	color: var(--fp-saffron-text);
 }
 .fp-stat-badge--ice {
-	background: #dde7f9;
-	color: #2b4fae;
-}
-.dark .fp-stat-badge--ice {
-	background: #223052;
-	color: #a8bff2;
+	background: var(--fp-seine-light);
+	color: var(--fp-seine-text);
 }
 
 /* XP progress bar (Coco companion, Atelier). Scoped fill keeps the standalone
@@ -405,28 +360,16 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	box-shadow: none;
 }
 .fp-grade-btn--again {
-	background: #f9e0e0;
-}
-.dark .fp-grade-btn--again {
-	background: #46242c;
+	background: color-mix(in srgb, var(--fp-error) 14%, var(--fp-paper));
 }
 .fp-grade-btn--hard {
-	background: #f9edd4;
-}
-.dark .fp-grade-btn--hard {
-	background: #453a22;
+	background: color-mix(in srgb, var(--fp-saffron) 16%, var(--fp-paper));
 }
 .fp-grade-btn--good {
-	background: #e5efdf;
-}
-.dark .fp-grade-btn--good {
-	background: #2b3d28;
+	background: color-mix(in srgb, var(--fp-sage) 16%, var(--fp-paper));
 }
 .fp-grade-btn--easy {
-	background: #dfe8f7;
-}
-.dark .fp-grade-btn--easy {
-	background: #253352;
+	background: color-mix(in srgb, var(--fp-seine) 14%, var(--fp-paper));
 }
 
 /* ── Exam mode (formal DELF/DALF) ── */
@@ -436,9 +379,8 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	align-items: center;
 	gap: 16px;
 	background: var(--fp-navy);
-	/* Fixed warm ivory: --fp-paper flips dark in dark mode, but this panel
-	   stays a dark formal slate in both themes. */
-	color: #f2eee4;
+	/* --fp-ivory is theme-fixed: this panel stays a dark formal slate in both themes. */
+	color: var(--fp-ivory);
 	border: 1px solid var(--fp-hairline-color);
 	border-radius: var(--fp-r-lg);
 	padding: 16px 22px;
@@ -457,13 +399,13 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	font-size: 24px;
 	line-height: 1.1;
 	margin: 2px 0 0;
-	color: #f2eee4;
+	color: var(--fp-ivory);
 }
 .fp-exam-badge {
 	width: 54px;
 	height: 54px;
 	flex-shrink: 0;
-	border: 2px solid #f2eee4;
+	border: 2px solid var(--fp-ivory);
 	border-radius: 50%;
 	display: flex;
 	flex-direction: column;
@@ -491,20 +433,12 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	animation: fp-stamp 0.8s ease-out both;
 }
 .fp-admis-stamp {
-	border: 3px solid #2e7d4f;
-	color: #2e7d4f;
-}
-.dark .fp-admis-stamp {
-	border-color: #7fc79a;
-	color: #7fc79a;
+	border: 3px solid var(--fp-sage-text);
+	color: var(--fp-sage-text);
 }
 .fp-recale-stamp {
-	border: 3px solid #b23232;
-	color: #b23232;
-}
-.dark .fp-recale-stamp {
-	border-color: #e57373;
-	color: #e57373;
+	border: 3px solid var(--fp-error);
+	color: var(--fp-error);
 }
 
 @layer components {
@@ -558,7 +492,29 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	}
 
 	.btn-secondary {
-		@apply min-h-11 rounded-xl border border-border px-4 py-3 font-semibold text-foreground hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 44px;
+		padding: 12px 20px;
+		border: 1px solid var(--fp-border);
+		border-radius: var(--fp-r-pill);
+		background: var(--fp-paper);
+		color: var(--fp-ink);
+		font-weight: 600;
+		transition: border-color 0.15s ease;
+		cursor: pointer;
+	}
+	.btn-secondary:hover:not(:disabled) {
+		border-color: var(--fp-jaipur);
+	}
+	.btn-secondary:focus-visible {
+		outline: 2px solid var(--fp-ink);
+		outline-offset: 2px;
+	}
+	.btn-secondary:disabled {
+		cursor: not-allowed;
+		opacity: 0.6;
 	}
 
 	.field-input {
