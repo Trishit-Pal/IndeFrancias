@@ -267,6 +267,7 @@
 	"settings_import_preview_title": "डिवाइस का सारा डेटा बदलें?",
 	"settings_import_preview_summary": "निर्यात किया गया: {date} · {lessons} पाठ · {cards} समीक्षा कार्ड",
 	"settings_import_preview_warning": "इससे आपकी मौजूदा प्रगति मिट जाएगी और बैकअप से बदल जाएगी।",
+	"settings_import_preview_safety_copy": "पहले आपकी मौजूदा प्रगति की एक कॉपी सेव होगी, ताकि आप उसे वापस पा सकें।",
 	"settings_importing": "आयात हो रहा है…",
 	"settings_import_confirm": "डेटा बदलें",
 	"settings_notif_denied_hint": "सूचनाओं की अनुमति नहीं मिली। दोहराव रिमाइंडर पाने के लिए ब्राउज़र सेटिंग्स में इन्हें चालू करें।",

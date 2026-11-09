@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { resetDatabase } from '../db';
+import { getDB, resetDatabase } from '../db';
 import * as srsRepo from '../db/repositories/srs';
 import * as progressRepo from '../db/repositories/progress';
 import * as settingsRepo from '../db/repositories/settings';
@@ -200,5 +200,65 @@ describe('backup export/import', () => {
 		file.payload.progress = [{ lessonId: 5 }];
 		file.checksum = await sha256Hex(JSON.stringify(file.payload));
 		await expect(previewBackup(JSON.stringify(file))).rejects.toThrow(/invalid/i);
+	});
+
+	it('exports compact JSON with no indentation or newlines', async () => {
+		await progressRepo.putProgress({
+			lessonId: 'c',
+			status: 'completed',
+			score: 90,
+			attempts: 1,
+			lastVisited: 1,
+			cefrLevel: 'A1'
+		});
+		expect(await exportBackup()).not.toContain('\n');
+	});
+
+	it('restores its own export after a year of reviews (20k logs)', async () => {
+		const db = await getDB();
+		const tx = db.transaction('reviewLog', 'readwrite');
+		for (let i = 0; i < 20_000; i++) {
+			void tx.store.add({
+				cardId: `a1-unit-01:vocab-${i % 356}`,
+				ts: 1_700_000_000_000 + i * 60_000,
+				grade: 3,
+				state: 2,
+				stability: 12.345678,
+				difficulty: 5.4321,
+				elapsedDays: 3,
+				scheduledDays: 7,
+				reviewDurationMs: 4200
+			});
+		}
+		await tx.done;
+
+		const json = await exportBackup();
+		await resetDatabase();
+		await importBackup(json);
+
+		expect(await (await getDB()).count('reviewLog')).toBe(20_000);
+	}, 60_000);
+
+	it('rejects a card whose due date is not a real ISO datetime', async () => {
+		await srsRepo.putCard(
+			createSrsCard({ cardId: 'u:1', contentId: '1', cefrLevel: 'A1', skill: 'reading' })
+		);
+		const file = JSON.parse(await exportBackup());
+		file.payload.srsCards[0].due = 'not-a-date';
+		file.checksum = await sha256Hex(JSON.stringify(file.payload));
+		await expect(importBackup(JSON.stringify(file))).rejects.toThrow(/invalid/i);
+		expect(await srsRepo.getAllCards()).toHaveLength(1);
+	});
+
+	it.each([
+		['targetRetention out of (0,1)', { targetRetention: 5 }],
+		['oversized fsrsWeights', { fsrsWeights: Array.from({ length: 500 }, () => 1) }]
+	])('rejects scheduling settings that would break FSRS: %s', async (_name, patch) => {
+		await settingsRepo.saveSettings({ dailyGoalXp: 42 });
+		const file = JSON.parse(await exportBackup());
+		file.payload.settings = { ...file.payload.settings, ...patch };
+		file.checksum = await sha256Hex(JSON.stringify(file.payload));
+		await expect(importBackup(JSON.stringify(file))).rejects.toThrow(/invalid/i);
+		expect((await settingsRepo.getSettings()).dailyGoalXp).toBe(42);
 	});
 });

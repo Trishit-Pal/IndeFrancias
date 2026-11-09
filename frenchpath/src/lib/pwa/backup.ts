@@ -18,8 +18,12 @@ import { backupFileSchema, CURRENT_BACKUP_VERSION, type BackupPayload } from './
 import { sha256Hex } from './checksum';
 import { migrateBackup } from './migrations';
 
-/** Reject imports larger than this before JSON.parse (DoS guard). */
-export const MAX_BACKUP_BYTES = 5 * 1024 * 1024;
+/**
+ * Reject imports larger than this before JSON.parse (DoS guard on a file the user
+ * chooses). Sized for years of reviews: a compact review log is a few hundred bytes,
+ * so 50 MB leaves room for well over 100k reviews.
+ */
+export const MAX_BACKUP_BYTES = 50 * 1024 * 1024;
 
 export const STORES = [
 	'settings',
@@ -135,7 +139,10 @@ export async function exportBackup(): Promise<string> {
 		checksum: await sha256Hex(JSON.stringify(payload)),
 		payload
 	};
-	return JSON.stringify(file, null, 2);
+	const json = JSON.stringify(file);
+	// An export we could not re-import must fail loudly, not hand the learner a dead file.
+	assertBackupSize(json);
+	return json;
 }
 
 // JSON has no Date type, so SRS card dates come back as ISO strings on import.

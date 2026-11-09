@@ -47,6 +47,7 @@
 	import { getLocale, setLocale } from '$lib/paraglide/runtime';
 
 	const LAST_EXPORT_KEY = 'frenchpath:lastExportAt';
+	const REVOKE_URL_DELAY_MS = 10_000;
 	const MIN_SYNC_PASSPHRASE_LENGTH = 8;
 
 	let settings = $state<Settings | null>(null);
@@ -165,29 +166,36 @@
 		message = persisted ? m.settings_persist_granted() : m.settings_persist_denied();
 	}
 
-	async function download() {
+	// Revoking synchronously after click() cancels the download on Safari.
+	function saveViaBrowser(json: string, filename: string) {
+		const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = filename;
+		link.click();
+		setTimeout(() => URL.revokeObjectURL(url), REVOKE_URL_DELAY_MS);
+	}
+
+	/** Resolves true when the backup was handed off; failures are shown in `message`. */
+	async function download(): Promise<boolean> {
 		try {
 			const json = await exportBackup();
 			const filename = `frenchpath-backup-${new Date().toISOString().slice(0, 10)}.json`;
 			if (isNativePlatform()) {
 				await exportBackupNative(json, filename);
 			} else {
-				const blob = new Blob([json], { type: 'application/json' });
-				const url = URL.createObjectURL(blob);
-				const link = document.createElement('a');
-				link.href = url;
-				link.download = filename;
-				link.click();
-				URL.revokeObjectURL(url);
+				saveViaBrowser(json, filename);
 			}
 			const exportedAt = new Date().toISOString();
 			localStorage.setItem(LAST_EXPORT_KEY, exportedAt);
 			lastExportAt = exportedAt;
 			message = m.settings_backup_downloaded();
+			return true;
 		} catch (error) {
 			// Surface native (share/filesystem) or web failures instead of
 			// throwing unhandled — backup is the only data-recovery path.
 			message = error instanceof Error ? error.message : m.settings_backup_export_failed();
+			return false;
 		}
 	}
 
@@ -213,6 +221,8 @@
 		if (!pendingImportJson || importing) return;
 		importing = true;
 		try {
+			// Safety copy of current progress first; if it fails, the restore must not run.
+			if (!(await download())) return;
 			await importBackup(pendingImportJson);
 			message = m.settings_backup_restored();
 			location.reload();
@@ -241,13 +251,7 @@
 			if (isNativePlatform()) {
 				await exportBackupNative(json, filename);
 			} else {
-				const blob = new Blob([json], { type: 'application/json' });
-				const url = URL.createObjectURL(blob);
-				const link = document.createElement('a');
-				link.href = url;
-				link.download = filename;
-				link.click();
-				URL.revokeObjectURL(url);
+				saveViaBrowser(json, filename);
 			}
 			message = m.sync_success();
 		} catch (error) {
@@ -795,6 +799,9 @@
 					</p>
 					<p class="mt-1 text-sm text-muted">
 						{m.settings_import_preview_warning()}
+					</p>
+					<p class="mt-1 text-sm text-muted">
+						{m.settings_import_preview_safety_copy()}
 					</p>
 					<div class="mt-4 flex gap-2">
 						<button

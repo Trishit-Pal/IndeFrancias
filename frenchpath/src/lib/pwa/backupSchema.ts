@@ -3,6 +3,9 @@
 // strings in the JSON payload and revived to Date objects on write.
 import { z } from 'zod';
 
+// ts-fsrs 5 generatorParameters().w length; optimizer.ts rejects any other length.
+const FSRS_WEIGHT_COUNT = 21;
+
 const cefr = z.enum(['A1', 'A2', 'B1', 'B2', 'C1']);
 const skill = z.enum(['listening', 'reading', 'spokenInteraction', 'spokenProduction', 'writing']);
 
@@ -14,7 +17,7 @@ const difficultyTier = z.enum(['easy', 'regular', 'hard']);
 
 export const settingsSchema = z.object({
 	uiLanguage: z.enum(['en', 'hi', 'hinglish', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa']),
-	targetRetention: z.number(),
+	targetRetention: z.number().min(0.7).max(0.99),
 	dailyGoalXp: z.number().min(0),
 	ttsVoice: z.string().nullable(),
 	audioSpeed: z.number(),
@@ -41,7 +44,7 @@ export const settingsSchema = z.object({
 			})
 		)
 		.optional(),
-	fsrsWeights: z.array(z.number()).nullable().optional(),
+	fsrsWeights: z.array(z.number().finite()).length(FSRS_WEIGHT_COUNT).nullable().optional(),
 	fsrsOptimizedAt: z.number().nullable().optional(),
 	fsrsOptimizedReviewCount: z.number().optional(),
 	updateCheckEnabled: z.boolean().optional()
@@ -62,7 +65,7 @@ export const srsCardSchema = z.object({
 	contentId: z.string(),
 	cefrLevel: cefr,
 	skill,
-	due: z.string(),
+	due: z.iso.datetime(),
 	stability: z.number(),
 	difficulty: z.number(),
 	elapsed_days: z.number(),
@@ -71,7 +74,7 @@ export const srsCardSchema = z.object({
 	reps: z.number(),
 	lapses: z.number(),
 	state: z.number(),
-	last_review: z.string().optional(),
+	last_review: z.iso.datetime().optional(),
 	lastGrade: z.number().optional(),
 	schedulerVersion: z.string()
 });

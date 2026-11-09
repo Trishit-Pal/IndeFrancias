@@ -238,6 +238,7 @@
 	"settings_import_preview_title": "Device ka saara data replace karein?",
 	"settings_import_preview_summary": "Export ho gaya: {date} · {lessons} lessons · {cards} review cards",
 	"settings_import_preview_warning": "Isse aapki current progress erase ho jayegi aur backup se replace ho jayegi.",
+	"settings_import_preview_safety_copy": "A copy of your current progress will be saved first, so you can get it back.",
 	"settings_importing": "Import ho raha hai…",
 	"settings_import_confirm": "Data replace karo",
 	"settings_notif_denied_hint": "Notifications allow nahi hui. Revision reminders paane ke liye browser settings mein inhe on karo.",
