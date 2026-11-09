@@ -13,11 +13,6 @@ export async function saveAssessment(record: AssessmentRecord): Promise<void> {
 	await (await getDB()).put('assessments', record);
 }
 
-export async function hasCompletedAssessment(assessmentId: string): Promise<boolean> {
-	const rec = await getAssessment(assessmentId);
-	return rec !== undefined && rec.xpAwarded > 0;
-}
-
 const CHECKPOINT_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
 /** Returns remaining cooldown ms, or null if retry is allowed. */

@@ -1,5 +1,12 @@
 // Opens (and lazily caches) the single FrenchPath IndexedDB database.
-import { openDB, deleteDB, type IDBPDatabase } from 'idb';
+import {
+	openDB,
+	deleteDB,
+	type IDBPDatabase,
+	type IDBPObjectStore,
+	type IDBPTransaction,
+	type StoreNames
+} from 'idb';
 import { DB_NAME, DB_VERSION, type FrenchPathDB } from './schema';
 
 let dbPromise: Promise<IDBPDatabase<FrenchPathDB>> | null = null;
@@ -43,6 +50,42 @@ export function getDB(): Promise<IDBPDatabase<FrenchPathDB>> {
 		});
 	}
 	return dbPromise;
+}
+
+/** A readwrite store handle from any transaction, so in-transaction helpers can be shared. */
+export type WritableStore<Name extends StoreNames<FrenchPathDB>> = IDBPObjectStore<
+	FrenchPathDB,
+	ArrayLike<StoreNames<FrenchPathDB>>,
+	Name,
+	'readwrite'
+>;
+
+/**
+ * Runs `body` in ONE readwrite transaction over `stores`, resolving once it has
+ * committed. All-or-nothing: if `body` throws or the browser aborts the
+ * transaction (quota, tab kill), none of its writes are kept.
+ *
+ * `body` may only await IDB requests: awaiting anything else lets IndexedDB
+ * auto-commit the transaction early. Do non-IDB work before calling this.
+ */
+export async function writeAtomically<Name extends StoreNames<FrenchPathDB>, T>(
+	stores: Name[],
+	body: (tx: IDBPTransaction<FrenchPathDB, Name[], 'readwrite'>) => Promise<T>
+): Promise<T> {
+	const tx = (await getDB()).transaction(stores, 'readwrite');
+	try {
+		const result = await body(tx);
+		await tx.done;
+		return result;
+	} catch (error) {
+		tx.done.catch(() => undefined); // rejects with AbortError; the caller gets `error`
+		try {
+			tx.abort();
+		} catch {
+			// Already finished (committed or aborted by the browser) — nothing to undo.
+		}
+		throw error;
+	}
 }
 
 /**

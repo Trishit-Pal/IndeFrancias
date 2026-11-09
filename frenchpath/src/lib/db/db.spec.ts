@@ -46,6 +46,16 @@ describe('settings repository', () => {
 		const reloaded = await settingsRepo.getSettings();
 		expect(reloaded.dailyGoalXp).toBe(50);
 	});
+
+	it('keeps both of two concurrent patches', async () => {
+		await Promise.all([
+			settingsRepo.saveSettings({ dailyGoalXp: 70 }),
+			settingsRepo.saveSettings({ reduceMotion: true })
+		]);
+		const reloaded = await settingsRepo.getSettings();
+		expect(reloaded.dailyGoalXp).toBe(70);
+		expect(reloaded.reduceMotion).toBe(true);
+	});
 });
 
 describe('srs `due` index', () => {

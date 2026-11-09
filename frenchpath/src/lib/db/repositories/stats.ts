@@ -1,4 +1,4 @@
-import { getDB } from '../db';
+import { getDB, writeAtomically, type WritableStore } from '../db';
 import type { DailyStats } from '../schema';
 
 export function emptyStats(date: string): DailyStats {
@@ -13,14 +13,20 @@ export async function getAllStats(): Promise<DailyStats[]> {
 	return (await getDB()).getAll('stats');
 }
 
+export type StatsDelta = Partial<Omit<DailyStats, 'date'>>;
+
 /** Adds the given deltas onto a day's stats (creating the day if needed). */
-export async function addStats(
+export function addStats(date: string, delta: StatsDelta): Promise<DailyStats> {
+	return writeAtomically(['stats'], (tx) => addStatsInTx(tx.objectStore('stats'), date, delta));
+}
+
+/** {@link addStats} inside a caller's transaction, so it commits with the caller's other writes. */
+export async function addStatsInTx(
+	store: WritableStore<'stats'>,
 	date: string,
-	delta: Partial<Omit<DailyStats, 'date'>>
+	delta: StatsDelta
 ): Promise<DailyStats> {
-	const db = await getDB();
-	const tx = db.transaction('stats', 'readwrite');
-	const current = (await tx.store.get(date)) ?? emptyStats(date);
+	const current = (await store.get(date)) ?? emptyStats(date);
 	const next: DailyStats = {
 		date,
 		xp: current.xp + (delta.xp ?? 0),
@@ -28,7 +34,6 @@ export async function addStats(
 		lessonsCompleted: current.lessonsCompleted + (delta.lessonsCompleted ?? 0),
 		reviewsDone: current.reviewsDone + (delta.reviewsDone ?? 0)
 	};
-	await tx.store.put(next);
-	await tx.done;
+	await store.put(next);
 	return next;
 }

@@ -1,4 +1,4 @@
-import { getDB } from '../db';
+import { getDB, writeAtomically } from '../db';
 import { DEFAULT_SETTINGS, SETTINGS_KEY, type Settings } from '../schema';
 import { xpFromPreset } from '$lib/profile/types';
 
@@ -17,12 +17,16 @@ export async function getSettings(): Promise<Settings> {
 }
 
 /** Immutably merges `patch` into the stored settings and returns the result. */
-export async function saveSettings(patch: Partial<Settings>): Promise<Settings> {
-	const current = await getSettings();
-	const next: Settings = normalizeSettings({ ...current, ...patch });
-	if (patch.dailyGoalPreset !== undefined && patch.dailyGoalXp === undefined) {
-		next.dailyGoalXp = xpFromPreset(patch.dailyGoalPreset);
-	}
-	await (await getDB()).put('settings', next, SETTINGS_KEY);
-	return next;
+export function saveSettings(patch: Partial<Settings>): Promise<Settings> {
+	// Read and write in one transaction so concurrent patches cannot overwrite each other.
+	return writeAtomically(['settings'], async (tx) => {
+		const store = tx.objectStore('settings');
+		const current = normalizeSettings(await store.get(SETTINGS_KEY));
+		const next: Settings = normalizeSettings({ ...current, ...patch });
+		if (patch.dailyGoalPreset !== undefined && patch.dailyGoalXp === undefined) {
+			next.dailyGoalXp = xpFromPreset(patch.dailyGoalPreset);
+		}
+		await store.put(next, SETTINGS_KEY);
+		return next;
+	});
 }

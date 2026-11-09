@@ -1,6 +1,6 @@
 import type { Unit } from '../content/schema';
 import type { CefrLevel, Skill } from '../db/schema';
-import { skillProfileRepo } from '../db';
+import type { WritableStore } from '../db';
 
 const CEFR_ORDER: CefrLevel[] = ['A1', 'A2', 'B1', 'B2', 'C1'];
 
@@ -36,8 +36,12 @@ export function skillsForUnit(unit: Unit): Skill[] {
 	return [...skills];
 }
 
-/** Bump skill estimates after a successful lesson (score ≥ 60%). Never downgrades. */
+/**
+ * Bump skill estimates after a successful lesson (score ≥ 60%). Never downgrades.
+ * Runs inside the caller's transaction so it commits with the lesson's other writes.
+ */
 export async function updateSkillProfilesFromLesson(
+	store: WritableStore<'skillProfile'>,
 	unit: Unit,
 	scorePercent: number,
 	now: Date = new Date()
@@ -46,9 +50,9 @@ export async function updateSkillProfilesFromLesson(
 
 	const skills = skillsForUnit(unit);
 	for (const skill of skills) {
-		const existing = await skillProfileRepo.getSkillProfile(skill);
+		const existing = await store.get(skill);
 		const estimatedLevel = cefrMax(existing?.estimatedLevel ?? 'A1', unit.cefrLevel);
-		await skillProfileRepo.putSkillProfile({
+		await store.put({
 			skill,
 			estimatedLevel,
 			updatedAt: now.getTime()

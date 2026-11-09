@@ -22,6 +22,7 @@
 	import type { CelebrationRequest } from '$lib/celebration/orchestrator';
 	import { shareProgress } from '$lib/share/shareCard';
 	import * as m from '$lib/paraglide/messages';
+	import { createOnceGate } from '$lib/srs/onceGate';
 
 	type Phase = 'loading' | 'intro' | 'exam' | 'result' | 'error' | 'cooldown';
 
@@ -108,9 +109,20 @@
 		if (gradeExercise(current, response)) correct += 1;
 	}
 
+	// Finishing awaits the XP award; a second tap must not submit the checkpoint twice.
+	const finishGate = createOnceGate();
+	let finishing = $state(false); // mirrors the gate for the disabled attribute
+
 	function next() {
 		if (index + 1 >= total) {
-			void finish();
+			void finishGate.run(async () => {
+				finishing = true;
+				try {
+					await finish();
+				} finally {
+					finishing = false;
+				}
+			});
 			return;
 		}
 		index += 1;
@@ -229,6 +241,7 @@
 				type="button"
 				class="btn-primary mt-4 w-full"
 				data-testid="checkpoint-continue"
+				disabled={finishing}
 				onclick={next}
 			>
 				{index + 1 >= total ? m.lesson_finish() : m.lesson_continue()}

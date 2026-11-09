@@ -1,14 +1,24 @@
 // Ties learning activity to the retention loop: updates the daily streak and
 // reports daily-goal progress. Called from lesson completion and reviews.
-import { streakRepo, statsRepo, settingsRepo } from '../db';
+import { statsRepo, settingsRepo, writeAtomically, STREAK_KEY, type WritableStore } from '../db';
+import { INITIAL_STREAK } from '../db/repositories/streak';
 import { updateStreak } from './streak';
 import { todayKey } from '../utils/date';
 
 /** Records that the learner was active today, advancing the streak once per day. */
 export async function recordDailyActivity(now: Date = new Date()): Promise<void> {
-	const streak = await streakRepo.getStreak();
-	const updated = updateStreak(streak, todayKey(now));
-	if (updated !== streak) await streakRepo.putStreak(updated);
+	const day = todayKey(now);
+	await writeAtomically(['streak'], (tx) => recordDailyActivityInTx(tx.objectStore('streak'), day));
+}
+
+/** {@link recordDailyActivity} inside a caller's transaction; `day` is a {@link todayKey}. */
+export async function recordDailyActivityInTx(
+	store: WritableStore<'streak'>,
+	day: string
+): Promise<void> {
+	const streak = (await store.get(STREAK_KEY)) ?? { ...INITIAL_STREAK };
+	const updated = updateStreak(streak, day);
+	if (updated !== streak) await store.put(updated);
 }
 
 export interface DailyGoal {

@@ -34,6 +34,7 @@
 	import CharacterMira from '$lib/components/CharacterMira.svelte';
 	import { fly, fade } from 'svelte/transition';
 	import * as m from '$lib/paraglide/messages';
+	import { createOnceGate } from '$lib/srs/onceGate';
 
 	type Phase = 'loading' | 'intro' | 'bridge-quiz' | 'exercise' | 'finished' | 'error' | 'locked';
 
@@ -207,7 +208,23 @@
 		await continueAdvance();
 	}
 
+	// Finishing awaits the lesson write; the Finish button and a reflex Enter must
+	// not both record the lesson (that doubled XP, lessons and attempts).
+	const advanceGate = createOnceGate();
+	let advancing = $state(false); // mirrors the gate for the disabled attribute
+
 	async function continueAdvance() {
+		await advanceGate.run(async () => {
+			advancing = true;
+			try {
+				await advanceOrFinish();
+			} finally {
+				advancing = false;
+			}
+		});
+	}
+
+	async function advanceOrFinish() {
 		if (!unit) return;
 		if (index + 1 < unit.exercises.length) {
 			index += 1;
@@ -443,7 +460,12 @@
 							{/each}
 						</div>
 					</div>
-					<button type="submit" class="btn-primary mt-4 w-full" data-testid="continue">
+					<button
+						type="submit"
+						class="btn-primary mt-4 w-full"
+						data-testid="continue"
+						disabled={advancing}
+					>
 						{index + 1 < total ? m.lesson_continue() : m.lesson_finish()}
 					</button>
 				{:else}
