@@ -3,6 +3,7 @@
 	import {
 		settingsRepo,
 		resetDatabase,
+		DatabaseBlockedError,
 		type Settings,
 		type Theme,
 		type UiLanguage,
@@ -311,7 +312,13 @@
 	}
 
 	async function reset() {
-		await resetDatabase();
+		try {
+			await resetDatabase();
+		} catch (error) {
+			if (!(error instanceof DatabaseBlockedError)) throw error;
+			message = m.settings_reset_blocked();
+			return;
+		}
 		location.reload();
 	}
 

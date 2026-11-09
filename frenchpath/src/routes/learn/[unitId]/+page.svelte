@@ -30,6 +30,7 @@
 	import ExerciseChrome from '$lib/components/ExerciseChrome.svelte';
 	import LessonComplete from '$lib/components/LessonComplete.svelte';
 	import Modal from '$lib/components/Modal.svelte';
+	import InfoBanner from '$lib/components/InfoBanner.svelte';
 	import CharacterLeo from '$lib/components/CharacterLeo.svelte';
 	import CharacterMira from '$lib/components/CharacterMira.svelte';
 	import { fly, fade } from 'svelte/transition';
@@ -40,7 +41,7 @@
 
 	let unit = $state<Unit | null>(null);
 	let phase = $state<Phase>('loading');
-	let errorMessage = $state('');
+	let saveError = $state(false);
 
 	let reducedMotion = $state(false);
 	let nativeLanguage = $state<NativeLanguage>('hi');
@@ -75,16 +76,16 @@
 
 	async function loadLesson(unitId: string) {
 		phase = 'loading';
-		errorMessage = '';
+		saveError = false;
 		unit = null;
-		const settings = await settingsRepo.getSettings();
-		reducedMotion =
-			settings.reduceMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		nativeLanguage = settings.nativeLanguage;
-		showFrenchTips = settings.showFrenchTips;
-		celebrationLevel = settings.celebrationLevel;
-		const passed = await passedAssessmentIds();
 		try {
+			const settings = await settingsRepo.getSettings();
+			reducedMotion =
+				settings.reduceMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			nativeLanguage = settings.nativeLanguage;
+			showFrenchTips = settings.showFrenchTips;
+			celebrationLevel = settings.celebrationLevel;
+			const passed = await passedAssessmentIds();
 			const all = await progressRepo.getAllProgress();
 			const progressById = Object.fromEntries(all.map((p) => [p.lessonId, p]));
 			if (isUnitLocked(unitId, listUnitSummaries(), progressById, passed)) {
@@ -110,8 +111,7 @@
 			showConfidencePulse = false;
 			pendingAdvance = false;
 			phase = 'intro';
-		} catch (e) {
-			errorMessage = e instanceof Error ? e.message : 'Failed to load this lesson.';
+		} catch {
 			phase = 'error';
 		}
 	}
@@ -213,15 +213,22 @@
 	const advanceGate = createOnceGate();
 	let advancing = $state(false); // mirrors the gate for the disabled attribute
 
+	// A failed save keeps the learner on the last exercise with every answer intact and offers
+	// a retry through this same gate. completeLesson is one transaction, so a failure wrote nothing.
 	async function continueAdvance() {
-		await advanceGate.run(async () => {
-			advancing = true;
-			try {
-				await advanceOrFinish();
-			} finally {
-				advancing = false;
-			}
-		});
+		try {
+			await advanceGate.run(async () => {
+				saveError = false;
+				advancing = true;
+				try {
+					await advanceOrFinish();
+				} finally {
+					advancing = false;
+				}
+			});
+		} catch {
+			saveError = true;
+		}
 	}
 
 	async function advanceOrFinish() {
@@ -235,7 +242,8 @@
 			rubricHints = [];
 		} else {
 			outcome = await completeLesson(unit, { correct: correctCount, total, score });
-			await ensurePersistence();
+			// Best-effort: the lesson is already saved, so this must not fail the finish (or a retry re-awards).
+			await ensurePersistence().catch(() => false);
 			phase = 'finished';
 			xpFloat = outcome.goalXp;
 			if (celebrationLevel === 'full' && !reducedMotion) {
@@ -277,9 +285,9 @@
 		<p class="text-muted">{m.lesson_loading()}</p>
 	{:else if phase === 'error'}
 		<div class="rounded-xl border border-error bg-error/10 p-4 text-foreground">
-			<p class="font-semibold">Could not load the lesson</p>
-			<p class="text-sm">{errorMessage}</p>
-			<a class="mt-3 inline-block text-primary underline" href={resolve('/')}>Back to home</a>
+			<p class="font-semibold">{m.lesson_load_error_title()}</p>
+			<p class="text-sm">{m.lesson_load_error_body()}</p>
+			<a class="mt-3 inline-block text-primary underline" href={resolve('/')}>{m.error_home()}</a>
 		</div>
 	{:else if phase === 'locked'}
 		<div class="surface-card p-6 text-center" data-testid="locked">
@@ -468,6 +476,19 @@
 					>
 						{index + 1 < total ? m.lesson_continue() : m.lesson_finish()}
 					</button>
+					{#if saveError}
+						<InfoBanner variant="error" role="alert" class="mt-4">
+							<p>{m.lesson_save_error()}</p>
+							<button
+								type="button"
+								class="btn-secondary mt-3 text-sm"
+								disabled={advancing}
+								onclick={() => void continueAdvance()}
+							>
+								{m.common_retry()}
+							</button>
+						</InfoBanner>
+					{/if}
 				{:else}
 					<button
 						type="submit"

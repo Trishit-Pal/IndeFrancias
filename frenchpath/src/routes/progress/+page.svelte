@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import InfoBanner from '$lib/components/InfoBanner.svelte';
 	import { resolve } from '$app/paths';
 	import {
 		progressRepo,
@@ -30,6 +31,7 @@
 	import type { IconName } from '$lib/components/icons';
 	import * as m from '$lib/paraglide/messages';
 
+	let loadError = $state(false);
 	let streak = $state(0);
 	let longestStreak = $state(0);
 	let todayXp = $state(0);
@@ -148,45 +150,50 @@
 	});
 
 	onMount(async () => {
-		const settings = await settingsRepo.getSettings();
-		targetExamDate = settings.targetExamDate;
-		fsrsWeights = settings.fsrsWeights;
-		fsrsOptimizedReviewCount = settings.fsrsOptimizedReviewCount;
-		const streakRecord = await streakRepo.getStreak();
-		streak = streakRecord.currentStreak;
-		longestStreak = streakRecord.longestStreak;
-		todayXp = (await statsRepo.getStats(todayKey())).xp;
-		completed = (await progressRepo.getAllProgress()).filter(
-			(p) => p.status === 'completed'
-		).length;
-		totalCards = await srsRepo.countCards();
-		due = await countDue();
-		assessments = (await assessmentsRepo.listAssessments()).sort(
-			(a, b) => b.completedAt - a.completedAt
-		);
+		try {
+			const settings = await settingsRepo.getSettings();
+			targetExamDate = settings.targetExamDate;
+			fsrsWeights = settings.fsrsWeights;
+			fsrsOptimizedReviewCount = settings.fsrsOptimizedReviewCount;
+			const streakRecord = await streakRepo.getStreak();
+			streak = streakRecord.currentStreak;
+			longestStreak = streakRecord.longestStreak;
+			todayXp = (await statsRepo.getStats(todayKey())).xp;
+			completed = (await progressRepo.getAllProgress()).filter(
+				(p) => p.status === 'completed'
+			).length;
+			totalCards = await srsRepo.countCards();
+			due = await countDue();
+			assessments = (await assessmentsRepo.listAssessments()).sort(
+				(a, b) => b.completedAt - a.completedAt
+			);
 
-		const allStats = await statsRepo.getAllStats();
-		const statsByDate = new Map(allStats.map((s) => [s.date, s] as const));
-		const keys = lastNDayKeys(7);
-		weekXp = keys.map((date) => ({
-			label: date.slice(5),
-			xp: statsByDate.get(date)?.xp ?? 0
-		}));
-		weekReviewed = keys.reduce((sum, date) => sum + (statsByDate.get(date)?.reviewsDone ?? 0), 0);
-		totalXp = allStats.reduce((sum, s) => sum + (s.xp ?? 0), 0);
-		heatmap = lastNDayKeys(84).map((date) => ({ date, xp: statsByDate.get(date)?.xp ?? 0 }));
-		skillProfiles = await skillProfileRepo.getAllSkillProfiles();
-		try {
-			await loadTodayInputs();
-		} catch (err) {
-			console.error('Today card unavailable', err); // card stays hidden
+			const allStats = await statsRepo.getAllStats();
+			const statsByDate = new Map(allStats.map((s) => [s.date, s] as const));
+			const keys = lastNDayKeys(7);
+			weekXp = keys.map((date) => ({
+				label: date.slice(5),
+				xp: statsByDate.get(date)?.xp ?? 0
+			}));
+			weekReviewed = keys.reduce((sum, date) => sum + (statsByDate.get(date)?.reviewsDone ?? 0), 0);
+			totalXp = allStats.reduce((sum, s) => sum + (s.xp ?? 0), 0);
+			heatmap = lastNDayKeys(84).map((date) => ({ date, xp: statsByDate.get(date)?.xp ?? 0 }));
+			skillProfiles = await skillProfileRepo.getAllSkillProfiles();
+			try {
+				await loadTodayInputs();
+			} catch (err) {
+				console.error('Today card unavailable', err); // card stays hidden
+			}
+			try {
+				await loadRecap(allStats, streak);
+			} catch (err) {
+				console.error('Weekly postcard unavailable', err); // postcard stays hidden
+			}
+			void loadCaps().then((c) => (caps = c));
+		} catch {
+			// IndexedDB unavailable or a read failed: say so instead of showing a blank, zeroed page.
+			loadError = true;
 		}
-		try {
-			await loadRecap(allStats, streak);
-		} catch (err) {
-			console.error('Weekly postcard unavailable', err); // postcard stays hidden
-		}
-		void loadCaps().then((c) => (caps = c));
 	});
 
 	const maxWeekXp = $derived(Math.max(1, ...weekXp.map((d) => d.xp)));
@@ -226,6 +233,15 @@
 <main class="page-shell">
 	<h1 class="fp-display-lg text-balance text-foreground">L'Atelier</h1>
 	<p class="text-sm text-muted">{m.progress_subtitle()}</p>
+
+	{#if loadError}
+		<InfoBanner variant="error" role="alert" class="mt-4">
+			<p>{m.home_load_error()}</p>
+			<button type="button" class="btn-secondary mt-3 text-sm" onclick={() => location.reload()}>
+				{m.common_retry()}
+			</button>
+		</InfoBanner>
+	{/if}
 
 	{#if examCountdown() !== null}
 		{@const days = examCountdown() ?? 0}

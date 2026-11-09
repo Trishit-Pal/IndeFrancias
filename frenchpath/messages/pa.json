@@ -335,5 +335,20 @@
 	"postcard_lessons": "Lessons",
 	"postcard_streak": "Day streak",
 	"postcard_units": "Units finished",
-	"postcard_share": "Share this week"
+	"postcard_share": "Share this week",
+	"error_title": "Something went wrong",
+	"error_body": "FrenchPath hit a snag. Your progress is stored on this device and is safe.",
+	"error_not_found_title": "Page not found",
+	"error_not_found_body": "That page doesn't exist. Head back home to carry on.",
+	"error_reload": "Reload",
+	"error_home": "Back to home",
+	"save_failed_banner": "Something didn't save. Your earlier progress is safe.",
+	"save_failed_dismiss": "Dismiss",
+	"lesson_load_error_title": "Could not load the lesson",
+	"lesson_load_error_body": "Your progress is safe. Try again, or head back home.",
+	"lesson_save_error": "Couldn't save your lesson. Your answers are still here — try again.",
+	"checkpoint_load_error": "Couldn't load this checkpoint. Your progress is safe.",
+	"checkpoint_save_error": "Couldn't save your checkpoint result. Your answers are still here — try again.",
+	"review_grade_error": "Couldn't save that answer. Try again.",
+	"settings_reset_blocked": "Close other FrenchPath tabs, then try again."
 }

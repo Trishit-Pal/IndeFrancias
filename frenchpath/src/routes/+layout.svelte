@@ -6,6 +6,7 @@
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import Icon from '$lib/components/Icon.svelte';
+	import InfoBanner from '$lib/components/InfoBanner.svelte';
 	import type { IconName } from '$lib/components/icons';
 	import * as m from '$lib/paraglide/messages';
 	import { network } from '$lib/stores/online.svelte';
@@ -74,6 +75,9 @@
 		if (isNativePlatform()) void syncNativeStatusBar(isDarkTheme(settings.theme));
 	}
 
+	// A write that rejected with nobody awaiting it (e.g. a full disk). Shown, never auto-reloaded.
+	let saveFailed = $state(false);
+
 	onMount(() => {
 		let cleanup: (() => void) | undefined;
 
@@ -114,9 +118,12 @@
 
 		const onVisibility = () => void maybeNotifyRevision();
 		document.addEventListener('visibilitychange', onVisibility);
+		const onUnhandledRejection = () => (saveFailed = true);
+		window.addEventListener('unhandledrejection', onUnhandledRejection);
 
 		return () => {
 			cleanup?.();
+			window.removeEventListener('unhandledrejection', onUnhandledRejection);
 			document.removeEventListener('visibilitychange', onVisibility);
 		};
 	});
@@ -193,6 +200,26 @@
 				data-testid="offline-banner"
 			>
 				{m.offline_banner()}
+			</div>
+		{/if}
+
+		{#if saveFailed}
+			<div class="mx-auto w-full max-w-xl px-4 pt-3">
+				<InfoBanner variant="error" role="alert">
+					<p>{m.save_failed_banner()}</p>
+					<div class="mt-3 flex flex-wrap gap-2">
+						<button type="button" class="btn-primary text-sm" onclick={() => location.reload()}>
+							{m.error_reload()}
+						</button>
+						<button
+							type="button"
+							class="btn-secondary text-sm"
+							onclick={() => (saveFailed = false)}
+						>
+							{m.save_failed_dismiss()}
+						</button>
+					</div>
+				</InfoBanner>
 			</div>
 		{/if}
 

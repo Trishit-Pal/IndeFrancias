@@ -1,12 +1,19 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { openDB } from 'idb';
-import { getDB, resetDatabase } from './db';
+import { openDB, deleteDB } from 'idb';
+import { getDB, resetDatabase, DatabaseBlockedError } from './db';
 import * as srsRepo from './repositories/srs';
 import * as progressRepo from './repositories/progress';
 import * as settingsRepo from './repositories/settings';
 import * as reviewLogRepo from './repositories/reviewLog';
 import * as statsRepo from './repositories/stats';
-import { DB_NAME, SETTINGS_KEY, type FrenchPathDB, type Settings, type SrsCard } from './schema';
+import {
+	DB_NAME,
+	DB_VERSION,
+	SETTINGS_KEY,
+	type FrenchPathDB,
+	type Settings,
+	type SrsCard
+} from './schema';
 
 function makeCard(id: string, due: Date): SrsCard {
 	return {
@@ -162,5 +169,50 @@ describe('progress + reviewLog + stats', () => {
 		expect(after.xp).toBe(25);
 		expect(after.reviewsDone).toBe(5);
 		expect(after.lessonsCompleted).toBe(1);
+	});
+});
+
+describe('connection lifecycle', () => {
+	it('closes its connection when another tab needs the database and reopens on the next call', async () => {
+		const first = await getDB();
+
+		// Another tab deletes the database: it only completes if our connection steps aside.
+		await deleteDB(DB_NAME);
+
+		const second = await getDB();
+		expect(second).not.toBe(first);
+		expect(second.version).toBe(DB_VERSION);
+		await expect(second.get('settings', SETTINGS_KEY)).resolves.toBeUndefined();
+	});
+
+	it('retries the open after a failed one', async () => {
+		// A higher-versioned database makes the DB_VERSION open fail with VersionError.
+		const newer = await openDB(DB_NAME, DB_VERSION + 1, {
+			upgrade(db) {
+				db.createObjectStore('settings');
+			}
+		});
+		newer.close();
+		await expect(getDB()).rejects.toThrow();
+
+		await deleteDB(DB_NAME); // the cause goes away; the cached rejection must not stick
+		expect((await getDB()).version).toBe(DB_VERSION);
+	});
+
+	it('resetDatabase rejects instead of hanging while another connection stays open', async () => {
+		await getDB();
+		const stubborn = await openDB(DB_NAME); // no blocking handler: never closes itself
+		await expect(resetDatabase()).rejects.toBeInstanceOf(DatabaseBlockedError);
+		stubborn.close(); // lets the pending delete finish so later tests start clean
+	});
+
+	it('resetDatabase succeeds when other tabs close on versionchange', async () => {
+		await getDB();
+		const polite = await openDB(DB_NAME, undefined, {
+			blocking() {
+				polite.close();
+			}
+		});
+		await expect(resetDatabase()).resolves.toBeUndefined();
 	});
 });

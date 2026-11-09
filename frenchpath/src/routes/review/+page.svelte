@@ -157,18 +157,25 @@
 	// record the same card twice (it would corrupt the FSRS state).
 	const gradeGate = createOnceGate();
 	let grading = $state(false); // mirrors the gate for the disabled attribute
+	let gradeError = $state(false);
 
 	async function grade(grade: ReviewGrade, measuredMs?: number) {
 		const item = currentItem;
 		if (!item) return;
-		await gradeGate.run(async () => {
-			grading = true;
-			try {
-				await gradeItem(item, grade, measuredMs);
-			} finally {
-				grading = false;
-			}
-		});
+		try {
+			await gradeGate.run(async () => {
+				gradeError = false;
+				grading = true;
+				try {
+					await gradeItem(item, grade, measuredMs);
+				} finally {
+					grading = false;
+				}
+			});
+		} catch {
+			// recordReview is one transaction: nothing was saved and the card stays for another tap.
+			gradeError = true;
+		}
 	}
 
 	async function gradeItem(item: ReviewItem, grade: ReviewGrade, measuredMs?: number) {
@@ -211,6 +218,12 @@
 		<p class="mt-2 text-sm text-muted">
 			{m.review_queue_progress({ current: index + 1, total: queue.length })}
 		</p>
+
+		{#if gradeError}
+			<InfoBanner variant="error" role="alert" class="mt-4">
+				<p>{m.review_grade_error()}</p>
+			</InfoBanner>
+		{/if}
 
 		<div bind:this={cardArea}>
 			{#if showRescue}

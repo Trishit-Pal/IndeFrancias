@@ -18,6 +18,7 @@
 	import { shareProgress } from '$lib/share/shareCard';
 	import Exercise from '$lib/lesson/exercises/Exercise.svelte';
 	import ExamTimer from '$lib/exam/ExamTimer.svelte';
+	import InfoBanner from '$lib/components/InfoBanner.svelte';
 
 	let {
 		exam,
@@ -49,6 +50,7 @@
 	let reduceMotion = $state(false);
 	let celebrationLevel = $state<'full' | 'minimal'>('full');
 	let xpAwarded = $state(0);
+	let saveError = $state(false);
 
 	let itemIndex = $state(0);
 	let response = $state<ExerciseResponse | null>(null);
@@ -93,15 +95,25 @@
 
 	async function finishExam() {
 		result = scoreExam(perSkill);
-		recordDailyActivity();
 		phase = 'result';
-		if (result.passed) {
+		await saveResult();
+	}
+
+	// The result is shown at once; saving it can fail (disk full) and is safe to retry:
+	// the streak is once-per-day and awardAssessmentXp never awards the same exam twice.
+	async function saveResult() {
+		const scored = result;
+		if (!scored) return;
+		saveError = false;
+		try {
+			await recordDailyActivity();
+			if (!scored.passed) return;
 			const settings = await settingsRepo.getSettings();
 			const outcome = await awardAssessmentXp(
 				assessmentId,
 				'delf_mock',
 				assessmentSlug,
-				result.total,
+				scored.total,
 				DELF_XP_BY_TIER[settings.difficultyTier]
 			);
 			xpAwarded = outcome.xp;
@@ -109,9 +121,11 @@
 				celebration = {
 					event: 'delf_pass',
 					title: m.exam_pass(),
-					subtitle: `${result.total}/100 · +${outcome.xp} XP`
+					subtitle: `${scored.total}/100 · +${outcome.xp} XP`
 				};
 			}
+		} catch {
+			saveError = true;
 		}
 	}
 
@@ -251,6 +265,14 @@
 			</button>
 		{/if}
 	{:else if phase === 'result' && result}
+		{#if saveError}
+			<InfoBanner variant="error" role="alert" class="mt-4 lg:mx-auto lg:max-w-2xl">
+				<p>{m.save_failed_banner()}</p>
+				<button type="button" class="btn-secondary mt-3 text-sm" onclick={() => void saveResult()}>
+					{m.common_retry()}
+				</button>
+			</InfoBanner>
+		{/if}
 		<div
 			class="surface-card mt-4 rounded-2xl p-6 lg:mx-auto lg:max-w-2xl"
 			data-testid="exam-result"
