@@ -90,8 +90,9 @@ export default defineConfig(({ mode }) => ({
 				]
 			},
 			workbox: {
-				// No legacy `woff`: @fontsource lists woff2 first and every supported browser takes it.
-				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff2,json,html}'],
+				// `wasm` so the FSRS optimizer (fsrs-browser, ~330 KB) also runs offline. No legacy
+				// `woff`: @fontsource lists woff2 first and every supported browser takes it.
+				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff2,wasm,json,html}'],
 				// Pinned at workbox's 2 MiB default on purpose: everything in the app shell fits
 				// well under it, and the ~5.8 MB vosk ASR chunk must stay out (see above).
 				maximumFileSizeToCacheInBytes: PRECACHE_MAX_FILE_BYTES,

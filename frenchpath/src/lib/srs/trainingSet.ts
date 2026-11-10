@@ -1,4 +1,7 @@
 // Pure transform: replayable review history → the flat arrays fsrs-browser trains on.
+// fsrs-rs learns from items whose LAST review is the label and the reviews before it the
+// history, so each card contributes one item per prefix of its history (lengths 2..L),
+// the same expansion Anki uses. `lengths` holds each item's length.
 import type { ReviewLogRecord } from '../db/schema';
 
 export interface FsrsTrainingSet {
@@ -8,6 +11,14 @@ export interface FsrsTrainingSet {
 }
 
 const DAY_MS = 86_400_000;
+
+/**
+ * Only a card's first reviews feed training. ponytail: a card's prefixes cost L(L+1)/2
+ * entries, so one card reviewed 100k times would need ~5e9; capping L keeps the set at
+ * most ~33 entries per log. A card past 64 reviews is a leech whose later history adds
+ * little; raise this if real histories run longer.
+ */
+export const MAX_REVIEWS_PER_CARD = 64;
 
 export function buildTrainingSet(logs: ReviewLogRecord[]): FsrsTrainingSet {
 	const valid = logs.filter((l) => l.grade >= 1 && l.grade <= 4);
@@ -32,11 +43,18 @@ export function buildTrainingSet(logs: ReviewLogRecord[]): FsrsTrainingSet {
 	const lengths: number[] = [];
 
 	for (const sorted of sortedCards) {
-		lengths.push(sorted.length);
-		sorted.forEach((l, i) => {
-			ratings.push(l.grade);
-			deltaTs.push(i === 0 ? 0 : Math.floor((l.ts - sorted[i - 1].ts) / DAY_MS));
-		});
+		const history = sorted.slice(0, MAX_REVIEWS_PER_CARD);
+		const days = history.map((l, i) =>
+			i === 0 ? 0 : Math.floor((l.ts - history[i - 1].ts) / DAY_MS)
+		);
+		// A single review has nothing after it to learn from, so it yields no item.
+		for (let len = 2; len <= history.length; len++) {
+			lengths.push(len);
+			for (let i = 0; i < len; i++) {
+				ratings.push(history[i].grade);
+				deltaTs.push(days[i]);
+			}
+		}
 	}
 
 	return {
