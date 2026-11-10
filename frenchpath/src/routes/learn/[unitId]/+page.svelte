@@ -11,13 +11,11 @@
 	import { gradeExercise, scorePercent, type ExerciseResponse } from '$lib/lesson/engine';
 	import { evaluateRubric, type RubricHint } from '$lib/lesson/rubric';
 	import { completeLesson, type CompleteOutcome } from '$lib/lesson/complete';
-	import { isUnitLocked, lockReasonForUnit } from '$lib/lesson/progression';
+	import { computeUnitStates, isUnitLocked, lockReasonForUnit } from '$lib/lesson/progression';
 	import { passedAssessmentIds } from '$lib/assessment/checkpoint';
 	import CoachTip from '$lib/components/CoachTip.svelte';
-	import CelebrationOverlay from '$lib/celebration/CelebrationOverlay.svelte';
 	import XpFloat from '$lib/components/XpFloat.svelte';
 	import { tipForUnit } from '$lib/profile/frenchTips';
-	import type { CelebrationRequest } from '$lib/celebration/orchestrator';
 	import { progressRepo, settingsRepo } from '$lib/db';
 	import { getGloss, getBridgeCopy } from '$lib/content/gloss';
 	import type { ConfidenceSnapshot, NativeLanguage } from '$lib/db/schema';
@@ -52,8 +50,7 @@
 	let correctCount = $state(0);
 	let outcome = $state<CompleteOutcome | null>(null);
 	let showFrenchTips = $state(true);
-	let celebrationLevel = $state<'full' | 'minimal'>('full');
-	let celebration = $state<CelebrationRequest | null>(null);
+	let nextUnitId = $state<string | null>(null);
 	let xpFloat = $state(0);
 	let bridgeQuizIndex = $state<number | null>(null);
 	let bridgeQuizSubmitted = $state(false);
@@ -84,7 +81,6 @@
 				settings.reduceMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 			nativeLanguage = settings.nativeLanguage;
 			showFrenchTips = settings.showFrenchTips;
-			celebrationLevel = settings.celebrationLevel;
 			const passed = await passedAssessmentIds();
 			const all = await progressRepo.getAllProgress();
 			const progressById = Object.fromEntries(all.map((p) => [p.lessonId, p]));
@@ -205,6 +201,20 @@
 		}
 	}
 
+	/** First unlocked lesson other than the one just finished (null behind a checkpoint gate). */
+	async function findNextUnitId(finishedId: string): Promise<string | null> {
+		const [all, passed] = await Promise.all([progressRepo.getAllProgress(), passedAssessmentIds()]);
+		const summaries = listUnitSummaries();
+		const states = computeUnitStates(
+			summaries,
+			Object.fromEntries(all.map((p) => [p.lessonId, p])),
+			passed
+		);
+		return (
+			summaries.find((u) => u.id !== finishedId && states.get(u.id) === 'available')?.id ?? null
+		);
+	}
+
 	async function advanceOrFinish() {
 		if (!unit) return;
 		if (index + 1 < unit.exercises.length) {
@@ -220,13 +230,9 @@
 			await ensurePersistence().catch(() => false);
 			phase = 'finished';
 			xpFloat = outcome.goalXp;
-			if (celebrationLevel === 'full' && !reducedMotion) {
-				celebration = {
-					event: 'lesson_complete',
-					title: m.lesson_complete(),
-					subtitle: `+${outcome.goalXp} XP`
-				};
-			}
+			// The summary card is the celebration for an ordinary lesson (no second
+			// "Lesson complete" overlay to tap through); milestones keep theirs elsewhere.
+			nextUnitId = await findNextUnitId(unit.id).catch(() => null);
 		}
 	}
 
@@ -483,6 +489,7 @@
 			{correctCount}
 			{total}
 			{outcome}
+			{nextUnitId}
 			{reducedMotion}
 			onShare={() =>
 				shareProgress({
@@ -532,13 +539,6 @@
 {#if xpFloat > 0}
 	<XpFloat amount={xpFloat} />
 {/if}
-
-<CelebrationOverlay
-	request={celebration}
-	{celebrationLevel}
-	reduceMotion={reducedMotion}
-	onDismiss={() => (celebration = null)}
-/>
 
 <style>
 	@keyframes shake {

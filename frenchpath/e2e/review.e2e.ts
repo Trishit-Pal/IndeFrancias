@@ -30,12 +30,12 @@ test('reduce motion: a revealed flip card shows its back face', async ({ page })
 
 test('due badge reflects cards after lesson completion', async ({ page }) => {
 	await gotoHome(page);
-	await expect(page.getByTestId('due-badge')).toHaveCount(0);
+	await expect(page.getByTestId('voyage-review-due')).toHaveCount(0);
 
 	await page.getByTestId('unit-card').first().click();
 	await page.getByTestId('start-lesson').click();
 	await completeLesson(page);
 	await page.getByRole('link', { name: 'Back to path' }).click();
 
-	await expect(page.getByTestId('due-badge')).toBeVisible();
+	await expect(page.getByTestId('voyage-review-due')).toBeVisible();
 });

@@ -28,3 +28,13 @@ test('DELF card is hidden before any A2 unit is completed', async ({ page }) => 
 	await gotoHome(page);
 	await expect(page.getByTestId('delf-card')).toHaveCount(0);
 });
+
+test('lesson summary offers the next unlocked lesson as its primary action', async ({ page }) => {
+	await gotoHome(page);
+	await page.getByTestId('unit-card').first().click();
+	await page.getByTestId('start-lesson').click();
+	await completeLesson(page);
+	await page.getByTestId('next-lesson').click();
+	await expect(page).toHaveURL(/\/learn\/a1-unit-02/);
+	await expect(page.getByTestId('start-lesson')).toBeVisible();
+});

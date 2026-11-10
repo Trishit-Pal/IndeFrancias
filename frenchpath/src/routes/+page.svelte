@@ -8,7 +8,14 @@
 	import { resolve } from '$app/paths';
 	import { goto } from '$app/navigation';
 	import { listUnitSummaries } from '$lib/content/loader';
-	import { progressRepo, streakRepo, settingsRepo, skillProfileRepo, srsRepo } from '$lib/db';
+	import {
+		progressRepo,
+		streakRepo,
+		settingsRepo,
+		skillProfileRepo,
+		srsRepo,
+		statsRepo
+	} from '$lib/db';
 	import type { ProgressRecord } from '$lib/db/schema';
 	import { countDue } from '$lib/srs/queue';
 	import { passedAssessmentIds } from '$lib/assessment/checkpoint';
@@ -24,7 +31,6 @@
 	import VoyageMap from '$lib/path/VoyageMap.svelte';
 	import JourneySky from '$lib/path/JourneySky.svelte';
 	import DailyRitual from '$lib/components/DailyRitual.svelte';
-	import CharacterMira from '$lib/components/CharacterMira.svelte';
 	import CharacterCoco from '$lib/components/CharacterCoco.svelte';
 	import GateBanner from '$lib/components/GateBanner.svelte';
 	import WeakSkillChips from '$lib/components/WeakSkillChips.svelte';
@@ -98,9 +104,10 @@
 	// Time-of-day greeting is fixed for the session; no reactivity needed.
 	const ritual = getRitual();
 
-	// Coco companion level grows with the day's XP (chef hat at Lvl 5).
-	const cocoLevel = $derived(Math.min(10, Math.floor(goal.xp / 250) + 1));
-	const cocoXpPercent = $derived(((goal.xp % 250) / 250) * 100);
+	// Coco companion grows with lifetime XP, same as the Progress page (chef hat at Lvl 5).
+	let totalXp = $state(0);
+	const cocoLevel = $derived(Math.min(10, Math.floor(totalXp / 250) + 1));
+	const cocoXpPercent = $derived(((totalXp % 250) / 250) * 100);
 
 	async function checkStreakMilestones(
 		currentStreak: number,
@@ -139,18 +146,30 @@
 	});
 
 	async function loadHome() {
-		const [s, all, dueCount, streakRecord, goalProgress, passed, profiles, nextDue, cardCount] =
-			await Promise.all([
-				settingsRepo.getSettings().then(migrateLegacyLastExport),
-				progressRepo.getAllProgress(),
-				countDue(),
-				streakRepo.getStreak(),
-				dailyGoalProgress(),
-				passedAssessmentIds(),
-				skillProfileRepo.getAllSkillProfiles(),
-				getNextDueMs(),
-				srsRepo.countCards()
-			]);
+		const [
+			s,
+			all,
+			dueCount,
+			streakRecord,
+			goalProgress,
+			passed,
+			profiles,
+			nextDue,
+			cardCount,
+			allStats
+		] = await Promise.all([
+			settingsRepo.getSettings().then(migrateLegacyLastExport),
+			progressRepo.getAllProgress(),
+			countDue(),
+			streakRepo.getStreak(),
+			dailyGoalProgress(),
+			passedAssessmentIds(),
+			skillProfileRepo.getAllSkillProfiles(),
+			getNextDueMs(),
+			srsRepo.countCards(),
+			statsRepo.getAllStats()
+		]);
+		totalXp = allStats.reduce((sum, day) => sum + (day.xp ?? 0), 0);
 
 		onboarded = s.onboarded;
 		learningGoal = s.learningGoal;
@@ -198,6 +217,31 @@
 </script>
 
 <svelte:head><title>FrenchPath — Learn French</title></svelte:head>
+
+<!-- Today's figures, rendered inside the voyage hero so a phone shows them without scrolling. -->
+{#snippet heroStats()}
+	<span
+		class="fp-stat-badge fp-stat-badge--fire"
+		role="img"
+		aria-label={m.home_streak_label({ count: String(streak) })}
+		data-testid="streak-badge"
+	>
+		<span class="fp-flame" aria-hidden="true"><Icon name="flame" size={14} /></span>
+		<span class="fp-figure">{streak}</span>
+	</span>
+	<span
+		class="fp-stat-badge fp-stat-badge--ice"
+		title={m.home_streak_freezes()}
+		data-testid="freezes-badge"
+	>
+		<span aria-hidden="true"><Icon name="snowflake" size={14} /></span>
+		{freezesAvailable}
+		<span class="sr-only">{m.home_streak_freezes()}</span>
+	</span>
+	<span class="fp-figure text-xs text-muted" data-testid="daily-goal">
+		{goal.xp} / {goal.goal} XP {goal.met ? '✓' : ''}
+	</span>
+{/snippet}
 
 {#if !loaded}
 	<main class="page-shell" aria-busy="true">
@@ -263,33 +307,6 @@
 					<!-- Time-of-day ritual greeting -->
 					<DailyRitual {ritual} />
 
-					<!-- Mira mentor + streak / freeze stats -->
-					<div class="surface-card flex items-center gap-3 p-4">
-						<CharacterMira size="sm" animate={!reduceMotion} />
-						<div class="flex-1">
-							<div class="flex gap-2">
-								<span
-									class="fp-stat-badge fp-stat-badge--fire"
-									role="img"
-									aria-label={m.home_streak_label({ count: String(streak) })}
-									data-testid="streak-badge"
-								>
-									<span class="fp-flame" aria-hidden="true"><Icon name="flame" size={14} /></span>
-									<span class="fp-figure">{streak}</span>
-								</span>
-								<span
-									class="fp-stat-badge fp-stat-badge--ice"
-									title={m.home_streak_freezes()}
-									data-testid="freezes-badge"
-								>
-									<span aria-hidden="true"><Icon name="snowflake" size={14} /></span>
-									{freezesAvailable}
-									<span class="sr-only">{m.home_streak_freezes()}</span>
-								</span>
-							</div>
-						</div>
-					</div>
-
 					<!-- Daily goal ring -->
 					<section class="surface-card p-4" aria-label={m.home_daily_goal()}>
 						<div class="flex items-center gap-4">
@@ -307,9 +324,6 @@
 							<div>
 								<p class="fp-serif text-[17px] font-semibold">
 									{m.home_daily_goal()}
-								</p>
-								<p class="text-sm text-muted" data-testid="daily-goal">
-									{goal.xp} / {goal.goal} XP {goal.met ? '✓' : ''}
 								</p>
 							</div>
 						</div>
@@ -352,22 +366,6 @@
 							<Icon name="chevron-right" size={18} />
 						</a>
 					{/each}
-
-					{#if due > 0}
-						<a
-							href={resolve('/review')}
-							class="btn-primary flex items-center justify-between gap-2"
-							data-testid="due-badge"
-						>
-							<span class="flex items-center gap-2"
-								><Icon name="review" size={17} />
-								{due === 1
-									? m.home_cards_due_one()
-									: m.home_cards_due_other({ count: String(due) })}</span
-							>
-							<Icon name="chevron-right" size={18} />
-						</a>
-					{/if}
 
 					{#if a2Completed || b1Completed || b2Completed || c1ExamUnlocked}
 						<section class="surface-card p-4" aria-label={m.home_mock_exams()}>
@@ -420,7 +418,15 @@
 
 				<section class="order-1 lg:order-2">
 					<h2 class="fp-serif mb-2 text-2xl text-balance">Le Voyage</h2>
-					<VoyageMap {units} {states} {lockReasons} {currentUnitId} {reduceMotion} dueCount={due} />
+					<VoyageMap
+						{units}
+						{states}
+						{lockReasons}
+						{currentUnitId}
+						{reduceMotion}
+						dueCount={due}
+						stats={heroStats}
+					/>
 				</section>
 			</div>
 		</main>
