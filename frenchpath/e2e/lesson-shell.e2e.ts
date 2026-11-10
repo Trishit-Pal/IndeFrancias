@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { gotoHome } from './helpers';
+import { beginCheckpoint, gotoHome } from './helpers';
 
 // Lesson runner chrome: an exit control that confirms before discarding
 // progress, and Enter submitting the current answer.
@@ -107,6 +107,38 @@ test('tab-bar navigation mid-lesson asks before discarding progress', async ({ p
 		.click();
 	await expect(page.getByTestId('lesson-exit-confirm')).toBeVisible();
 	await expect(page).toHaveURL(/\/learn\//);
+	await page.getByTestId('lesson-exit-leave').click();
+	await expect(page).toHaveURL(/\/review/);
+});
+
+// The same guard covers the other sessions: a stray tab tap must not silently
+// discard a 45-minute mock exam or a checkpoint attempt.
+const tapReviewTab = (page: import('@playwright/test').Page) =>
+	page
+		.getByRole('link', { name: /^review$/i })
+		.filter({ visible: true })
+		.first()
+		.click();
+
+test('tab-bar navigation mid-exam asks before discarding the attempt', async ({ page }) => {
+	await page.goto('/exam/delf-a2');
+	await page.getByTestId('start-exam').click();
+	await tapReviewTab(page);
+	await expect(page.getByTestId('lesson-exit-confirm')).toBeVisible();
+	await expect(page).toHaveURL(/\/exam\//);
+	await page.getByTestId('lesson-exit-stay').click();
+	await tapReviewTab(page);
+	await page.getByTestId('lesson-exit-leave').click();
+	await expect(page).toHaveURL(/\/review/);
+});
+
+test('tab-bar navigation mid-checkpoint asks before discarding the attempt', async ({ page }) => {
+	await gotoHome(page);
+	await page.goto('/checkpoint/g1');
+	await beginCheckpoint(page);
+	await tapReviewTab(page);
+	await expect(page.getByTestId('lesson-exit-confirm')).toBeVisible();
+	await expect(page).toHaveURL(/\/checkpoint\//);
 	await page.getByTestId('lesson-exit-leave').click();
 	await expect(page).toHaveURL(/\/review/);
 });

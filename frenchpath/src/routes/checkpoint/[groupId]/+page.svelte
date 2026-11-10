@@ -19,6 +19,7 @@
 	import ExerciseView from '$lib/lesson/exercises/Exercise.svelte';
 	import TierBadge from '$lib/components/TierBadge.svelte';
 	import InfoBanner from '$lib/components/InfoBanner.svelte';
+	import ExitGuard from '$lib/components/ExitGuard.svelte';
 	import CelebrationOverlay from '$lib/celebration/CelebrationOverlay.svelte';
 	import type { CelebrationRequest } from '$lib/celebration/orchestrator';
 	import { shareProgress } from '$lib/share/shareCard';
@@ -179,6 +180,8 @@
 </script>
 
 <svelte:head><title>Checkpoint · FrenchPath</title></svelte:head>
+
+<ExitGuard active={() => phase === 'exam' && (index > 0 || response !== null || submitted)} />
 
 <main class="page-shell">
 	<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>

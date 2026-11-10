@@ -350,6 +350,16 @@ async function applyExerciseAnswer(page: Page, ex: Exercise) {
 	}
 }
 
+/** Starts a checkpoint and answers (without checking) its first exercise: an attempt in progress. */
+export async function beginCheckpoint(page: Page, gateId = 'g1', tier: DifficultyTier = 'easy') {
+	const gate = gateById(gateId);
+	if (!gate) throw new Error(`Unknown gate: ${gateId}`);
+	const [first] = buildCheckpointPool(gate.unitIds.map(loadUnitForE2e), tier, gateId);
+	await page.getByTestId('checkpoint-start').click();
+	await applyExerciseAnswer(page, first);
+	await dismissGlossPopover(page);
+}
+
 /** Answers checkpoint exercises until the result screen appears. */
 export async function completeCheckpoint(page: Page, gateId = 'g1', tier: DifficultyTier = 'easy') {
 	const gate = gateById(gateId);

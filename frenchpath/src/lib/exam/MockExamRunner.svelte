@@ -19,6 +19,7 @@
 	import Exercise from '$lib/lesson/exercises/Exercise.svelte';
 	import ExamTimer from '$lib/exam/ExamTimer.svelte';
 	import InfoBanner from '$lib/components/InfoBanner.svelte';
+	import ExitGuard from '$lib/components/ExitGuard.svelte';
 
 	let {
 		exam,
@@ -153,6 +154,9 @@
 </script>
 
 <svelte:head><title>{exam.title} · FrenchPath</title></svelte:head>
+
+<!-- The timer is running for the whole section phase: any departure would discard the attempt. -->
+<ExitGuard active={() => phase === 'section'} />
 
 <main class="page-shell lg:max-w-3xl">
 	<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import { beforeNavigate, goto } from '$app/navigation';
+	import ExitGuard from '$lib/components/ExitGuard.svelte';
 	import { tick } from 'svelte';
 	import { tapHaptic } from '$lib/platform/haptics';
 	import { loadUnit, listUnitSummaries, buildLessonLexicon } from '$lib/content/loader';
@@ -122,35 +122,9 @@
 		void loadLesson(unitId);
 	});
 
-	let showExitConfirm = $state(false);
-	/** Where a confirmed exit goes: the tab the learner tapped, or home from the close glyph. */
-	let exitTarget = $state<string | null>(null);
-	let leaving = false;
 	const hasProgress = () => index > 0 || response !== null || submitted;
-
-	/** Exit control: leave at once if nothing has been attempted, otherwise confirm. */
-	function requestExit() {
-		exitTarget = null;
-		if (hasProgress()) showExitConfirm = true;
-		else void goto(resolve('/'));
-	}
-
-	function confirmExit() {
-		leaving = true;
-		// exitTarget is the pathname SvelteKit handed us in beforeNavigate (already app-resolved).
-		// eslint-disable-next-line svelte/no-navigation-without-resolve
-		void goto(exitTarget ?? resolve('/'));
-	}
-
-	// The global tab bar and the browser's back button stay live during a lesson;
-	// route every mid-lesson departure through the same confirm as the close glyph.
-	beforeNavigate((navigation) => {
-		if (leaving || phase !== 'exercise' || !hasProgress()) return;
-		if (navigation.type === 'leave') return; // tab close / reload: the browser owns that prompt
-		navigation.cancel();
-		exitTarget = navigation.to?.url.pathname ?? null;
-		showExitConfirm = true;
-	});
+	/** Confirms before a mid-lesson departure (close glyph, tab bar, browser back). */
+	let exitGuard = $state<ExitGuard | null>(null);
 
 	/** After grading, focus the feedback so a reflex second Enter can't skip past it. */
 	let feedbackEl = $state<HTMLElement | null>(null);
@@ -412,7 +386,7 @@
 			{m.lesson_continue_exercises()}
 		</button>
 	{:else if phase === 'exercise' && current && unit}
-		<LessonShell {progress} current={index + 1} {total} onExit={requestExit}>
+		<LessonShell {progress} current={index + 1} {total} onExit={() => exitGuard?.requestExit()}>
 			<ExerciseChrome
 				{unit}
 				exercise={current}
@@ -502,31 +476,7 @@
 			</form>
 		</LessonShell>
 
-		<Modal
-			open={showExitConfirm}
-			labelledby="lesson-exit-title"
-			testid="lesson-exit-confirm"
-			onClose={() => (showExitConfirm = false)}
-		>
-			<h2 id="lesson-exit-title" class="text-lg font-semibold text-foreground">
-				{m.lesson_exit_title()}
-			</h2>
-			<p class="mt-2 text-sm text-muted">{m.lesson_exit_body()}</p>
-			<div class="mt-5 flex flex-wrap justify-end gap-2">
-				<button
-					type="button"
-					class="btn-secondary text-sm"
-					data-testid="lesson-exit-stay"
-					onclick={() => (showExitConfirm = false)}>{m.lesson_exit_stay()}</button
-				>
-				<button
-					type="button"
-					class="btn-primary text-sm"
-					data-testid="lesson-exit-leave"
-					onclick={confirmExit}>{m.lesson_exit_confirm()}</button
-				>
-			</div>
-		</Modal>
+		<ExitGuard bind:this={exitGuard} active={() => phase === 'exercise' && hasProgress()} />
 	{:else if phase === 'finished'}
 		<LessonComplete
 			{score}
