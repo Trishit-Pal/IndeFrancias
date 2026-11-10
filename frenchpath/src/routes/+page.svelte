@@ -1,9 +1,14 @@
+<script module lang="ts">
+	// Session-scoped (survives navigating away and back, not a reload): "Not now" stays dismissed.
+	let backupNudgeDismissed = false;
+</script>
+
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { goto } from '$app/navigation';
 	import { listUnitSummaries } from '$lib/content/loader';
-	import { progressRepo, streakRepo, settingsRepo, skillProfileRepo } from '$lib/db';
+	import { progressRepo, streakRepo, settingsRepo, skillProfileRepo, srsRepo } from '$lib/db';
 	import type { ProgressRecord } from '$lib/db/schema';
 	import { countDue } from '$lib/srs/queue';
 	import { passedAssessmentIds } from '$lib/assessment/checkpoint';
@@ -27,7 +32,14 @@
 	import type { CelebrationRequest } from '$lib/celebration/orchestrator';
 	import { getNextDueMs } from '$lib/srs/queue';
 	import { dailyGoalProgress, type DailyGoal } from '$lib/gamification/activity';
-	import { ensurePersistence } from '$lib/pwa/persist';
+	import {
+		ensurePersistence,
+		isPersisted,
+		migrateLegacyLastExport,
+		shouldShowBackupNudge
+	} from '$lib/pwa/persist';
+	import { effectiveStreak } from '$lib/gamification/streak';
+	import { todayKey } from '$lib/utils/date';
 	import type OnboardingWizardComponent from '$lib/components/OnboardingWizard.svelte';
 	import CoachTip from '$lib/components/CoachTip.svelte';
 	import InfoBanner from '$lib/components/InfoBanner.svelte';
@@ -43,6 +55,7 @@
 	let freezesAvailable = $state(3);
 	let goal = $state<DailyGoal>({ xp: 0, goal: 30, met: false });
 	let loaded = $state(false);
+	let showBackupNudge = $state(false);
 	let onboarded = $state(false);
 	let learningGoal = $state<import('$lib/db/schema').LearningGoal>('general');
 	let targetExamDate = $state<string | null>(null);
@@ -125,16 +138,17 @@
 	});
 
 	async function loadHome() {
-		const [s, all, dueCount, streakRecord, goalProgress, passed, profiles, nextDue] =
+		const [s, all, dueCount, streakRecord, goalProgress, passed, profiles, nextDue, cardCount] =
 			await Promise.all([
-				settingsRepo.getSettings(),
+				settingsRepo.getSettings().then(migrateLegacyLastExport),
 				progressRepo.getAllProgress(),
 				countDue(),
 				streakRepo.getStreak(),
 				dailyGoalProgress(),
 				passedAssessmentIds(),
 				skillProfileRepo.getAllSkillProfiles(),
-				getNextDueMs()
+				getNextDueMs(),
+				srsRepo.countCards()
 			]);
 
 		onboarded = s.onboarded;
@@ -144,13 +158,23 @@
 		celebrationLevel = s.celebrationLevel;
 		progressById = Object.fromEntries(all.map((p) => [p.lessonId, p]));
 		due = dueCount;
-		streak = streakRecord.currentStreak;
+		// Shown value is recomputed for today; the stored record is untouched.
+		const shownStreak = effectiveStreak(streakRecord, todayKey());
+		streak = shownStreak;
 		freezesAvailable = streakRecord.freezesAvailable;
 		goal = goalProgress;
 		passedIds = passed;
 		skillProfiles = profiles;
 		nextReviewIn = nextDue;
-		await checkStreakMilestones(streakRecord.currentStreak, s.celebratedMilestones ?? []);
+		await checkStreakMilestones(shownStreak, s.celebratedMilestones ?? []);
+		showBackupNudge =
+			!backupNudgeDismissed &&
+			shouldShowBackupNudge({
+				persisted: await isPersisted(),
+				lastExportAt: s.lastExportAt,
+				hasProgress: cardCount > 0 || all.some((p) => p.status === 'completed'),
+				now: Date.now()
+			});
 		if (!s.onboarded) {
 			const mod = await import('$lib/components/OnboardingWizard.svelte');
 			OnboardingWizard = mod.default;
@@ -203,6 +227,27 @@
 				</div>
 			</div>
 		</header>
+
+		{#if showBackupNudge}
+			<InfoBanner variant="note" class="mt-4" role="note">
+				<p data-testid="backup-nudge">{m.home_backup_nudge()}</p>
+				<div class="mt-2 flex flex-wrap gap-2">
+					<a href="{resolve('/settings')}#backup" class="btn-secondary text-sm">
+						{m.home_backup_nudge_cta()}
+					</a>
+					<button
+						type="button"
+						class="btn-secondary text-sm"
+						onclick={() => {
+							backupNudgeDismissed = true;
+							showBackupNudge = false;
+						}}
+					>
+						{m.home_backup_nudge_dismiss()}
+					</button>
+				</div>
+			</InfoBanner>
+		{/if}
 
 		<div
 			class="mt-5 flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-6"

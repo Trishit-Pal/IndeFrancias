@@ -47,7 +47,8 @@ export const settingsSchema = z.object({
 	fsrsWeights: z.array(z.number().finite()).length(FSRS_WEIGHT_COUNT).nullable().optional(),
 	fsrsOptimizedAt: z.number().nullable().optional(),
 	fsrsOptimizedReviewCount: z.number().optional(),
-	updateCheckEnabled: z.boolean().optional()
+	updateCheckEnabled: z.boolean().optional(),
+	lastExportAt: z.string().nullable().optional()
 });
 
 export const progressSchema = z.object({

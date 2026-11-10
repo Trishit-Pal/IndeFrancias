@@ -120,6 +120,17 @@ export function parseBackupJson(json: string): {
 	}
 }
 
+/** True when a restore would overwrite learner progress (cheap per-store counts). */
+export async function hasDataToLose(): Promise<boolean> {
+	const db = await getDB();
+	const counts = await Promise.all([
+		db.count('progress'),
+		db.count('srsCards'),
+		db.count('reviewLog')
+	]);
+	return counts.some((n) => n > 0);
+}
+
 /** Serialises the whole database to a JSON string with an integrity checksum. */
 export async function exportBackup(): Promise<string> {
 	const db = await getDB();

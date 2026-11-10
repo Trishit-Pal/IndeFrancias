@@ -55,3 +55,15 @@ export function updateStreak(streak: StreakRecord, today: string): StreakRecord 
 		lastActiveDate: today
 	};
 }
+
+/**
+ * The streak to DISPLAY today. Mirrors `updateStreak`'s rules without writing:
+ * a streak nobody has extended for too long reads 0 instead of a stale number.
+ */
+export function effectiveStreak(streak: StreakRecord, today: string): number {
+	if (!streak.lastActiveDate) return 0;
+	const gap = daysBetween(streak.lastActiveDate, today);
+	if (gap <= 1) return streak.currentStreak;
+	if (gap === 2 && streak.freezesAvailable > 0) return streak.currentStreak;
+	return 0;
+}

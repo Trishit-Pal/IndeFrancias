@@ -13,7 +13,13 @@
 	import { network } from '$lib/stores/online.svelte';
 	import { settingsRepo } from '$lib/db';
 	import { countDue } from '$lib/srs/queue';
-	import { shouldNotify, revisionNotificationBody } from '$lib/pwa/revisionNotify';
+	import {
+		shouldNotify,
+		revisionNotificationBody,
+		readLastNotifiedDay,
+		writeLastNotifiedDay
+	} from '$lib/pwa/revisionNotify';
+	import { todayKey } from '$lib/utils/date';
 	import { applyTheme, isDarkTheme, watchSystemTheme } from '$lib/theme/apply';
 	import { configureTts } from '$lib/audio/tts';
 	import { isNativePlatform, isDesktopPlatform } from '$lib/platform';
@@ -99,7 +105,8 @@
 			if (typeof document === 'undefined' || document.visibilityState !== 'visible') return;
 			const settings = await settingsRepo.getSettings();
 			const due = await countDue();
-			if (!shouldNotify(due, settings)) return;
+			const today = todayKey();
+			if (!shouldNotify(due, settings, readLastNotifiedDay(), today)) return;
 			if (isNativePlatform()) {
 				await showRevisionNotification(m.revision_notify_title(), revisionNotificationBody(due));
 			} else if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
@@ -107,7 +114,10 @@
 					body: revisionNotificationBody(due),
 					tag: 'frenchpath-revision'
 				});
+			} else {
+				return; // nothing shown (no permission): do not use up today's reminder
 			}
+			writeLastNotifiedDay(today);
 		}
 
 		void (async () => {

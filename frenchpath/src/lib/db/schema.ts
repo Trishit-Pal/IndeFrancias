@@ -58,6 +58,8 @@ export interface Settings {
 	fsrsOptimizedReviewCount: number;
 	/** Opt-in, default-off: fetches static version.json to check for updates. */
 	updateCheckEnabled: boolean;
+	/** ISO time of the last learner-initiated backup export; null = never. */
+	lastExportAt: string | null;
 }
 
 export const SETTINGS_KEY = 'app';
@@ -86,7 +88,8 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = {
 	fsrsWeights: null,
 	fsrsOptimizedAt: null,
 	fsrsOptimizedReviewCount: 0,
-	updateCheckEnabled: false
+	updateCheckEnabled: false,
+	lastExportAt: null
 };
 
 /** Per-lesson completion state. */

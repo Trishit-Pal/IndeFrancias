@@ -5,7 +5,13 @@ import * as progressRepo from '../db/repositories/progress';
 import * as settingsRepo from '../db/repositories/settings';
 import * as assessmentsRepo from '../db/repositories/assessments';
 import { createSrsCard } from '../srs/fsrs';
-import { exportBackup, importBackup, previewBackup, MAX_BACKUP_BYTES } from './backup';
+import {
+	exportBackup,
+	importBackup,
+	previewBackup,
+	hasDataToLose,
+	MAX_BACKUP_BYTES
+} from './backup';
 import { sha256Hex } from './checksum';
 import { CURRENT_BACKUP_VERSION } from './backupSchema';
 
@@ -40,6 +46,52 @@ describe('backup export/import', () => {
 		expect(cards[0].due instanceof Date).toBe(true);
 		expect((await progressRepo.getProgress('u'))?.score).toBe(90);
 		expect((await settingsRepo.getSettings()).dailyGoalXp).toBe(42);
+	});
+
+	it('round-trips lastExportAt through a backup', async () => {
+		await settingsRepo.saveSettings({ lastExportAt: '2026-01-01T00:00:00.000Z' });
+		const json = await exportBackup();
+		await resetDatabase();
+		await importBackup(json);
+		expect((await settingsRepo.getSettings()).lastExportAt).toBe('2026-01-01T00:00:00.000Z');
+	});
+
+	it('still imports an older backup that has no lastExportAt', async () => {
+		await settingsRepo.saveSettings({ dailyGoalXp: 42 });
+		const file = JSON.parse(await exportBackup());
+		delete file.payload.settings.lastExportAt;
+		file.checksum = await sha256Hex(JSON.stringify(file.payload));
+		await resetDatabase();
+		await importBackup(JSON.stringify(file));
+		const settings = await settingsRepo.getSettings();
+		expect(settings.dailyGoalXp).toBe(42);
+		expect(settings.lastExportAt).toBeNull();
+	});
+
+	it('hasDataToLose is false on a fresh database and true once progress exists', async () => {
+		expect(await hasDataToLose()).toBe(false);
+		await progressRepo.putProgress({
+			lessonId: 'u',
+			status: 'completed',
+			score: 90,
+			attempts: 1,
+			lastVisited: 1,
+			cefrLevel: 'A1'
+		});
+		expect(await hasDataToLose()).toBe(true);
+	});
+
+	it('hasDataToLose is true when only SRS cards exist', async () => {
+		await srsRepo.putCard(
+			createSrsCard({
+				cardId: 'u:1',
+				contentId: '1',
+				cefrLevel: 'A1',
+				skill: 'reading',
+				now: new Date('2026-01-01T00:00:00Z')
+			})
+		);
+		expect(await hasDataToLose()).toBe(true);
 	});
 
 	it('rejects an unsupported backup version', async () => {

@@ -394,5 +394,10 @@
 	"checkpoint_load_error": "यह चेकपॉइंट लोड नहीं हो सका। आपकी प्रगति सुरक्षित है।",
 	"checkpoint_save_error": "आपका चेकपॉइंट परिणाम सहेजा नहीं जा सका। आपके उत्तर यहीं हैं — फिर कोशिश करें।",
 	"review_grade_error": "वह उत्तर सहेजा नहीं जा सका। फिर कोशिश करें।",
-	"settings_reset_blocked": "FrenchPath के दूसरे टैब बंद करें, फिर कोशिश करें।"
+	"settings_reset_blocked": "FrenchPath के दूसरे टैब बंद करें, फिर कोशिश करें।",
+	"home_backup_nudge": "आपकी प्रगति सिर्फ़ इसी डिवाइस पर है। बैकअप सेव कर लें ताकि वह कभी न खोए।",
+	"home_backup_nudge_cta": "बैकअप सेटिंग खोलें",
+	"home_backup_nudge_dismiss": "अभी नहीं",
+	"settings_safety_copy_failed": "हम आपकी मौजूदा प्रगति की कॉपी सेव नहीं कर सके। फिर कोशिश करें, या बिना कॉपी के रीस्टोर करें।",
+	"settings_import_restore_anyway": "कॉपी सेव किए बिना रीस्टोर करें"
 }

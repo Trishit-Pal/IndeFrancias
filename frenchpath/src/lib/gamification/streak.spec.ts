@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { updateStreak } from './streak';
+import { effectiveStreak, updateStreak } from './streak';
 import type { StreakRecord } from '../db/schema';
 
 function base(overrides: Partial<StreakRecord> = {}): StreakRecord {
@@ -77,5 +77,38 @@ describe('updateStreak', () => {
 			'2026-01-05'
 		);
 		expect(s.currentStreak).toBe(1);
+	});
+});
+
+describe('effectiveStreak', () => {
+	const active = (overrides: Partial<StreakRecord> = {}) =>
+		base({ currentStreak: 30, longestStreak: 30, lastActiveDate: '2026-01-10', ...overrides });
+
+	it('is 0 when never active', () => {
+		expect(effectiveStreak(base(), '2026-01-10')).toBe(0);
+	});
+
+	it('keeps the streak on the same day', () => {
+		expect(effectiveStreak(active(), '2026-01-10')).toBe(30);
+	});
+
+	it('keeps the streak the day after', () => {
+		expect(effectiveStreak(active(), '2026-01-11')).toBe(30);
+	});
+
+	it('keeps the streak after one missed day when a freeze can bridge it', () => {
+		expect(effectiveStreak(active({ freezesAvailable: 1 }), '2026-01-12')).toBe(30);
+	});
+
+	it('is 0 after one missed day with no freeze', () => {
+		expect(effectiveStreak(active({ freezesAvailable: 0 }), '2026-01-12')).toBe(0);
+	});
+
+	it('is 0 after a long idle gap even with freezes', () => {
+		expect(effectiveStreak(active(), '2026-01-20')).toBe(0);
+	});
+
+	it('keeps the streak when the clock moved backwards', () => {
+		expect(effectiveStreak(active(), '2026-01-08')).toBe(30);
 	});
 });

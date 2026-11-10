@@ -354,5 +354,10 @@
 	"checkpoint_load_error": "Couldn't load this checkpoint. Your progress is safe.",
 	"checkpoint_save_error": "Couldn't save your checkpoint result. Your answers are still here — try again.",
 	"review_grade_error": "Couldn't save that answer. Try again.",
-	"settings_reset_blocked": "Close other FrenchPath tabs, then try again."
+	"settings_reset_blocked": "Close other FrenchPath tabs, then try again.",
+	"home_backup_nudge": "Your progress lives only on this device. Save a backup so you never lose it.",
+	"home_backup_nudge_cta": "Open backup settings",
+	"home_backup_nudge_dismiss": "Not now",
+	"settings_safety_copy_failed": "We couldn't save a copy of your current progress. Try again, or restore without a copy.",
+	"settings_import_restore_anyway": "Restore without saving a copy"
 }

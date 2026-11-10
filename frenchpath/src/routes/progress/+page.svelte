@@ -25,6 +25,7 @@
 	import { getLogsSince } from '$lib/db/repositories/reviewLog';
 	import { loadCaps } from '$lib/srs/caps';
 	import { todayKey, lastNDayKeys } from '$lib/utils/date';
+	import { effectiveStreak } from '$lib/gamification/streak';
 	import { shareProgress } from '$lib/share/shareCard';
 	import CharacterCoco from '$lib/components/CharacterCoco.svelte';
 	import Icon from '$lib/components/Icon.svelte';
@@ -156,7 +157,7 @@
 			fsrsWeights = settings.fsrsWeights;
 			fsrsOptimizedReviewCount = settings.fsrsOptimizedReviewCount;
 			const streakRecord = await streakRepo.getStreak();
-			streak = streakRecord.currentStreak;
+			streak = effectiveStreak(streakRecord, todayKey());
 			longestStreak = streakRecord.longestStreak;
 			todayXp = (await statsRepo.getStats(todayKey())).xp;
 			completed = (await progressRepo.getAllProgress()).filter(
