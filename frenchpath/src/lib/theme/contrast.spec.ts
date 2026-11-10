@@ -43,6 +43,14 @@ describe('token contrast (WCAG AA)', () => {
 		expect(contrast('#d99a2b', '#faf7f0')).toBeLessThan(AA);
 	});
 
+	// DailyRitual's evening gradient is dark in both themes; its lightest stops
+	// are hard-coded in that component (light #7a5a55, dark #4a3549).
+	for (const stop of ['#7a5a55', '#4a3549']) {
+		it(`--fp-ivory on the evening ritual gradient (${stop}) >= ${AA}`, () => {
+			expect(contrast(themes.light['--fp-ivory'], stop)).toBeGreaterThanOrEqual(AA);
+		});
+	}
+
 	for (const [theme, t] of Object.entries(themes)) {
 		for (const token of TEXT_TOKENS) {
 			for (const bg of ['--fp-canvas', '--fp-paper']) {

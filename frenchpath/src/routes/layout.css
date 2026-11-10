@@ -99,6 +99,15 @@ html:not(.reduce-motion) .fp-flip-inner.fp-flipped {
 	transform: rotateY(180deg);
 }
 
+/* Reduce Motion: nothing rotates, so a revealed card swaps faces instead.
+   Without this the back stays pre-rotated + backface-hidden and never shows. */
+html.reduce-motion .fp-flipped .fp-flip-front {
+	visibility: hidden;
+}
+html.reduce-motion .fp-flipped .fp-flip-back {
+	transform: none;
+}
+
 .fp-path-glow {
 	box-shadow:
 		0 0 0 2px var(--fp-primary),
@@ -575,6 +584,8 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	*::before,
 	*::after {
 		animation-duration: 0.01ms !important;
+		/* Infinite loops would otherwise strobe at 0.01ms per cycle. */
+		animation-iteration-count: 1 !important;
 		transition-duration: 0.01ms !important;
 	}
 }

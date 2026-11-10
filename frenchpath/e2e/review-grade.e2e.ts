@@ -51,6 +51,11 @@ test('a double tap on a grade button records exactly one review', async ({ page 
 	await reveal.click();
 	const good = page.locator('[data-grade="good"]');
 	await expect(good).toBeVisible();
+	// E2E settings run with Reduce Motion on: the card can't rotate, so the faces
+	// must swap. (Playwright counts a backface-hidden element as visible, hence
+	// the computed-style checks.)
+	await expect(page.locator('.fp-flip-front')).toBeHidden();
+	await expect(page.getByTestId('card-back')).toHaveCSS('transform', 'none');
 	// Two clicks in the same task, before any await can resolve.
 	await good.evaluate((b) => {
 		(b as HTMLButtonElement).click();

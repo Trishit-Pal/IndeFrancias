@@ -48,7 +48,7 @@
 <div class="fp-daily-ritual" data-ritual={activeRitual}>
 	<div class="fp-ritual-label" style="color:{r.color}">
 		<span class="fp-ritual-cefr">{r.emoji}</span>
-		<span class="fp-ritual-fr">{r.labelFr}</span>
+		<span class="fp-ritual-fr" class:fp-ritual-fr--light={isEvening}>{r.labelFr}</span>
 		<span class="fp-ritual-hi" class:fp-ritual-hi--light={isEvening}>{r.labelHi}</span>
 	</div>
 	{#if learnerName}
@@ -96,6 +96,11 @@
 		font-size: clamp(22px, 3vw, 34px);
 		line-height: 1.05;
 		color: var(--fp-ink);
+	}
+	/* The evening gradient is dark in BOTH themes, so light-theme ink (indigo)
+	   is unreadable on it. --fp-ivory is theme-fixed; contrast.spec.ts guards it. */
+	.fp-ritual-fr--light {
+		color: var(--fp-ivory);
 	}
 	.fp-ritual-hi {
 		font-family: var(--fp-font-hindi);

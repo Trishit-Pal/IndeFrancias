@@ -254,7 +254,8 @@
 			{:else}
 				<div class="fp-flip-card mt-4 lg:mx-auto lg:max-w-2xl">
 					<div class="fp-flip-inner" class:fp-flipped={revealed}>
-						<section class="fp-flip-front surface-card p-6 text-center shadow-sm">
+						<!-- inert: the face that isn't showing is out of the tab order and the a11y tree. -->
+						<section class="fp-flip-front surface-card p-6 text-center shadow-sm" inert={revealed}>
 							{#if difficultyTier === 'hard' && !revealed}
 								<p class="text-3xl font-bold text-muted" data-testid="hard-prompt">
 									{m.review_hard_prompt()}
@@ -290,6 +291,7 @@
 						<section
 							class="fp-flip-back surface-card p-6 text-center shadow-sm"
 							data-testid="card-back"
+							inert={!revealed}
 						>
 							{#if currentItem}
 								{@const gloss = getGloss(currentItem.content, nativeLanguage)}
