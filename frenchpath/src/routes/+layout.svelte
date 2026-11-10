@@ -171,7 +171,7 @@
 	<link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
 	<meta
 		name="description"
-		content="Offline French learning for Indian learners — A1 to A2, no account required."
+		content="Offline-first French learning for Indian learners (A1–C1) with spaced repetition. No account needed."
 	/>
 	<meta property="og:title" content="FrenchPath — Learn French" />
 	<meta

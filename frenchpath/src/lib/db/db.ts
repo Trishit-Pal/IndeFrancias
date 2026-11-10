@@ -13,9 +13,12 @@ let dbPromise: Promise<IDBPDatabase<FrenchPathDB>> | null = null;
 
 /** `resetDatabase` could not delete the database because another tab still holds it open. */
 export class DatabaseBlockedError extends Error {
-	constructor() {
+	/** Settles when the still-queued delete finishes (the other tab closed) or fails. */
+	readonly completed: Promise<void>;
+	constructor(completed: Promise<void>) {
 		super('The database is open in another tab.');
 		this.name = 'DatabaseBlockedError';
+		this.completed = completed;
 	}
 }
 
@@ -116,14 +119,19 @@ export async function writeAtomically<Name extends StoreNames<FrenchPathDB>, T>(
  * Closes and forgets the cached handle, then deletes the database.
  * Used by tests for isolation and by Settings → Reset. Rejects with
  * `DatabaseBlockedError` if another tab keeps the database open, rather than
- * hanging; the delete stays queued and completes once that tab closes.
+ * hanging; the delete stays queued and completes once that tab closes, which the
+ * error's `completed` promise reports. A failed open (the corrupted-database
+ * case, when Reset is the escape hatch) must not stop the delete.
  */
 export async function resetDatabase(): Promise<void> {
 	if (dbPromise) {
-		(await dbPromise).close();
+		(await dbPromise.catch(() => null))?.close();
 		dbPromise = null;
 	}
 	await new Promise<void>((resolve, reject) => {
-		deleteDB(DB_NAME, { blocked: () => reject(new DatabaseBlockedError()) }).then(resolve, reject);
+		const deleting = deleteDB(DB_NAME, {
+			blocked: () => reject(new DatabaseBlockedError(deleting))
+		});
+		deleting.then(resolve, reject);
 	});
 }

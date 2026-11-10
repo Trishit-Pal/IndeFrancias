@@ -185,6 +185,10 @@ for (const scene of SCENES) {
 			await page.goto('/settings');
 			await expect(page.getByTestId('theme-select')).toBeVisible({ timeout: 15_000 });
 			await expectNoBlockingA11yViolations(page, `${scene.label} /settings`);
+
+			await page.goto('/privacy');
+			await expect(page.getByTestId('privacy-page')).toBeVisible({ timeout: 15_000 });
+			await expectNoBlockingA11yViolations(page, `${scene.label} /privacy`);
 		});
 
 		test('lesson intro and exercise phase', async ({ page }) => {

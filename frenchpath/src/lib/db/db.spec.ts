@@ -206,6 +206,28 @@ describe('connection lifecycle', () => {
 		stubborn.close(); // lets the pending delete finish so later tests start clean
 	});
 
+	it('resetDatabase still deletes when the cached open is a rejected promise', async () => {
+		const newer = await openDB(DB_NAME, DB_VERSION + 1, {
+			upgrade(db) {
+				db.createObjectStore('settings');
+			}
+		});
+		newer.close();
+		const failing = getDB(); // not yet rejected: resetDatabase sees the cached promise
+		failing.catch(() => undefined);
+		await expect(resetDatabase()).resolves.toBeUndefined();
+		expect((await getDB()).version).toBe(DB_VERSION);
+	});
+
+	it('DatabaseBlockedError.completed settles once the other connection closes', async () => {
+		await getDB();
+		const stubborn = await openDB(DB_NAME);
+		const error = await resetDatabase().catch((e: unknown) => e);
+		expect(error).toBeInstanceOf(DatabaseBlockedError);
+		stubborn.close();
+		await expect((error as DatabaseBlockedError).completed).resolves.toBeUndefined();
+	});
+
 	it('resetDatabase succeeds when other tabs close on versionchange', async () => {
 		await getDB();
 		const polite = await openDB(DB_NAME, undefined, {

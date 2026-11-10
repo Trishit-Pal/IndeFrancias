@@ -42,9 +42,11 @@
 	import { applyTheme } from '$lib/theme/apply';
 	import { configureTts, listFrenchVoices, voicesReady } from '$lib/audio/tts';
 	import { revisionNotificationBody } from '$lib/pwa/revisionNotify';
+	import { wipeLocalData } from '$lib/pwa/wipeLocalData';
 	import { checkForUpdate, UpdateCheckError, type UpdateInfo } from '$lib/platform/updates';
 	import pkg from '../../../package.json';
 	import Modal from '$lib/components/Modal.svelte';
+	import AboutSection from '$lib/components/AboutSection.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { getLocale, setLocale } from '$lib/paraglide/runtime';
 
@@ -321,15 +323,24 @@
 		pendingSyncJson = '';
 	}
 
+	/** Everything this origin stored: the database first (so a blocked delete aborts before anything else is lost), then the rest. */
+	async function finishReset() {
+		await wipeLocalData();
+		location.reload();
+	}
+
 	async function reset() {
 		try {
 			await resetDatabase();
 		} catch (error) {
 			if (!(error instanceof DatabaseBlockedError)) throw error;
 			message = m.settings_reset_blocked();
+			// The delete stays queued: when the other tab closes, complete the reset the learner asked for.
+			// A failed queued delete just leaves the message above (nothing was wiped).
+			void error.completed.then(finishReset, () => undefined);
 			return;
 		}
-		location.reload();
+		await finishReset();
 	}
 
 	const retentionOptions: { value: number; label: () => string }[] = [
@@ -796,6 +807,8 @@
 					</button>
 				{/if}
 			</section>
+
+			<AboutSection version={pkg.version} />
 
 			<Modal
 				open={!!importPreview}

@@ -314,6 +314,16 @@
 					<li class="surface-card p-3">📤 {m.onb_sovereignty_2()}</li>
 					<li class="surface-card p-3">🚫 {m.onb_sovereignty_3()}</li>
 				</ul>
+				<!-- New tab so the setup tour keeps its place. -->
+				<!-- eslint-disable svelte/no-navigation-without-resolve -- same-origin static page, opened outside the SPA -->
+				<a
+					href="/privacy"
+					target="_blank"
+					rel="noopener"
+					class="mt-3 inline-flex min-h-11 items-center text-sm underline"
+					data-testid="onboarding-privacy-link">{m.onb_privacy_link()}</a
+				>
+				<!-- eslint-enable svelte/no-navigation-without-resolve -->
 				<div class="mt-6 flex gap-2">
 					<button type="button" class="btn-secondary flex-1" onclick={back}>{m.onb_back()}</button>
 					<button
