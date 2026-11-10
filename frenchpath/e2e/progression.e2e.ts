@@ -14,6 +14,9 @@ test('completing unit 1 unlocks unit 2 on the path map', async ({ page }) => {
 	await page.getByTestId('start-lesson').click();
 	await completeLesson(page);
 	await page.getByRole('link', { name: 'Back to path' }).click();
+	// Let the client-side navigation land before reloading: a reload while still on
+	// /learn/... correctly reloads the lesson (the SW serves the SPA shell, not Home).
+	await expect(page).toHaveURL(/\/$/);
 	await page.reload();
 
 	await expect(page.getByTestId('unit-card').first()).toContainText('✓');

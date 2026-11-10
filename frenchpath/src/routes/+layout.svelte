@@ -7,6 +7,7 @@
 	import { resolve } from '$app/paths';
 	import Icon from '$lib/components/Icon.svelte';
 	import InfoBanner from '$lib/components/InfoBanner.svelte';
+	import UpdateToast from '$lib/components/UpdateToast.svelte';
 	import type { IconName } from '$lib/components/icons';
 	import * as m from '$lib/paraglide/messages';
 	import { network } from '$lib/stores/online.svelte';
@@ -75,8 +76,21 @@
 		if (isNativePlatform()) void syncNativeStatusBar(isDarkTheme(settings.theme));
 	}
 
-	// A write that rejected with nobody awaiting it (e.g. a full disk). Shown, never auto-reloaded.
-	let saveFailed = $state(false);
+	// Any promise that rejected with nobody awaiting it (a write, a fetch, a library). Shown, never
+	// auto-reloaded. No preventDefault(): the browser keeps logging it for dev tooling.
+	let unexpectedError = $state(false);
+
+	// A new service worker is waiting. The learner decides when to reload (SPEC invariant 6).
+	let updateReady = $state(false);
+	let updateSW: ((reloadPage?: boolean) => Promise<void>) | undefined;
+	let updateRequested = false; // this tab clicked Update
+	let workerSwapped = false; // the new worker already took over (Update clicked in another tab)
+
+	function applyUpdate() {
+		updateRequested = true;
+		if (workerSwapped) location.reload();
+		else void updateSW?.(true);
+	}
 
 	onMount(() => {
 		let cleanup: (() => void) | undefined;
@@ -104,7 +118,16 @@
 			// SW's navigateFallback fights local serving. (mobile-architecture.md R3)
 			if (!isNativePlatform() && !isDesktopPlatform()) {
 				const { registerSW } = await import('virtual:pwa-register');
-				registerSW({ immediate: true });
+				updateSW = registerSW({
+					immediate: true,
+					onNeedRefresh: () => (updateReady = true),
+					// Replaces the plugin's default window.location.reload() on takeover, which
+					// would also reload every other open tab mid-lesson.
+					onNeedReload: () => {
+						workerSwapped = true;
+						if (updateRequested) location.reload();
+					}
+				});
 			}
 
 			const settings = await settingsRepo.getSettings();
@@ -118,7 +141,7 @@
 
 		const onVisibility = () => void maybeNotifyRevision();
 		document.addEventListener('visibilitychange', onVisibility);
-		const onUnhandledRejection = () => (saveFailed = true);
+		const onUnhandledRejection = () => (unexpectedError = true);
 		window.addEventListener('unhandledrejection', onUnhandledRejection);
 
 		return () => {
@@ -203,10 +226,10 @@
 			</div>
 		{/if}
 
-		{#if saveFailed}
+		{#if unexpectedError}
 			<div class="mx-auto w-full max-w-xl px-4 pt-3">
 				<InfoBanner variant="error" role="alert">
-					<p>{m.save_failed_banner()}</p>
+					<p>{m.unexpected_error_banner()}</p>
 					<div class="mt-3 flex flex-wrap gap-2">
 						<button type="button" class="btn-primary text-sm" onclick={() => location.reload()}>
 							{m.error_reload()}
@@ -214,7 +237,7 @@
 						<button
 							type="button"
 							class="btn-secondary text-sm"
-							onclick={() => (saveFailed = false)}
+							onclick={() => (unexpectedError = false)}
 						>
 							{m.save_failed_dismiss()}
 						</button>
@@ -231,6 +254,10 @@
 		>
 			{@render children()}
 		</div>
+
+		{#if updateReady}
+			<UpdateToast onupdate={applyUpdate} onlater={() => (updateReady = false)} />
+		{/if}
 
 		<!-- Mobile bottom nav (< lg) -->
 		<nav
