@@ -7,12 +7,15 @@ import { visualizer } from 'rollup-plugin-visualizer';
 import { readFileSync } from 'node:fs';
 import type { Plugin } from 'vite';
 
+/** Largest file the service worker precaches; bigger ones (the vosk ASR chunk) are skipped. */
+const PRECACHE_MAX_FILE_BYTES = 2 * 1024 * 1024;
+
 export default defineConfig(({ mode }) => ({
 	build: {
 		// Never inline fonts as data: URIs — the strict `default-src 'self'` CSP
 		// blocks data: fonts. Emitting them as same-origin asset files keeps the
 		// self-hosted webfonts CSP-compliant and offline-cacheable (the workbox
-		// glob below precaches woff/woff2).
+		// glob below precaches woff2).
 		assetsInlineLimit: (filePath: string) =>
 			/\.(woff2?|ttf|otf|eot)(\?.*)?$/i.test(filePath) ? false : undefined,
 		rollupOptions: {
@@ -46,10 +49,10 @@ export default defineConfig(({ mode }) => ({
 			// dynamic import inside src/lib/speech/asr.ts, once a learner opts into
 			// a speak exercise's model download. SvelteKit hashes client chunk
 			// filenames (no [name] control), so it can't be glob-excluded from the
-			// precache by path the way static/models/ is below — instead, let
-			// vite-pwa fall back to workbox's default behavior (skip oversized
-			// files from the precache manifest with a console warning) rather than
-			// hard-failing the build, since skipping it is exactly what we want.
+			// precache by path the way static/models/ is below — instead, workbox
+			// skips files over `maximumFileSizeToCacheInBytes` (below) from the
+			// precache manifest with a console warning rather than hard-failing the
+			// build, since skipping it is exactly what we want.
 			showMaximumFileSizeToCacheInBytesWarning: true,
 			includeAssets: [
 				'favicon.svg',
@@ -87,7 +90,11 @@ export default defineConfig(({ mode }) => ({
 				]
 			},
 			workbox: {
-				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2,json,html}'],
+				// No legacy `woff`: @fontsource lists woff2 first and every supported browser takes it.
+				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff2,json,html}'],
+				// Pinned at workbox's 2 MiB default on purpose: everything in the app shell fits
+				// well under it, and the ~5.8 MB vosk ASR chunk must stay out (see above).
+				maximumFileSizeToCacheInBytes: PRECACHE_MAX_FILE_BYTES,
 				// The Vosk ASR model (static/models/) is a same-origin opt-in download,
 				// never part of the app-shell precache (privacy: web speech is opt-in).
 				// version.json must also stay out of the precache — checkForUpdate()

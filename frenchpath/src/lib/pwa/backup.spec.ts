@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { getDB, resetDatabase } from '../db';
 import * as srsRepo from '../db/repositories/srs';
 import * as progressRepo from '../db/repositories/progress';
@@ -290,6 +290,45 @@ describe('backup export/import', () => {
 
 		expect(await (await getDB()).count('reviewLog')).toBe(20_000);
 	}, 60_000);
+
+	it('rolls back a restore whose write fails inside the transaction', async () => {
+		await progressRepo.putProgress({
+			lessonId: 'keep',
+			status: 'completed',
+			score: 80,
+			attempts: 1,
+			lastVisited: 1,
+			cefrLevel: 'A1'
+		});
+		const db = await getDB();
+		const entry = { cardId: 'u:1', ts: 1, grade: 3, state: 2, stability: 1, difficulty: 5 };
+		await db.add('reviewLog', { ...entry, elapsedDays: 0, scheduledDays: 1 });
+		await db.add('reviewLog', { ...entry, elapsedDays: 0, scheduledDays: 1 });
+		const file = JSON.parse(await exportBackup());
+		file.payload.reviewLog[1].id = file.payload.reviewLog[0].id; // valid file, colliding key
+		file.checksum = await sha256Hex(JSON.stringify(file.payload));
+
+		// Route review-log writes through add(), so the colliding key fails the request
+		// asynchronously the way a quota error would, after the stores were cleared.
+		const realPut = IDBObjectStore.prototype.put;
+		const put = vi.spyOn(IDBObjectStore.prototype, 'put').mockImplementation(function (
+			this: IDBObjectStore,
+			value: unknown,
+			key?: IDBValidKey
+		) {
+			if (this.name === 'reviewLog') return this.add(value);
+			return realPut.call(this, value, key);
+		});
+		try {
+			await expect(importBackup(JSON.stringify(file))).rejects.toThrow(
+				'Restore failed — your existing data is unchanged'
+			);
+		} finally {
+			put.mockRestore();
+		}
+		expect((await progressRepo.getProgress('keep'))?.score).toBe(80);
+		expect(await (await getDB()).count('reviewLog')).toBe(2);
+	});
 
 	it('rejects a card whose due date is not a real ISO datetime', async () => {
 		await srsRepo.putCard(
