@@ -12,7 +12,7 @@
 
 French is the #2 most-studied foreign language in India (Alliance Française network, CBSE/ICSE second-language, immigration/PR to Canada & France, hospitality careers). Existing apps (Duolingo et al.) teach French *through English*, assume always-on connectivity, monetise attention, and harvest data. FrenchPath instead:
 
-- **Bridges through the learner's own language** (Hindi/Hinglish + 9 more Indian languages) — every French word can be glossed inline in the native tongue.
+- **Bridges through the learner's own language** (Hindi and Hinglish, with 7 more Indian languages in beta) — every French word can be glossed inline in the native tongue.
 - **Works 100% offline** — content, spaced repetition, and exam mocks all run on-device. Built for intermittent connectivity and data-cost sensitivity.
 - **Owns nothing of the user** — no account, no server, no tracking. Progress lives only on the device; the user exports/imports a JSON backup they control.
 - **Targets a real credential** — structured A1→C1 path culminating in DELF A2/B1/B2 and DALF C1 mock exams.
