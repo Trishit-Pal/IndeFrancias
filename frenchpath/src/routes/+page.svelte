@@ -22,6 +22,7 @@
 		dalfC1Unlocked
 	} from '$lib/lesson/progression';
 	import VoyageMap from '$lib/path/VoyageMap.svelte';
+	import JourneySky from '$lib/path/JourneySky.svelte';
 	import DailyRitual from '$lib/components/DailyRitual.svelte';
 	import CharacterMira from '$lib/components/CharacterMira.svelte';
 	import CharacterCoco from '$lib/components/CharacterCoco.svelte';
@@ -215,207 +216,215 @@
 		</InfoBanner>
 	</main>
 {:else if !onboarded && OnboardingWizard}
-	<OnboardingWizard onComplete={finishOnboarding} {reduceMotion} />
+	<!-- relative + isolate: the sky sits at z-index -1 inside this box, above the body paint. -->
+	<div class="relative isolate">
+		<JourneySky />
+		<OnboardingWizard onComplete={finishOnboarding} {reduceMotion} />
+	</div>
 {:else}
-	<main class="page-shell">
-		<header class="flex flex-wrap items-center justify-between gap-4">
-			<div class="flex items-center gap-3">
-				<img src="/icon.svg" alt="" class="h-10 w-10 rounded-lg shadow-sm lg:hidden" />
-				<div>
-					<h1 class="fp-display-lg text-balance text-foreground lg:sr-only">FrenchPath</h1>
-					<p class="text-sm text-muted lg:sr-only">{homeSubtitle}</p>
+	<div class="relative isolate">
+		<JourneySky />
+		<main class="page-shell">
+			<header class="flex flex-wrap items-center justify-between gap-4">
+				<div class="flex items-center gap-3">
+					<img src="/icon.svg" alt="" class="h-10 w-10 rounded-lg shadow-sm lg:hidden" />
+					<div>
+						<h1 class="fp-display-lg text-balance text-foreground lg:sr-only">FrenchPath</h1>
+						<p class="text-sm text-muted lg:sr-only">{homeSubtitle}</p>
+					</div>
 				</div>
-			</div>
-		</header>
+			</header>
 
-		{#if showBackupNudge}
-			<InfoBanner variant="note" class="mt-4" role="note">
-				<p data-testid="backup-nudge">{m.home_backup_nudge()}</p>
-				<div class="mt-2 flex flex-wrap gap-2">
-					<a href="{resolve('/settings')}#backup" class="btn-secondary text-sm">
-						{m.home_backup_nudge_cta()}
-					</a>
-					<button
-						type="button"
-						class="btn-secondary text-sm"
-						onclick={() => {
-							backupNudgeDismissed = true;
-							showBackupNudge = false;
-						}}
-					>
-						{m.home_backup_nudge_dismiss()}
-					</button>
-				</div>
-			</InfoBanner>
-		{/if}
+			{#if showBackupNudge}
+				<InfoBanner variant="note" class="mt-4" role="note">
+					<p data-testid="backup-nudge">{m.home_backup_nudge()}</p>
+					<div class="mt-2 flex flex-wrap gap-2">
+						<a href="{resolve('/settings')}#backup" class="btn-secondary text-sm">
+							{m.home_backup_nudge_cta()}
+						</a>
+						<button
+							type="button"
+							class="btn-secondary text-sm"
+							onclick={() => {
+								backupNudgeDismissed = true;
+								showBackupNudge = false;
+							}}
+						>
+							{m.home_backup_nudge_dismiss()}
+						</button>
+					</div>
+				</InfoBanner>
+			{/if}
 
-		<div
-			class="mt-5 flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-6"
-		>
-			<div class="order-2 space-y-4 lg:order-1">
-				<!-- Time-of-day ritual greeting -->
-				<DailyRitual {ritual} />
+			<div
+				class="mt-5 flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-6"
+			>
+				<div class="order-2 space-y-4 lg:order-1">
+					<!-- Time-of-day ritual greeting -->
+					<DailyRitual {ritual} />
 
-				<!-- Mira mentor + streak / freeze stats -->
-				<div class="surface-card flex items-center gap-3 p-4">
-					<CharacterMira size="sm" animate={!reduceMotion} />
-					<div class="flex-1">
-						<div class="flex gap-2">
-							<span
-								class="fp-stat-badge fp-stat-badge--fire"
-								role="img"
-								aria-label={m.home_streak_label({ count: String(streak) })}
-								data-testid="streak-badge"
+					<!-- Mira mentor + streak / freeze stats -->
+					<div class="surface-card flex items-center gap-3 p-4">
+						<CharacterMira size="sm" animate={!reduceMotion} />
+						<div class="flex-1">
+							<div class="flex gap-2">
+								<span
+									class="fp-stat-badge fp-stat-badge--fire"
+									role="img"
+									aria-label={m.home_streak_label({ count: String(streak) })}
+									data-testid="streak-badge"
+								>
+									<span class="fp-flame" aria-hidden="true"><Icon name="flame" size={14} /></span>
+									<span class="fp-figure">{streak}</span>
+								</span>
+								<span
+									class="fp-stat-badge fp-stat-badge--ice"
+									title={m.home_streak_freezes()}
+									data-testid="freezes-badge"
+								>
+									<span aria-hidden="true"><Icon name="snowflake" size={14} /></span>
+									{freezesAvailable}
+									<span class="sr-only">{m.home_streak_freezes()}</span>
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<!-- Daily goal ring -->
+					<section class="surface-card p-4" aria-label={m.home_daily_goal()}>
+						<div class="flex items-center gap-4">
+							<div
+								class="fp-goal-ring"
+								style="--pct:{goalPercent}%"
+								role="progressbar"
+								aria-label={m.home_daily_goal()}
+								aria-valuenow={goal.xp}
+								aria-valuemin="0"
+								aria-valuemax={goal.goal}
 							>
-								<span class="fp-flame" aria-hidden="true"><Icon name="flame" size={14} /></span>
-								<span class="fp-figure">{streak}</span>
-							</span>
-							<span
-								class="fp-stat-badge fp-stat-badge--ice"
-								title={m.home_streak_freezes()}
-								data-testid="freezes-badge"
-							>
-								<span aria-hidden="true"><Icon name="snowflake" size={14} /></span>
-								{freezesAvailable}
-								<span class="sr-only">{m.home_streak_freezes()}</span>
-							</span>
-						</div>
-					</div>
-				</div>
-
-				<!-- Daily goal ring -->
-				<section class="surface-card p-4" aria-label={m.home_daily_goal()}>
-					<div class="flex items-center gap-4">
-						<div
-							class="fp-goal-ring"
-							style="--pct:{goalPercent}%"
-							role="progressbar"
-							aria-label={m.home_daily_goal()}
-							aria-valuenow={goal.xp}
-							aria-valuemin="0"
-							aria-valuemax={goal.goal}
-						>
-							<span class="fp-goal-ring-value fp-serif">{goal.xp}</span>
-						</div>
-						<div>
-							<p class="fp-serif text-[17px] font-semibold">
-								{m.home_daily_goal()}
-							</p>
-							<p class="text-sm text-muted" data-testid="daily-goal">
-								{goal.xp} / {goal.goal} XP {goal.met ? '✓' : ''}
-							</p>
-						</div>
-					</div>
-				</section>
-
-				<!-- Coco companion -->
-				<div class="surface-card p-4 text-center">
-					<CharacterCoco size="md" animate={!reduceMotion} level={cocoLevel} />
-					<p class="fp-serif mt-1.5 text-sm">{m.home_coco_level({ level: String(cocoLevel) })}</p>
-					<div class="fp-progress-bar mt-2">
-						<div class="fp-progress-fill" style="width:{cocoXpPercent}%"></div>
-					</div>
-				</div>
-
-				{#if nextReviewIn}
-					<p class="text-sm text-muted" data-testid="next-review">
-						{m.home_next_review({ time: nextReviewIn })}
-					</p>
-				{/if}
-
-				{#if pendingGate}
-					<GateBanner reason={m.gate_banner_reason({ label: pendingGate.label })} />
-				{/if}
-
-				<WeakSkillChips />
-
-				{#if adaptiveTip}
-					<CoachTip tip={adaptiveTip} />
-				{/if}
-
-				{#each openGates as gate (gate.id)}
-					<a
-						href={resolve('/checkpoint/[groupId]', { groupId: gate.id })}
-						class="btn-primary flex items-center justify-between gap-2"
-						data-testid="checkpoint-node-{gate.id}"
-					>
-						<span class="flex items-center gap-2"><Icon name="check" size={17} /> {gate.label}</span
-						>
-						<Icon name="chevron-right" size={18} />
-					</a>
-				{/each}
-
-				{#if due > 0}
-					<a
-						href={resolve('/review')}
-						class="btn-primary flex items-center justify-between gap-2"
-						data-testid="due-badge"
-					>
-						<span class="flex items-center gap-2"
-							><Icon name="review" size={17} />
-							{due === 1
-								? m.home_cards_due_one()
-								: m.home_cards_due_other({ count: String(due) })}</span
-						>
-						<Icon name="chevron-right" size={18} />
-					</a>
-				{/if}
-
-				{#if a2Completed || b1Completed || b2Completed || c1ExamUnlocked}
-					<section class="surface-card p-4" aria-label={m.home_mock_exams()}>
-						<p class="fp-serif mb-2 text-sm font-semibold">{m.home_mock_exams()}</p>
-						<div class="space-y-2">
-							{#if a2Completed}
-								<a
-									href={resolve('/exam/delf-a2')}
-									class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
-									data-testid="delf-card"
-								>
-									<span>{m.delf_title()}</span>
-									<Icon name="chevron-right" size={16} />
-								</a>
-							{/if}
-							{#if b1Completed}
-								<a
-									href={resolve('/exam/delf-b1')}
-									class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
-									data-testid="delf-b1-card"
-								>
-									<span>{m.home_mock_exam_label({ exam: 'DELF B1' })}</span>
-									<Icon name="chevron-right" size={16} />
-								</a>
-							{/if}
-							{#if b2Completed}
-								<a
-									href={resolve('/exam/delf-b2')}
-									class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
-									data-testid="delf-b2-card"
-								>
-									<span>{m.home_mock_exam_label({ exam: 'DELF B2' })}</span>
-									<Icon name="chevron-right" size={16} />
-								</a>
-							{/if}
-							{#if c1ExamUnlocked}
-								<a
-									href={resolve('/exam/dalf-c1')}
-									class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
-									data-testid="dalf-c1-card"
-								>
-									<span>{m.home_mock_exam_label({ exam: 'DALF C1' })}</span>
-									<Icon name="chevron-right" size={16} />
-								</a>
-							{/if}
+								<span class="fp-goal-ring-value fp-serif">{goal.xp}</span>
+							</div>
+							<div>
+								<p class="fp-serif text-[17px] font-semibold">
+									{m.home_daily_goal()}
+								</p>
+								<p class="text-sm text-muted" data-testid="daily-goal">
+									{goal.xp} / {goal.goal} XP {goal.met ? '✓' : ''}
+								</p>
+							</div>
 						</div>
 					</section>
-				{/if}
-			</div>
 
-			<section class="order-1 lg:order-2">
-				<h2 class="fp-serif mb-2 text-2xl text-balance">Le Voyage</h2>
-				<VoyageMap {units} {states} {lockReasons} {currentUnitId} {reduceMotion} dueCount={due} />
-			</section>
-		</div>
-	</main>
+					<!-- Coco companion -->
+					<div class="surface-card p-4 text-center">
+						<CharacterCoco size="md" animate={!reduceMotion} level={cocoLevel} />
+						<p class="fp-serif mt-1.5 text-sm">{m.home_coco_level({ level: String(cocoLevel) })}</p>
+						<div class="fp-progress-bar mt-2">
+							<div class="fp-progress-fill" style="width:{cocoXpPercent}%"></div>
+						</div>
+					</div>
+
+					{#if nextReviewIn}
+						<p class="text-sm text-muted" data-testid="next-review">
+							{m.home_next_review({ time: nextReviewIn })}
+						</p>
+					{/if}
+
+					{#if pendingGate}
+						<GateBanner reason={m.gate_banner_reason({ label: pendingGate.label })} />
+					{/if}
+
+					<WeakSkillChips />
+
+					{#if adaptiveTip}
+						<CoachTip tip={adaptiveTip} />
+					{/if}
+
+					{#each openGates as gate (gate.id)}
+						<a
+							href={resolve('/checkpoint/[groupId]', { groupId: gate.id })}
+							class="btn-primary flex items-center justify-between gap-2"
+							data-testid="checkpoint-node-{gate.id}"
+						>
+							<span class="flex items-center gap-2"
+								><Icon name="check" size={17} /> {gate.label}</span
+							>
+							<Icon name="chevron-right" size={18} />
+						</a>
+					{/each}
+
+					{#if due > 0}
+						<a
+							href={resolve('/review')}
+							class="btn-primary flex items-center justify-between gap-2"
+							data-testid="due-badge"
+						>
+							<span class="flex items-center gap-2"
+								><Icon name="review" size={17} />
+								{due === 1
+									? m.home_cards_due_one()
+									: m.home_cards_due_other({ count: String(due) })}</span
+							>
+							<Icon name="chevron-right" size={18} />
+						</a>
+					{/if}
+
+					{#if a2Completed || b1Completed || b2Completed || c1ExamUnlocked}
+						<section class="surface-card p-4" aria-label={m.home_mock_exams()}>
+							<p class="fp-serif mb-2 text-sm font-semibold">{m.home_mock_exams()}</p>
+							<div class="space-y-2">
+								{#if a2Completed}
+									<a
+										href={resolve('/exam/delf-a2')}
+										class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+										data-testid="delf-card"
+									>
+										<span>{m.delf_title()}</span>
+										<Icon name="chevron-right" size={16} />
+									</a>
+								{/if}
+								{#if b1Completed}
+									<a
+										href={resolve('/exam/delf-b1')}
+										class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+										data-testid="delf-b1-card"
+									>
+										<span>{m.home_mock_exam_label({ exam: 'DELF B1' })}</span>
+										<Icon name="chevron-right" size={16} />
+									</a>
+								{/if}
+								{#if b2Completed}
+									<a
+										href={resolve('/exam/delf-b2')}
+										class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+										data-testid="delf-b2-card"
+									>
+										<span>{m.home_mock_exam_label({ exam: 'DELF B2' })}</span>
+										<Icon name="chevron-right" size={16} />
+									</a>
+								{/if}
+								{#if c1ExamUnlocked}
+									<a
+										href={resolve('/exam/dalf-c1')}
+										class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+										data-testid="dalf-c1-card"
+									>
+										<span>{m.home_mock_exam_label({ exam: 'DALF C1' })}</span>
+										<Icon name="chevron-right" size={16} />
+									</a>
+								{/if}
+							</div>
+						</section>
+					{/if}
+				</div>
+
+				<section class="order-1 lg:order-2">
+					<h2 class="fp-serif mb-2 text-2xl text-balance">Le Voyage</h2>
+					<VoyageMap {units} {states} {lockReasons} {currentUnitId} {reduceMotion} dueCount={due} />
+				</section>
+			</div>
+		</main>
+	</div>
 {/if}
 
 <CelebrationOverlay

@@ -60,6 +60,15 @@ describe('token contrast (WCAG AA)', () => {
 				});
 			}
 		}
+		// Home text sits directly on the journey sky (no card behind the mobile route).
+		for (const token of ['--fp-ink', '--fp-muted', '--fp-jaipur-text']) {
+			for (const bg of ['--fp-sky-mumbai', '--fp-sky-paris']) {
+				it(`${theme}: ${token} on ${bg} >= ${AA}`, () => {
+					expect(t[bg], `${bg} missing in ${theme}`).toBeDefined();
+					expect(contrast(t[token], t[bg])).toBeGreaterThanOrEqual(AA);
+				});
+			}
+		}
 		it(`${theme}: --fp-on-error on --fp-error >= ${AA}`, () => {
 			expect(contrast(t['--fp-on-error'], t['--fp-error'])).toBeGreaterThanOrEqual(AA);
 		});

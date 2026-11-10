@@ -37,6 +37,12 @@
 	--fp-on-error: #ffffff; /* text on --fp-error fills            */
 	--fp-ivory: #f2eee4; /* theme-fixed: text on the exam slate */
 
+	/* Journey sky (home backdrop): Mumbai marigold haze → Paris blue. Text sits
+	   directly on these, so they stay pale; contrast.spec.ts guards ink, muted
+	   and jaipur-text on every stop. The middle stop is --fp-canvas. */
+	--fp-sky-mumbai: #fcefd6;
+	--fp-sky-paris: #ebf0fa;
+
 	/* Text-safe accents: saffron/sage are FILL colors (2.4:1 / 3.2:1 as text). */
 	/* Use these for any text; contrast.spec.ts enforces >= 4.5:1.            */
 	--fp-saffron-text: #8f5e0e;
@@ -109,6 +115,8 @@
 	--fp-on-error: #16142b;
 	--fp-saffron-text: #f0b452; /* brightened fills already pass on night */
 	--fp-sage-text: #93bf83;
+	--fp-sky-mumbai: #2a1a3a; /* warm plum dusk */
+	--fp-sky-paris: #121a3c; /* deep blue night */
 
 	--fp-elevation-1: 0 1px 2px rgb(0 0 0 / 0.3), 0 1px 3px rgb(0 0 0 / 0.25);
 	--fp-elevation-2: 0 2px 4px rgb(0 0 0 / 0.3), 0 6px 16px rgb(0 0 0 / 0.35);
