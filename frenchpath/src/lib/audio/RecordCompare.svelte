@@ -17,6 +17,11 @@
 	let recorder: MediaRecorder | null = null;
 	let chunks: Blob[] = [];
 
+	// Free the in-memory recording when the component goes away (replacements are revoked in onstop).
+	$effect(() => () => {
+		if (audioUrl) URL.revokeObjectURL(audioUrl);
+	});
+
 	async function startRecording() {
 		try {
 			const stream = await navigator.mediaDevices.getUserMedia({ audio: true });

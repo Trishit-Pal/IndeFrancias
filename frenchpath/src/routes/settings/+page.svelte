@@ -42,7 +42,7 @@
 	import { applyTheme } from '$lib/theme/apply';
 	import { configureTts, listFrenchVoices, voicesReady } from '$lib/audio/tts';
 	import { revisionNotificationBody } from '$lib/pwa/revisionNotify';
-	import { wipeLocalData } from '$lib/pwa/wipeLocalData';
+	import { wipeLocalData, completeBlockedReset } from '$lib/pwa/wipeLocalData';
 	import { checkForUpdate, UpdateCheckError, type UpdateInfo } from '$lib/platform/updates';
 	import pkg from '../../../package.json';
 	import Modal from '$lib/components/Modal.svelte';
@@ -323,24 +323,36 @@
 		pendingSyncJson = '';
 	}
 
-	/** Everything this origin stored: the database first (so a blocked delete aborts before anything else is lost), then the rest. */
-	async function finishReset() {
-		await wipeLocalData();
-		location.reload();
-	}
+	let resetPending = $state(false);
+	let resetDone = $state(false);
+	let mounted = true;
+	$effect(() => () => {
+		mounted = false;
+	});
 
 	async function reset() {
+		if (resetPending) return;
+		resetPending = true;
 		try {
 			await resetDatabase();
 		} catch (error) {
-			if (!(error instanceof DatabaseBlockedError)) throw error;
+			if (!(error instanceof DatabaseBlockedError)) {
+				resetPending = false;
+				throw error;
+			}
 			message = m.settings_reset_blocked();
-			// The delete stays queued: when the other tab closes, complete the reset the learner asked for.
-			// A failed queued delete just leaves the message above (nothing was wiped).
-			void error.completed.then(finishReset, () => undefined);
+			// The delete stays queued (the button stays disabled, so there is one handler). When the
+			// other tab closes, finish the wipe; announce it only if this page is still open. Never reload.
+			void completeBlockedReset(error.completed, () => {
+				if (!mounted) return;
+				message = '';
+				resetPending = false;
+				resetDone = true;
+			});
 			return;
 		}
-		await finishReset();
+		await wipeLocalData();
+		location.reload();
 	}
 
 	const retentionOptions: { value: number; label: () => string }[] = [
@@ -775,7 +787,19 @@
 				<h2 class="fp-danger-title font-semibold text-balance">
 					{m.settings_danger_zone()}
 				</h2>
-				{#if confirmingReset}
+				{#if resetDone}
+					<p class="fp-danger-text mt-2 text-sm" role="status" data-testid="reset-complete">
+						{m.settings_reset_complete()}
+					</p>
+					<button
+						type="button"
+						class="btn-primary mt-2 text-sm"
+						onclick={() => location.reload()}
+						data-testid="reset-reload"
+					>
+						{m.settings_reset_reload()}
+					</button>
+				{:else if confirmingReset}
 					<p class="fp-danger-text mt-2 text-sm">
 						{m.settings_reset_confirm_desc()}
 					</p>
@@ -784,6 +808,7 @@
 							type="button"
 							class="fp-danger-btn min-h-11 rounded-lg px-3 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
 							onclick={reset}
+							disabled={resetPending}
 							data-testid="reset-confirm"
 						>
 							{m.settings_reset_yes()}

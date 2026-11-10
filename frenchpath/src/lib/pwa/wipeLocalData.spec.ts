@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { wipeLocalData } from './wipeLocalData';
+import { completeBlockedReset, wipeLocalData } from './wipeLocalData';
 
 function stubBrowser(overrides: { localStorage?: unknown; caches?: unknown; navigator?: unknown }) {
 	const clear = vi.fn();
@@ -63,5 +63,39 @@ describe('wipeLocalData', () => {
 		});
 		await wipeLocalData();
 		expect(spies.unregister).toHaveBeenCalledTimes(2);
+	});
+});
+
+describe('completeBlockedReset', () => {
+	it('wipes, then notifies, and never reloads', async () => {
+		const spies = stubBrowser({});
+		const reload = vi.fn();
+		vi.stubGlobal('location', { reload });
+		const order: string[] = [];
+		spies.clear.mockImplementation(() => order.push('wipe'));
+		await completeBlockedReset(Promise.resolve(), () => order.push('notify'));
+		expect(order).toEqual(['wipe', 'notify']);
+		expect(spies.unregister).toHaveBeenCalledTimes(2);
+		expect(reload).not.toHaveBeenCalled();
+	});
+
+	it('does not wipe or notify when the queued delete fails', async () => {
+		const spies = stubBrowser({});
+		const notify = vi.fn();
+		await completeBlockedReset(Promise.reject(new Error('delete failed')), notify);
+		expect(spies.clear).not.toHaveBeenCalled();
+		expect(notify).not.toHaveBeenCalled();
+	});
+
+	it('waits for the delete before wiping', async () => {
+		const spies = stubBrowser({});
+		let release!: () => void;
+		const pending = new Promise<void>((resolve) => (release = resolve));
+		const done = completeBlockedReset(pending, vi.fn());
+		await Promise.resolve();
+		expect(spies.clear).not.toHaveBeenCalled();
+		release();
+		await done;
+		expect(spies.clear).toHaveBeenCalledOnce();
 	});
 });

@@ -26,3 +26,22 @@ export async function wipeLocalData(): Promise<void> {
 		unregisterServiceWorkers()
 	]);
 }
+
+/**
+ * Runs when a Reset that was blocked by another tab finally deletes the database:
+ * the learner asked for a full wipe, so finish it, then tell the page. Never reloads
+ * (a reload could land mid-lesson, minutes later); `notify` decides whether anyone is
+ * still there to hear it. A failed delete means nothing was wiped, so nothing happens.
+ */
+export async function completeBlockedReset(
+	deleted: Promise<void>,
+	notify: () => void
+): Promise<void> {
+	try {
+		await deleted;
+	} catch {
+		return;
+	}
+	await wipeLocalData();
+	notify();
+}

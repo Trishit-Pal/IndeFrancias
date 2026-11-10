@@ -424,5 +424,7 @@
 	"about_feedback": "Report a problem or suggest an idea",
 	"about_privacy": "Privacy policy",
 	"about_licenses": "Open-source software",
-	"about_licenses_intro": "FrenchPath includes these third-party components, under the licences their authors chose."
+	"about_licenses_intro": "FrenchPath includes these third-party components, under the licences their authors chose.",
+	"settings_reset_complete": "Reset complete. Reload to start fresh.",
+	"settings_reset_reload": "Reload"
 }
