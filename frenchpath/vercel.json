@@ -1,6 +1,6 @@
 {
 	"cleanUrls": true,
-	"rewrites": [{ "source": "/(.*)", "destination": "/200" }],
+	"rewrites": [{ "source": "/((?!_app/|audio/).*)", "destination": "/200" }],
 	"headers": [
 		{
 			"source": "/(.*)",

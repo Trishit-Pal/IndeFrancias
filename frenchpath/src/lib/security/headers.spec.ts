@@ -59,6 +59,23 @@ describe('security headers', () => {
 		assertSecurityHeaders(parseNetlifyHeaders(), 'static/_headers');
 	});
 
+	// Missing hashed chunks / audio must 404, not get the 200.html shell with a 200 (which the
+	// immutable header and the SW CacheFirst caches would then pin as "JS"/"audio").
+	// Approximates Vercel's path-to-regexp matcher: a bare regex group, anchored at both ends.
+	it('vercel.json SPA rewrite covers navigations but not asset paths', () => {
+		const config = JSON.parse(readFileSync(resolve(ROOT, 'vercel.json'), 'utf8')) as {
+			rewrites: { source: string; destination: string }[];
+		};
+		const [rewrite] = config.rewrites;
+		expect(rewrite.destination).toBe('/200');
+		const matches = (path: string): boolean => new RegExp(`^${rewrite.source}$`).test(path);
+		expect(matches('/learn/a1-unit-01')).toBe(true);
+		expect(matches('/checkpoint/a1-g1')).toBe(true);
+		expect(matches('/does-not-exist')).toBe(true);
+		expect(matches('/_app/immutable/chunks/x.js')).toBe(false);
+		expect(matches('/audio/x.mp3')).toBe(false);
+	});
+
 	// The CSP is authored in two independent places — the web shell
 	// (svelte.config.js, injected into the document) and the Tauri desktop
 	// shell (tauri.conf.json). These tests assert both carry the identical
