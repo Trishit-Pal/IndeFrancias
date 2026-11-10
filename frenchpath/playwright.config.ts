@@ -9,7 +9,9 @@ export default defineConfig({
 		port,
 		// Reuse a preview server already running locally (CI always starts fresh).
 		reuseExistingServer: !process.env.CI,
-		timeout: 180_000
+		timeout: 180_000,
+		// Build-time flag: enables the test-only ASR stub (src/lib/speech/asr.ts) in this build only.
+		env: { VITE_E2E: '1' }
 	},
 	testMatch: '**/*.e2e.{ts,js}',
 	use: {

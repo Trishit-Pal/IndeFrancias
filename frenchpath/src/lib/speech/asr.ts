@@ -8,6 +8,13 @@ let modelPromise: Promise<Model> | null = null;
 
 const E2E_STUB_KEY = 'fp-e2e-stub-asr';
 
+// Test scaffolding: only honoured in builds made with VITE_E2E=1 (playwright.config.ts).
+// Vite replaces the env flag at build time, so production bundles drop the stub entirely.
+function readStub(): string | null {
+	if (import.meta.env.VITE_E2E !== '1') return null;
+	return typeof localStorage === 'undefined' ? null : localStorage.getItem(E2E_STUB_KEY);
+}
+
 async function getModel(): Promise<Model> {
 	if (!modelPromise) {
 		modelPromise = (async () => {
@@ -20,21 +27,19 @@ async function getModel(): Promise<Model> {
 
 /** True when the e2e ASR stub is installed (also stands in for "model ready"). */
 export function hasAsrStub(): boolean {
-	return typeof localStorage !== 'undefined' && localStorage.getItem(E2E_STUB_KEY) !== null;
+	return readStub() !== null;
 }
 
 /** Warm the model while the learner reads the prompt. */
 export async function preloadAsr(): Promise<void> {
-	if (typeof localStorage !== 'undefined' && localStorage.getItem(E2E_STUB_KEY)) return;
+	if (readStub()) return;
 	await getModel();
 }
 
 /** Transcribes one recorded utterance to word-level results. */
 export async function transcribe(audio: Float32Array, sampleRate: number): Promise<VoskWord[]> {
-	if (typeof localStorage !== 'undefined') {
-		const stub = localStorage.getItem(E2E_STUB_KEY);
-		if (stub) return JSON.parse(stub) as VoskWord[];
-	}
+	const stub = readStub();
+	if (stub) return JSON.parse(stub) as VoskWord[];
 	const model = await getModel();
 	const rec: KaldiRecognizer = new model.KaldiRecognizer(sampleRate);
 	rec.setWords(true);

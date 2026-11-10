@@ -59,7 +59,7 @@ describe('security headers', () => {
 		assertSecurityHeaders(parseNetlifyHeaders(), 'static/_headers');
 	});
 
-	// Missing hashed chunks / audio must 404, not get the 200.html shell with a 200 (which the
+	// Missing hashed chunks / audio / speaking-pack models must 404, not get the 200.html shell with a 200 (which the
 	// immutable header and the SW CacheFirst caches would then pin as "JS"/"audio").
 	// Approximates Vercel's path-to-regexp matcher: a bare regex group, anchored at both ends.
 	it('vercel.json SPA rewrite covers navigations but not asset paths', () => {
@@ -74,6 +74,7 @@ describe('security headers', () => {
 		expect(matches('/does-not-exist')).toBe(true);
 		expect(matches('/_app/immutable/chunks/x.js')).toBe(false);
 		expect(matches('/audio/x.mp3')).toBe(false);
+		expect(matches('/models/x.zip')).toBe(false);
 	});
 
 	// The CSP is authored in two independent places — the web shell
