@@ -3,6 +3,7 @@
 	import type { CelebrationRequest } from './orchestrator';
 	import { clipForEvent, shouldUseFullCelebration } from './orchestrator';
 	import CelebrationScene from './CelebrationScene.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 
 	let {
 		request,
@@ -53,7 +54,9 @@
 			{#if useScene}
 				<CelebrationScene clip={clipForEvent(request.event)} />
 			{:else}
-				<p class="fp-confetti-lite text-5xl" aria-hidden="true">🎉</p>
+				<span class="fp-medallion fp-confetti-lite" aria-hidden="true">
+					<Icon name="spark" size={34} />
+				</span>
 			{/if}
 			<h2 id="celebration-title" class="mt-4 text-xl font-bold text-balance text-foreground">
 				{request.title}

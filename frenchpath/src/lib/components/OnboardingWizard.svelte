@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Icon from '$lib/components/Icon.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import {
 		NATIVE_LANGUAGES,
@@ -57,12 +58,12 @@
 	const stepIndex = $derived(STEPS.indexOf(step));
 
 	const points = [
-		{ icon: '🌉', text: m.onb_p1 },
-		{ icon: '📴', text: m.onb_p2 },
-		{ icon: '🧠', text: m.onb_p3 },
-		{ icon: '🇮🇳', text: m.onb_p4 },
-		{ icon: '❄️', text: m.onb_p5 }
-	];
+		{ icon: 'bridge', text: m.onb_p1 },
+		{ icon: 'offline', text: m.onb_p2 },
+		{ icon: 'cards', text: m.onb_p3 },
+		{ icon: 'map-pin', text: m.onb_p4 },
+		{ icon: 'snowflake', text: m.onb_p5 }
+	] as const;
 
 	const goals: LearningGoal[] = ['general', 'travel', 'delf_a2', 'work', 'heritage', 'delf_b2'];
 
@@ -145,7 +146,7 @@
 								class="surface-card fp-stagger-item flex items-center gap-3 p-3"
 								style="--fp-stagger: {i}"
 							>
-								<span class="text-2xl" aria-hidden="true">{point.icon}</span>
+								<span class="shrink-0 text-primary"><Icon name={point.icon} size={24} /></span>
 								<span class="text-sm text-foreground">{point.text()}</span>
 							</li>
 						{/each}
@@ -158,7 +159,7 @@
 					>
 						{m.onb_next()}
 					</button>
-					<button type="button" class="btn-ghost mt-2 w-full text-sm" onclick={finish}>
+					<button type="button" class="btn-secondary mt-2 w-full text-sm" onclick={finish}>
 						{m.onb_skip_defaults()}
 					</button>
 				</div>
@@ -311,9 +312,18 @@
 			{:else if step === 'sovereignty'}
 				<h2 class="text-xl font-bold text-foreground">{m.onb_sovereignty_title()}</h2>
 				<ul class="mt-4 space-y-3 text-sm text-foreground">
-					<li class="surface-card p-3">🔒 {m.onb_sovereignty_1()}</li>
-					<li class="surface-card p-3">📤 {m.onb_sovereignty_2()}</li>
-					<li class="surface-card p-3">🚫 {m.onb_sovereignty_3()}</li>
+					<li class="surface-card flex items-center gap-3 p-3">
+						<Icon name="lock" size={18} class="shrink-0 text-muted" />
+						{m.onb_sovereignty_1()}
+					</li>
+					<li class="surface-card flex items-center gap-3 p-3">
+						<Icon name="share" size={18} class="shrink-0 text-muted" />
+						{m.onb_sovereignty_2()}
+					</li>
+					<li class="surface-card flex items-center gap-3 p-3">
+						<Icon name="close" size={18} class="shrink-0 text-muted" />
+						{m.onb_sovereignty_3()}
+					</li>
 				</ul>
 				<!-- New tab so the setup tour keeps its place. -->
 				<!-- eslint-disable svelte/no-navigation-without-resolve -- same-origin static page, opened outside the SPA -->

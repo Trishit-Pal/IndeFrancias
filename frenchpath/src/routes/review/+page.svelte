@@ -203,7 +203,10 @@
 <svelte:head><title>{m.nav_review()} · FrenchPath</title></svelte:head>
 
 <main class="page-shell">
-	<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
+	<a
+		class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
+		href={resolve('/')}>{m.common_home()}</a
+	>
 
 	{#if phase === 'loading'}
 		<p class="mt-6 text-muted" role="status">{m.review_loading()}</p>
@@ -367,7 +370,7 @@
 		</div>
 	{:else if phase === 'reviewing'}
 		<div class="mt-10 text-center" data-testid="no-reviews">
-			<span class="fp-empty-medallion" aria-hidden="true"><Icon name="check" size={34} /></span>
+			<span class="fp-medallion" aria-hidden="true"><Icon name="check" size={34} /></span>
 			<h1 class="fp-display-md mt-3 text-balance text-foreground">
 				{m.review_nothing_title()}
 			</h1>
@@ -376,7 +379,7 @@
 		</div>
 	{:else if phase === 'done'}
 		<div class="mt-10 text-center" data-testid="review-done">
-			<p class="text-5xl">🎉</p>
+			<span class="fp-medallion" aria-hidden="true"><Icon name="spark" size={34} /></span>
 			<h1 class="fp-display-md mt-3 text-balance text-foreground">{m.review_complete()}</h1>
 			<ul class="mt-3 space-y-1 text-sm text-muted">
 				<li data-testid="review-summary-accuracy">
@@ -405,18 +408,3 @@
 		</div>
 	{/if}
 </main>
-
-<style>
-	/* Sage "all clear" medallion for the empty review queue. */
-	.fp-empty-medallion {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 72px;
-		height: 72px;
-		border-radius: 50%;
-		color: #fff;
-		background: var(--fp-sage);
-		box-shadow: var(--fp-elevation-2);
-	}
-</style>

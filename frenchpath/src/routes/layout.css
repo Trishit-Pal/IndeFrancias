@@ -598,6 +598,25 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	transition: none !important;
 }
 
+/* ── Status medallion: a round badge carrying an Icon (where an emoji used to be) ── */
+.fp-medallion {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 72px;
+	height: 72px;
+	border-radius: 50%;
+	/* --fp-paper flips with the theme, so the glyph clears 3:1 on sage in both. */
+	color: var(--fp-paper);
+	background: var(--fp-sage);
+	box-shadow: var(--fp-elevation-2);
+}
+.fp-medallion--quiet {
+	color: var(--fp-ink);
+	background: var(--fp-paper-warm);
+	box-shadow: none;
+}
+
 /* ── Loading skeletons (Operate: placeholders in the content's own shape, not a spinner) ── */
 .fp-skeleton {
 	background: var(--fp-paper-warm);

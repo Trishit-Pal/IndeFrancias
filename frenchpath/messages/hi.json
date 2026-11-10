@@ -427,5 +427,21 @@
 	"about_licenses": "ओपन-सोर्स सॉफ़्टवेयर",
 	"about_licenses_intro": "FrenchPath में ये तीसरे पक्ष के घटक शामिल हैं, उनके रचनाकारों द्वारा चुने गए लाइसेंस के तहत।",
 	"settings_reset_complete": "रीसेट पूरा हुआ। नए सिरे से शुरू करने के लिए पुनः लोड करें।",
-	"settings_reset_reload": "पुनः लोड करें"
+	"settings_reset_reload": "पुनः लोड करें",
+	"audio_listen_to": "{text} सुनें",
+	"audio_record_start": "अपनी आवाज़ रिकॉर्ड करें",
+	"audio_record_stop": "रिकॉर्डिंग रोकें",
+	"audio_play_recording": "अपनी रिकॉर्डिंग चलाएँ",
+	"reorder_instruction": "वाक्य बनाने के लिए शब्दों पर टैप करें:",
+	"matching_select_label": "{item} का जोड़ा",
+	"matching_choose": "— चुनें —",
+	"lesson_score_line": "आपका स्कोर {score}% रहा ({correct}/{total})।",
+	"lesson_practice_note": "अभ्यास पूरा — कोई नया XP नहीं (सर्वश्रेष्ठ: {best}%)।",
+	"checkpoint_hint_vocab": "इस यूनिट की शब्दावली के बारे में सोचें।",
+	"checkpoint_hint_mcq": "जो विकल्प व्याकरण के नियम में फ़िट नहीं होते, उन्हें हटाएँ।",
+	"checkpoint_hint_translation": "पिछली तीन यूनिटों के शब्दों का उपयोग करें।",
+	"checkpoint_hint_default": "उत्तर देने से पहले ब्रिज नोट दोबारा देखें।",
+	"ritual_morning": "सुप्रभात",
+	"ritual_afternoon": "दोपहर",
+	"ritual_evening": "शाम"
 }

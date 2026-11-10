@@ -1,6 +1,8 @@
 <!-- DailyRitual.svelte — Time-of-day background + greeting -->
 <!-- Usage: <DailyRitual {ritual} {learnerName} /> -->
 <script lang="ts">
+	import Icon from '$lib/components/Icon.svelte';
+	import * as m from '$lib/paraglide/messages';
 	type Ritual = 'morning' | 'afternoon' | 'evening';
 
 	let { ritual = 'morning', learnerName = '' }: { ritual?: Ritual; learnerName?: string } =
@@ -17,27 +19,26 @@
 
 	// Backgrounds live in the scoped CSS below (keyed by data-ritual) so each
 	// gets a designed dark-theme variant instead of one hardcoded gradient.
+	// The French label stays French (it is the target language); the native-language
+	// line is a message so each locale reads its own.
 	const rituals = {
 		morning: {
 			labelFr: 'Café du matin',
-			labelHi: 'सुप्रभात',
-			emoji: '☀️',
-			color: 'var(--fp-terracotta)',
-			icon: '🥐'
+			label: m.ritual_morning,
+			icon: 'sun',
+			color: 'var(--fp-terracotta)'
 		},
 		afternoon: {
 			labelFr: 'Pique-nique',
-			labelHi: 'दोपहर',
-			emoji: '🧺',
-			color: 'var(--fp-sage)',
-			icon: '🧀'
+			label: m.ritual_afternoon,
+			icon: 'sun',
+			color: 'var(--fp-sage)'
 		},
 		evening: {
 			labelFr: 'Bistro du soir',
-			labelHi: 'शाम',
-			emoji: '🌙',
-			color: 'var(--fp-saffron)',
-			icon: '🍷'
+			label: m.ritual_evening,
+			icon: 'moon',
+			color: 'var(--fp-saffron)'
 		}
 	} as const;
 
@@ -47,9 +48,9 @@
 
 <div class="fp-daily-ritual" data-ritual={activeRitual}>
 	<div class="fp-ritual-label" style="color:{r.color}">
-		<span class="fp-ritual-cefr">{r.emoji}</span>
+		<span class="fp-ritual-cefr" aria-hidden="true"><Icon name={r.icon} size={20} /></span>
 		<span class="fp-ritual-fr" class:fp-ritual-fr--light={isEvening}>{r.labelFr}</span>
-		<span class="fp-ritual-hi" class:fp-ritual-hi--light={isEvening}>{r.labelHi}</span>
+		<span class="fp-ritual-hi" class:fp-ritual-hi--light={isEvening}>{r.label()}</span>
 	</div>
 	{#if learnerName}
 		<p class="fp-ritual-greeting" class:fp-ritual-greeting--light={isEvening}>

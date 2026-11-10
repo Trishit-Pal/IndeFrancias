@@ -98,7 +98,7 @@
 		/>
 		<IconButton
 			icon="loop"
-			label={`🔁 ${m.shadow_loop()}`}
+			label={m.shadow_loop()}
 			pressed={loop}
 			testid="shadow-loop"
 			onclick={() => (loop = !loop)}

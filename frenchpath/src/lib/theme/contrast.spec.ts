@@ -28,6 +28,17 @@ function contrast(a: string, b: string): number {
 	return (hi + 0.05) / (lo + 0.05);
 }
 
+/** sRGB mix of `pct`% a over b: what color-mix(in srgb, a pct%, b) paints. */
+function mix(a: string, b: string, pct: number): string {
+	const channel = (i: number) =>
+		Math.round(
+			(parseInt(a.slice(i, i + 2), 16) * pct + parseInt(b.slice(i, i + 2), 16) * (100 - pct)) / 100
+		)
+			.toString(16)
+			.padStart(2, '0');
+	return `#${channel(1)}${channel(3)}${channel(5)}`;
+}
+
 const AA = 4.5;
 const TEXT_TOKENS = [
 	'--fp-ink',
@@ -69,6 +80,10 @@ describe('token contrast (WCAG AA)', () => {
 				});
 			}
 		}
+		it(`${theme}: --fp-error-text on the error banner tint >= ${AA}`, () => {
+			const tint = mix(t['--fp-error'], t['--fp-paper'], 12); // InfoBanner --error ground
+			expect(contrast(t['--fp-error-text'], tint)).toBeGreaterThanOrEqual(AA);
+		});
 		it(`${theme}: --fp-on-error on --fp-error >= ${AA}`, () => {
 			expect(contrast(t['--fp-on-error'], t['--fp-error'])).toBeGreaterThanOrEqual(AA);
 		});

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages';
 	// Listen to the model pronunciation (TTS), record yourself, and compare by
 	// playing both back. Works on all browsers with MediaRecorder; degrades to
 	// TTS-only where recording isn't available.
@@ -54,7 +55,7 @@
 	{#if ttsAvailable()}
 		<IconButton
 			icon="speaker"
-			label={`Listen to ${label ?? text}`}
+			label={m.audio_listen_to({ text: label ?? text })}
 			size={16}
 			onclick={() => speakFrench(text)}
 		/>
@@ -62,14 +63,14 @@
 	{#if canRecord}
 		<IconButton
 			icon="mic"
-			label={recording ? 'Stop recording' : 'Record yourself'}
+			label={recording ? m.audio_record_stop() : m.audio_record_start()}
 			pressed={recording}
 			size={16}
 			onclick={recording ? stopRecording : startRecording}
 		/>
 		<IconButton
 			icon="play"
-			label="Play your recording"
+			label={m.audio_play_recording()}
 			disabled={!audioUrl}
 			size={16}
 			onclick={playBack}

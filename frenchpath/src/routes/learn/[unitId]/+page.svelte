@@ -28,6 +28,7 @@
 	import ExerciseChrome from '$lib/components/ExerciseChrome.svelte';
 	import LessonComplete from '$lib/components/LessonComplete.svelte';
 	import Modal from '$lib/components/Modal.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 	import InfoBanner from '$lib/components/InfoBanner.svelte';
 	import CharacterLeo from '$lib/components/CharacterLeo.svelte';
 	import CharacterMira from '$lib/components/CharacterMira.svelte';
@@ -271,7 +272,9 @@
 		</div>
 	{:else if phase === 'locked'}
 		<div class="surface-card p-6 text-center" data-testid="locked">
-			<p class="text-4xl">🔒</p>
+			<span class="fp-medallion fp-medallion--quiet" aria-hidden="true">
+				<Icon name="lock" size={30} />
+			</span>
 			<p class="mt-2 font-semibold text-foreground">{m.lesson_locked_title()}</p>
 			{#if lockReason}
 				<p class="text-sm text-muted">{lockReason}</p>
@@ -281,7 +284,10 @@
 			<a class="btn-primary mt-4 inline-block" href={resolve('/')}>{m.common_back_to_path()}</a>
 		</div>
 	{:else if phase === 'intro' && unit}
-		<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
+		<a
+			class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
+			href={resolve('/')}>{m.common_home()}</a
+		>
 		<span class="fp-skill-chip ml-2 rounded-full px-2 py-0.5 text-xs font-semibold uppercase">
 			{unit.cefrLevel}
 		</span>
@@ -299,7 +305,10 @@
 				class="mt-5 rounded-xl border p-4 text-foreground"
 				style="border-color: color-mix(in srgb, var(--fp-saffron) 45%, var(--fp-paper)); background: color-mix(in srgb, var(--fp-saffron) 12%, var(--fp-paper));"
 			>
-				<h2 class="font-semibold">🌉 {bridgeCopy.title}</h2>
+				<h2 class="flex items-center gap-2 font-semibold">
+					<Icon name="bridge" size={18} />
+					{bridgeCopy.title}
+				</h2>
 				<p class="mt-1 text-sm">
 					<GlossMarkdown text={bridgeCopy.body} {lexicon} />
 				</p>

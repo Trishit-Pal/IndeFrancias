@@ -1,4 +1,5 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages';
 	let { tip }: { tip: string } = $props();
 </script>
 
@@ -9,7 +10,7 @@
 		role="note"
 		data-testid="coach-tip"
 	>
-		<span class="font-semibold" style="color: var(--fp-seine)">Coach tip:</span>
+		<span class="font-semibold" style="color: var(--fp-seine)">{m.rubric_hint_label()}</span>
 		{tip}
 	</aside>
 {/if}

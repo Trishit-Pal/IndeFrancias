@@ -374,7 +374,7 @@
 								{#if a2Completed}
 									<a
 										href={resolve('/exam/delf-a2')}
-										class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+										class="flex min-h-11 items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
 										data-testid="delf-card"
 									>
 										<span>{m.delf_title()}</span>
@@ -384,7 +384,7 @@
 								{#if b1Completed}
 									<a
 										href={resolve('/exam/delf-b1')}
-										class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+										class="flex min-h-11 items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
 										data-testid="delf-b1-card"
 									>
 										<span>{m.home_mock_exam_label({ exam: 'DELF B1' })}</span>
@@ -394,7 +394,7 @@
 								{#if b2Completed}
 									<a
 										href={resolve('/exam/delf-b2')}
-										class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+										class="flex min-h-11 items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
 										data-testid="delf-b2-card"
 									>
 										<span>{m.home_mock_exam_label({ exam: 'DELF B2' })}</span>
@@ -404,7 +404,7 @@
 								{#if c1ExamUnlocked}
 									<a
 										href={resolve('/exam/dalf-c1')}
-										class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+										class="flex min-h-11 items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
 										data-testid="dalf-c1-card"
 									>
 										<span>{m.home_mock_exam_label({ exam: 'DALF C1' })}</span>

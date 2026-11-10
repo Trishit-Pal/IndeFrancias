@@ -427,5 +427,21 @@
 	"about_licenses": "Open-source software",
 	"about_licenses_intro": "FrenchPath includes these third-party components, under the licences their authors chose.",
 	"settings_reset_complete": "Reset complete. Reload to start fresh.",
-	"settings_reset_reload": "Reload"
+	"settings_reset_reload": "Reload",
+	"audio_listen_to": "Listen to {text}",
+	"audio_record_start": "Record yourself",
+	"audio_record_stop": "Stop recording",
+	"audio_play_recording": "Play your recording",
+	"reorder_instruction": "Tap the words to build the sentence:",
+	"matching_select_label": "Match for {item}",
+	"matching_choose": "— choose —",
+	"lesson_score_line": "You scored {score}% ({correct}/{total}).",
+	"lesson_practice_note": "Practice complete — no new XP (best: {best}%).",
+	"checkpoint_hint_vocab": "Think about the unit vocabulary.",
+	"checkpoint_hint_mcq": "Eliminate options that do not fit the grammar rule.",
+	"checkpoint_hint_translation": "Use words from the last three units.",
+	"checkpoint_hint_default": "Review the bridge note before answering.",
+	"ritual_morning": "Good morning",
+	"ritual_afternoon": "Afternoon",
+	"ritual_evening": "Evening"
 }

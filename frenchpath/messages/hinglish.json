@@ -427,5 +427,21 @@
 	"about_licenses": "Open-source software",
 	"about_licenses_intro": "FrenchPath includes these third-party components, under the licences their authors chose.",
 	"settings_reset_complete": "Reset complete. Reload to start fresh.",
-	"settings_reset_reload": "Reload"
+	"settings_reset_reload": "Reload",
+	"audio_listen_to": "{text} suno",
+	"audio_record_start": "Apni awaaz record karo",
+	"audio_record_stop": "Recording roko",
+	"audio_play_recording": "Apni recording chalao",
+	"reorder_instruction": "Sentence banane ke liye words par tap karo:",
+	"matching_select_label": "{item} ka match",
+	"matching_choose": "— chuno —",
+	"lesson_score_line": "Aapka score {score}% raha ({correct}/{total}).",
+	"lesson_practice_note": "Practice complete — koi naya XP nahi (best: {best}%).",
+	"checkpoint_hint_vocab": "Is unit ki vocabulary ke baare mein socho.",
+	"checkpoint_hint_mcq": "Jo options grammar rule mein fit nahi hote, unhe hatao.",
+	"checkpoint_hint_translation": "Pichhli teen units ke words use karo.",
+	"checkpoint_hint_default": "Answer dene se pehle bridge note dobara dekho.",
+	"ritual_morning": "Suprabhat",
+	"ritual_afternoon": "Dopahar",
+	"ritual_evening": "Shaam"
 }

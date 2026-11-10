@@ -19,6 +19,7 @@
 	import Exercise from '$lib/lesson/exercises/Exercise.svelte';
 	import ExamTimer from '$lib/exam/ExamTimer.svelte';
 	import InfoBanner from '$lib/components/InfoBanner.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 	import ExitGuard from '$lib/components/ExitGuard.svelte';
 
 	let {
@@ -159,7 +160,10 @@
 <ExitGuard active={() => phase === 'section'} />
 
 <main class="page-shell lg:max-w-3xl">
-	<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
+	<a
+		class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
+		href={resolve('/')}>{m.common_home()}</a
+	>
 
 	<header class="fp-exam-header mt-3">
 		<div>
@@ -248,10 +252,10 @@
 				<legend class="text-sm font-semibold text-foreground">{m.exam_self_assess()}</legend>
 				<div class="mt-2 space-y-2">
 					{#each section.rubric as item, i (i)}
-						<label class="flex items-start gap-2 text-sm text-foreground">
+						<label class="flex min-h-11 items-start gap-3 py-2.5 text-sm text-foreground">
 							<input
 								type="checkbox"
-								class="mt-0.5 h-4 w-4 accent-primary"
+								class="h-5 w-5 shrink-0 accent-primary"
 								bind:checked={checkedRubric[i]}
 							/>
 							{item}
@@ -281,7 +285,11 @@
 			class="surface-card mt-4 rounded-2xl p-6 lg:mx-auto lg:max-w-2xl"
 			data-testid="exam-result"
 		>
-			<p class="text-center text-5xl">{result.passed ? '🎓' : '📚'}</p>
+			<p class="text-center">
+				<span class="fp-medallion {result.passed ? '' : 'fp-medallion--quiet'}" aria-hidden="true">
+					<Icon name={result.passed ? 'check' : 'cards'} size={34} />
+				</span>
+			</p>
 			<h1 class="fp-display-md mt-2 text-center text-balance text-foreground">
 				<span class="fp-figure">{result.total} / 100</span> — {result.passed
 					? m.exam_pass()

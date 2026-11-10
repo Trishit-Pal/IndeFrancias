@@ -1,4 +1,5 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages';
 	import type { Exercise } from '$lib/content/schema';
 	import { gradeExercise, type ExerciseResponse } from '$lib/lesson/engine';
 	import type { Lexicon } from '$lib/content/lexicon';
@@ -56,7 +57,7 @@
 			<GlossText text={exercise.prompt} {lexicon} frenchOnly={false} />
 		</p>
 	{/if}
-	<p class="text-sm text-muted">Tap the words to build the sentence:</p>
+	<p class="text-sm text-muted">{m.reorder_instruction()}</p>
 
 	<div
 		class="flex min-h-12 flex-wrap gap-2 rounded-lg border border-border bg-subtle p-2"
@@ -66,7 +67,7 @@
 			<button
 				animate:flip
 				type="button"
-				class="rounded-lg bg-jaipur-light px-3 py-1 text-foreground"
+				class="min-h-11 rounded-lg bg-jaipur-light px-3 py-1 text-foreground"
 				onclick={() => removeAt(pos)}>{exercise.words[id]}</button
 			>
 		{/each}
@@ -77,7 +78,7 @@
 			<button
 				animate:flip
 				type="button"
-				class="rounded-lg border border-border bg-card px-3 py-1 hover:border-primary"
+				class="min-h-11 rounded-lg border border-border bg-card px-3 py-1 hover:border-primary"
 				data-testid="reorder-word"
 				onclick={() => add(token.id)}>{token.word}</button
 			>
@@ -86,7 +87,7 @@
 
 	{#if submitted && response && !gradeExercise(exercise, response)}
 		<p class="text-sm">
-			Correct: <span class="text-sage-text">{exercise.words.join(' ')}</span>
+			{m.cloze_correct_answer()} <span class="text-sage-text">{exercise.words.join(' ')}</span>
 		</p>
 	{/if}
 </div>

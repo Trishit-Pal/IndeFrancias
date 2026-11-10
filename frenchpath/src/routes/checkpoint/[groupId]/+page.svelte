@@ -52,12 +52,10 @@
 	const cfg = $derived(tierConfig(tier));
 
 	function hintForExercise(ex: Exercise): string | null {
-		if (ex.type === 'cloze' || ex.type === 'dictation')
-			return ex.hint ?? 'Think about the unit vocabulary.';
-		if (ex.type === 'mcq')
-			return ex.explanation ?? 'Eliminate options that do not fit the grammar rule.';
-		if (ex.type === 'translation') return 'Use words from the last three units.';
-		return 'Review the bridge note before answering.';
+		if (ex.type === 'cloze' || ex.type === 'dictation') return ex.hint ?? m.checkpoint_hint_vocab();
+		if (ex.type === 'mcq') return ex.explanation ?? m.checkpoint_hint_mcq();
+		if (ex.type === 'translation') return m.checkpoint_hint_translation();
+		return m.checkpoint_hint_default();
 	}
 
 	function applyHint() {
@@ -184,7 +182,10 @@
 <ExitGuard active={() => phase === 'exam' && (index > 0 || response !== null || submitted)} />
 
 <main class="page-shell">
-	<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
+	<a
+		class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
+		href={resolve('/')}>{m.common_home()}</a
+	>
 
 	{#if phase === 'loading'}
 		<p class="mt-6 text-muted">{m.checkpoint_loading()}</p>
