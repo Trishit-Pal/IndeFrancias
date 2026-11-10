@@ -408,7 +408,7 @@
 	"privacy_backups_title": "Backups and sync files",
 	"privacy_backups_body": "A backup or an encrypted sync file is created only when you choose to make one. It goes wherever you save or share it. FrenchPath does not send it anywhere.",
 	"privacy_mic_title": "Microphone",
-	"privacy_mic_body": "The microphone is used only in speaking exercises, and only after you tap to record. Your voice is processed on your device. It is never uploaded and never saved: a recording is kept in memory only so you can play it back or get your score, and is then discarded.",
+	"privacy_mic_body": "The microphone is used only while you are recording yourself, after you tap to record (in speaking exercises and on a lesson's new-words list). Your voice is processed on your device. It is never uploaded and never saved: a recording is kept in memory only so you can play it back or get your score, and is then discarded.",
 	"privacy_downloads_title": "Optional downloads",
 	"privacy_downloads_body": "Two features contact FrenchPath's own server, and only when you use them: downloading the speaking pack (the speech model that runs on your device) and the update check, which you can switch on in Settings. Like any web request, these reveal your device's IP address to the server that hosts the app. Apart from loading the app's own pages and files, FrenchPath makes no other network requests.",
 	"privacy_tts_title": "Spoken French",

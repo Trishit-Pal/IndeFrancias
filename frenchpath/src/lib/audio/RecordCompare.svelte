@@ -16,28 +16,53 @@
 	let recording = $state(false);
 	let audioUrl = $state<string | null>(null);
 	let recorder: MediaRecorder | null = null;
+	let stream: MediaStream | null = null;
 	let chunks: Blob[] = [];
+	let starting = false; // a double tap while the mic prompt is open must not open a second stream
+	let destroyed = false;
 
-	// Free the in-memory recording when the component goes away (replacements are revoked in onstop).
+	function releaseMic() {
+		stream?.getTracks().forEach((track) => track.stop());
+		stream = null;
+	}
+
+	// Unmounting mid-recording (e.g. "Start lesson" on the new-words list) must turn the mic off,
+	// and free the in-memory recording (replacements are revoked in onstop).
 	$effect(() => () => {
+		destroyed = true;
+		if (recorder?.state === 'recording') recorder.stop();
+		releaseMic();
 		if (audioUrl) URL.revokeObjectURL(audioUrl);
 	});
 
 	async function startRecording() {
+		if (recording || starting) return;
+		starting = true;
 		try {
-			const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+			const mic = await navigator.mediaDevices.getUserMedia({ audio: true });
+			if (destroyed) {
+				mic.getTracks().forEach((track) => track.stop());
+				return;
+			}
+			stream = mic;
 			chunks = [];
-			recorder = new MediaRecorder(stream);
-			recorder.ondataavailable = (event) => chunks.push(event.data);
-			recorder.onstop = () => {
+			const active = new MediaRecorder(mic);
+			recorder = active;
+			active.ondataavailable = (event) => chunks.push(event.data);
+			active.onstop = () => {
+				mic.getTracks().forEach((track) => track.stop()); // this recording's own stream
+				if (destroyed) return; // a late onstop after unmount: don't create a URL nothing would revoke
 				if (audioUrl) URL.revokeObjectURL(audioUrl);
-				audioUrl = URL.createObjectURL(new Blob(chunks, { type: 'audio/webm' }));
-				stream.getTracks().forEach((track) => track.stop());
+				// Safari records mp4, Chrome webm: label the blob with what was actually recorded.
+				audioUrl = URL.createObjectURL(new Blob(chunks, { type: active.mimeType }));
 			};
-			recorder.start();
+			active.start();
 			recording = true;
 		} catch {
 			recording = false; // mic denied/unavailable — silently fall back
+			releaseMic();
+		} finally {
+			starting = false;
 		}
 	}
 
@@ -47,7 +72,8 @@
 	}
 
 	function playBack() {
-		if (audioUrl) void new Audio(audioUrl).play();
+		// An autoplay rejection is not an app error; don't trip the global banner.
+		if (audioUrl) new Audio(audioUrl).play().catch(() => {});
 	}
 </script>
 
