@@ -29,6 +29,32 @@ export function writeLastNotifiedDay(day: string): void {
 	}
 }
 
+/**
+ * Shows a web notification; resolves whether one was shown. Prefers the service worker
+ * registration: Chrome for Android throws "Illegal constructor" on `new Notification`.
+ * Never throws, so a caller's `void` call can't reach the global error banner.
+ */
+export async function showLocalNotification(
+	title: string,
+	options: NotificationOptions
+): Promise<boolean> {
+	try {
+		const registration = await globalThis.navigator?.serviceWorker?.getRegistration();
+		if (registration) {
+			await registration.showNotification(title, options);
+			return true;
+		}
+	} catch {
+		// No active worker (or no SW support): try the page-level constructor.
+	}
+	try {
+		new Notification(title, options);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
 export function revisionNotificationBody(dueCount: number): string {
 	return `${dueCount} card${dueCount === 1 ? '' : 's'} ready for review.`;
 }

@@ -17,7 +17,8 @@
 		shouldNotify,
 		revisionNotificationBody,
 		readLastNotifiedDay,
-		writeLastNotifiedDay
+		writeLastNotifiedDay,
+		showLocalNotification
 	} from '$lib/pwa/revisionNotify';
 	import { todayKey } from '$lib/utils/date';
 	import { applyTheme, isDarkTheme, watchSystemTheme } from '$lib/theme/apply';
@@ -101,23 +102,33 @@
 	onMount(() => {
 		let cleanup: (() => void) | undefined;
 
+		let notifying = false; // overlapping visibilitychange events must not double-notify
+
 		async function maybeNotifyRevision() {
+			if (notifying) return;
 			if (typeof document === 'undefined' || document.visibilityState !== 'visible') return;
-			const settings = await settingsRepo.getSettings();
-			const due = await countDue();
-			const today = todayKey();
-			if (!shouldNotify(due, settings, readLastNotifiedDay(), today)) return;
-			if (isNativePlatform()) {
-				await showRevisionNotification(m.revision_notify_title(), revisionNotificationBody(due));
-			} else if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-				new Notification(m.revision_notify_title(), {
-					body: revisionNotificationBody(due),
-					tag: 'frenchpath-revision'
-				});
-			} else {
-				return; // nothing shown (no permission): do not use up today's reminder
+			notifying = true;
+			try {
+				const settings = await settingsRepo.getSettings();
+				const due = await countDue();
+				const today = todayKey();
+				if (!shouldNotify(due, settings, readLastNotifiedDay(), today)) return;
+				let shown = false; // nothing shown (no permission): do not use up today's reminder
+				if (isNativePlatform()) {
+					await showRevisionNotification(m.revision_notify_title(), revisionNotificationBody(due));
+					shown = true;
+				} else if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+					shown = await showLocalNotification(m.revision_notify_title(), {
+						body: revisionNotificationBody(due),
+						tag: 'frenchpath-revision'
+					});
+				}
+				if (shown) writeLastNotifiedDay(today);
+			} catch {
+				// ponytail: a reminder is a nicety; its failure must never raise the global error banner.
+			} finally {
+				notifying = false;
 			}
-			writeLastNotifiedDay(today);
 		}
 
 		void (async () => {

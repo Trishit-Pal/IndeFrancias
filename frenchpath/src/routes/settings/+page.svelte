@@ -42,7 +42,7 @@
 	import { exportBackupNative } from '$lib/platform/backup';
 	import { applyTheme } from '$lib/theme/apply';
 	import { configureTts, listFrenchVoices, voicesReady } from '$lib/audio/tts';
-	import { revisionNotificationBody } from '$lib/pwa/revisionNotify';
+	import { revisionNotificationBody, showLocalNotification } from '$lib/pwa/revisionNotify';
 	import { wipeLocalData, completeBlockedReset } from '$lib/pwa/wipeLocalData';
 	import { checkForUpdate, UpdateCheckError, type UpdateInfo } from '$lib/platform/updates';
 	import pkg from '../../../package.json';
@@ -157,11 +157,11 @@
 			message = m.settings_notif_enable_first();
 			return;
 		}
-		new Notification(m.revision_notify_title(), {
+		const shown = await showLocalNotification(m.revision_notify_title(), {
 			body: revisionNotificationBody(3),
 			tag: 'frenchpath-revision-test'
 		});
-		message = m.settings_test_notification_sent();
+		message = shown ? m.settings_test_notification_sent() : m.settings_notif_unsupported();
 	}
 
 	async function requestPersist() {
