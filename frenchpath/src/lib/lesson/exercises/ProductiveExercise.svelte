@@ -46,8 +46,7 @@
 		class="field-input min-h-32"
 		placeholder="Write or plan your answer here…"
 		disabled={submitted}
-		aria-label="Your written response"
-	></textarea>
+		aria-label="Your written response"></textarea>
 	<p class="text-sm font-medium text-muted">Self-assess against the rubric:</p>
 	<ul class="space-y-2">
 		{#each exercise.rubric as item, i (i)}

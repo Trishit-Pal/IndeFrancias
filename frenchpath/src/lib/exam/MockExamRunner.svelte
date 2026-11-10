@@ -236,8 +236,7 @@
 			<textarea
 				class="field-input mt-3"
 				rows="4"
-				placeholder="Write or note your answer here (not graded automatically)…"
-			></textarea>
+				placeholder="Write or note your answer here (not graded automatically)…"></textarea>
 			<button
 				type="button"
 				class="btn-secondary mt-3 text-sm"
