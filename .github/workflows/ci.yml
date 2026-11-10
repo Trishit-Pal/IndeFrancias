@@ -5,6 +5,9 @@ on:
     branches: [main, master, 'hardening/**', 'feat/**']
   pull_request:
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: frenchpath
@@ -13,9 +16,9 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
           cache: npm
@@ -23,6 +26,12 @@ jobs:
 
       - name: Install
         run: npm ci
+
+      # Advisory for now: the tree has known high/critical advisories. Flip to
+      # blocking (drop continue-on-error) once the audit baseline is clean.
+      - name: Dependency audit (advisory)
+        run: npm audit --audit-level=high
+        continue-on-error: true
 
       - name: Generate i18n (Paraglide)
         run: npm run i18n:compile
@@ -32,6 +41,9 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Spec validate
+        run: npm run spec:validate
 
       - name: Unit tests
         run: npm run test:unit -- --run
@@ -46,8 +58,42 @@ jobs:
         run: npm run content:proofread
         continue-on-error: true
 
+      # verify:dist needs the gitignored speech model and version.json; build
+      # them exactly as `vercel-build` does (model:fetch is SHA-256 pinned).
+      - name: Fetch speech model + emit version.json
+        run: npm run model:fetch && npm run version:emit
+
       - name: Build
         run: npm run build
 
+      - name: Verify dist
+        run: npm run verify:dist
+
       - name: E2E tests
         run: npm run test:e2e
+
+  secrets:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    env:
+      GITLEAKS_VERSION: 8.30.1
+      # sha256 of gitleaks_8.30.1_linux_x64.tar.gz, from the release's gitleaks_8.30.1_checksums.txt
+      GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install gitleaks (pinned, checksum-verified)
+        run: |
+          set -euo pipefail
+          curl -fsSL -o gitleaks.tar.gz "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  gitleaks.tar.gz" | sha256sum -c -
+          tar -xzf gitleaks.tar.gz gitleaks
+          sudo install -m 0755 gitleaks /usr/local/bin/gitleaks
+
+      - name: Scan full history
+        run: gitleaks git --redact --no-banner --exit-code 1 .
