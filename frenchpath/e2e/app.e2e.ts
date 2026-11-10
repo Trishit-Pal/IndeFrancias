@@ -181,7 +181,10 @@ test('no CSP violations on core and dynamic routes', async ({ page }) => {
 test('UI language toggle switches the interface to Hindi', async ({ page }) => {
 	await gotoHome(page);
 	await page.goto('/settings');
-	await page.getByTestId('language-select').selectOption('hi');
+	const select = page.getByTestId('language-select');
+	await expect(select.locator('option[value="bn"]')).toHaveText('বাংলা (beta)');
+	await expect(select.locator('option[value="hinglish"]')).toHaveText('Hinglish');
+	await select.selectOption('hi');
 	await expect(page.getByRole('navigation')).toContainText('सीखें');
 });
 

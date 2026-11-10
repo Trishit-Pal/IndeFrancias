@@ -235,6 +235,7 @@
 	"settings_preset_regular": "Regular ({xp} XP)",
 	"settings_preset_intense": "Intense ({xp} XP)",
 	"settings_ui_language_label": "Interface language",
+	"language_beta_suffix": "(beta)",
 	"settings_sovereignty_item_ondevice": "Progress, reviews, and settings: on-device only",
 	"settings_sovereignty_item_export": "Export: JSON backup you control",
 	"settings_sovereignty_item_sync": "Cloud sync: disabled (E2EE architecture prepared)",

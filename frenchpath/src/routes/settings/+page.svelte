@@ -16,6 +16,7 @@
 	import {
 		NATIVE_LANGUAGES,
 		NATIVE_LANGUAGE_LABELS,
+		uiLanguageLabel,
 		xpFromPreset,
 		type DailyGoalPreset as Preset
 	} from '$lib/profile/types';
@@ -69,17 +70,17 @@
 	let updateResult = $state<UpdateInfo | null>(null);
 	let updateStatus = $state('');
 
-	const languages: { value: UiLanguage; label: string }[] = [
-		{ value: 'en', label: 'English' },
-		{ value: 'hi', label: 'हिन्दी' },
-		{ value: 'hinglish', label: 'Hinglish' },
-		{ value: 'bn', label: 'বাংলা' },
-		{ value: 'ta', label: 'தமிழ்' },
-		{ value: 'te', label: 'తెలుగు' },
-		{ value: 'kn', label: 'ಕನ್ನಡ' },
-		{ value: 'mr', label: 'मराठी' },
-		{ value: 'gu', label: 'ગુજરાતી' },
-		{ value: 'pa', label: 'ਪੰਜਾਬੀ' }
+	const languages: UiLanguage[] = [
+		'en',
+		'hi',
+		'hinglish',
+		'bn',
+		'ta',
+		'te',
+		'kn',
+		'mr',
+		'gu',
+		'pa'
 	];
 
 	const presetOptions: { value: Preset; label: () => string }[] = [
@@ -545,8 +546,8 @@
 					onchange={changeLanguage}
 					data-testid="language-select"
 				>
-					{#each languages as lang (lang.value)}
-						<option value={lang.value}>{lang.label}</option>
+					{#each languages as lang (lang)}
+						<option value={lang}>{uiLanguageLabel(lang)}</option>
 					{/each}
 				</select>
 			</section>

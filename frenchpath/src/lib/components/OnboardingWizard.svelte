@@ -2,7 +2,7 @@
 	import * as m from '$lib/paraglide/messages';
 	import {
 		NATIVE_LANGUAGES,
-		NATIVE_LANGUAGE_LABELS,
+		uiLanguageLabel,
 		type NativeLanguage,
 		type LearningGoal,
 		type DailyGoalPreset,
@@ -184,7 +184,8 @@
 								bind:group={nativeLanguage}
 								class="sr-only"
 							/>
-							<span class="font-semibold text-foreground">{NATIVE_LANGUAGE_LABELS[lang]}</span>
+							<!-- The native language also picks the UI locale (NATIVE_TO_UI), so flag beta locales. -->
+							<span class="font-semibold text-foreground">{uiLanguageLabel(lang)}</span>
 						</label>
 					{/each}
 				</div>
