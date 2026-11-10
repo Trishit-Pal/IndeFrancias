@@ -23,15 +23,20 @@ test('a double tap on a grade button records exactly one review', async ({ page 
 		)
 			break;
 		if (await ctx.isVisible().catch(() => false)) {
-			const choice = page.getByTestId('context-choice').first();
-			const recall = page.getByTestId('recall-input');
-			if (await choice.isVisible().catch(() => false)) await choice.click();
-			else if (await recall.isVisible().catch(() => false)) {
-				await recall.fill('x');
-				await page.getByTestId('recall-check').click();
-			} else test.skip(true, 'context card without choices or a recall input (speak mode)');
+			// An answered card keeps its (now disabled) choices on screen until Continue,
+			// so only ever click enabled controls, then wait for Continue and the card swap.
+			const choice = page.locator('[data-testid="context-choice"]:enabled').first();
+			const recall = page.locator('[data-testid="recall-input"]:enabled');
 			const cont = page.getByTestId('continue');
-			if (await cont.isVisible().catch(() => false)) await cont.click();
+			if (!(await cont.isVisible().catch(() => false))) {
+				if (await choice.isVisible().catch(() => false)) await choice.click();
+				else if (await recall.isVisible().catch(() => false)) {
+					await recall.fill('x');
+					await page.getByTestId('recall-check').click();
+				} else test.skip(true, 'context card without choices or a recall input (speak mode)');
+			}
+			await cont.click();
+			await expect(cont).toBeHidden();
 		}
 		if (
 			await page
