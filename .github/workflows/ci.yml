@@ -14,7 +14,7 @@ defaults:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # ponytail: pinned; Playwright 1.59 has no chromium for ubuntu-latest (26.04). Unpin after a Playwright upgrade supports it.
     # Generous: a hung build or Playwright run fails in minutes, not after the 6-hour default.
     timeout-minutes: 30
     steps:
@@ -75,7 +75,7 @@ jobs:
         run: npm run test:e2e
 
   secrets:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # ponytail: pinned; Playwright 1.59 has no chromium for ubuntu-latest (26.04). Unpin after a Playwright upgrade supports it.
     timeout-minutes: 10
     defaults:
       run:
