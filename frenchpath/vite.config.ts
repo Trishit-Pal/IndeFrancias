@@ -18,7 +18,6 @@ export default defineConfig(({ mode }) => ({
 		rollupOptions: {
 			output: {
 				manualChunks(id) {
-					if (id.includes('three') || id.includes('@threlte')) return 'vendor-3d';
 					const packMatch = id.match(/[/\\]content[/\\]packs[/\\]([^/\\]+)[/\\]([^/\\]+)\.json/);
 					if (packMatch) return `lesson-${packMatch[1]}-${packMatch[2].replace('.json', '')}`;
 				}

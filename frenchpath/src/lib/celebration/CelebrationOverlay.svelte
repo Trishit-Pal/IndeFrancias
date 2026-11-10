@@ -1,7 +1,8 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages';
 	import type { CelebrationRequest } from './orchestrator';
-	import { clipForEvent, shouldUseFullCelebration, canUseWebGL } from './orchestrator';
+	import { clipForEvent, shouldUseFullCelebration } from './orchestrator';
+	import CelebrationScene from './CelebrationScene.svelte';
 
 	let {
 		request,
@@ -15,18 +16,8 @@
 		onDismiss: () => void;
 	} = $props();
 
-	let Scene = $state<typeof import('./CelebrationScene.svelte').default | null>(null);
-	const webglOk = canUseWebGL();
-	const use3d = $derived(
-		request && shouldUseFullCelebration(celebrationLevel, reduceMotion, webglOk)
-	);
+	const useScene = $derived(request && shouldUseFullCelebration(celebrationLevel, reduceMotion));
 	let dialogEl = $state<HTMLDivElement | undefined>(undefined);
-
-	$effect(() => {
-		if (use3d && !Scene) {
-			import('./CelebrationScene.svelte').then((m) => (Scene = m.default));
-		}
-	});
 
 	// Move keyboard focus into the dialog so Escape/Tab work without a prior click.
 	$effect(() => {
@@ -59,8 +50,8 @@
 		data-testid="celebration-overlay"
 	>
 		<div class="surface-card w-full max-w-md p-6 text-center shadow-xl">
-			{#if use3d && Scene}
-				<Scene clip={clipForEvent(request.event)} />
+			{#if useScene}
+				<CelebrationScene clip={clipForEvent(request.event)} />
 			{:else}
 				<p class="fp-confetti-lite text-5xl" aria-hidden="true">🎉</p>
 			{/if}
