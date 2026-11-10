@@ -415,8 +415,15 @@ export async function importBackupFile(page: Page, json: string, confirm = true)
 	});
 	if (confirm) {
 		await expect(page.getByTestId('import-preview')).toBeVisible();
-		await Promise.all([page.waitForEvent('load'), page.getByTestId('import-confirm').click()]);
+		await confirmRestoreAndReload(page);
 	}
+}
+
+/** Confirms the open restore preview; the app never reloads on its own, the learner taps Reload. */
+export async function confirmRestoreAndReload(page: Page) {
+	await page.getByTestId('import-confirm').click();
+	await expect(page.getByTestId('restore-complete')).toBeVisible({ timeout: 15_000 });
+	await Promise.all([page.waitForEvent('load'), page.getByTestId('restore-reload').click()]);
 }
 
 export function fixturePath(name: string): string {

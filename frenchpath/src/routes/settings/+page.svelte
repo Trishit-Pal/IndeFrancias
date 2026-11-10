@@ -62,6 +62,7 @@
 	let pendingImportJson = $state('');
 	let importing = $state(false);
 	let safetyCopyFailed = $state(false);
+	let restoreDone = $state(false);
 	let syncPassphrase = $state('');
 	let syncPreview = $state<MergeSummary | null>(null);
 	let pendingSyncJson = $state('');
@@ -238,8 +239,9 @@
 				return;
 			}
 			await importBackup(pendingImportJson);
-			message = m.settings_backup_restored();
-			location.reload();
+			// No auto-reload (SPEC invariant 6): unloading now would revoke the safety copy's blob URL
+			// and dismiss iOS's "Download?" sheet. The learner reloads when ready.
+			restoreDone = true;
 		} catch (error) {
 			message = error instanceof Error ? error.message : m.settings_import_failed();
 		} finally {
@@ -742,6 +744,19 @@
 						/>
 					</label>
 				</div>
+				{#if restoreDone}
+					<p class="mt-3 text-sm text-foreground" role="status" data-testid="restore-complete">
+						{m.settings_restore_complete()}
+					</p>
+					<button
+						type="button"
+						class="btn-primary mt-2 text-sm"
+						onclick={() => location.reload()}
+						data-testid="restore-reload"
+					>
+						{m.settings_reset_reload()}
+					</button>
+				{/if}
 			</section>
 
 			<section class="surface-card p-4" data-testid="sync-section">

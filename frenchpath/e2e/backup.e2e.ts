@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import {
 	gotoHome,
 	completeLesson,
+	confirmRestoreAndReload,
 	exportBackupViaSettings,
 	importBackupFile,
 	skipOnboardingViaIdb
@@ -39,7 +40,7 @@ test('backup round-trip restores progress after reset', async ({ page }) => {
 	await importBackupFile(page, backupJson, false);
 	await expect(page.getByTestId('import-preview')).toBeVisible();
 	const safetyCopy = page.waitForEvent('download');
-	await Promise.all([page.waitForEvent('load'), page.getByTestId('import-confirm').click()]);
+	await confirmRestoreAndReload(page);
 	expect((await safetyCopy).suggestedFilename()).toMatch(/^frenchpath-backup-.*\.json$/);
 });
 

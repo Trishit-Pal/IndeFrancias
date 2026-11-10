@@ -268,7 +268,7 @@
 	"settings_backup_export_failed": "Backup export fail ho gaya.",
 	"settings_file_too_large": "File bahut badi hai. Maximum backup size {mb} MB hai.",
 	"settings_import_failed": "Import fail ho gaya.",
-	"settings_backup_restored": "Backup restore ho gaya. Reload ho raha hai…",
+	"settings_restore_complete": "Backup restored. Reload to see your restored progress.",
 	"sync_title": "Sync between your devices",
 	"sync_body": "Create an encrypted file to move your progress to another device. It's encrypted with your passphrase — without it, nobody, including us, can read it.",
 	"sync_export": "Export sync file",
