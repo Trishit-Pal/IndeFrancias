@@ -3,8 +3,11 @@
 // Storage, no service worker) or throw (private mode), and one failure must not
 // leave the rest of the learner's data behind. Reset reloads afterwards.
 
-async function clearCaches(): Promise<void> {
-	for (const name of await caches.keys()) await caches.delete(name);
+async function clearCaches(keepPrecache: boolean): Promise<void> {
+	for (const name of await caches.keys()) {
+		if (keepPrecache && name.startsWith('workbox-precache')) continue;
+		await caches.delete(name);
+	}
 }
 
 async function unregisterServiceWorkers(): Promise<void> {
@@ -17,13 +20,16 @@ async function unregisterServiceWorkers(): Promise<void> {
  * Clears localStorage (frenchpath:* keys, the Paraglide language, the e2e stub key —
  * this also clears any other app on the same origin, which is acceptable for a
  * full reset), all Cache Storage (speech pack, precache) and service workers.
+ * Offline, the precache and the service worker stay: they hold no learner data, and
+ * without them the app could not open again until the device reconnects.
  */
 export async function wipeLocalData(): Promise<void> {
+	const offline = globalThis.navigator?.onLine === false;
 	// ponytail: failures are swallowed (best effort, page reloads); surface them if Reset ever needs a report.
 	await Promise.allSettled([
 		(async () => localStorage.clear())(),
-		clearCaches(),
-		unregisterServiceWorkers()
+		clearCaches(offline),
+		offline ? Promise.resolve() : unregisterServiceWorkers()
 	]);
 }
 

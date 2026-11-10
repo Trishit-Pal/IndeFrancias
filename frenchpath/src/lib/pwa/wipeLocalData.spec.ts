@@ -57,6 +57,31 @@ describe('wipeLocalData', () => {
 		expect(localStorage.clear).toHaveBeenCalledOnce();
 	});
 
+	it('offline: keeps the precache and the service worker so the app still opens', async () => {
+		const spies = stubBrowser({});
+		const unregister = vi.fn(() => Promise.resolve(true));
+		vi.stubGlobal('navigator', {
+			onLine: false,
+			serviceWorker: { getRegistrations: () => Promise.resolve([{ unregister }]) }
+		});
+		await wipeLocalData();
+		expect(spies.clear).toHaveBeenCalledOnce();
+		expect(spies.deleted).toEqual(['fp-asr-model']);
+		expect(unregister).not.toHaveBeenCalled();
+	});
+
+	it('online: deletes the precache and unregisters too', async () => {
+		const spies = stubBrowser({});
+		const unregister = vi.fn(() => Promise.resolve(true));
+		vi.stubGlobal('navigator', {
+			onLine: true,
+			serviceWorker: { getRegistrations: () => Promise.resolve([{ unregister }]) }
+		});
+		await wipeLocalData();
+		expect(spies.deleted).toEqual(['fp-asr-model', 'workbox-precache']);
+		expect(unregister).toHaveBeenCalledOnce();
+	});
+
 	it('still unregisters when cache deletion rejects', async () => {
 		const spies = stubBrowser({
 			caches: { keys: () => Promise.reject(new Error('boom')), delete: vi.fn() }
