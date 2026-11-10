@@ -89,7 +89,8 @@ describe('security headers', () => {
 		'script-src': ["'self'", "'unsafe-eval'"],
 		'style-src': ["'self'", "'unsafe-inline'"],
 		'img-src': ["'self'", 'data:'],
-		'media-src': ["'self'"],
+		// blob: = in-memory recording playback (invariant 4 amendment c); same-origin data only.
+		'media-src': ["'self'", 'blob:'],
 		'object-src': ["'none'"],
 		'base-uri': ["'self'"],
 		'frame-ancestors': ["'none'"],
@@ -142,8 +143,9 @@ describe('security headers', () => {
 	it('web CSP (svelte.config.js) carries the hardened directive set', async () => {
 		const csp = await webCsp();
 		assertRequiredDirectives(csp, 'svelte.config.js');
-		// Web shell makes no exceptions: connect-src is self-only.
-		expect([...(csp.get('connect-src') ?? [])]).toEqual(["'self'"]);
+		// Web shell: self + blob: only (amendment c: speaking-pack read inside the vosk blob: worker).
+		// No external origin.
+		expect([...(csp.get('connect-src') ?? [])].sort()).toEqual(["'self'", 'blob:'].sort());
 	});
 
 	it('desktop CSP (tauri.conf.json) matches the web directives', () => {
@@ -151,7 +153,7 @@ describe('security headers', () => {
 		assertRequiredDirectives(csp, 'tauri.conf.json');
 		// The one intentional delta: Tauri's IPC channel. No other network origin.
 		expect([...(csp.get('connect-src') ?? [])].sort()).toEqual(
-			["'self'", 'http://ipc.localhost', 'ipc:'].sort()
+			["'self'", 'blob:', 'http://ipc.localhost', 'ipc:'].sort()
 		);
 	});
 });

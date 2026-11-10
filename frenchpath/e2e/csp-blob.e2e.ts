@@ -1,9 +1,8 @@
 import { test, expect, type Page } from '@playwright/test';
 
 // Probes the real (built) CSP for the two blob: usages in the speech feature.
-// Both are CONFIRMED CSP violations today (slice A6); they are marked test.fail() so the suite
-// stays green and the bug stays visible. When the owner approves the CSP amendment
-// (media-src 'self' blob:; connect-src 'self' blob:), delete the test.fail() lines.
+// Locks SPEC invariant 4 amendment (c), owner-approved 2026-11-10: media-src 'self' blob: and
+// connect-src 'self' blob:. Before the amendment both probes were confirmed violations (slice A6).
 
 /** Runs fetch(url) inside a blob: worker (the way vosk-browser loads its model); returns the outcome. */
 async function fetchInBlobWorker(page: Page, target: 'same-origin' | 'blob'): Promise<string> {
@@ -17,11 +16,12 @@ async function fetchInBlobWorker(page: Page, target: 'same-origin' | 'blob'): Pr
 }
 
 test('RecordCompare: a blob: recording URL can be played (media-src)', async ({ page }) => {
-	// Pending CSP decision: media-src 'self' does not allow blob: (RecordCompare.svelte playBack).
-	test.fail();
+	// RecordCompare.svelte playBack plays the learner's recording from a blob: URL.
 	const errors: string[] = [];
 	page.on('console', (msg) => {
-		if (/content security policy/i.test(msg.text())) errors.push(msg.text());
+		// Only violations naming this cause, so a failure points at media-src/blob:.
+		if (/media-src|blob:/i.test(msg.text()) && /content security policy/i.test(msg.text()))
+			errors.push(msg.text());
 	});
 	await page.goto('/');
 	await page.evaluate(async () => {
@@ -41,8 +41,8 @@ test('control: a blob: worker can fetch a same-origin URL', async ({ page }) => 
 test('Speaking pack: a blob: model URL can be fetched in a worker (connect-src)', async ({
 	page
 }) => {
-	// Pending CSP decision: connect-src 'self' does not allow blob: (modelSource.ts getModelUrl).
-	test.fail();
+	// modelSource.ts getModelUrl returns a blob: URL that vosk-browser fetches inside its blob: worker.
+	// A connect-src block surfaces as 'blocked: ...' from the worker (worker console is not forwarded).
 	await page.goto('/');
 	expect(await fetchInBlobWorker(page, 'blob')).toBe('ok');
 });

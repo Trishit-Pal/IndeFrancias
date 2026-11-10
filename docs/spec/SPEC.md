@@ -55,6 +55,11 @@ Enforced on every change. An edit that touches this section is **high-severity**
    user-consented, opt-in, GET-only, same-origin fetches — the speaking-pack model download on web
    (native/desktop ship it bundled) and the opt-in, default-off update-version check — both served
    from the app's own domain, so `connect-src`/`default-src` remain `'self'` with no new origins.
+   **Amendment (2026-11-10, human-approved):** (c) `media-src 'self' blob:` and
+   `connect-src 'self' blob:` — required so the learner can play back their own recording (an
+   in-memory `blob:` the app created) and so the on-device speech engine can read the downloaded,
+   hash-verified speaking pack from memory inside its worker. `blob:` URLs can only reference data
+   created by this origin; no external origin is added.
 5. **Native-speaker proofread is a hard gate** — no AI-authored French ships as *production*
    (non-beta) in a public release until a qualified speaker has proofread that level. A1–A2 first,
    then B1+ in batches; B1–C1 may ship openly as clearly-labelled *beta* until then.
@@ -221,3 +226,4 @@ This spec is kept honest by the `frenchpath-spec-sync` skill + `/spec-sync` comm
 
 | 2026-11-07 | UI/UX refinement pass (Operate mode; strengthens invariant 6, no invariant/ADR edit). Verification: `mobile` Playwright project (Pixel 7) + axe WCAG A/AA scans in `e2e/accessibility.e2e.ts` (both projects), PORT-configurable e2e. Tokens: rose-as-text/fill fixed at the token level (`--fp-jaipur-text` backs `--fp-primary`; `--fp-seine-text`, `--fp-ivory`), glass/neon tokens retired, raw hex gone from `layout.css`, Indic UI font cascade moved onto `--fp-font-ui` per `html[lang]`. Shell: skip link, route-change focus + announcer, theme-aware native status bar. CAP-LESSON: exit control + `beforeNavigate` guard, Enter-to-submit, one progress bar, i18n chips/hints/play. CAP-PATH: hero (today's stop + next lesson + due link), Mumbai departure stop, pixel-measured SVG route (fixes stray ink at 0%). CAP-REVIEW: load-error + retry, `createOnceGate` double-grade fix. CAP-ONB → lesson 1; CAP-SETTINGS skeleton + sticky feedback; home/review/progress loading & error states; 60+ new message keys (en+hi, placeholders logged). Critique snapshots 26/25/24 in `.impeccable/critique/`; `DESIGN.md` documented. | §4 | MEDIUM |
 | 2026-11-07 | Test baseline reconciled after the UI/UX pass: 380 unit (53 files) + 73 e2e (desktop runs all; mobile project re-runs the a11y + mobile specs). | §5 | LOW |
+| 2026-11-10 | Invariant 4 amendment (c): blob: in media-src/connect-src for recording playback and web speaking-pack load (owner-approved) | §3 | HIGH |

@@ -24,9 +24,13 @@ const config = {
 				// Approved by project owner after documented risk investigation
 				// (.superpowers/sdd/task-10-csp-fix-report.md).
 				'script-src': ['self', 'unsafe-eval'],
-				'connect-src': ['self'],
+				// blob: (invariant 4 amendment c, owner-approved 2026-11-10): the on-device speech
+				// engine reads the hash-verified speaking pack from an in-memory blob: URL inside
+				// its blob: worker. blob: only references data this origin created; no external origin.
+				'connect-src': ['self', 'blob:'],
 				'img-src': ['self', 'data:'],
-				'media-src': ['self'],
+				// blob: (amendment c): RecordCompare plays the learner's own in-memory recording.
+				'media-src': ['self', 'blob:'],
 				'style-src': ['self', 'unsafe-inline'],
 				'object-src': ['none'],
 				'base-uri': ['self'],

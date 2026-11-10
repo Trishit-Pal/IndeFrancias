@@ -34,7 +34,7 @@ CI (future): GitHub Actions can build the web + `cap sync` + Gradle for Android;
 **Resolution:** set the adapter `fallback: 'index.html'` (or add a build step copying `200.html`→`index.html`). Absolute `/_app/...` paths resolve against the app origin (`capacitor://localhost` on iOS, `https://localhost` on Android) — same-origin, so they load. Client routing (`/learn/[unitId]`, `/exam/*`) is handled by the SvelteKit client router; deep links are not server-resolved.
 
 ### R2 — CSP under the Capacitor scheme + bridge
-The strict CSP lives in `svelte.config.js` (`default-src 'self'`, `script-src 'self'`, `connect-src 'self'`, `style-src 'self' 'unsafe-inline'`, `img-src 'self' data:`). Capacitor's bridge and the WebView origin must be permitted while staying strict.
+The strict CSP lives in `svelte.config.js` (`default-src 'self'`, `script-src 'self'`, `connect-src 'self' blob:` and `media-src 'self' blob:` (SPEC invariant 4 amendment c), `style-src 'self' 'unsafe-inline'`, `img-src 'self' data:`). Capacitor's bridge and the WebView origin must be permitted while staying strict.
 **Resolution:** keep `default-src 'self'`; `'self'` already maps to the Capacitor origin so self-hosted fonts/assets/IndexedDB work. Add only what the bridge needs — typically `connect-src` allowance for the Capacitor scheme and (iOS) the `gap:`/`capacitor:` scheme. Verify with the existing **"no CSP violations" e2e** mindset on-device (watch the WebView console). Do **not** relax to allow external origins — see the `frenchpath-csp-fonts` memory.
 
 ### R3 — Service worker inside the WebView
