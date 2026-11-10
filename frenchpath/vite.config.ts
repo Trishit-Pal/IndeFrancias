@@ -4,19 +4,23 @@ import { defineConfig } from 'vitest/config';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { readFileSync } from 'node:fs';
+import type { Plugin } from 'vite';
+
+/** Largest file the service worker precaches; bigger ones (the vosk ASR chunk) are skipped. */
+const PRECACHE_MAX_FILE_BYTES = 2 * 1024 * 1024;
 
 export default defineConfig(({ mode }) => ({
 	build: {
 		// Never inline fonts as data: URIs — the strict `default-src 'self'` CSP
 		// blocks data: fonts. Emitting them as same-origin asset files keeps the
 		// self-hosted webfonts CSP-compliant and offline-cacheable (the workbox
-		// glob below precaches woff/woff2).
+		// glob below precaches woff2).
 		assetsInlineLimit: (filePath: string) =>
 			/\.(woff2?|ttf|otf|eot)(\?.*)?$/i.test(filePath) ? false : undefined,
 		rollupOptions: {
 			output: {
 				manualChunks(id) {
-					if (id.includes('three') || id.includes('@threlte')) return 'vendor-3d';
 					const packMatch = id.match(/[/\\]content[/\\]packs[/\\]([^/\\]+)[/\\]([^/\\]+)\.json/);
 					if (packMatch) return `lesson-${packMatch[1]}-${packMatch[2].replace('.json', '')}`;
 				}
@@ -34,16 +38,21 @@ export default defineConfig(({ mode }) => ({
 			strategy: ['localStorage', 'preferredLanguage', 'baseLocale']
 		}),
 		SvelteKitPWA({
-			registerType: 'autoUpdate',
+			// 'prompt', never 'autoUpdate': an activating update must not reload the page on the
+			// learner (lesson state is in memory). +layout.svelte shows UpdateToast instead.
+			registerType: 'prompt',
 			injectRegister: 'auto',
+			// Precache adapter-static's SPA shell (svelte.config.js `fallback`) so the SW can serve
+			// it for deep links like /learn/a1-unit-01 (the prerendered Home page would boot Home).
+			kit: { adapterFallback: '200.html', spa: true },
 			// vosk-browser (the WASM ASR engine, ~6MB) is only ever pulled in via a
 			// dynamic import inside src/lib/speech/asr.ts, once a learner opts into
 			// a speak exercise's model download. SvelteKit hashes client chunk
 			// filenames (no [name] control), so it can't be glob-excluded from the
-			// precache by path the way static/models/ is below — instead, let
-			// vite-pwa fall back to workbox's default behavior (skip oversized
-			// files from the precache manifest with a console warning) rather than
-			// hard-failing the build, since skipping it is exactly what we want.
+			// precache by path the way static/models/ is below — instead, workbox
+			// skips files over `maximumFileSizeToCacheInBytes` (below) from the
+			// precache manifest with a console warning rather than hard-failing the
+			// build, since skipping it is exactly what we want.
 			showMaximumFileSizeToCacheInBytesWarning: true,
 			includeAssets: [
 				'favicon.svg',
@@ -81,15 +90,20 @@ export default defineConfig(({ mode }) => ({
 				]
 			},
 			workbox: {
-				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2,json,html}'],
+				// `wasm` so the FSRS optimizer (fsrs-browser, ~330 KB) also runs offline. No legacy
+				// `woff`: @fontsource lists woff2 first and every supported browser takes it.
+				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff2,wasm,json,html}'],
+				// Pinned at workbox's 2 MiB default on purpose: everything in the app shell fits
+				// well under it, and the ~5.8 MB vosk ASR chunk must stay out (see above).
+				maximumFileSizeToCacheInBytes: PRECACHE_MAX_FILE_BYTES,
 				// The Vosk ASR model (static/models/) is a same-origin opt-in download,
 				// never part of the app-shell precache (privacy: web speech is opt-in).
 				// version.json must also stay out of the precache — checkForUpdate()
 				// needs a live network fetch to detect a newer deployment; a precached
 				// copy would always compare equal to itself (see updates.ts).
 				globIgnores: ['**/models/**', '**/version.json'],
-				navigateFallback: '/',
-				// `?mode=` must not defeat the precache match for /review (else the fallback serves Home);
+				navigateFallback: '/200.html',
+				// `?mode=` must not defeat the precache match for /review (else it gets the bare SPA shell);
 				// keep workbox's defaults too.
 				ignoreURLParametersMatching: [/^utm_/, /^fbclid$/, /^mode$/],
 				navigateFallbackDenylist: [/^\/manifest\.webmanifest$/],
@@ -116,6 +130,18 @@ export default defineConfig(({ mode }) => ({
 			},
 			devOptions: { enabled: false }
 		}),
+		{
+			// ponytail: `vite preview` serves .svelte-kit/output, but adapter-static writes 200.html
+			// only into build/, so preview 404s the shell the SW precaches. Serve it the way real
+			// static hosts do. Preview-only (e2e); never part of the shipped bundle.
+			name: 'preview-spa-shell',
+			configurePreviewServer(server) {
+				server.middlewares.use('/200.html', (_req, res) => {
+					res.setHeader('Content-Type', 'text/html; charset=utf-8');
+					res.end(readFileSync('build/200.html'));
+				});
+			}
+		} satisfies Plugin,
 		mode === 'analyze' &&
 			visualizer({
 				filename: 'build/stats.html',

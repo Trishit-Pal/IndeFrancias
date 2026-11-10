@@ -18,6 +18,9 @@
 	import { shareProgress } from '$lib/share/shareCard';
 	import Exercise from '$lib/lesson/exercises/Exercise.svelte';
 	import ExamTimer from '$lib/exam/ExamTimer.svelte';
+	import InfoBanner from '$lib/components/InfoBanner.svelte';
+	import Icon from '$lib/components/Icon.svelte';
+	import ExitGuard from '$lib/components/ExitGuard.svelte';
 
 	let {
 		exam,
@@ -49,6 +52,7 @@
 	let reduceMotion = $state(false);
 	let celebrationLevel = $state<'full' | 'minimal'>('full');
 	let xpAwarded = $state(0);
+	let saveError = $state(false);
 
 	let itemIndex = $state(0);
 	let response = $state<ExerciseResponse | null>(null);
@@ -93,15 +97,25 @@
 
 	async function finishExam() {
 		result = scoreExam(perSkill);
-		recordDailyActivity();
 		phase = 'result';
-		if (result.passed) {
+		await saveResult();
+	}
+
+	// The result is shown at once; saving it can fail (disk full) and is safe to retry:
+	// the streak is once-per-day and awardAssessmentXp never awards the same exam twice.
+	async function saveResult() {
+		const scored = result;
+		if (!scored) return;
+		saveError = false;
+		try {
+			await recordDailyActivity();
+			if (!scored.passed) return;
 			const settings = await settingsRepo.getSettings();
 			const outcome = await awardAssessmentXp(
 				assessmentId,
 				'delf_mock',
 				assessmentSlug,
-				result.total,
+				scored.total,
 				DELF_XP_BY_TIER[settings.difficultyTier]
 			);
 			xpAwarded = outcome.xp;
@@ -109,9 +123,11 @@
 				celebration = {
 					event: 'delf_pass',
 					title: m.exam_pass(),
-					subtitle: `${result.total}/100 · +${outcome.xp} XP`
+					subtitle: `${scored.total}/100 · +${outcome.xp} XP`
 				};
 			}
+		} catch {
+			saveError = true;
 		}
 	}
 
@@ -140,8 +156,14 @@
 
 <svelte:head><title>{exam.title} · FrenchPath</title></svelte:head>
 
+<!-- The timer is running for the whole section phase: any departure would discard the attempt. -->
+<ExitGuard active={() => phase === 'section'} />
+
 <main class="page-shell lg:max-w-3xl">
-	<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
+	<a
+		class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
+		href={resolve('/')}>{m.common_home()}</a
+	>
 
 	<header class="fp-exam-header mt-3">
 		<div>
@@ -230,10 +252,10 @@
 				<legend class="text-sm font-semibold text-foreground">{m.exam_self_assess()}</legend>
 				<div class="mt-2 space-y-2">
 					{#each section.rubric as item, i (i)}
-						<label class="flex items-start gap-2 text-sm text-foreground">
+						<label class="flex min-h-11 items-start gap-3 py-2.5 text-sm text-foreground">
 							<input
 								type="checkbox"
-								class="mt-0.5 h-4 w-4 accent-primary"
+								class="h-5 w-5 shrink-0 accent-primary"
 								bind:checked={checkedRubric[i]}
 							/>
 							{item}
@@ -251,11 +273,23 @@
 			</button>
 		{/if}
 	{:else if phase === 'result' && result}
+		{#if saveError}
+			<InfoBanner variant="error" role="alert" class="mt-4 lg:mx-auto lg:max-w-2xl">
+				<p>{m.save_failed_banner()}</p>
+				<button type="button" class="btn-secondary mt-3 text-sm" onclick={() => void saveResult()}>
+					{m.common_retry()}
+				</button>
+			</InfoBanner>
+		{/if}
 		<div
 			class="surface-card mt-4 rounded-2xl p-6 lg:mx-auto lg:max-w-2xl"
 			data-testid="exam-result"
 		>
-			<p class="text-center text-5xl">{result.passed ? '🎓' : '📚'}</p>
+			<p class="text-center">
+				<span class="fp-medallion {result.passed ? '' : 'fp-medallion--quiet'}" aria-hidden="true">
+					<Icon name={result.passed ? 'check' : 'cards'} size={34} />
+				</span>
+			</p>
 			<h1 class="fp-display-md mt-2 text-center text-balance text-foreground">
 				<span class="fp-figure">{result.total} / 100</span> — {result.passed
 					? m.exam_pass()

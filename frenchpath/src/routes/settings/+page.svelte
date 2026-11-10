@@ -3,6 +3,7 @@
 	import {
 		settingsRepo,
 		resetDatabase,
+		DatabaseBlockedError,
 		type Settings,
 		type Theme,
 		type UiLanguage,
@@ -15,6 +16,7 @@
 	import {
 		NATIVE_LANGUAGES,
 		NATIVE_LANGUAGE_LABELS,
+		uiLanguageLabel,
 		xpFromPreset,
 		type DailyGoalPreset as Preset
 	} from '$lib/profile/types';
@@ -23,6 +25,7 @@
 		exportBackup,
 		importBackup,
 		previewBackup,
+		hasDataToLose,
 		MAX_BACKUP_BYTES,
 		type BackupPreview
 	} from '$lib/pwa/backup';
@@ -34,29 +37,32 @@
 	} from '$lib/sync/mergeFile';
 	import { WrongPassphraseError } from '$lib/sync/crypto';
 	import type { MergeSummary } from '$lib/pwa/merge';
-	import { ensurePersistence, isPersisted } from '$lib/pwa/persist';
+	import { ensurePersistence, isPersisted, migrateLegacyLastExport } from '$lib/pwa/persist';
 	import { isNativePlatform } from '$lib/platform';
 	import { exportBackupNative } from '$lib/platform/backup';
 	import { applyTheme } from '$lib/theme/apply';
 	import { configureTts, listFrenchVoices, voicesReady } from '$lib/audio/tts';
-	import { revisionNotificationBody } from '$lib/pwa/revisionNotify';
+	import { revisionNotificationBody, showLocalNotification } from '$lib/pwa/revisionNotify';
+	import { wipeLocalData, completeBlockedReset } from '$lib/pwa/wipeLocalData';
 	import { checkForUpdate, UpdateCheckError, type UpdateInfo } from '$lib/platform/updates';
 	import pkg from '../../../package.json';
 	import Modal from '$lib/components/Modal.svelte';
+	import AboutSection from '$lib/components/AboutSection.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { getLocale, setLocale } from '$lib/paraglide/runtime';
 
-	const LAST_EXPORT_KEY = 'frenchpath:lastExportAt';
+	const REVOKE_URL_DELAY_MS = 10_000;
 	const MIN_SYNC_PASSPHRASE_LENGTH = 8;
 
 	let settings = $state<Settings | null>(null);
 	let persisted = $state(false);
 	let message = $state('');
 	let confirmingReset = $state(false);
-	let lastExportAt = $state<string | null>(null);
 	let importPreview = $state<BackupPreview | null>(null);
 	let pendingImportJson = $state('');
 	let importing = $state(false);
+	let safetyCopyFailed = $state(false);
+	let restoreDone = $state(false);
 	let syncPassphrase = $state('');
 	let syncPreview = $state<MergeSummary | null>(null);
 	let pendingSyncJson = $state('');
@@ -65,17 +71,17 @@
 	let updateResult = $state<UpdateInfo | null>(null);
 	let updateStatus = $state('');
 
-	const languages: { value: UiLanguage; label: string }[] = [
-		{ value: 'en', label: 'English' },
-		{ value: 'hi', label: 'हिन्दी' },
-		{ value: 'hinglish', label: 'Hinglish' },
-		{ value: 'bn', label: 'বাংলা' },
-		{ value: 'ta', label: 'தமிழ்' },
-		{ value: 'te', label: 'తెలుగు' },
-		{ value: 'kn', label: 'ಕನ್ನಡ' },
-		{ value: 'mr', label: 'मराठी' },
-		{ value: 'gu', label: 'ગુજરાતી' },
-		{ value: 'pa', label: 'ਪੰਜਾਬੀ' }
+	const languages: UiLanguage[] = [
+		'en',
+		'hi',
+		'hinglish',
+		'bn',
+		'ta',
+		'te',
+		'kn',
+		'mr',
+		'gu',
+		'pa'
 	];
 
 	const presetOptions: { value: Preset; label: () => string }[] = [
@@ -107,9 +113,8 @@
 	}
 
 	onMount(async () => {
-		settings = await settingsRepo.getSettings();
+		settings = await migrateLegacyLastExport(await settingsRepo.getSettings());
 		persisted = await isPersisted();
-		lastExportAt = localStorage.getItem(LAST_EXPORT_KEY);
 		const voices = await voicesReady();
 		frenchVoices = listFrenchVoices(voices).map((v) => ({
 			uri: v.voiceURI,
@@ -153,11 +158,11 @@
 			message = m.settings_notif_enable_first();
 			return;
 		}
-		new Notification(m.revision_notify_title(), {
+		const shown = await showLocalNotification(m.revision_notify_title(), {
 			body: revisionNotificationBody(3),
 			tag: 'frenchpath-revision-test'
 		});
-		message = m.settings_test_notification_sent();
+		message = shown ? m.settings_test_notification_sent() : m.settings_notif_unsupported();
 	}
 
 	async function requestPersist() {
@@ -165,29 +170,42 @@
 		message = persisted ? m.settings_persist_granted() : m.settings_persist_denied();
 	}
 
-	async function download() {
+	// Revoking synchronously after click() cancels the download on Safari.
+	function saveViaBrowser(json: string, filename: string) {
+		const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = filename;
+		link.click();
+		setTimeout(() => URL.revokeObjectURL(url), REVOKE_URL_DELAY_MS);
+	}
+
+	/**
+	 * Resolves true when the backup was handed off. A safety copy (taken before a
+	 * restore) is not a learner-initiated backup: it neither records `lastExportAt`
+	 * nor shows its own messages; the restore dialog reports failure instead.
+	 */
+	async function download(isSafetyCopy = false): Promise<boolean> {
 		try {
 			const json = await exportBackup();
 			const filename = `frenchpath-backup-${new Date().toISOString().slice(0, 10)}.json`;
 			if (isNativePlatform()) {
 				await exportBackupNative(json, filename);
 			} else {
-				const blob = new Blob([json], { type: 'application/json' });
-				const url = URL.createObjectURL(blob);
-				const link = document.createElement('a');
-				link.href = url;
-				link.download = filename;
-				link.click();
-				URL.revokeObjectURL(url);
+				saveViaBrowser(json, filename);
 			}
-			const exportedAt = new Date().toISOString();
-			localStorage.setItem(LAST_EXPORT_KEY, exportedAt);
-			lastExportAt = exportedAt;
-			message = m.settings_backup_downloaded();
+			if (!isSafetyCopy) {
+				settings = await settingsRepo.saveSettings({ lastExportAt: new Date().toISOString() });
+				message = m.settings_backup_downloaded();
+			}
+			return true;
 		} catch (error) {
 			// Surface native (share/filesystem) or web failures instead of
 			// throwing unhandled — backup is the only data-recovery path.
-			message = error instanceof Error ? error.message : m.settings_backup_export_failed();
+			if (!isSafetyCopy) {
+				message = error instanceof Error ? error.message : m.settings_backup_export_failed();
+			}
+			return false;
 		}
 	}
 
@@ -209,25 +227,33 @@
 		}
 	}
 
-	async function confirmImport() {
+	async function confirmImport(skipSafetyCopy = false) {
 		if (!pendingImportJson || importing) return;
 		importing = true;
+		safetyCopyFailed = false;
 		try {
+			// Safety copy of current progress first (only if there is something to lose);
+			// if it fails, keep the preview open so the learner can retry or restore anyway.
+			if (!skipSafetyCopy && (await hasDataToLose()) && !(await download(true))) {
+				safetyCopyFailed = true;
+				return;
+			}
 			await importBackup(pendingImportJson);
-			message = m.settings_backup_restored();
-			location.reload();
+			// No auto-reload (SPEC invariant 6): unloading now would revoke the safety copy's blob URL
+			// and dismiss iOS's "Download?" sheet. The learner reloads when ready.
+			restoreDone = true;
 		} catch (error) {
 			message = error instanceof Error ? error.message : m.settings_import_failed();
 		} finally {
 			importing = false;
-			importPreview = null;
-			pendingImportJson = '';
+			if (!safetyCopyFailed) clearImport();
 		}
 	}
 
-	function cancelImport() {
+	function clearImport() {
 		importPreview = null;
 		pendingImportJson = '';
+		safetyCopyFailed = false;
 	}
 
 	async function syncExport() {
@@ -241,13 +267,7 @@
 			if (isNativePlatform()) {
 				await exportBackupNative(json, filename);
 			} else {
-				const blob = new Blob([json], { type: 'application/json' });
-				const url = URL.createObjectURL(blob);
-				const link = document.createElement('a');
-				link.href = url;
-				link.download = filename;
-				link.click();
-				URL.revokeObjectURL(url);
+				saveViaBrowser(json, filename);
 			}
 			message = m.sync_success();
 		} catch (error) {
@@ -306,8 +326,35 @@
 		pendingSyncJson = '';
 	}
 
+	let resetPending = $state(false);
+	let resetDone = $state(false);
+	let mounted = true;
+	$effect(() => () => {
+		mounted = false;
+	});
+
 	async function reset() {
-		await resetDatabase();
+		if (resetPending) return;
+		resetPending = true;
+		try {
+			await resetDatabase();
+		} catch (error) {
+			if (!(error instanceof DatabaseBlockedError)) {
+				resetPending = false;
+				throw error;
+			}
+			message = m.settings_reset_blocked();
+			// The delete stays queued (the button stays disabled, so there is one handler). When the
+			// other tab closes, finish the wipe; announce it only if this page is still open. Never reload.
+			void completeBlockedReset(error.completed, () => {
+				if (!mounted) return;
+				message = '';
+				resetPending = false;
+				resetDone = true;
+			});
+			return;
+		}
+		await wipeLocalData();
 		location.reload();
 	}
 
@@ -501,8 +548,8 @@
 					onchange={changeLanguage}
 					data-testid="language-select"
 				>
-					{#each languages as lang (lang.value)}
-						<option value={lang.value}>{lang.label}</option>
+					{#each languages as lang (lang)}
+						<option value={lang}>{uiLanguageLabel(lang)}</option>
 					{/each}
 				</select>
 			</section>
@@ -654,7 +701,7 @@
 				{/if}
 			</section>
 
-			<section class="surface-card p-4">
+			<section class="surface-card p-4" id="backup">
 				<h2 class="font-semibold text-balance text-foreground">{m.settings_storage_section()}</h2>
 				<div class="fp-data-card mt-2" data-testid="data-local-notice">
 					<p class="text-sm font-medium">
@@ -667,9 +714,9 @@
 						{persisted ? m.settings_persisted_on() : m.settings_persisted_best_effort()}
 					</span>
 				</p>
-				{#if lastExportAt}
+				{#if settings.lastExportAt}
 					<p class="mt-1 text-sm text-muted" data-testid="last-export">
-						{m.settings_last_export({ date: new Date(lastExportAt).toLocaleString() })}
+						{m.settings_last_export({ date: new Date(settings.lastExportAt).toLocaleString() })}
 					</p>
 				{/if}
 				{#if !persisted}
@@ -681,7 +728,7 @@
 					<button
 						type="button"
 						class="btn-primary text-sm"
-						onclick={download}
+						onclick={() => download()}
 						data-testid="backup-export"
 					>
 						{m.settings_backup_export()}
@@ -697,6 +744,19 @@
 						/>
 					</label>
 				</div>
+				{#if restoreDone}
+					<p class="mt-3 text-sm text-foreground" role="status" data-testid="restore-complete">
+						{m.settings_restore_complete()}
+					</p>
+					<button
+						type="button"
+						class="btn-primary mt-2 text-sm"
+						onclick={() => location.reload()}
+						data-testid="restore-reload"
+					>
+						{m.settings_reset_reload()}
+					</button>
+				{/if}
 			</section>
 
 			<section class="surface-card p-4" data-testid="sync-section">
@@ -743,7 +803,19 @@
 				<h2 class="fp-danger-title font-semibold text-balance">
 					{m.settings_danger_zone()}
 				</h2>
-				{#if confirmingReset}
+				{#if resetDone}
+					<p class="fp-danger-text mt-2 text-sm" role="status" data-testid="reset-complete">
+						{m.settings_reset_complete()}
+					</p>
+					<button
+						type="button"
+						class="btn-primary mt-2 text-sm"
+						onclick={() => location.reload()}
+						data-testid="reset-reload"
+					>
+						{m.settings_reset_reload()}
+					</button>
+				{:else if confirmingReset}
 					<p class="fp-danger-text mt-2 text-sm">
 						{m.settings_reset_confirm_desc()}
 					</p>
@@ -752,6 +824,7 @@
 							type="button"
 							class="fp-danger-btn min-h-11 rounded-lg px-3 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
 							onclick={reset}
+							disabled={resetPending}
 							data-testid="reset-confirm"
 						>
 							{m.settings_reset_yes()}
@@ -776,11 +849,13 @@
 				{/if}
 			</section>
 
+			<AboutSection version={pkg.version} />
+
 			<Modal
 				open={!!importPreview}
 				labelledby="import-preview-title"
 				testid="import-preview"
-				onClose={cancelImport}
+				onClose={clearImport}
 			>
 				{#if importPreview}
 					<h2 id="import-preview-title" class="font-semibold text-balance text-foreground">
@@ -796,17 +871,40 @@
 					<p class="mt-1 text-sm text-muted">
 						{m.settings_import_preview_warning()}
 					</p>
-					<div class="mt-4 flex gap-2">
+					<p class="mt-1 text-sm text-muted">
+						{m.settings_import_preview_safety_copy()}
+					</p>
+					{#if safetyCopyFailed}
+						<p class="mt-2 text-sm text-foreground" role="alert" data-testid="safety-copy-failed">
+							{m.settings_safety_copy_failed()}
+						</p>
+					{/if}
+					<div class="mt-4 flex flex-wrap gap-2">
 						<button
 							type="button"
 							class="btn-primary text-sm"
-							onclick={confirmImport}
+							onclick={() => confirmImport()}
 							disabled={importing}
 							data-testid="import-confirm"
 						>
-							{importing ? m.settings_importing() : m.settings_import_confirm()}
+							{importing
+								? m.settings_importing()
+								: safetyCopyFailed
+									? m.common_retry()
+									: m.settings_import_confirm()}
 						</button>
-						<button type="button" class="btn-secondary text-sm" onclick={cancelImport}>
+						{#if safetyCopyFailed}
+							<button
+								type="button"
+								class="btn-secondary text-sm"
+								onclick={() => confirmImport(true)}
+								disabled={importing}
+								data-testid="import-confirm-anyway"
+							>
+								{m.settings_import_restore_anyway()}
+							</button>
+						{/if}
+						<button type="button" class="btn-secondary text-sm" onclick={clearImport}>
 							{m.common_cancel()}
 						</button>
 					</div>

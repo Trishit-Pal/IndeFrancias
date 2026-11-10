@@ -35,7 +35,7 @@
 			{#each weakest as profile (profile.skill)}
 				<a
 					href={resolve('/review')}
-					class="rounded-full border border-primary/40 bg-jaipur-light px-3 py-1.5 text-sm font-medium text-primary hover:border-primary"
+					class="inline-flex min-h-11 items-center rounded-full border border-primary/40 bg-jaipur-light px-3 py-1.5 text-sm font-medium text-primary hover:border-primary"
 					data-testid="weak-skill-{profile.skill}"
 				>
 					{SKILL_LABELS[profile.skill]()} · {profile.estimatedLevel}

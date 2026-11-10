@@ -28,6 +28,17 @@ function contrast(a: string, b: string): number {
 	return (hi + 0.05) / (lo + 0.05);
 }
 
+/** sRGB mix of `pct`% a over b: what color-mix(in srgb, a pct%, b) paints. */
+function mix(a: string, b: string, pct: number): string {
+	const channel = (i: number) =>
+		Math.round(
+			(parseInt(a.slice(i, i + 2), 16) * pct + parseInt(b.slice(i, i + 2), 16) * (100 - pct)) / 100
+		)
+			.toString(16)
+			.padStart(2, '0');
+	return `#${channel(1)}${channel(3)}${channel(5)}`;
+}
+
 const AA = 4.5;
 const TEXT_TOKENS = [
 	'--fp-ink',
@@ -43,6 +54,14 @@ describe('token contrast (WCAG AA)', () => {
 		expect(contrast('#d99a2b', '#faf7f0')).toBeLessThan(AA);
 	});
 
+	// DailyRitual's evening gradient is dark in both themes; its lightest stops
+	// are hard-coded in that component (light #7a5a55, dark #4a3549).
+	for (const stop of ['#7a5a55', '#4a3549']) {
+		it(`--fp-ivory on the evening ritual gradient (${stop}) >= ${AA}`, () => {
+			expect(contrast(themes.light['--fp-ivory'], stop)).toBeGreaterThanOrEqual(AA);
+		});
+	}
+
 	for (const [theme, t] of Object.entries(themes)) {
 		for (const token of TEXT_TOKENS) {
 			for (const bg of ['--fp-canvas', '--fp-paper']) {
@@ -52,6 +71,19 @@ describe('token contrast (WCAG AA)', () => {
 				});
 			}
 		}
+		// Home text sits directly on the journey sky (no card behind the mobile route).
+		for (const token of ['--fp-ink', '--fp-muted', '--fp-jaipur-text']) {
+			for (const bg of ['--fp-sky-mumbai', '--fp-sky-paris']) {
+				it(`${theme}: ${token} on ${bg} >= ${AA}`, () => {
+					expect(t[bg], `${bg} missing in ${theme}`).toBeDefined();
+					expect(contrast(t[token], t[bg])).toBeGreaterThanOrEqual(AA);
+				});
+			}
+		}
+		it(`${theme}: --fp-error-text on the error banner tint >= ${AA}`, () => {
+			const tint = mix(t['--fp-error'], t['--fp-paper'], 12); // InfoBanner --error ground
+			expect(contrast(t['--fp-error-text'], tint)).toBeGreaterThanOrEqual(AA);
+		});
 		it(`${theme}: --fp-on-error on --fp-error >= ${AA}`, () => {
 			expect(contrast(t['--fp-on-error'], t['--fp-error'])).toBeGreaterThanOrEqual(AA);
 		});

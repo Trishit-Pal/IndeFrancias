@@ -35,18 +35,7 @@ export function clipForEvent(event: CelebrationEvent): string {
 
 export function shouldUseFullCelebration(
 	celebrationLevel: 'full' | 'minimal',
-	reduceMotion: boolean,
-	webglOk: boolean
+	reduceMotion: boolean
 ): boolean {
-	return celebrationLevel === 'full' && !reduceMotion && webglOk;
-}
-
-export function canUseWebGL(): boolean {
-	if (typeof document === 'undefined') return false;
-	try {
-		const canvas = document.createElement('canvas');
-		return !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
-	} catch {
-		return false;
-	}
+	return celebrationLevel === 'full' && !reduceMotion;
 }

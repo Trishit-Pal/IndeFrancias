@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildTrainingSet } from './trainingSet';
+import { buildTrainingSet, MAX_REVIEWS_PER_CARD } from './trainingSet';
 import type { ReviewLogRecord } from '../db/schema';
 
 const DAY = 86_400_000;
@@ -15,17 +15,35 @@ const log = (cardId: string, ts: number, grade: number): ReviewLogRecord => ({
 });
 
 describe('buildTrainingSet', () => {
-	it('groups by card, sorts by ts, computes day deltas', () => {
+	it('emits one item per review prefix (last review = label), cards in first-review order', () => {
 		const logs = [
-			log('b', 10 * DAY, 3),
+			log('b', 20 * DAY, 3),
 			log('a', 0, 3),
 			log('a', 3 * DAY, 4),
-			log('a', 10 * DAY, 2)
+			log('b', 30 * DAY, 1),
+			log('a', 10 * DAY, 2),
+			log('a', 12 * DAY, 3)
 		];
 		const t = buildTrainingSet(logs);
-		expect(Array.from(t.lengths)).toEqual([3, 1]); // card a (first seen at ts 0), then b
-		expect(Array.from(t.ratings)).toEqual([3, 4, 2, 3]);
-		expect(Array.from(t.deltaTs)).toEqual([0, 3, 7, 0]);
+		// card a (4 reviews) → prefixes of 2, 3, 4; card b (2 reviews) → one prefix of 2
+		expect(Array.from(t.lengths)).toEqual([2, 3, 4, 2]);
+		expect(Array.from(t.ratings)).toEqual([3, 4, 3, 4, 2, 3, 4, 2, 3, 3, 1]);
+		expect(Array.from(t.deltaTs)).toEqual([0, 3, 0, 3, 7, 0, 3, 7, 2, 0, 10]);
+	});
+
+	it('skips cards with a single review: there is no later review to learn from', () => {
+		const t = buildTrainingSet([log('a', 0, 3), log('b', 0, 3), log('b', DAY, 4)]);
+		expect(Array.from(t.lengths)).toEqual([2]);
+		expect(Array.from(t.ratings)).toEqual([3, 4]);
+	});
+
+	it('uses only the first MAX_REVIEWS_PER_CARD reviews of a card, bounding the expansion', () => {
+		const logs = Array.from({ length: MAX_REVIEWS_PER_CARD + 40 }, (_, i) => log('a', i * DAY, 3));
+		const t = buildTrainingSet(logs);
+		expect(Array.from(t.lengths)).toEqual(
+			Array.from({ length: MAX_REVIEWS_PER_CARD - 1 }, (_, i) => i + 2)
+		);
+		expect(t.ratings.length).toBe((MAX_REVIEWS_PER_CARD * (MAX_REVIEWS_PER_CARD + 1)) / 2 - 1);
 	});
 
 	it('clamps sub-day gaps to 0 and ignores grades outside 1..4', () => {
@@ -39,4 +57,75 @@ describe('buildTrainingSet', () => {
 		const t = buildTrainingSet([]);
 		expect(t.lengths.length).toBe(0);
 	});
+
+	it('matches the original grouping, expanded to prefixes, on 100k shuffled logs', () => {
+		// Deterministic LCG so the fixture is stable across runs.
+		let seed = 42;
+		const rand = (n: number): number => {
+			seed = (seed * 1_103_515_245 + 12_345) % 2_147_483_648;
+			return seed % n;
+		};
+		const logs = Array.from({ length: 100_000 }, () =>
+			// 1 in 10 logs lands on one of 3 hot cards; ts collide often (ties keep input order).
+			log(rand(10) === 0 ? `hot${rand(3)}` : `c${rand(2_000)}`, rand(50_000) * 3_600_000, rand(6))
+		);
+		expect(buildTrainingSet(logs)).toEqual(toPrefixItems(referenceBuildTrainingSet(logs)));
+	}, 60_000);
 });
+
+type FlatSet = { ratings: Uint32Array; deltaTs: Uint32Array; lengths: Uint32Array };
+
+// Expands one-item-per-card histories into one item per prefix of length 2..min(L, cap)
+// (the fsrs-rs shape).
+function toPrefixItems(perCard: FlatSet): FlatSet {
+	const ratings: number[] = [];
+	const deltaTs: number[] = [];
+	const lengths: number[] = [];
+	let start = 0;
+	for (const len of perCard.lengths) {
+		for (let p = 2; p <= Math.min(len, MAX_REVIEWS_PER_CARD); p++) {
+			lengths.push(p);
+			ratings.push(...perCard.ratings.subarray(start, start + p));
+			deltaTs.push(...perCard.deltaTs.subarray(start, start + p));
+		}
+		start += len;
+	}
+	return {
+		ratings: Uint32Array.from(ratings),
+		deltaTs: Uint32Array.from(deltaTs),
+		lengths: Uint32Array.from(lengths)
+	};
+}
+
+// The pre-A10 implementation (array spread per append, one item per card), kept verbatim as the
+// grouping/ordering oracle.
+function referenceBuildTrainingSet(logs: ReviewLogRecord[]): FlatSet {
+	const valid = logs.filter((l) => l.grade >= 1 && l.grade <= 4);
+	const byCard = new Map<string, ReviewLogRecord[]>();
+	for (const l of valid) {
+		const existing = byCard.get(l.cardId);
+		byCard.set(l.cardId, existing ? [...existing, l] : [l]);
+	}
+	const cardsWithMinTs = Array.from(byCard.entries()).map(([cardId, reviews]) => ({
+		cardId,
+		reviews,
+		minTs: Math.min(...reviews.map((l) => l.ts))
+	}));
+	const sortedCards = cardsWithMinTs.sort((a, b) => a.minTs - b.minTs);
+	const ratings: number[] = [];
+	const deltaTs: number[] = [];
+	const lengths: number[] = [];
+	for (const { reviews } of sortedCards) {
+		const sorted = [...reviews].sort((a, b) => a.ts - b.ts);
+		lengths.push(sorted.length);
+		sorted.forEach((l, i) => {
+			ratings.push(l.grade);
+			deltaTs.push(i === 0 ? 0 : Math.floor((l.ts - sorted[i - 1].ts) / DAY));
+		});
+	}
+	return {
+		ratings: Uint32Array.from(ratings),
+		deltaTs: Uint32Array.from(deltaTs),
+		lengths: Uint32Array.from(lengths)
+	};
+}

@@ -1,4 +1,5 @@
 import type { UiLanguage } from '$lib/db/schema';
+import * as m from '$lib/paraglide/messages';
 
 export const NATIVE_LANGUAGES = ['hi', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'en'] as const;
 export type NativeLanguage = (typeof NATIVE_LANGUAGES)[number];
@@ -37,6 +38,15 @@ export const NATIVE_LANGUAGE_LABELS: Record<NativeLanguage, string> = {
 	pa: 'ਪੰਜਾਬੀ',
 	en: 'English'
 };
+
+/** UI locales whose interface text is still mostly English placeholders (see docs/i18n-pending.md). */
+export const BETA_LOCALES: readonly UiLanguage[] = ['bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa'];
+
+/** Picker label for a UI language, suffixed "(beta)" for {@link BETA_LOCALES}. */
+export function uiLanguageLabel(lang: UiLanguage): string {
+	const label = lang === 'hinglish' ? 'Hinglish' : NATIVE_LANGUAGE_LABELS[lang];
+	return BETA_LOCALES.includes(lang) ? `${label} ${m.language_beta_suffix()}` : label;
+}
 
 export interface LearnerProfileFields {
 	nativeLanguage: NativeLanguage;

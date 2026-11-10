@@ -10,6 +10,10 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+	/** '1' only for the Playwright build; gates the e2e ASR stub (see src/lib/speech/asr.ts). */
+	interface ImportMetaEnv {
+		readonly VITE_E2E?: string;
+	}
 }
 
 export {};

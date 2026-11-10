@@ -1,9 +1,11 @@
 // Records one review: reschedules the card (FSRS), persists it, appends the
-// review log, and credits daily stats — all in the data layer.
-import { srsRepo, reviewLogRepo, statsRepo } from '../db';
-import type { SrsCard } from '../db/schema';
+// review log, and credits daily stats — all in ONE transaction, so a crash or
+// tab kill mid-way leaves the card, log, stats and streak all-or-nothing.
+import { writeAtomically } from '../db';
+import type { ReviewLogRecord, SrsCard } from '../db/schema';
+import { addStatsInTx } from '../db/repositories/stats';
 import { gradeCard, type ReviewGrade } from './fsrs';
-import { recordDailyActivity } from '../gamification/activity';
+import { recordDailyActivityInTx } from '../gamification/activity';
 import { todayKey } from '../utils/date';
 
 const XP_PER_REVIEW = 5;
@@ -35,8 +37,8 @@ export async function recordReview(
 		weights: opts.weights
 	});
 
-	await srsRepo.putCard(updated);
-	await reviewLogRepo.appendReviewLog({
+	const day = todayKey(now);
+	const entry: ReviewLogRecord = {
 		cardId: card.cardId,
 		ts: now.getTime(),
 		grade: log.rating,
@@ -46,9 +48,14 @@ export async function recordReview(
 		elapsedDays: log.elapsed_days,
 		scheduledDays: log.scheduled_days,
 		reviewDurationMs: opts.durationMs
+	};
+
+	await writeAtomically(['srsCards', 'reviewLog', 'stats', 'streak'], async (tx) => {
+		await tx.objectStore('srsCards').put(updated);
+		await tx.objectStore('reviewLog').add(entry);
+		await addStatsInTx(tx.objectStore('stats'), day, { reviewsDone: 1, xp: XP_PER_REVIEW });
+		await recordDailyActivityInTx(tx.objectStore('streak'), day);
 	});
-	await statsRepo.addStats(todayKey(now), { reviewsDone: 1, xp: XP_PER_REVIEW });
-	await recordDailyActivity(now);
 
 	return updated;
 }

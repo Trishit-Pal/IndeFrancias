@@ -1,11 +1,17 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { resetDatabase } from '../db';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { getDB, resetDatabase } from '../db';
 import * as srsRepo from '../db/repositories/srs';
 import * as progressRepo from '../db/repositories/progress';
 import * as settingsRepo from '../db/repositories/settings';
 import * as assessmentsRepo from '../db/repositories/assessments';
 import { createSrsCard } from '../srs/fsrs';
-import { exportBackup, importBackup, previewBackup, MAX_BACKUP_BYTES } from './backup';
+import {
+	exportBackup,
+	importBackup,
+	previewBackup,
+	hasDataToLose,
+	MAX_BACKUP_BYTES
+} from './backup';
 import { sha256Hex } from './checksum';
 import { CURRENT_BACKUP_VERSION } from './backupSchema';
 
@@ -40,6 +46,52 @@ describe('backup export/import', () => {
 		expect(cards[0].due instanceof Date).toBe(true);
 		expect((await progressRepo.getProgress('u'))?.score).toBe(90);
 		expect((await settingsRepo.getSettings()).dailyGoalXp).toBe(42);
+	});
+
+	it('round-trips lastExportAt through a backup', async () => {
+		await settingsRepo.saveSettings({ lastExportAt: '2026-01-01T00:00:00.000Z' });
+		const json = await exportBackup();
+		await resetDatabase();
+		await importBackup(json);
+		expect((await settingsRepo.getSettings()).lastExportAt).toBe('2026-01-01T00:00:00.000Z');
+	});
+
+	it('still imports an older backup that has no lastExportAt', async () => {
+		await settingsRepo.saveSettings({ dailyGoalXp: 42 });
+		const file = JSON.parse(await exportBackup());
+		delete file.payload.settings.lastExportAt;
+		file.checksum = await sha256Hex(JSON.stringify(file.payload));
+		await resetDatabase();
+		await importBackup(JSON.stringify(file));
+		const settings = await settingsRepo.getSettings();
+		expect(settings.dailyGoalXp).toBe(42);
+		expect(settings.lastExportAt).toBeNull();
+	});
+
+	it('hasDataToLose is false on a fresh database and true once progress exists', async () => {
+		expect(await hasDataToLose()).toBe(false);
+		await progressRepo.putProgress({
+			lessonId: 'u',
+			status: 'completed',
+			score: 90,
+			attempts: 1,
+			lastVisited: 1,
+			cefrLevel: 'A1'
+		});
+		expect(await hasDataToLose()).toBe(true);
+	});
+
+	it('hasDataToLose is true when only SRS cards exist', async () => {
+		await srsRepo.putCard(
+			createSrsCard({
+				cardId: 'u:1',
+				contentId: '1',
+				cefrLevel: 'A1',
+				skill: 'reading',
+				now: new Date('2026-01-01T00:00:00Z')
+			})
+		);
+		expect(await hasDataToLose()).toBe(true);
 	});
 
 	it('rejects an unsupported backup version', async () => {
@@ -200,5 +252,104 @@ describe('backup export/import', () => {
 		file.payload.progress = [{ lessonId: 5 }];
 		file.checksum = await sha256Hex(JSON.stringify(file.payload));
 		await expect(previewBackup(JSON.stringify(file))).rejects.toThrow(/invalid/i);
+	});
+
+	it('exports compact JSON with no indentation or newlines', async () => {
+		await progressRepo.putProgress({
+			lessonId: 'c',
+			status: 'completed',
+			score: 90,
+			attempts: 1,
+			lastVisited: 1,
+			cefrLevel: 'A1'
+		});
+		expect(await exportBackup()).not.toContain('\n');
+	});
+
+	it('restores its own export after a year of reviews (20k logs)', async () => {
+		const db = await getDB();
+		const tx = db.transaction('reviewLog', 'readwrite');
+		for (let i = 0; i < 20_000; i++) {
+			void tx.store.add({
+				cardId: `a1-unit-01:vocab-${i % 356}`,
+				ts: 1_700_000_000_000 + i * 60_000,
+				grade: 3,
+				state: 2,
+				stability: 12.345678,
+				difficulty: 5.4321,
+				elapsedDays: 3,
+				scheduledDays: 7,
+				reviewDurationMs: 4200
+			});
+		}
+		await tx.done;
+
+		const json = await exportBackup();
+		await resetDatabase();
+		await importBackup(json);
+
+		expect(await (await getDB()).count('reviewLog')).toBe(20_000);
+	}, 60_000);
+
+	it('rolls back a restore whose write fails inside the transaction', async () => {
+		await progressRepo.putProgress({
+			lessonId: 'keep',
+			status: 'completed',
+			score: 80,
+			attempts: 1,
+			lastVisited: 1,
+			cefrLevel: 'A1'
+		});
+		const db = await getDB();
+		const entry = { cardId: 'u:1', ts: 1, grade: 3, state: 2, stability: 1, difficulty: 5 };
+		await db.add('reviewLog', { ...entry, elapsedDays: 0, scheduledDays: 1 });
+		await db.add('reviewLog', { ...entry, elapsedDays: 0, scheduledDays: 1 });
+		const file = JSON.parse(await exportBackup());
+		file.payload.reviewLog[1].id = file.payload.reviewLog[0].id; // valid file, colliding key
+		file.checksum = await sha256Hex(JSON.stringify(file.payload));
+
+		// Route review-log writes through add(), so the colliding key fails the request
+		// asynchronously the way a quota error would, after the stores were cleared.
+		const realPut = IDBObjectStore.prototype.put;
+		const put = vi.spyOn(IDBObjectStore.prototype, 'put').mockImplementation(function (
+			this: IDBObjectStore,
+			value: unknown,
+			key?: IDBValidKey
+		) {
+			if (this.name === 'reviewLog') return this.add(value);
+			return realPut.call(this, value, key);
+		});
+		try {
+			await expect(importBackup(JSON.stringify(file))).rejects.toThrow(
+				'Restore failed — your existing data is unchanged'
+			);
+		} finally {
+			put.mockRestore();
+		}
+		expect((await progressRepo.getProgress('keep'))?.score).toBe(80);
+		expect(await (await getDB()).count('reviewLog')).toBe(2);
+	});
+
+	it('rejects a card whose due date is not a real ISO datetime', async () => {
+		await srsRepo.putCard(
+			createSrsCard({ cardId: 'u:1', contentId: '1', cefrLevel: 'A1', skill: 'reading' })
+		);
+		const file = JSON.parse(await exportBackup());
+		file.payload.srsCards[0].due = 'not-a-date';
+		file.checksum = await sha256Hex(JSON.stringify(file.payload));
+		await expect(importBackup(JSON.stringify(file))).rejects.toThrow(/invalid/i);
+		expect(await srsRepo.getAllCards()).toHaveLength(1);
+	});
+
+	it.each([
+		['targetRetention out of (0,1)', { targetRetention: 5 }],
+		['oversized fsrsWeights', { fsrsWeights: Array.from({ length: 500 }, () => 1) }]
+	])('rejects scheduling settings that would break FSRS: %s', async (_name, patch) => {
+		await settingsRepo.saveSettings({ dailyGoalXp: 42 });
+		const file = JSON.parse(await exportBackup());
+		file.payload.settings = { ...file.payload.settings, ...patch };
+		file.checksum = await sha256Hex(JSON.stringify(file.payload));
+		await expect(importBackup(JSON.stringify(file))).rejects.toThrow(/invalid/i);
+		expect((await settingsRepo.getSettings()).dailyGoalXp).toBe(42);
 	});
 });

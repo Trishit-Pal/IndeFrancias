@@ -4,22 +4,10 @@
 // crypto and Task 15's merge. Validation on decrypted plaintext runs through
 // the EXACT same pipeline as backup import (size guard -> parse -> checksum
 // -> migrate -> schema) so no new failure mode can reach the database.
-import { getDB } from '../db';
-import {
-	SETTINGS_KEY,
-	type Settings,
-	type ProgressRecord,
-	type ReviewLogRecord,
-	type StreakRecord,
-	type DailyStats,
-	type SkillProfileRecord,
-	type AssessmentRecord
-} from '../db/schema';
 import {
 	exportBackup,
 	validateAndParseBackup,
-	reviveCard,
-	STORES,
+	replaceAllData,
 	MAX_BACKUP_BYTES
 } from '../pwa/backup';
 import { type BackupPayload } from '../pwa/backupSchema';
@@ -96,32 +84,9 @@ async function importSyncMergeInner(fileJson: string, passphrase: string): Promi
 
 	// Same shape as importBackupInner: clear + put inside one transaction, so a
 	// failed put rolls back the clears too and existing data survives.
-	const db = await getDB();
-	const tx = db.transaction(STORES, 'readwrite');
 	try {
-		await Promise.all(STORES.map((store) => tx.objectStore(store).clear()));
-
-		if (merged.settings)
-			await tx.objectStore('settings').put(merged.settings as Settings, SETTINGS_KEY);
-		for (const r of merged.progress) await tx.objectStore('progress').put(r as ProgressRecord);
-		for (const r of merged.srsCards) await tx.objectStore('srsCards').put(reviveCard(r));
-		for (const r of merged.reviewLog) await tx.objectStore('reviewLog').put(r as ReviewLogRecord);
-		for (const r of merged.streak) await tx.objectStore('streak').put(r as StreakRecord);
-		for (const r of merged.stats) await tx.objectStore('stats').put(r as DailyStats);
-		for (const r of merged.skillProfile)
-			await tx.objectStore('skillProfile').put(r as SkillProfileRecord);
-		for (const r of merged.assessments)
-			await tx.objectStore('assessments').put(r as AssessmentRecord);
-
-		await tx.done;
+		await replaceAllData(merged);
 	} catch (err) {
-		// The tx may have already auto-aborted (a failed put rejects tx.done);
-		// abort() on a finished transaction throws and would mask `err`.
-		try {
-			tx.abort();
-		} catch {
-			/* already aborted */
-		}
 		throw new Error('Sync merge failed — your existing data is unchanged', { cause: err });
 	}
 	return summary;

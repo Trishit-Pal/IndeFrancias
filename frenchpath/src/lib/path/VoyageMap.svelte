@@ -6,7 +6,7 @@
 <!-- route panorama on desktop, vertical winding route on mobile. City       -->
 <!-- labels stay HTML (reliable a11y/e2e text), the route is an SVG layer.   -->
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { BETA_LEVELS, type UnitSummary } from '$lib/content/schema';
 	import type { LessonStatus } from '$lib/db/schema';
@@ -20,7 +20,8 @@
 		lockReasons,
 		currentUnitId,
 		reduceMotion = false,
-		dueCount = 0
+		dueCount = 0,
+		stats
 	}: {
 		units: UnitSummary[];
 		states: Map<string, LessonStatus>;
@@ -29,6 +30,8 @@
 		reduceMotion: boolean;
 		/** Cards due for review; >0 adds the review link to the hero (the loop's other half). */
 		dueCount?: number;
+		/** Today's figures (streak, goal) shown in the hero so they sit in the first viewport. */
+		stats?: Snippet;
 	} = $props();
 
 	// ── Voyage city config (line-art glyph keyed by `glyph`) ──
@@ -280,6 +283,9 @@
 					</p>
 				</div>
 			</div>
+			{#if stats}
+				<div class="fp-voyage-hero-stats">{@render stats()}</div>
+			{/if}
 			<div class="fp-voyage-hero-bar" aria-hidden="true">
 				<div class="fp-voyage-hero-fill" style="width:{drawn || reduceMotion ? legPct : 0}%"></div>
 			</div>
@@ -1001,6 +1007,13 @@
 		margin: 4px 0 0;
 		font-size: 12px;
 		color: var(--fp-muted);
+	}
+	.fp-voyage-hero-stats {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px;
+		margin-top: 12px;
 	}
 	.fp-voyage-hero-bar {
 		margin-top: 12px;

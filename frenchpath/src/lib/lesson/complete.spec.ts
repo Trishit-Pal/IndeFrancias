@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { resetDatabase } from '../db';
 import * as progressRepo from '../db/repositories/progress';
 import * as srsRepo from '../db/repositories/srs';
@@ -43,6 +43,22 @@ beforeEach(async () => {
 	await resetDatabase();
 });
 
+afterEach(() => {
+	vi.restoreAllMocks();
+});
+
+/** Makes every put on `storeName` throw synchronously, as IDB does for an unclonable value. */
+function throwOnPut(storeName: string): void {
+	const put = IDBObjectStore.prototype.put;
+	vi.spyOn(IDBObjectStore.prototype, 'put').mockImplementation(function (
+		this: IDBObjectStore,
+		...args: Parameters<IDBObjectStore['put']>
+	) {
+		if (this.name === storeName) throw new DOMException('cannot clone', 'DataCloneError');
+		return put.apply(this, args);
+	});
+}
+
 describe('completeLesson', () => {
 	it('writes progress, seeds one SRS card per vocab item, and adds stats', async () => {
 		await completeLesson(unit, { correct: 2, total: 3, score: 67 });
@@ -74,6 +90,26 @@ describe('completeLesson', () => {
 		expect(progress?.score).toBe(100);
 		expect(progress?.attempts).toBe(2);
 		expect(await srsRepo.getAllCards()).toHaveLength(2);
+	});
+
+	it('leaves already-reviewed SRS cards untouched when a completed lesson is replayed', async () => {
+		await completeLesson(unit, { correct: 3, total: 3, score: 100 });
+		const id = srsCardId('a1-test', 'w1');
+		const seeded = (await srsRepo.getCard(id))!;
+		const reviewed = {
+			...seeded,
+			reps: 4,
+			stability: 12.5,
+			due: new Date('2030-01-01T00:00:00Z')
+		};
+		await srsRepo.putCard(reviewed);
+
+		await completeLesson(unit, { correct: 2, total: 3, score: 67 });
+
+		const after = (await srsRepo.getCard(id))!;
+		expect(after.reps).toBe(4);
+		expect(after.stability).toBe(12.5);
+		expect(after.due.toISOString()).toBe('2030-01-01T00:00:00.000Z');
 	});
 
 	it('awards improvement-delta XP across replays and caps at one full completion', async () => {
@@ -118,5 +154,42 @@ describe('completeLesson', () => {
 		const { skillProfileRepo } = await import('../db');
 		await completeLesson(unit, { correct: 2, total: 3, score: 67 });
 		expect((await skillProfileRepo.getSkillProfile('reading'))?.estimatedLevel).toBe('A1');
+	});
+
+	it('persists nothing when the stats write fails, so the XP is not lost on retry', async () => {
+		await completeLesson(unit, { correct: 1, total: 3, score: 33 }); // +10, bestCorrect 1
+		throwOnPut('stats');
+
+		await expect(completeLesson(unit, { correct: 3, total: 3, score: 100 })).rejects.toThrow();
+		vi.restoreAllMocks();
+
+		const progress = await progressRepo.getProgress('a1-test');
+		expect(progress?.bestCorrect).toBe(1);
+		expect(progress?.attempts).toBe(1);
+		expect((await statsRepo.getStats(todayKey())).xp).toBe(10);
+
+		// The retry still earns the improvement XP the failed attempt would have.
+		const retry = await completeLesson(unit, { correct: 3, total: 3, score: 100 });
+		expect(retry.goalXp).toBe(20);
+		expect((await statsRepo.getStats(todayKey())).xp).toBe(30);
+	});
+
+	it('does not seed SRS cards when the operation fails', async () => {
+		throwOnPut('stats');
+		await expect(completeLesson(unit, { correct: 2, total: 3, score: 67 })).rejects.toThrow();
+		vi.restoreAllMocks();
+		expect(await srsRepo.getAllCards()).toHaveLength(0);
+		expect(await progressRepo.getProgress('a1-test')).toBeUndefined();
+	});
+
+	it('awards 0 XP when the same result is recorded twice in a row', async () => {
+		const first = await completeLesson(unit, { correct: 2, total: 3, score: 67 });
+		const second = await completeLesson(unit, { correct: 2, total: 3, score: 67 });
+		expect(first.goalXp).toBe(20);
+		expect(second.goalXp).toBe(0);
+		const stats = await statsRepo.getStats(todayKey());
+		expect(stats.xp).toBe(20);
+		expect(stats.lessonsCompleted).toBe(2);
+		expect((await progressRepo.getProgress('a1-test'))?.attempts).toBe(2);
 	});
 });

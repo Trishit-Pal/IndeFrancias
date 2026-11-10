@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Icon from '$lib/components/Icon.svelte';
 	import type { LexiconEntry } from '$lib/content/lexicon';
 	import { speakFrench, ttsAvailable } from '$lib/audio/tts';
 	import * as m from '$lib/paraglide/messages';
@@ -71,8 +72,9 @@
 
 	<div class="mt-3 flex gap-2">
 		{#if ttsAvailable()}
-			<button type="button" class="btn-secondary min-h-11 flex-1 text-sm" onclick={listen}>
-				🔊 {m.gloss_listen()}
+			<button type="button" class="btn-secondary min-h-11 flex-1 gap-2 text-sm" onclick={listen}>
+				<Icon name="speaker" size={16} />
+				{m.gloss_listen()}
 			</button>
 		{/if}
 	</div>

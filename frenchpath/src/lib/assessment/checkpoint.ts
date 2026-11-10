@@ -1,8 +1,8 @@
 import type { Exercise, Unit } from '$lib/content/schema';
 import type { AssessmentRecord, DifficultyTier } from '$lib/db/schema';
-import { assessmentsRepo } from '$lib/db';
-import { addStats } from '$lib/db/repositories/stats';
-import { recordDailyActivity } from '$lib/gamification/activity';
+import { assessmentsRepo, writeAtomically } from '$lib/db';
+import { addStatsInTx } from '$lib/db/repositories/stats';
+import { recordDailyActivityInTx } from '$lib/gamification/activity';
 import { todayKey } from '$lib/utils/date';
 import { assessmentIdForGate, type GateDefinition, CHECKPOINT_GATES } from '$lib/lesson/gates';
 import {
@@ -78,21 +78,27 @@ export async function awardAssessmentXp(
 	score: number,
 	xp: number
 ): Promise<{ awarded: boolean; xp: number }> {
-	if (await assessmentsRepo.hasCompletedAssessment(assessmentId)) {
-		return { awarded: false, xp: 0 };
-	}
+	const now = new Date();
+	const day = todayKey(now);
 	const record: AssessmentRecord = {
 		assessmentId,
 		kind,
 		refId,
 		score,
 		xpAwarded: xp,
-		completedAt: Date.now()
+		completedAt: now.getTime()
 	};
-	await assessmentsRepo.saveAssessment(record);
-	await addStats(todayKey(), { xp });
-	await recordDailyActivity();
-	return { awarded: true, xp };
+	// Check-then-write in one readwrite transaction: IndexedDB serialises
+	// overlapping ones, so a double submit cannot award the XP twice.
+	return writeAtomically(['assessments', 'stats', 'streak'], async (tx) => {
+		const assessments = tx.objectStore('assessments');
+		const existing = await assessments.get(assessmentId);
+		if (existing && existing.xpAwarded > 0) return { awarded: false, xp: 0 };
+		await assessments.put(record);
+		await addStatsInTx(tx.objectStore('stats'), day, { xp });
+		await recordDailyActivityInTx(tx.objectStore('streak'), day);
+		return { awarded: true, xp };
+	});
 }
 
 export async function completeGateAssessment(

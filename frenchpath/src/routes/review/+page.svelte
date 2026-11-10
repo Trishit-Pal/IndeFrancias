@@ -157,18 +157,25 @@
 	// record the same card twice (it would corrupt the FSRS state).
 	const gradeGate = createOnceGate();
 	let grading = $state(false); // mirrors the gate for the disabled attribute
+	let gradeError = $state(false);
 
 	async function grade(grade: ReviewGrade, measuredMs?: number) {
 		const item = currentItem;
 		if (!item) return;
-		await gradeGate.run(async () => {
-			grading = true;
-			try {
-				await gradeItem(item, grade, measuredMs);
-			} finally {
-				grading = false;
-			}
-		});
+		try {
+			await gradeGate.run(async () => {
+				gradeError = false;
+				grading = true;
+				try {
+					await gradeItem(item, grade, measuredMs);
+				} finally {
+					grading = false;
+				}
+			});
+		} catch {
+			// recordReview is one transaction: nothing was saved and the card stays for another tap.
+			gradeError = true;
+		}
 	}
 
 	async function gradeItem(item: ReviewItem, grade: ReviewGrade, measuredMs?: number) {
@@ -196,7 +203,10 @@
 <svelte:head><title>{m.nav_review()} · FrenchPath</title></svelte:head>
 
 <main class="page-shell">
-	<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
+	<a
+		class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
+		href={resolve('/')}>{m.common_home()}</a
+	>
 
 	{#if phase === 'loading'}
 		<p class="mt-6 text-muted" role="status">{m.review_loading()}</p>
@@ -211,6 +221,12 @@
 		<p class="mt-2 text-sm text-muted">
 			{m.review_queue_progress({ current: index + 1, total: queue.length })}
 		</p>
+
+		{#if gradeError}
+			<InfoBanner variant="error" role="alert" class="mt-4">
+				<p>{m.review_grade_error()}</p>
+			</InfoBanner>
+		{/if}
 
 		<div bind:this={cardArea}>
 			{#if showRescue}
@@ -241,7 +257,8 @@
 			{:else}
 				<div class="fp-flip-card mt-4 lg:mx-auto lg:max-w-2xl">
 					<div class="fp-flip-inner" class:fp-flipped={revealed}>
-						<section class="fp-flip-front surface-card p-6 text-center shadow-sm">
+						<!-- inert: the face that isn't showing is out of the tab order and the a11y tree. -->
+						<section class="fp-flip-front surface-card p-6 text-center shadow-sm" inert={revealed}>
 							{#if difficultyTier === 'hard' && !revealed}
 								<p class="text-3xl font-bold text-muted" data-testid="hard-prompt">
 									{m.review_hard_prompt()}
@@ -277,6 +294,7 @@
 						<section
 							class="fp-flip-back surface-card p-6 text-center shadow-sm"
 							data-testid="card-back"
+							inert={!revealed}
 						>
 							{#if currentItem}
 								{@const gloss = getGloss(currentItem.content, nativeLanguage)}
@@ -352,7 +370,7 @@
 		</div>
 	{:else if phase === 'reviewing'}
 		<div class="mt-10 text-center" data-testid="no-reviews">
-			<span class="fp-empty-medallion" aria-hidden="true"><Icon name="check" size={34} /></span>
+			<span class="fp-medallion" aria-hidden="true"><Icon name="check" size={34} /></span>
 			<h1 class="fp-display-md mt-3 text-balance text-foreground">
 				{m.review_nothing_title()}
 			</h1>
@@ -361,7 +379,7 @@
 		</div>
 	{:else if phase === 'done'}
 		<div class="mt-10 text-center" data-testid="review-done">
-			<p class="text-5xl">🎉</p>
+			<span class="fp-medallion" aria-hidden="true"><Icon name="spark" size={34} /></span>
 			<h1 class="fp-display-md mt-3 text-balance text-foreground">{m.review_complete()}</h1>
 			<ul class="mt-3 space-y-1 text-sm text-muted">
 				<li data-testid="review-summary-accuracy">
@@ -390,18 +408,3 @@
 		</div>
 	{/if}
 </main>
-
-<style>
-	/* Sage "all clear" medallion for the empty review queue. */
-	.fp-empty-medallion {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 72px;
-		height: 72px;
-		border-radius: 50%;
-		color: #fff;
-		background: var(--fp-sage);
-		box-shadow: var(--fp-elevation-2);
-	}
-</style>

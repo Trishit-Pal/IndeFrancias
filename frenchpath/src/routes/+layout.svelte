@@ -6,12 +6,21 @@
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import Icon from '$lib/components/Icon.svelte';
+	import InfoBanner from '$lib/components/InfoBanner.svelte';
+	import UpdateToast from '$lib/components/UpdateToast.svelte';
 	import type { IconName } from '$lib/components/icons';
 	import * as m from '$lib/paraglide/messages';
 	import { network } from '$lib/stores/online.svelte';
 	import { settingsRepo } from '$lib/db';
 	import { countDue } from '$lib/srs/queue';
-	import { shouldNotify, revisionNotificationBody } from '$lib/pwa/revisionNotify';
+	import {
+		shouldNotify,
+		revisionNotificationBody,
+		readLastNotifiedDay,
+		writeLastNotifiedDay,
+		showLocalNotification
+	} from '$lib/pwa/revisionNotify';
+	import { todayKey } from '$lib/utils/date';
 	import { applyTheme, isDarkTheme, watchSystemTheme } from '$lib/theme/apply';
 	import { configureTts } from '$lib/audio/tts';
 	import { isNativePlatform, isDesktopPlatform } from '$lib/platform';
@@ -74,21 +83,51 @@
 		if (isNativePlatform()) void syncNativeStatusBar(isDarkTheme(settings.theme));
 	}
 
+	// Any promise that rejected with nobody awaiting it (a write, a fetch, a library). Shown, never
+	// auto-reloaded. No preventDefault(): the browser keeps logging it for dev tooling.
+	let unexpectedError = $state(false);
+
+	// A new service worker is waiting. The learner decides when to reload (SPEC invariant 6).
+	let updateReady = $state(false);
+	let updateSW: ((reloadPage?: boolean) => Promise<void>) | undefined;
+	let updateRequested = false; // this tab clicked Update
+	let workerSwapped = false; // the new worker already took over (Update clicked in another tab)
+
+	function applyUpdate() {
+		updateRequested = true;
+		if (workerSwapped) location.reload();
+		else void updateSW?.(true);
+	}
+
 	onMount(() => {
 		let cleanup: (() => void) | undefined;
 
+		let notifying = false; // overlapping visibilitychange events must not double-notify
+
 		async function maybeNotifyRevision() {
+			if (notifying) return;
 			if (typeof document === 'undefined' || document.visibilityState !== 'visible') return;
-			const settings = await settingsRepo.getSettings();
-			const due = await countDue();
-			if (!shouldNotify(due, settings)) return;
-			if (isNativePlatform()) {
-				await showRevisionNotification(m.revision_notify_title(), revisionNotificationBody(due));
-			} else if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-				new Notification(m.revision_notify_title(), {
-					body: revisionNotificationBody(due),
-					tag: 'frenchpath-revision'
-				});
+			notifying = true;
+			try {
+				const settings = await settingsRepo.getSettings();
+				const due = await countDue();
+				const today = todayKey();
+				if (!shouldNotify(due, settings, readLastNotifiedDay(), today)) return;
+				let shown = false; // nothing shown (no permission): do not use up today's reminder
+				if (isNativePlatform()) {
+					await showRevisionNotification(m.revision_notify_title(), revisionNotificationBody(due));
+					shown = true;
+				} else if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+					shown = await showLocalNotification(m.revision_notify_title(), {
+						body: revisionNotificationBody(due),
+						tag: 'frenchpath-revision'
+					});
+				}
+				if (shown) writeLastNotifiedDay(today);
+			} catch {
+				// ponytail: a reminder is a nicety; its failure must never raise the global error banner.
+			} finally {
+				notifying = false;
 			}
 		}
 
@@ -100,7 +139,16 @@
 			// SW's navigateFallback fights local serving. (mobile-architecture.md R3)
 			if (!isNativePlatform() && !isDesktopPlatform()) {
 				const { registerSW } = await import('virtual:pwa-register');
-				registerSW({ immediate: true });
+				updateSW = registerSW({
+					immediate: true,
+					onNeedRefresh: () => (updateReady = true),
+					// Replaces the plugin's default window.location.reload() on takeover, which
+					// would also reload every other open tab mid-lesson.
+					onNeedReload: () => {
+						workerSwapped = true;
+						if (updateRequested) location.reload();
+					}
+				});
 			}
 
 			const settings = await settingsRepo.getSettings();
@@ -114,9 +162,12 @@
 
 		const onVisibility = () => void maybeNotifyRevision();
 		document.addEventListener('visibilitychange', onVisibility);
+		const onUnhandledRejection = () => (unexpectedError = true);
+		window.addEventListener('unhandledrejection', onUnhandledRejection);
 
 		return () => {
 			cleanup?.();
+			window.removeEventListener('unhandledrejection', onUnhandledRejection);
 			document.removeEventListener('visibilitychange', onVisibility);
 		};
 	});
@@ -131,7 +182,7 @@
 	<link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
 	<meta
 		name="description"
-		content="Offline French learning for Indian learners — A1 to A2, no account required."
+		content="Offline-first French learning for Indian learners (A1–C1) with spaced repetition. No account needed."
 	/>
 	<meta property="og:title" content="FrenchPath — Learn French" />
 	<meta
@@ -196,6 +247,26 @@
 			</div>
 		{/if}
 
+		{#if unexpectedError}
+			<div class="mx-auto w-full max-w-xl px-4 pt-3">
+				<InfoBanner variant="error" role="alert">
+					<p>{m.unexpected_error_banner()}</p>
+					<div class="mt-3 flex flex-wrap gap-2">
+						<button type="button" class="btn-primary text-sm" onclick={() => location.reload()}>
+							{m.error_reload()}
+						</button>
+						<button
+							type="button"
+							class="btn-secondary text-sm"
+							onclick={() => (unexpectedError = false)}
+						>
+							{m.save_failed_dismiss()}
+						</button>
+					</div>
+				</InfoBanner>
+			</div>
+		{/if}
+
 		<div
 			id="main"
 			tabindex="-1"
@@ -204,6 +275,10 @@
 		>
 			{@render children()}
 		</div>
+
+		{#if updateReady}
+			<UpdateToast onupdate={applyUpdate} onlater={() => (updateReady = false)} />
+		{/if}
 
 		<!-- Mobile bottom nav (< lg) -->
 		<nav

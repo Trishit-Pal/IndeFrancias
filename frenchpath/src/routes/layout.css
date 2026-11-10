@@ -99,6 +99,15 @@ html:not(.reduce-motion) .fp-flip-inner.fp-flipped {
 	transform: rotateY(180deg);
 }
 
+/* Reduce Motion: nothing rotates, so a revealed card swaps faces instead.
+   Without this the back stays pre-rotated + backface-hidden and never shows. */
+html.reduce-motion .fp-flipped .fp-flip-front {
+	visibility: hidden;
+}
+html.reduce-motion .fp-flipped .fp-flip-back {
+	transform: none;
+}
+
 .fp-path-glow {
 	box-shadow:
 		0 0 0 2px var(--fp-primary),
@@ -575,6 +584,8 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	*::before,
 	*::after {
 		animation-duration: 0.01ms !important;
+		/* Infinite loops would otherwise strobe at 0.01ms per cycle. */
+		animation-iteration-count: 1 !important;
 		transition-duration: 0.01ms !important;
 	}
 }
@@ -585,6 +596,25 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 .reduce-motion *::after {
 	animation: none !important;
 	transition: none !important;
+}
+
+/* ── Status medallion: a round badge carrying an Icon (where an emoji used to be) ── */
+.fp-medallion {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 72px;
+	height: 72px;
+	border-radius: 50%;
+	/* --fp-paper flips with the theme, so the glyph clears 3:1 on sage in both. */
+	color: var(--fp-paper);
+	background: var(--fp-sage);
+	box-shadow: var(--fp-elevation-2);
+}
+.fp-medallion--quiet {
+	color: var(--fp-ink);
+	background: var(--fp-paper-warm);
+	box-shadow: none;
 }
 
 /* ── Loading skeletons (Operate: placeholders in the content's own shape, not a spinner) ── */

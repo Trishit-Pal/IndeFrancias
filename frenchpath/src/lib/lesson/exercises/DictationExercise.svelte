@@ -46,7 +46,7 @@
 		<div class="flex items-center gap-3">
 			<button
 				type="button"
-				class="rounded-full border border-border px-4 py-2 hover:border-primary {playing
+				class="inline-flex min-h-11 items-center gap-2 rounded-full border border-border px-4 py-2 hover:border-primary {playing
 					? 'fp-tts-pulse'
 					: ''}"
 				onclick={play}

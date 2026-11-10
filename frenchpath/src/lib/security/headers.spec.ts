@@ -59,6 +59,24 @@ describe('security headers', () => {
 		assertSecurityHeaders(parseNetlifyHeaders(), 'static/_headers');
 	});
 
+	// Missing hashed chunks / audio / speaking-pack models must 404, not get the 200.html shell with a 200 (which the
+	// immutable header and the SW CacheFirst caches would then pin as "JS"/"audio").
+	// Approximates Vercel's path-to-regexp matcher: a bare regex group, anchored at both ends.
+	it('vercel.json SPA rewrite covers navigations but not asset paths', () => {
+		const config = JSON.parse(readFileSync(resolve(ROOT, 'vercel.json'), 'utf8')) as {
+			rewrites: { source: string; destination: string }[];
+		};
+		const [rewrite] = config.rewrites;
+		expect(rewrite.destination).toBe('/200');
+		const matches = (path: string): boolean => new RegExp(`^${rewrite.source}$`).test(path);
+		expect(matches('/learn/a1-unit-01')).toBe(true);
+		expect(matches('/checkpoint/a1-g1')).toBe(true);
+		expect(matches('/does-not-exist')).toBe(true);
+		expect(matches('/_app/immutable/chunks/x.js')).toBe(false);
+		expect(matches('/audio/x.mp3')).toBe(false);
+		expect(matches('/models/x.zip')).toBe(false);
+	});
+
 	// The CSP is authored in two independent places — the web shell
 	// (svelte.config.js, injected into the document) and the Tauri desktop
 	// shell (tauri.conf.json). These tests assert both carry the identical
@@ -71,7 +89,8 @@ describe('security headers', () => {
 		'script-src': ["'self'", "'unsafe-eval'"],
 		'style-src': ["'self'", "'unsafe-inline'"],
 		'img-src': ["'self'", 'data:'],
-		'media-src': ["'self'"],
+		// blob: = in-memory recording playback (invariant 4 amendment c); same-origin data only.
+		'media-src': ["'self'", 'blob:'],
 		'object-src': ["'none'"],
 		'base-uri': ["'self'"],
 		'frame-ancestors': ["'none'"],
@@ -124,8 +143,9 @@ describe('security headers', () => {
 	it('web CSP (svelte.config.js) carries the hardened directive set', async () => {
 		const csp = await webCsp();
 		assertRequiredDirectives(csp, 'svelte.config.js');
-		// Web shell makes no exceptions: connect-src is self-only.
-		expect([...(csp.get('connect-src') ?? [])]).toEqual(["'self'"]);
+		// Web shell: self + blob: only (amendment c: speaking-pack read inside the vosk blob: worker).
+		// No external origin.
+		expect([...(csp.get('connect-src') ?? [])].sort()).toEqual(["'self'", 'blob:'].sort());
 	});
 
 	it('desktop CSP (tauri.conf.json) matches the web directives', () => {
@@ -133,7 +153,7 @@ describe('security headers', () => {
 		assertRequiredDirectives(csp, 'tauri.conf.json');
 		// The one intentional delta: Tauri's IPC channel. No other network origin.
 		expect([...(csp.get('connect-src') ?? [])].sort()).toEqual(
-			["'self'", 'http://ipc.localhost', 'ipc:'].sort()
+			["'self'", 'blob:', 'http://ipc.localhost', 'ipc:'].sort()
 		);
 	});
 });

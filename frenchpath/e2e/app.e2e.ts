@@ -20,6 +20,9 @@ test('progress persists across a reload (IndexedDB)', async ({ page }) => {
 	await completeLesson(page);
 
 	await page.getByRole('link', { name: 'Back to path' }).click();
+	// Let the client-side navigation land before reloading: a reload while still on
+	// /learn/... correctly reloads the lesson (the SW serves the SPA shell, not Home).
+	await expect(page).toHaveURL(/\/$/);
 	await page.reload();
 	await expect(page.getByTestId('unit-card').first()).toContainText('✓');
 	await expect(page.getByTestId('streak-badge')).toContainText('1');
@@ -178,7 +181,10 @@ test('no CSP violations on core and dynamic routes', async ({ page }) => {
 test('UI language toggle switches the interface to Hindi', async ({ page }) => {
 	await gotoHome(page);
 	await page.goto('/settings');
-	await page.getByTestId('language-select').selectOption('hi');
+	const select = page.getByTestId('language-select');
+	await expect(select.locator('option[value="bn"]')).toHaveText('বাংলা (beta)');
+	await expect(select.locator('option[value="hinglish"]')).toHaveText('Hinglish');
+	await select.selectOption('hi');
 	await expect(page.getByRole('navigation')).toContainText('सीखें');
 });
 

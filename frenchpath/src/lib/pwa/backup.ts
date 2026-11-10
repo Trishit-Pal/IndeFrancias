@@ -2,7 +2,7 @@
 // Account-free backup: export/import all on-device data as a JSON file. Import
 // VALIDATES before it destroys — a corrupt or malformed file can never reach the
 // clear() step, so existing data survives any bad import.
-import { getDB } from '../db';
+import { getDB, writeAtomically } from '../db';
 import {
 	SETTINGS_KEY,
 	type Settings,
@@ -18,8 +18,12 @@ import { backupFileSchema, CURRENT_BACKUP_VERSION, type BackupPayload } from './
 import { sha256Hex } from './checksum';
 import { migrateBackup } from './migrations';
 
-/** Reject imports larger than this before JSON.parse (DoS guard). */
-export const MAX_BACKUP_BYTES = 5 * 1024 * 1024;
+/**
+ * Reject imports larger than this before JSON.parse (DoS guard on a file the user
+ * chooses). Sized for years of reviews: a compact review log is a few hundred bytes,
+ * so 50 MB leaves room for well over 100k reviews.
+ */
+export const MAX_BACKUP_BYTES = 50 * 1024 * 1024;
 
 export const STORES = [
 	'settings',
@@ -116,6 +120,17 @@ export function parseBackupJson(json: string): {
 	}
 }
 
+/** True when a restore would overwrite learner progress (cheap per-store counts). */
+export async function hasDataToLose(): Promise<boolean> {
+	const db = await getDB();
+	const counts = await Promise.all([
+		db.count('progress'),
+		db.count('srsCards'),
+		db.count('reviewLog')
+	]);
+	return counts.some((n) => n > 0);
+}
+
 /** Serialises the whole database to a JSON string with an integrity checksum. */
 export async function exportBackup(): Promise<string> {
 	const db = await getDB();
@@ -135,7 +150,10 @@ export async function exportBackup(): Promise<string> {
 		checksum: await sha256Hex(JSON.stringify(payload)),
 		payload
 	};
-	return JSON.stringify(file, null, 2);
+	const json = JSON.stringify(file);
+	// An export we could not re-import must fail loudly, not hand the learner a dead file.
+	assertBackupSize(json);
+	return json;
 }
 
 // JSON has no Date type, so SRS card dates come back as ISO strings on import.
@@ -164,13 +182,25 @@ async function importBackupInner(json: string): Promise<void> {
 	const { payload: p } = await validateAndParseBackup(json);
 
 	// Validation passed — only now mutate the database, atomically.
-	// All clears + puts are inside one transaction: if any put throws, IDB rolls
-	// back the entire transaction (including the clears), leaving data unchanged.
-	const db = await getDB();
-	const tx = db.transaction(STORES, 'readwrite');
 	try {
+		await replaceAllData(p);
+	} catch (err) {
+		throw new Error('Restore failed — your existing data is unchanged', { cause: err });
+	}
+}
+
+/**
+ * Replaces every store's contents with `p` in ONE transaction. All-or-nothing: if any
+ * clear or put fails, IDB rolls back the whole transaction (including the clears),
+ * leaving data unchanged, and this rejects with the underlying error.
+ */
+export async function replaceAllData(p: BackupPayload): Promise<void> {
+	await writeAtomically([...STORES], async (tx) => {
 		await Promise.all(STORES.map((store) => tx.objectStore(store).clear()));
 
+		// ponytail: puts are awaited one at a time on purpose. Measured on a 20k-log restore,
+		// firing them all and awaiting only `tx.done` was ~1.7x slower in Chromium and ~3x
+		// in fake-indexeddb. Re-measure before switching patterns.
 		if (p.settings) await tx.objectStore('settings').put(p.settings as Settings, SETTINGS_KEY);
 		for (const r of p.progress) await tx.objectStore('progress').put(r as ProgressRecord);
 		for (const r of p.srsCards) await tx.objectStore('srsCards').put(reviveCard(r));
@@ -180,16 +210,5 @@ async function importBackupInner(json: string): Promise<void> {
 		for (const r of p.skillProfile)
 			await tx.objectStore('skillProfile').put(r as SkillProfileRecord);
 		for (const r of p.assessments) await tx.objectStore('assessments').put(r as AssessmentRecord);
-
-		await tx.done;
-	} catch (err) {
-		// The tx may have already auto-aborted (a failed put rejects tx.done);
-		// abort() on a finished transaction throws and would mask `err`.
-		try {
-			tx.abort();
-		} catch {
-			/* already aborted */
-		}
-		throw new Error('Restore failed — your existing data is unchanged', { cause: err });
-	}
+	});
 }

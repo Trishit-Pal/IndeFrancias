@@ -38,7 +38,8 @@
 	.fp-info-banner--error {
 		background: color-mix(in srgb, var(--fp-error) 12%, var(--fp-paper));
 		border-color: color-mix(in srgb, var(--fp-error) 40%, transparent);
-		color: var(--fp-error);
+		/* --fp-error is a fill (4.3:1 on this tint); the text cut passes AA. */
+		color: var(--fp-error-text);
 	}
 	.fp-info-banner--info {
 		background: color-mix(in srgb, var(--fp-seine) 12%, var(--fp-paper));

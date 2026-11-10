@@ -1,11 +1,15 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { resetDatabase } from '$lib/db';
+import { getStats } from '$lib/db/repositories/stats';
+import { todayKey } from '$lib/utils/date';
 import {
 	buildCheckpointPool,
 	scoreCheckpoint,
 	sampleExercises,
 	xpForGate,
 	gateById,
-	MILESTONE_XP_BY_TIER
+	MILESTONE_XP_BY_TIER,
+	awardAssessmentXp
 } from './checkpoint';
 import type { Unit } from '$lib/content/schema';
 
@@ -59,5 +63,20 @@ describe('assessment checkpoint', () => {
 		const gate = gateById('g1');
 		expect(gate?.unitIds).toContain('a1-unit-03');
 		expect(xpForGate(gate!, 'regular')).toBe(80);
+	});
+});
+
+describe('awardAssessmentXp', () => {
+	beforeEach(async () => {
+		await resetDatabase();
+	});
+
+	it('awards XP exactly once when called twice concurrently', async () => {
+		const results = await Promise.all([
+			awardAssessmentXp('gate:g1', 'unit_checkpoint', 'g1', 90, 80),
+			awardAssessmentXp('gate:g1', 'unit_checkpoint', 'g1', 90, 80)
+		]);
+		expect(results.filter((r) => r.awarded)).toHaveLength(1);
+		expect((await getStats(todayKey())).xp).toBe(80);
 	});
 });

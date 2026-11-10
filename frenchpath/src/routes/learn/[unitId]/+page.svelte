@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import { beforeNavigate, goto } from '$app/navigation';
+	import ExitGuard from '$lib/components/ExitGuard.svelte';
 	import { tick } from 'svelte';
 	import { tapHaptic } from '$lib/platform/haptics';
 	import { loadUnit, listUnitSummaries, buildLessonLexicon } from '$lib/content/loader';
@@ -11,13 +11,11 @@
 	import { gradeExercise, scorePercent, type ExerciseResponse } from '$lib/lesson/engine';
 	import { evaluateRubric, type RubricHint } from '$lib/lesson/rubric';
 	import { completeLesson, type CompleteOutcome } from '$lib/lesson/complete';
-	import { isUnitLocked, lockReasonForUnit } from '$lib/lesson/progression';
+	import { computeUnitStates, isUnitLocked, lockReasonForUnit } from '$lib/lesson/progression';
 	import { passedAssessmentIds } from '$lib/assessment/checkpoint';
 	import CoachTip from '$lib/components/CoachTip.svelte';
-	import CelebrationOverlay from '$lib/celebration/CelebrationOverlay.svelte';
 	import XpFloat from '$lib/components/XpFloat.svelte';
 	import { tipForUnit } from '$lib/profile/frenchTips';
-	import type { CelebrationRequest } from '$lib/celebration/orchestrator';
 	import { progressRepo, settingsRepo } from '$lib/db';
 	import { getGloss, getBridgeCopy } from '$lib/content/gloss';
 	import type { ConfidenceSnapshot, NativeLanguage } from '$lib/db/schema';
@@ -30,16 +28,19 @@
 	import ExerciseChrome from '$lib/components/ExerciseChrome.svelte';
 	import LessonComplete from '$lib/components/LessonComplete.svelte';
 	import Modal from '$lib/components/Modal.svelte';
+	import Icon from '$lib/components/Icon.svelte';
+	import InfoBanner from '$lib/components/InfoBanner.svelte';
 	import CharacterLeo from '$lib/components/CharacterLeo.svelte';
 	import CharacterMira from '$lib/components/CharacterMira.svelte';
 	import { fly, fade } from 'svelte/transition';
 	import * as m from '$lib/paraglide/messages';
+	import { createOnceGate } from '$lib/srs/onceGate';
 
 	type Phase = 'loading' | 'intro' | 'bridge-quiz' | 'exercise' | 'finished' | 'error' | 'locked';
 
 	let unit = $state<Unit | null>(null);
 	let phase = $state<Phase>('loading');
-	let errorMessage = $state('');
+	let saveError = $state(false);
 
 	let reducedMotion = $state(false);
 	let nativeLanguage = $state<NativeLanguage>('hi');
@@ -50,8 +51,7 @@
 	let correctCount = $state(0);
 	let outcome = $state<CompleteOutcome | null>(null);
 	let showFrenchTips = $state(true);
-	let celebrationLevel = $state<'full' | 'minimal'>('full');
-	let celebration = $state<CelebrationRequest | null>(null);
+	let nextUnitId = $state<string | null>(null);
 	let xpFloat = $state(0);
 	let bridgeQuizIndex = $state<number | null>(null);
 	let bridgeQuizSubmitted = $state(false);
@@ -74,16 +74,15 @@
 
 	async function loadLesson(unitId: string) {
 		phase = 'loading';
-		errorMessage = '';
+		saveError = false;
 		unit = null;
-		const settings = await settingsRepo.getSettings();
-		reducedMotion =
-			settings.reduceMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		nativeLanguage = settings.nativeLanguage;
-		showFrenchTips = settings.showFrenchTips;
-		celebrationLevel = settings.celebrationLevel;
-		const passed = await passedAssessmentIds();
 		try {
+			const settings = await settingsRepo.getSettings();
+			reducedMotion =
+				settings.reduceMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			nativeLanguage = settings.nativeLanguage;
+			showFrenchTips = settings.showFrenchTips;
+			const passed = await passedAssessmentIds();
 			const all = await progressRepo.getAllProgress();
 			const progressById = Object.fromEntries(all.map((p) => [p.lessonId, p]));
 			if (isUnitLocked(unitId, listUnitSummaries(), progressById, passed)) {
@@ -109,8 +108,7 @@
 			showConfidencePulse = false;
 			pendingAdvance = false;
 			phase = 'intro';
-		} catch (e) {
-			errorMessage = e instanceof Error ? e.message : 'Failed to load this lesson.';
+		} catch {
 			phase = 'error';
 		}
 	}
@@ -121,35 +119,9 @@
 		void loadLesson(unitId);
 	});
 
-	let showExitConfirm = $state(false);
-	/** Where a confirmed exit goes: the tab the learner tapped, or home from the close glyph. */
-	let exitTarget = $state<string | null>(null);
-	let leaving = false;
 	const hasProgress = () => index > 0 || response !== null || submitted;
-
-	/** Exit control: leave at once if nothing has been attempted, otherwise confirm. */
-	function requestExit() {
-		exitTarget = null;
-		if (hasProgress()) showExitConfirm = true;
-		else void goto(resolve('/'));
-	}
-
-	function confirmExit() {
-		leaving = true;
-		// exitTarget is the pathname SvelteKit handed us in beforeNavigate (already app-resolved).
-		// eslint-disable-next-line svelte/no-navigation-without-resolve
-		void goto(exitTarget ?? resolve('/'));
-	}
-
-	// The global tab bar and the browser's back button stay live during a lesson;
-	// route every mid-lesson departure through the same confirm as the close glyph.
-	beforeNavigate((navigation) => {
-		if (leaving || phase !== 'exercise' || !hasProgress()) return;
-		if (navigation.type === 'leave') return; // tab close / reload: the browser owns that prompt
-		navigation.cancel();
-		exitTarget = navigation.to?.url.pathname ?? null;
-		showExitConfirm = true;
-	});
+	/** Confirms before a mid-lesson departure (close glyph, tab bar, browser back). */
+	let exitGuard = $state<ExitGuard | null>(null);
 
 	/** After grading, focus the feedback so a reflex second Enter can't skip past it. */
 	let feedbackEl = $state<HTMLElement | null>(null);
@@ -207,7 +179,44 @@
 		await continueAdvance();
 	}
 
+	// Finishing awaits the lesson write; the Finish button and a reflex Enter must
+	// not both record the lesson (that doubled XP, lessons and attempts).
+	const advanceGate = createOnceGate();
+	let advancing = $state(false); // mirrors the gate for the disabled attribute
+
+	// A failed save keeps the learner on the last exercise with every answer intact and offers
+	// a retry through this same gate. completeLesson is one transaction, so a failure wrote nothing.
 	async function continueAdvance() {
+		try {
+			await advanceGate.run(async () => {
+				saveError = false;
+				advancing = true;
+				try {
+					await advanceOrFinish();
+				} finally {
+					advancing = false;
+				}
+			});
+		} catch {
+			saveError = true;
+		}
+	}
+
+	/** First unlocked lesson other than the one just finished (null behind a checkpoint gate). */
+	async function findNextUnitId(finishedId: string): Promise<string | null> {
+		const [all, passed] = await Promise.all([progressRepo.getAllProgress(), passedAssessmentIds()]);
+		const summaries = listUnitSummaries();
+		const states = computeUnitStates(
+			summaries,
+			Object.fromEntries(all.map((p) => [p.lessonId, p])),
+			passed
+		);
+		return (
+			summaries.find((u) => u.id !== finishedId && states.get(u.id) === 'available')?.id ?? null
+		);
+	}
+
+	async function advanceOrFinish() {
 		if (!unit) return;
 		if (index + 1 < unit.exercises.length) {
 			index += 1;
@@ -218,16 +227,13 @@
 			rubricHints = [];
 		} else {
 			outcome = await completeLesson(unit, { correct: correctCount, total, score });
-			await ensurePersistence();
+			// Best-effort: the lesson is already saved, so this must not fail the finish (or a retry re-awards).
+			await ensurePersistence().catch(() => false);
 			phase = 'finished';
 			xpFloat = outcome.goalXp;
-			if (celebrationLevel === 'full' && !reducedMotion) {
-				celebration = {
-					event: 'lesson_complete',
-					title: m.lesson_complete(),
-					subtitle: `+${outcome.goalXp} XP`
-				};
-			}
+			// The summary card is the celebration for an ordinary lesson (no second
+			// "Lesson complete" overlay to tap through); milestones keep theirs elsewhere.
+			nextUnitId = await findNextUnitId(unit.id).catch(() => null);
 		}
 	}
 
@@ -260,13 +266,15 @@
 		<p class="text-muted">{m.lesson_loading()}</p>
 	{:else if phase === 'error'}
 		<div class="rounded-xl border border-error bg-error/10 p-4 text-foreground">
-			<p class="font-semibold">Could not load the lesson</p>
-			<p class="text-sm">{errorMessage}</p>
-			<a class="mt-3 inline-block text-primary underline" href={resolve('/')}>Back to home</a>
+			<p class="font-semibold">{m.lesson_load_error_title()}</p>
+			<p class="text-sm">{m.lesson_load_error_body()}</p>
+			<a class="mt-3 inline-block text-primary underline" href={resolve('/')}>{m.error_home()}</a>
 		</div>
 	{:else if phase === 'locked'}
 		<div class="surface-card p-6 text-center" data-testid="locked">
-			<p class="text-4xl">🔒</p>
+			<span class="fp-medallion fp-medallion--quiet" aria-hidden="true">
+				<Icon name="lock" size={30} />
+			</span>
 			<p class="mt-2 font-semibold text-foreground">{m.lesson_locked_title()}</p>
 			{#if lockReason}
 				<p class="text-sm text-muted">{lockReason}</p>
@@ -276,7 +284,10 @@
 			<a class="btn-primary mt-4 inline-block" href={resolve('/')}>{m.common_back_to_path()}</a>
 		</div>
 	{:else if phase === 'intro' && unit}
-		<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
+		<a
+			class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
+			href={resolve('/')}>{m.common_home()}</a
+		>
 		<span class="fp-skill-chip ml-2 rounded-full px-2 py-0.5 text-xs font-semibold uppercase">
 			{unit.cefrLevel}
 		</span>
@@ -294,7 +305,10 @@
 				class="mt-5 rounded-xl border p-4 text-foreground"
 				style="border-color: color-mix(in srgb, var(--fp-saffron) 45%, var(--fp-paper)); background: color-mix(in srgb, var(--fp-saffron) 12%, var(--fp-paper));"
 			>
-				<h2 class="font-semibold">🌉 {bridgeCopy.title}</h2>
+				<h2 class="flex items-center gap-2 font-semibold">
+					<Icon name="bridge" size={18} />
+					{bridgeCopy.title}
+				</h2>
 				<p class="mt-1 text-sm">
 					<GlossMarkdown text={bridgeCopy.body} {lexicon} />
 				</p>
@@ -387,7 +401,7 @@
 			{m.lesson_continue_exercises()}
 		</button>
 	{:else if phase === 'exercise' && current && unit}
-		<LessonShell {progress} current={index + 1} {total} onExit={requestExit}>
+		<LessonShell {progress} current={index + 1} {total} onExit={() => exitGuard?.requestExit()}>
 			<ExerciseChrome
 				{unit}
 				exercise={current}
@@ -443,9 +457,27 @@
 							{/each}
 						</div>
 					</div>
-					<button type="submit" class="btn-primary mt-4 w-full" data-testid="continue">
+					<button
+						type="submit"
+						class="btn-primary mt-4 w-full"
+						data-testid="continue"
+						disabled={advancing}
+					>
 						{index + 1 < total ? m.lesson_continue() : m.lesson_finish()}
 					</button>
+					{#if saveError}
+						<InfoBanner variant="error" role="alert" class="mt-4">
+							<p>{m.lesson_save_error()}</p>
+							<button
+								type="button"
+								class="btn-secondary mt-3 text-sm"
+								disabled={advancing}
+								onclick={() => void continueAdvance()}
+							>
+								{m.common_retry()}
+							</button>
+						</InfoBanner>
+					{/if}
 				{:else}
 					<button
 						type="submit"
@@ -459,37 +491,14 @@
 			</form>
 		</LessonShell>
 
-		<Modal
-			open={showExitConfirm}
-			labelledby="lesson-exit-title"
-			testid="lesson-exit-confirm"
-			onClose={() => (showExitConfirm = false)}
-		>
-			<h2 id="lesson-exit-title" class="text-lg font-semibold text-foreground">
-				{m.lesson_exit_title()}
-			</h2>
-			<p class="mt-2 text-sm text-muted">{m.lesson_exit_body()}</p>
-			<div class="mt-5 flex flex-wrap justify-end gap-2">
-				<button
-					type="button"
-					class="btn-secondary text-sm"
-					data-testid="lesson-exit-stay"
-					onclick={() => (showExitConfirm = false)}>{m.lesson_exit_stay()}</button
-				>
-				<button
-					type="button"
-					class="btn-primary text-sm"
-					data-testid="lesson-exit-leave"
-					onclick={confirmExit}>{m.lesson_exit_confirm()}</button
-				>
-			</div>
-		</Modal>
+		<ExitGuard bind:this={exitGuard} active={() => phase === 'exercise' && hasProgress()} />
 	{:else if phase === 'finished'}
 		<LessonComplete
 			{score}
 			{correctCount}
 			{total}
 			{outcome}
+			{nextUnitId}
 			{reducedMotion}
 			onShare={() =>
 				shareProgress({
@@ -539,13 +548,6 @@
 {#if xpFloat > 0}
 	<XpFloat amount={xpFloat} />
 {/if}
-
-<CelebrationOverlay
-	request={celebration}
-	{celebrationLevel}
-	reduceMotion={reducedMotion}
-	onDismiss={() => (celebration = null)}
-/>
 
 <style>
 	@keyframes shake {

@@ -126,8 +126,9 @@ See **[docs/testing.md](../docs/testing.md)** for step-by-step user workflows, `
 
 - **App icon:** maskable PNGs (64/192/512 + apple-touch) are generated from `static/icon.svg`
   via `@vite-pwa/assets-generator` (`pwa-assets.config.ts`); regenerate with `npx pwa-assets-generator`.
-- **UI i18n:** Paraglide is wired (en/hi); translating the UI chrome and adding a Hinglish
-  locale is Phase 1. Lesson content already shows Hindi + English glosses.
+- **UI i18n:** Paraglide, 10 locales. English, Hindi and Hinglish are complete; bn/ta/te/kn/mr/gu/pa
+  are labelled "(beta)" in the pickers until translated (`src/lib/i18n/localeCoverage.spec.ts`).
+  Lesson content already shows Hindi + English glosses.
 - **OneDrive + builds:** if `npm run build` fails on Windows with `EPERM` on `./build`, it's
   OneDrive locking the folder mid-sync — delete `build/` and retry (or pause OneDrive sync).
 - **Service worker** runs only in production (`build`/`preview`), not in `vite dev`.

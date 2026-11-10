@@ -1,4 +1,5 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages';
 	import type { Exercise } from '$lib/content/schema';
 	import type { ExerciseResponse } from '$lib/lesson/engine';
 	import type { Lexicon } from '$lib/content/lexicon';
@@ -64,10 +65,10 @@
 					bind:value={choices[pair.left]}
 					onchange={update}
 					disabled={submitted}
-					aria-label={`Match for ${pair.left}`}
+					aria-label={m.matching_select_label({ item: pair.left })}
 					data-testid="matching-select"
 				>
-					<option value="">— choose —</option>
+					<option value="">{m.matching_choose()}</option>
 					{#each rights as r (r)}
 						<option value={r}>{r}</option>
 					{/each}

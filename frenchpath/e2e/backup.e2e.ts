@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import {
 	gotoHome,
 	completeLesson,
+	confirmRestoreAndReload,
 	exportBackupViaSettings,
 	importBackupFile,
 	skipOnboardingViaIdb
@@ -34,6 +35,27 @@ test('backup round-trip restores progress after reset', async ({ page }) => {
 	await importBackupFile(page, backupJson);
 	await page.getByRole('navigation').getByRole('link', { name: 'Learn' }).click();
 	await expect(page.getByTestId('unit-card').first()).toContainText('✓');
+
+	// Restoring over existing progress saves a safety copy first (the fresh restore above had none).
+	await importBackupFile(page, backupJson, false);
+	await expect(page.getByTestId('import-preview')).toBeVisible();
+	const safetyCopy = page.waitForEvent('download');
+	await confirmRestoreAndReload(page);
+	expect((await safetyCopy).suggestedFilename()).toMatch(/^frenchpath-backup-.*\.json$/);
+});
+
+test('home nudges a backup after progress and goes quiet once exported', async ({ page }) => {
+	await gotoHome(page);
+	await page.getByTestId('unit-card').first().click();
+	await page.getByTestId('start-lesson').click();
+	await completeLesson(page);
+	await page.getByRole('link', { name: 'Back to path' }).click();
+	await expect(page.getByTestId('backup-nudge')).toBeVisible();
+
+	await exportBackupViaSettings(page);
+	await page.goto('/');
+	await expect(page.getByTestId('unit-card').first()).toBeVisible();
+	await expect(page.getByTestId('backup-nudge')).toBeHidden();
 });
 
 test('corrupt backup shows error and preserves existing progress', async ({ page }) => {

@@ -1,12 +1,13 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages';
 	import type { DifficultyTier } from '$lib/db/schema';
 
 	let { tier }: { tier: DifficultyTier } = $props();
 
-	const labels: Record<DifficultyTier, string> = {
-		easy: 'Easy',
-		regular: 'Regular',
-		hard: 'Hard'
+	const labels: Record<DifficultyTier, () => string> = {
+		easy: m.onb_difficulty_easy_label,
+		regular: m.onb_difficulty_regular_label,
+		hard: m.onb_difficulty_hard_label
 	};
 	// tint = the difficulty's accent token; the pill mixes it into the surface
 	// so it stays legible in both themes (see scoped styles).
@@ -22,7 +23,7 @@
 	style="--tier: {tint[tier]}"
 	data-testid="tier-badge"
 >
-	{labels[tier]}
+	{labels[tier]()}
 </span>
 
 <style>

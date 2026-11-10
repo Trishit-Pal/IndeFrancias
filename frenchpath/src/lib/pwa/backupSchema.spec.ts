@@ -112,8 +112,8 @@ describe('backupSchema', () => {
 				}
 			]
 		};
-		// z.string() accepts any string; invalid dates fail at revive — schema allows string
-		expect(backupPayloadSchema.safeParse(bad).success).toBe(true);
+		// An invalid date would silently drop the card from the due index, so reject it here.
+		expect(backupPayloadSchema.safeParse(bad).success).toBe(false);
 	});
 
 	it('rejects unknown top-level keys on backup file', () => {

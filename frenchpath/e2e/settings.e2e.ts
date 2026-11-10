@@ -54,3 +54,33 @@ test('update check toggle is off by default and never fetches version.json', asy
 
 	expect(versionRequests).toEqual([]);
 });
+
+test('About shows the version and links to the privacy page and feedback', async ({ page }) => {
+	await gotoHome(page);
+	await page.goto('/settings');
+	const about = page.getByTestId('about-section');
+	await expect(page.getByTestId('app-version')).toContainText(/\d+\.\d+\.\d+/);
+	await expect(page.getByTestId('feedback-link')).toHaveAttribute(
+		'href',
+		'https://github.com/Trishit-Pal/IndeFrancias/issues'
+	);
+	await expect(page.getByTestId('feedback-link')).toHaveAttribute('rel', 'noopener noreferrer');
+
+	await about.getByTestId('licenses').locator('summary').click();
+	await expect(about).toContainText('SIL OFL 1.1');
+	await expect(about).toContainText('vosk-model-small-fr-0.22');
+
+	await page.getByTestId('privacy-link').click();
+	await expect(page).toHaveURL(/\/privacy$/);
+	await expect(page.getByTestId('privacy-page')).toContainText(/IndexedDB/);
+});
+
+test('Reset also clears localStorage', async ({ page }) => {
+	await gotoHome(page);
+	await page.goto('/settings');
+	await page.evaluate(() => localStorage.setItem('frenchpath:probe', '1'));
+	await page.getByTestId('reset-progress').click();
+	await page.getByTestId('reset-confirm').click();
+	await expect(page.getByTestId('reset-progress')).toBeVisible({ timeout: 15_000 });
+	expect(await page.evaluate(() => localStorage.getItem('frenchpath:probe'))).toBeNull();
+});

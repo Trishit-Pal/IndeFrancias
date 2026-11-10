@@ -14,6 +14,9 @@ test('completing unit 1 unlocks unit 2 on the path map', async ({ page }) => {
 	await page.getByTestId('start-lesson').click();
 	await completeLesson(page);
 	await page.getByRole('link', { name: 'Back to path' }).click();
+	// Let the client-side navigation land before reloading: a reload while still on
+	// /learn/... correctly reloads the lesson (the SW serves the SPA shell, not Home).
+	await expect(page).toHaveURL(/\/$/);
 	await page.reload();
 
 	await expect(page.getByTestId('unit-card').first()).toContainText('✓');
@@ -24,4 +27,14 @@ test('completing unit 1 unlocks unit 2 on the path map', async ({ page }) => {
 test('DELF card is hidden before any A2 unit is completed', async ({ page }) => {
 	await gotoHome(page);
 	await expect(page.getByTestId('delf-card')).toHaveCount(0);
+});
+
+test('lesson summary offers the next unlocked lesson as its primary action', async ({ page }) => {
+	await gotoHome(page);
+	await page.getByTestId('unit-card').first().click();
+	await page.getByTestId('start-lesson').click();
+	await completeLesson(page);
+	await page.getByTestId('next-lesson').click();
+	await expect(page).toHaveURL(/\/learn\/a1-unit-02/);
+	await expect(page.getByTestId('start-lesson')).toBeVisible();
 });

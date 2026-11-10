@@ -18,12 +18,15 @@
 	import { gradeExercise, scorePercent, type ExerciseResponse } from '$lib/lesson/engine';
 	import ExerciseView from '$lib/lesson/exercises/Exercise.svelte';
 	import TierBadge from '$lib/components/TierBadge.svelte';
+	import InfoBanner from '$lib/components/InfoBanner.svelte';
+	import ExitGuard from '$lib/components/ExitGuard.svelte';
 	import CelebrationOverlay from '$lib/celebration/CelebrationOverlay.svelte';
 	import type { CelebrationRequest } from '$lib/celebration/orchestrator';
 	import { shareProgress } from '$lib/share/shareCard';
 	import * as m from '$lib/paraglide/messages';
+	import { createOnceGate } from '$lib/srs/onceGate';
 
-	type Phase = 'loading' | 'intro' | 'exam' | 'result' | 'error' | 'cooldown';
+	type Phase = 'loading' | 'intro' | 'exam' | 'result' | 'error' | 'load-error' | 'cooldown';
 
 	let phase = $state<Phase>('loading');
 	let gateId = $state('');
@@ -42,18 +45,17 @@
 	let hiddenMcq = $state<number[]>([]);
 	let cooldownHours = $state(0);
 	let lexicon = $state<Lexicon>(new Map());
+	let finishError = $state(false);
 
 	const current = $derived(exercises[index] ?? null);
 	const total = $derived(exercises.length);
 	const cfg = $derived(tierConfig(tier));
 
 	function hintForExercise(ex: Exercise): string | null {
-		if (ex.type === 'cloze' || ex.type === 'dictation')
-			return ex.hint ?? 'Think about the unit vocabulary.';
-		if (ex.type === 'mcq')
-			return ex.explanation ?? 'Eliminate options that do not fit the grammar rule.';
-		if (ex.type === 'translation') return 'Use words from the last three units.';
-		return 'Review the bridge note before answering.';
+		if (ex.type === 'cloze' || ex.type === 'dictation') return ex.hint ?? m.checkpoint_hint_vocab();
+		if (ex.type === 'mcq') return ex.explanation ?? m.checkpoint_hint_mcq();
+		if (ex.type === 'translation') return m.checkpoint_hint_translation();
+		return m.checkpoint_hint_default();
 	}
 
 	function applyHint() {
@@ -69,28 +71,32 @@
 	}
 
 	onMount(async () => {
-		gateId = page.params.groupId ?? '';
-		const gate = gateById(gateId);
-		if (!gate) {
-			phase = 'error';
-			return;
-		}
-		const settings = await settingsRepo.getSettings();
-		tier = settings.difficultyTier;
-		reduceMotion = settings.reduceMotion;
-		celebrationLevel = settings.celebrationLevel;
+		try {
+			gateId = page.params.groupId ?? '';
+			const gate = gateById(gateId);
+			if (!gate) {
+				phase = 'error';
+				return;
+			}
+			const settings = await settingsRepo.getSettings();
+			tier = settings.difficultyTier;
+			reduceMotion = settings.reduceMotion;
+			celebrationLevel = settings.celebrationLevel;
 
-		const cooldownMs = await getCheckpointCooldownMs(assessmentIdForGate(gateId));
-		if (cooldownMs !== null) {
-			cooldownHours = Math.ceil(cooldownMs / 3_600_000);
-			phase = 'cooldown';
-			return;
-		}
+			const cooldownMs = await getCheckpointCooldownMs(assessmentIdForGate(gateId));
+			if (cooldownMs !== null) {
+				cooldownHours = Math.ceil(cooldownMs / 3_600_000);
+				phase = 'cooldown';
+				return;
+			}
 
-		const units = await Promise.all(gate.unitIds.map((id) => loadUnit(id)));
-		exercises = buildCheckpointPool(units, tier, gateId);
-		lexicon = await buildLexiconForUnits(gate.unitIds, settings.nativeLanguage);
-		phase = 'intro';
+			const units = await Promise.all(gate.unitIds.map((id) => loadUnit(id)));
+			exercises = buildCheckpointPool(units, tier, gateId);
+			lexicon = await buildLexiconForUnits(gate.unitIds, settings.nativeLanguage);
+			phase = 'intro';
+		} catch {
+			phase = 'load-error';
+		}
 	});
 
 	function start() {
@@ -108,9 +114,32 @@
 		if (gradeExercise(current, response)) correct += 1;
 	}
 
+	// Finishing awaits the XP award; a second tap must not submit the checkpoint twice.
+	const finishGate = createOnceGate();
+	let finishing = $state(false); // mirrors the gate for the disabled attribute
+
+	// A failed save leaves the answered exam on screen; retrying goes through the same gate.
+	// A pass awards XP in one IndexedDB transaction, so a failed save wrote nothing. A failed
+	// attempt is not one transaction (a read, then one write of the same record); a retry rewrites it.
+	async function finishNow() {
+		try {
+			await finishGate.run(async () => {
+				finishError = false;
+				finishing = true;
+				try {
+					await finish();
+				} finally {
+					finishing = false;
+				}
+			});
+		} catch {
+			finishError = true;
+		}
+	}
+
 	function next() {
 		if (index + 1 >= total) {
-			void finish();
+			void finishNow();
 			return;
 		}
 		index += 1;
@@ -151,13 +180,25 @@
 
 <svelte:head><title>Checkpoint · FrenchPath</title></svelte:head>
 
+<ExitGuard active={() => phase === 'exam' && (index > 0 || response !== null || submitted)} />
+
 <main class="page-shell">
-	<a class="text-sm text-muted hover:underline" href={resolve('/')}>{m.common_home()}</a>
+	<a
+		class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
+		href={resolve('/')}>{m.common_home()}</a
+	>
 
 	{#if phase === 'loading'}
 		<p class="mt-6 text-muted">{m.checkpoint_loading()}</p>
 	{:else if phase === 'error'}
 		<p class="mt-6 text-muted" role="alert">{m.checkpoint_unknown()}</p>
+	{:else if phase === 'load-error'}
+		<InfoBanner variant="error" role="alert" class="mt-6">
+			<p>{m.checkpoint_load_error()}</p>
+			<a class="btn-secondary mt-3 inline-block text-sm" href={resolve('/')}
+				>{m.common_back_to_path()}</a
+			>
+		</InfoBanner>
 	{:else if phase === 'cooldown'}
 		<p class="mt-6 text-muted" role="alert" data-testid="checkpoint-cooldown">
 			{m.checkpoint_cooldown({ hours: cooldownHours })}
@@ -229,10 +270,24 @@
 				type="button"
 				class="btn-primary mt-4 w-full"
 				data-testid="checkpoint-continue"
+				disabled={finishing}
 				onclick={next}
 			>
 				{index + 1 >= total ? m.lesson_finish() : m.lesson_continue()}
 			</button>
+			{#if finishError}
+				<InfoBanner variant="error" role="alert" class="mt-4">
+					<p>{m.checkpoint_save_error()}</p>
+					<button
+						type="button"
+						class="btn-secondary mt-3 text-sm"
+						disabled={finishing}
+						onclick={() => void finishNow()}
+					>
+						{m.common_retry()}
+					</button>
+				</InfoBanner>
+			{/if}
 		{/if}
 	{:else if phase === 'result' && result}
 		<h1 class="fp-display-md mt-4 text-balance">

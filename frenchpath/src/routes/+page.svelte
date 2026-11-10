@@ -1,9 +1,21 @@
+<script module lang="ts">
+	// Session-scoped (survives navigating away and back, not a reload): "Not now" stays dismissed.
+	let backupNudgeDismissed = false;
+</script>
+
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { goto } from '$app/navigation';
 	import { listUnitSummaries } from '$lib/content/loader';
-	import { progressRepo, streakRepo, settingsRepo, skillProfileRepo } from '$lib/db';
+	import {
+		progressRepo,
+		streakRepo,
+		settingsRepo,
+		skillProfileRepo,
+		srsRepo,
+		statsRepo
+	} from '$lib/db';
 	import type { ProgressRecord } from '$lib/db/schema';
 	import { countDue } from '$lib/srs/queue';
 	import { passedAssessmentIds } from '$lib/assessment/checkpoint';
@@ -17,8 +29,8 @@
 		dalfC1Unlocked
 	} from '$lib/lesson/progression';
 	import VoyageMap from '$lib/path/VoyageMap.svelte';
+	import JourneySky from '$lib/path/JourneySky.svelte';
 	import DailyRitual from '$lib/components/DailyRitual.svelte';
-	import CharacterMira from '$lib/components/CharacterMira.svelte';
 	import CharacterCoco from '$lib/components/CharacterCoco.svelte';
 	import GateBanner from '$lib/components/GateBanner.svelte';
 	import WeakSkillChips from '$lib/components/WeakSkillChips.svelte';
@@ -27,7 +39,14 @@
 	import type { CelebrationRequest } from '$lib/celebration/orchestrator';
 	import { getNextDueMs } from '$lib/srs/queue';
 	import { dailyGoalProgress, type DailyGoal } from '$lib/gamification/activity';
-	import { ensurePersistence } from '$lib/pwa/persist';
+	import {
+		ensurePersistence,
+		isPersisted,
+		migrateLegacyLastExport,
+		shouldShowBackupNudge
+	} from '$lib/pwa/persist';
+	import { effectiveStreak } from '$lib/gamification/streak';
+	import { todayKey } from '$lib/utils/date';
 	import type OnboardingWizardComponent from '$lib/components/OnboardingWizard.svelte';
 	import CoachTip from '$lib/components/CoachTip.svelte';
 	import InfoBanner from '$lib/components/InfoBanner.svelte';
@@ -43,6 +62,7 @@
 	let freezesAvailable = $state(3);
 	let goal = $state<DailyGoal>({ xp: 0, goal: 30, met: false });
 	let loaded = $state(false);
+	let showBackupNudge = $state(false);
 	let onboarded = $state(false);
 	let learningGoal = $state<import('$lib/db/schema').LearningGoal>('general');
 	let targetExamDate = $state<string | null>(null);
@@ -84,9 +104,10 @@
 	// Time-of-day greeting is fixed for the session; no reactivity needed.
 	const ritual = getRitual();
 
-	// Coco companion level grows with the day's XP (chef hat at Lvl 5).
-	const cocoLevel = $derived(Math.min(10, Math.floor(goal.xp / 250) + 1));
-	const cocoXpPercent = $derived(((goal.xp % 250) / 250) * 100);
+	// Coco companion grows with lifetime XP, same as the Progress page (chef hat at Lvl 5).
+	let totalXp = $state(0);
+	const cocoLevel = $derived(Math.min(10, Math.floor(totalXp / 250) + 1));
+	const cocoXpPercent = $derived(((totalXp % 250) / 250) * 100);
 
 	async function checkStreakMilestones(
 		currentStreak: number,
@@ -125,17 +146,30 @@
 	});
 
 	async function loadHome() {
-		const [s, all, dueCount, streakRecord, goalProgress, passed, profiles, nextDue] =
-			await Promise.all([
-				settingsRepo.getSettings(),
-				progressRepo.getAllProgress(),
-				countDue(),
-				streakRepo.getStreak(),
-				dailyGoalProgress(),
-				passedAssessmentIds(),
-				skillProfileRepo.getAllSkillProfiles(),
-				getNextDueMs()
-			]);
+		const [
+			s,
+			all,
+			dueCount,
+			streakRecord,
+			goalProgress,
+			passed,
+			profiles,
+			nextDue,
+			cardCount,
+			allStats
+		] = await Promise.all([
+			settingsRepo.getSettings().then(migrateLegacyLastExport),
+			progressRepo.getAllProgress(),
+			countDue(),
+			streakRepo.getStreak(),
+			dailyGoalProgress(),
+			passedAssessmentIds(),
+			skillProfileRepo.getAllSkillProfiles(),
+			getNextDueMs(),
+			srsRepo.countCards(),
+			statsRepo.getAllStats()
+		]);
+		totalXp = allStats.reduce((sum, day) => sum + (day.xp ?? 0), 0);
 
 		onboarded = s.onboarded;
 		learningGoal = s.learningGoal;
@@ -144,13 +178,23 @@
 		celebrationLevel = s.celebrationLevel;
 		progressById = Object.fromEntries(all.map((p) => [p.lessonId, p]));
 		due = dueCount;
-		streak = streakRecord.currentStreak;
+		// Shown value is recomputed for today; the stored record is untouched.
+		const shownStreak = effectiveStreak(streakRecord, todayKey());
+		streak = shownStreak;
 		freezesAvailable = streakRecord.freezesAvailable;
 		goal = goalProgress;
 		passedIds = passed;
 		skillProfiles = profiles;
 		nextReviewIn = nextDue;
-		await checkStreakMilestones(streakRecord.currentStreak, s.celebratedMilestones ?? []);
+		await checkStreakMilestones(shownStreak, s.celebratedMilestones ?? []);
+		showBackupNudge =
+			!backupNudgeDismissed &&
+			shouldShowBackupNudge({
+				persisted: await isPersisted(),
+				lastExportAt: s.lastExportAt,
+				hasProgress: cardCount > 0 || all.some((p) => p.status === 'completed'),
+				now: Date.now()
+			});
 		if (!s.onboarded) {
 			const mod = await import('$lib/components/OnboardingWizard.svelte');
 			OnboardingWizard = mod.default;
@@ -174,6 +218,31 @@
 
 <svelte:head><title>FrenchPath — Learn French</title></svelte:head>
 
+<!-- Today's figures, rendered inside the voyage hero so a phone shows them without scrolling. -->
+{#snippet heroStats()}
+	<span
+		class="fp-stat-badge fp-stat-badge--fire"
+		role="img"
+		aria-label={m.home_streak_label({ count: String(streak) })}
+		data-testid="streak-badge"
+	>
+		<span class="fp-flame" aria-hidden="true"><Icon name="flame" size={14} /></span>
+		<span class="fp-figure">{streak}</span>
+	</span>
+	<span
+		class="fp-stat-badge fp-stat-badge--ice"
+		title={m.home_streak_freezes()}
+		data-testid="freezes-badge"
+	>
+		<span aria-hidden="true"><Icon name="snowflake" size={14} /></span>
+		{freezesAvailable}
+		<span class="sr-only">{m.home_streak_freezes()}</span>
+	</span>
+	<span class="fp-figure text-xs text-muted" data-testid="daily-goal">
+		{goal.xp} / {goal.goal} XP {goal.met ? '✓' : ''}
+	</span>
+{/snippet}
+
 {#if !loaded}
 	<main class="page-shell" aria-busy="true">
 		<p class="sr-only" role="status">{m.common_loading()}</p>
@@ -191,186 +260,177 @@
 		</InfoBanner>
 	</main>
 {:else if !onboarded && OnboardingWizard}
-	<OnboardingWizard onComplete={finishOnboarding} {reduceMotion} />
+	<!-- relative + isolate: the sky sits at z-index -1 inside this box, above the body paint. -->
+	<div class="relative isolate">
+		<JourneySky />
+		<OnboardingWizard onComplete={finishOnboarding} {reduceMotion} />
+	</div>
 {:else}
-	<main class="page-shell">
-		<header class="flex flex-wrap items-center justify-between gap-4">
-			<div class="flex items-center gap-3">
-				<img src="/icon.svg" alt="" class="h-10 w-10 rounded-lg shadow-sm lg:hidden" />
-				<div>
-					<h1 class="fp-display-lg text-balance text-foreground lg:sr-only">FrenchPath</h1>
-					<p class="text-sm text-muted lg:sr-only">{homeSubtitle}</p>
+	<div class="relative isolate">
+		<JourneySky />
+		<main class="page-shell">
+			<header class="flex flex-wrap items-center justify-between gap-4">
+				<div class="flex items-center gap-3">
+					<img src="/icon.svg" alt="" class="h-10 w-10 rounded-lg shadow-sm lg:hidden" />
+					<div>
+						<h1 class="fp-display-lg text-balance text-foreground lg:sr-only">FrenchPath</h1>
+						<p class="text-sm text-muted lg:sr-only">{homeSubtitle}</p>
+					</div>
 				</div>
-			</div>
-		</header>
+			</header>
 
-		<div
-			class="mt-5 flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-6"
-		>
-			<div class="order-2 space-y-4 lg:order-1">
-				<!-- Time-of-day ritual greeting -->
-				<DailyRitual {ritual} />
+			{#if showBackupNudge}
+				<InfoBanner variant="note" class="mt-4" role="note">
+					<p data-testid="backup-nudge">{m.home_backup_nudge()}</p>
+					<div class="mt-2 flex flex-wrap gap-2">
+						<a href="{resolve('/settings')}#backup" class="btn-secondary text-sm">
+							{m.home_backup_nudge_cta()}
+						</a>
+						<button
+							type="button"
+							class="btn-secondary text-sm"
+							onclick={() => {
+								backupNudgeDismissed = true;
+								showBackupNudge = false;
+							}}
+						>
+							{m.home_backup_nudge_dismiss()}
+						</button>
+					</div>
+				</InfoBanner>
+			{/if}
 
-				<!-- Mira mentor + streak / freeze stats -->
-				<div class="surface-card flex items-center gap-3 p-4">
-					<CharacterMira size="sm" animate={!reduceMotion} />
-					<div class="flex-1">
-						<div class="flex gap-2">
-							<span
-								class="fp-stat-badge fp-stat-badge--fire"
-								role="img"
-								aria-label={m.home_streak_label({ count: String(streak) })}
-								data-testid="streak-badge"
+			<div
+				class="mt-5 flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-6"
+			>
+				<div class="order-2 space-y-4 lg:order-1">
+					<!-- Time-of-day ritual greeting -->
+					<DailyRitual {ritual} />
+
+					<!-- Daily goal ring -->
+					<section class="surface-card p-4" aria-label={m.home_daily_goal()}>
+						<div class="flex items-center gap-4">
+							<div
+								class="fp-goal-ring"
+								style="--pct:{goalPercent}%"
+								role="progressbar"
+								aria-label={m.home_daily_goal()}
+								aria-valuenow={goal.xp}
+								aria-valuemin="0"
+								aria-valuemax={goal.goal}
 							>
-								<span class="fp-flame" aria-hidden="true"><Icon name="flame" size={14} /></span>
-								<span class="fp-figure">{streak}</span>
-							</span>
-							<span
-								class="fp-stat-badge fp-stat-badge--ice"
-								title={m.home_streak_freezes()}
-								data-testid="freezes-badge"
-							>
-								<span aria-hidden="true"><Icon name="snowflake" size={14} /></span>
-								{freezesAvailable}
-								<span class="sr-only">{m.home_streak_freezes()}</span>
-							</span>
-						</div>
-					</div>
-				</div>
-
-				<!-- Daily goal ring -->
-				<section class="surface-card p-4" aria-label={m.home_daily_goal()}>
-					<div class="flex items-center gap-4">
-						<div
-							class="fp-goal-ring"
-							style="--pct:{goalPercent}%"
-							role="progressbar"
-							aria-label={m.home_daily_goal()}
-							aria-valuenow={goal.xp}
-							aria-valuemin="0"
-							aria-valuemax={goal.goal}
-						>
-							<span class="fp-goal-ring-value fp-serif">{goal.xp}</span>
-						</div>
-						<div>
-							<p class="fp-serif text-[17px] font-semibold">
-								{m.home_daily_goal()}
-							</p>
-							<p class="text-sm text-muted" data-testid="daily-goal">
-								{goal.xp} / {goal.goal} XP {goal.met ? '✓' : ''}
-							</p>
-						</div>
-					</div>
-				</section>
-
-				<!-- Coco companion -->
-				<div class="surface-card p-4 text-center">
-					<CharacterCoco size="md" animate={!reduceMotion} level={cocoLevel} />
-					<p class="fp-serif mt-1.5 text-sm">{m.home_coco_level({ level: String(cocoLevel) })}</p>
-					<div class="fp-progress-bar mt-2">
-						<div class="fp-progress-fill" style="width:{cocoXpPercent}%"></div>
-					</div>
-				</div>
-
-				{#if nextReviewIn}
-					<p class="text-sm text-muted" data-testid="next-review">
-						{m.home_next_review({ time: nextReviewIn })}
-					</p>
-				{/if}
-
-				{#if pendingGate}
-					<GateBanner reason={m.gate_banner_reason({ label: pendingGate.label })} />
-				{/if}
-
-				<WeakSkillChips />
-
-				{#if adaptiveTip}
-					<CoachTip tip={adaptiveTip} />
-				{/if}
-
-				{#each openGates as gate (gate.id)}
-					<a
-						href={resolve('/checkpoint/[groupId]', { groupId: gate.id })}
-						class="btn-primary flex items-center justify-between gap-2"
-						data-testid="checkpoint-node-{gate.id}"
-					>
-						<span class="flex items-center gap-2"><Icon name="check" size={17} /> {gate.label}</span
-						>
-						<Icon name="chevron-right" size={18} />
-					</a>
-				{/each}
-
-				{#if due > 0}
-					<a
-						href={resolve('/review')}
-						class="btn-primary flex items-center justify-between gap-2"
-						data-testid="due-badge"
-					>
-						<span class="flex items-center gap-2"
-							><Icon name="review" size={17} />
-							{due === 1
-								? m.home_cards_due_one()
-								: m.home_cards_due_other({ count: String(due) })}</span
-						>
-						<Icon name="chevron-right" size={18} />
-					</a>
-				{/if}
-
-				{#if a2Completed || b1Completed || b2Completed || c1ExamUnlocked}
-					<section class="surface-card p-4" aria-label={m.home_mock_exams()}>
-						<p class="fp-serif mb-2 text-sm font-semibold">{m.home_mock_exams()}</p>
-						<div class="space-y-2">
-							{#if a2Completed}
-								<a
-									href={resolve('/exam/delf-a2')}
-									class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
-									data-testid="delf-card"
-								>
-									<span>{m.delf_title()}</span>
-									<Icon name="chevron-right" size={16} />
-								</a>
-							{/if}
-							{#if b1Completed}
-								<a
-									href={resolve('/exam/delf-b1')}
-									class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
-									data-testid="delf-b1-card"
-								>
-									<span>{m.home_mock_exam_label({ exam: 'DELF B1' })}</span>
-									<Icon name="chevron-right" size={16} />
-								</a>
-							{/if}
-							{#if b2Completed}
-								<a
-									href={resolve('/exam/delf-b2')}
-									class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
-									data-testid="delf-b2-card"
-								>
-									<span>{m.home_mock_exam_label({ exam: 'DELF B2' })}</span>
-									<Icon name="chevron-right" size={16} />
-								</a>
-							{/if}
-							{#if c1ExamUnlocked}
-								<a
-									href={resolve('/exam/dalf-c1')}
-									class="flex items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
-									data-testid="dalf-c1-card"
-								>
-									<span>{m.home_mock_exam_label({ exam: 'DALF C1' })}</span>
-									<Icon name="chevron-right" size={16} />
-								</a>
-							{/if}
+								<span class="fp-goal-ring-value fp-serif">{goal.xp}</span>
+							</div>
+							<div>
+								<p class="fp-serif text-[17px] font-semibold">
+									{m.home_daily_goal()}
+								</p>
+							</div>
 						</div>
 					</section>
-				{/if}
-			</div>
 
-			<section class="order-1 lg:order-2">
-				<h2 class="fp-serif mb-2 text-2xl text-balance">Le Voyage</h2>
-				<VoyageMap {units} {states} {lockReasons} {currentUnitId} {reduceMotion} dueCount={due} />
-			</section>
-		</div>
-	</main>
+					<!-- Coco companion -->
+					<div class="surface-card p-4 text-center">
+						<CharacterCoco size="md" animate={!reduceMotion} level={cocoLevel} />
+						<p class="fp-serif mt-1.5 text-sm">{m.home_coco_level({ level: String(cocoLevel) })}</p>
+						<div class="fp-progress-bar mt-2">
+							<div class="fp-progress-fill" style="width:{cocoXpPercent}%"></div>
+						</div>
+					</div>
+
+					{#if nextReviewIn}
+						<p class="text-sm text-muted" data-testid="next-review">
+							{m.home_next_review({ time: nextReviewIn })}
+						</p>
+					{/if}
+
+					{#if pendingGate}
+						<GateBanner reason={m.gate_banner_reason({ label: pendingGate.label })} />
+					{/if}
+
+					<WeakSkillChips />
+
+					{#if adaptiveTip}
+						<CoachTip tip={adaptiveTip} />
+					{/if}
+
+					{#each openGates as gate (gate.id)}
+						<a
+							href={resolve('/checkpoint/[groupId]', { groupId: gate.id })}
+							class="btn-primary flex items-center justify-between gap-2"
+							data-testid="checkpoint-node-{gate.id}"
+						>
+							<span class="flex items-center gap-2"
+								><Icon name="check" size={17} /> {gate.label}</span
+							>
+							<Icon name="chevron-right" size={18} />
+						</a>
+					{/each}
+
+					{#if a2Completed || b1Completed || b2Completed || c1ExamUnlocked}
+						<section class="surface-card p-4" aria-label={m.home_mock_exams()}>
+							<p class="fp-serif mb-2 text-sm font-semibold">{m.home_mock_exams()}</p>
+							<div class="space-y-2">
+								{#if a2Completed}
+									<a
+										href={resolve('/exam/delf-a2')}
+										class="flex min-h-11 items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+										data-testid="delf-card"
+									>
+										<span>{m.delf_title()}</span>
+										<Icon name="chevron-right" size={16} />
+									</a>
+								{/if}
+								{#if b1Completed}
+									<a
+										href={resolve('/exam/delf-b1')}
+										class="flex min-h-11 items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+										data-testid="delf-b1-card"
+									>
+										<span>{m.home_mock_exam_label({ exam: 'DELF B1' })}</span>
+										<Icon name="chevron-right" size={16} />
+									</a>
+								{/if}
+								{#if b2Completed}
+									<a
+										href={resolve('/exam/delf-b2')}
+										class="flex min-h-11 items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+										data-testid="delf-b2-card"
+									>
+										<span>{m.home_mock_exam_label({ exam: 'DELF B2' })}</span>
+										<Icon name="chevron-right" size={16} />
+									</a>
+								{/if}
+								{#if c1ExamUnlocked}
+									<a
+										href={resolve('/exam/dalf-c1')}
+										class="flex min-h-11 items-center justify-between rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-primary transition hover:border-primary"
+										data-testid="dalf-c1-card"
+									>
+										<span>{m.home_mock_exam_label({ exam: 'DALF C1' })}</span>
+										<Icon name="chevron-right" size={16} />
+									</a>
+								{/if}
+							</div>
+						</section>
+					{/if}
+				</div>
+
+				<section class="order-1 lg:order-2">
+					<h2 class="fp-serif mb-2 text-2xl text-balance">Le Voyage</h2>
+					<VoyageMap
+						{units}
+						{states}
+						{lockReasons}
+						{currentUnitId}
+						{reduceMotion}
+						dueCount={due}
+						stats={heroStats}
+					/>
+				</section>
+			</div>
+		</main>
+	</div>
 {/if}
 
 <CelebrationOverlay
