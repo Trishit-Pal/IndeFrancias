@@ -34,6 +34,16 @@ describe('locale coverage', () => {
 		expect(missing).toEqual([]);
 	});
 
+	// A renamed or dropped {placeholder} renders literally (or loses the value) in that locale only.
+	it.each(Object.keys(LOCALES))('%s.json uses the same {placeholders} as en.json', (locale) => {
+		const names = (value: string | undefined) =>
+			[...new Set((value ?? '').match(/\{\w+\}/g) ?? [])].sort();
+		const mismatched = KEYS.filter(
+			(key) => names(LOCALES[locale]![key]).join() !== names(EN[key]).join()
+		);
+		expect(mismatched).toEqual([]);
+	});
+
 	it('hi.json translates every prose string (no English placeholders)', () => {
 		const untranslated = KEYS.filter(
 			(key) => hi[key as keyof typeof hi] === EN[key] && !HI_SAME_AS_EN_ALLOWED.has(key)

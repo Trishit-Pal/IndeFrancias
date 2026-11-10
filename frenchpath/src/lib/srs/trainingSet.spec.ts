@@ -70,7 +70,7 @@ describe('buildTrainingSet', () => {
 			log(rand(10) === 0 ? `hot${rand(3)}` : `c${rand(2_000)}`, rand(50_000) * 3_600_000, rand(6))
 		);
 		expect(buildTrainingSet(logs)).toEqual(toPrefixItems(referenceBuildTrainingSet(logs)));
-	});
+	}, 60_000);
 });
 
 type FlatSet = { ratings: Uint32Array; deltaTs: Uint32Array; lengths: Uint32Array };

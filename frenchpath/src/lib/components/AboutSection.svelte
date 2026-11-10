@@ -24,7 +24,7 @@
 		{ name: 'fsrs-browser', licence: 'BSD 3-Clause', notice: 'Copyright 2023 Alex Nguyen' },
 		{ name: 'ts-fsrs', licence: 'MIT', notice: 'Copyright (c) 2026 Open Spaced Repetition' },
 		{ name: 'Svelte and SvelteKit', licence: 'MIT' },
-		{ name: 'Three.js, Threlte, bits-ui, zod, Capacitor', licence: 'MIT' },
+		{ name: 'bits-ui, zod, Capacitor', licence: 'MIT' },
 		{ name: 'idb', licence: 'ISC' }
 	];
 </script>

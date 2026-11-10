@@ -119,7 +119,8 @@
 	let finishing = $state(false); // mirrors the gate for the disabled attribute
 
 	// A failed save leaves the answered exam on screen; retrying goes through the same gate.
-	// finish() is one IndexedDB transaction, so a failed attempt wrote nothing.
+	// A pass awards XP in one IndexedDB transaction, so a failed save wrote nothing. A failed
+	// attempt is not one transaction (a read, then one write of the same record); a retry rewrites it.
 	async function finishNow() {
 		try {
 			await finishGate.run(async () => {

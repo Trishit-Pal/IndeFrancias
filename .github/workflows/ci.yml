@@ -15,6 +15,8 @@ defaults:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    # Generous: a hung build or Playwright run fails in minutes, not after the 6-hour default.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -74,6 +76,7 @@ jobs:
 
   secrets:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: .

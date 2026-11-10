@@ -92,6 +92,26 @@ describe('completeLesson', () => {
 		expect(await srsRepo.getAllCards()).toHaveLength(2);
 	});
 
+	it('leaves already-reviewed SRS cards untouched when a completed lesson is replayed', async () => {
+		await completeLesson(unit, { correct: 3, total: 3, score: 100 });
+		const id = srsCardId('a1-test', 'w1');
+		const seeded = (await srsRepo.getCard(id))!;
+		const reviewed = {
+			...seeded,
+			reps: 4,
+			stability: 12.5,
+			due: new Date('2030-01-01T00:00:00Z')
+		};
+		await srsRepo.putCard(reviewed);
+
+		await completeLesson(unit, { correct: 2, total: 3, score: 67 });
+
+		const after = (await srsRepo.getCard(id))!;
+		expect(after.reps).toBe(4);
+		expect(after.stability).toBe(12.5);
+		expect(after.due.toISOString()).toBe('2030-01-01T00:00:00.000Z');
+	});
+
 	it('awards improvement-delta XP across replays and caps at one full completion', async () => {
 		await completeLesson(unit, { correct: 1, total: 3, score: 33 }); // first: +10
 		await completeLesson(unit, { correct: 3, total: 3, score: 100 }); // improve by 2: +20
