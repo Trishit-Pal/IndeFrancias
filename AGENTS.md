@@ -1,6 +1,6 @@
 # FrenchPath — Agent Routing
 
-This repo is the **FrenchPath** offline-first French-learning PWA (`frenchpath/`). Use project skills in `.cursor/skills/` for domain-specific work.
+This repo is the **FrenchPath** offline-first French-learning PWA (`frenchpath/`). Use project skills in `.claude/skills/` for domain-specific work.
 
 ## Quick start
 
