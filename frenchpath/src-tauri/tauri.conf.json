@@ -7,7 +7,7 @@
 		"frontendDist": "../build",
 		"devUrl": "http://localhost:5173",
 		"beforeDevCommand": "",
-		"beforeBuildCommand": "npm run build"
+		"beforeBuildCommand": "npm run build && node scripts/prepare-cap.mjs"
 	},
 	"app": {
 		"windows": [
