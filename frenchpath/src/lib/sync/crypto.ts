@@ -1,6 +1,7 @@
 // Passphrase → AES-256-GCM envelope, WebCrypto only (no dependencies).
 // ponytail: PBKDF2@600k, not Argon2 — adequate for a user-held file; swap to
 // Argon2id (WASM) if the threat model ever includes captured-file bruteforce at scale.
+import { DataFileError } from '../pwa/dataFileError';
 import { z } from 'zod';
 
 export const PBKDF2_ITERATIONS = 600_000;
@@ -74,7 +75,8 @@ export async function encryptPayload(
 
 export async function decryptPayload(env: EncryptedEnvelope, passphrase: string): Promise<string> {
 	const parsed = encryptedEnvelopeSchema.safeParse(env);
-	if (!parsed.success) throw new Error('Not a FrenchPath sync file.');
+	if (!parsed.success)
+		throw new DataFileError('sync_not_a_sync_file', 'Not a FrenchPath sync file.');
 	const data = parsed.data;
 	try {
 		const key = await deriveKey(passphrase, fromB64(data.kdf.salt), data.kdf.iterations);

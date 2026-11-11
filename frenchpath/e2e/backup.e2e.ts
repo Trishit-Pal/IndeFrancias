@@ -184,3 +184,17 @@ test('restore-complete notice clears when another backup file is chosen', async 
 	await expect(page.getByTestId('import-preview')).toBeVisible();
 	await expect(page.getByTestId('restore-complete')).toBeHidden();
 });
+
+test("a refused backup file is explained in the learner's language", async ({ page }) => {
+	await gotoHome(page);
+	await page.goto('/settings');
+	await page.getByTestId('language-select').selectOption('hi');
+	await page.getByTestId('backup-file-input').setInputFiles({
+		name: 'bad.json',
+		mimeType: 'application/json',
+		buffer: Buffer.from('{not valid json')
+	});
+	const message = page.getByTestId('settings-message');
+	await expect(message).toContainText(/[ऀ-ॿ]/);
+	await expect(message).not.toContainText('valid JSON');
+});

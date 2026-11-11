@@ -2,6 +2,7 @@
 // Account-free backup: export/import all on-device data as a JSON file. Import
 // VALIDATES before it destroys — a corrupt or malformed file can never reach the
 // clear() step, so existing data survives any bad import.
+import { DataFileError } from './dataFileError';
 import type { IDBPTransaction, StoreNames } from 'idb';
 import { getDB, writeAtomically } from '../db';
 import {
@@ -71,13 +72,17 @@ export async function validateAndParseBackup(json: string): Promise<ValidatedBac
 	const raw = parseBackupJson(json);
 	const version = raw.schemaVersion ?? raw.version;
 	if (typeof version !== 'number' || version < 1 || version > CURRENT_BACKUP_VERSION) {
-		throw new Error(`Unsupported backup version: ${String(version)}`);
+		throw new DataFileError(
+			'backup_version_unsupported',
+			`Unsupported backup version: ${String(version)}`
+		);
 	}
 	// v2+ files carry a checksum; verify before any migration or mutation.
 	if (version >= 2) {
 		const expected = await sha256Hex(JSON.stringify(raw.payload ?? null));
 		if (expected !== raw.checksum) {
-			throw new Error(
+			throw new DataFileError(
+				'backup_checksum_mismatch',
 				'Backup integrity check failed: checksum mismatch (corrupted or edited file).'
 			);
 		}
@@ -85,7 +90,10 @@ export async function validateAndParseBackup(json: string): Promise<ValidatedBac
 	const migrated = await migrateBackup(raw);
 	const parsed = backupFileSchema.safeParse(migrated);
 	if (!parsed.success) {
-		throw new Error(`Invalid backup file: ${parsed.error.issues[0]?.message ?? 'schema mismatch'}`);
+		throw new DataFileError(
+			'backup_invalid',
+			`Invalid backup file: ${parsed.error.issues[0]?.message ?? 'schema mismatch'}`
+		);
 	}
 	return { payload: parsed.data.payload, exportedAt: String(raw.exportedAt ?? 'unknown') };
 }
@@ -93,8 +101,12 @@ export async function validateAndParseBackup(json: string): Promise<ValidatedBac
 export function assertBackupSize(json: string): void {
 	const bytes = new TextEncoder().encode(json).byteLength;
 	if (bytes > MAX_BACKUP_BYTES) {
-		throw new Error(
-			`Backup file is too large (${Math.round(bytes / 1024)} KB). Maximum is ${Math.round(MAX_BACKUP_BYTES / 1024 / 1024)} MB.`
+		const kb = Math.round(bytes / 1024);
+		const maxMb = Math.round(MAX_BACKUP_BYTES / 1024 / 1024);
+		throw new DataFileError(
+			'backup_too_large',
+			`Backup file is too large (${kb} KB). Maximum is ${maxMb} MB.`,
+			{ params: { kb, maxMb } }
 		);
 	}
 }
@@ -107,7 +119,7 @@ export function parseBackupJson(json: string): {
 	payload?: unknown;
 } {
 	if (!json.trim()) {
-		throw new Error('Backup file is empty.');
+		throw new DataFileError('backup_empty', 'Backup file is empty.');
 	}
 	try {
 		return JSON.parse(json) as {
@@ -118,7 +130,7 @@ export function parseBackupJson(json: string): {
 			payload?: unknown;
 		};
 	} catch {
-		throw new Error('Backup file is not valid JSON.');
+		throw new DataFileError('backup_not_json', 'Backup file is not valid JSON.');
 	}
 }
 
@@ -158,7 +170,8 @@ export async function exportBackup(): Promise<string> {
 	try {
 		await validateAndParseBackup(json); // read-only: the same gate a restore will apply
 	} catch (err) {
-		throw new Error(
+		throw new DataFileError(
+			'backup_export_refused',
 			'Backup could not be created because some saved data is not in the expected format. Your progress on this device is unchanged.',
 			{ cause: err }
 		);
@@ -178,7 +191,7 @@ export function reviveCard(c: BackupPayload['srsCards'][number]): SrsCard {
 /** Replaces all data with a previously exported backup, after full validation. */
 export async function importBackup(json: string): Promise<void> {
 	if (importInFlight) {
-		throw new Error('Another backup import is already in progress.');
+		throw new DataFileError('backup_import_busy', 'Another backup import is already in progress.');
 	}
 	importInFlight = true;
 	try {
@@ -195,7 +208,11 @@ async function importBackupInner(json: string): Promise<void> {
 	try {
 		await replaceAllData(p);
 	} catch (err) {
-		throw new Error('Restore failed — your existing data is unchanged', { cause: err });
+		throw new DataFileError(
+			'backup_restore_failed',
+			'Restore failed — your existing data is unchanged',
+			{ cause: err }
+		);
 	}
 }
 
