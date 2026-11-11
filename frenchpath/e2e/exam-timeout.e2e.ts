@@ -55,7 +55,9 @@ test('a suspended tab does not pause the exam clock', async ({ page }) => {
 	await expect
 		.poll(async () => before - (await readTimerSeconds(page)))
 		.toBeGreaterThanOrEqual(JUMP_MS / 1000 - 2);
-	expect(before - (await readTimerSeconds(page))).toBeLessThanOrEqual(JUMP_MS / 1000 + UPPER_SLACK_S);
+	expect(before - (await readTimerSeconds(page))).toBeLessThanOrEqual(
+		JUMP_MS / 1000 + UPPER_SLACK_S
+	);
 });
 
 test('a jump past the end finishes the exam', async ({ page }) => {
