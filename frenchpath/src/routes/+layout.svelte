@@ -94,7 +94,7 @@
 
 	// The database is newer than this tab's code (reload to fix), or an upgrade is waiting on
 	// another tab. Never reloads by itself: only the button does.
-	let dbNotice = $state<DatabaseNoticeKind | null>(null);
+	let dbNotice = $state<Exclude<DatabaseNoticeKind, 'ready'> | null>(null);
 
 	// A new service worker is waiting. The learner decides when to reload (SPEC invariant 6).
 	let updateReady = $state(false);
@@ -177,7 +177,11 @@
 			unexpectedError = true;
 		};
 		window.addEventListener('unhandledrejection', onUnhandledRejection);
-		const offDatabaseNotice = onDatabaseNotice((kind) => (dbNotice = kind));
+		const offDatabaseNotice = onDatabaseNotice((kind) => {
+			// 'ready' only ends the wait it announced; a 'newer' banner still needs its reload.
+			if (kind !== 'ready') dbNotice = kind;
+			else if (dbNotice === 'blocked') dbNotice = null;
+		});
 
 		return () => {
 			cleanup?.();

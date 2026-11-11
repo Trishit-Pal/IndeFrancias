@@ -295,20 +295,56 @@ describe('database notices', () => {
 			}
 		}); // never closes on versionchange, like a tab running older code
 		const notices: string[] = [];
-		const blockedSeen = new Promise<void>((resolve) => {
-			const off = onDatabaseNotice((kind) => {
-				notices.push(kind);
-				off();
-				resolve();
-			});
+		let blockedSeen: () => void = () => undefined;
+		const blocked = new Promise<void>((resolve) => (blockedSeen = resolve));
+		const off = onDatabaseNotice((kind) => {
+			notices.push(kind);
+			if (kind === 'blocked') blockedSeen();
 		});
 
 		const opening = getDB();
-		await blockedSeen;
+		await blocked;
 		expect(notices).toEqual(['blocked']);
 
 		stubborn.close(); // the open was not cancelled: it completes now
 		expect((await opening).version).toBe(DB_VERSION);
+		off();
+
+		// Exactly one 'ready', after 'blocked', once the blocked open has resolved.
+		expect(notices).toEqual(['blocked', 'ready']);
+	});
+
+	it('emits no "ready" for an ordinary, unblocked open', async () => {
+		const notices: string[] = [];
+		const off = onDatabaseNotice((kind) => notices.push(kind));
+
+		await getDB();
+		off();
+
+		expect(notices).toEqual([]);
+	});
+
+	it('does not tell a listener that unsubscribed before the blocked open resolved', async () => {
+		const stubborn = await openDB(DB_NAME, DB_VERSION - 1, {
+			upgrade(db) {
+				db.createObjectStore('settings');
+			}
+		});
+		const notices: string[] = [];
+		let blockedSeen: () => void = () => undefined;
+		const blocked = new Promise<void>((resolve) => (blockedSeen = resolve));
+		const off = onDatabaseNotice((kind) => {
+			notices.push(kind);
+			if (kind === 'blocked') blockedSeen();
+		});
+
+		const opening = getDB();
+		await blocked;
+		off();
+		stubborn.close();
+		await opening;
+
+		expect(notices).toEqual(['blocked']);
 	});
 
 	it('still rejects with DatabaseNewerError and reaches later listeners when a listener throws', async () => {

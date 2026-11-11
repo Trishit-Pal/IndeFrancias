@@ -33,7 +33,8 @@ export class DatabaseNewerError extends Error {
 	}
 }
 
-export type DatabaseNoticeKind = 'newer' | 'blocked';
+/** `'ready'` follows `'blocked'` once that blocked open has resolved; ordinary opens never emit it. */
+export type DatabaseNoticeKind = 'newer' | 'blocked' | 'ready';
 
 const noticeListeners = new Set<(kind: DatabaseNoticeKind) => void>();
 
@@ -71,10 +72,12 @@ export function getDB(): Promise<IDBPDatabase<FrenchPathDB>> {
 		throw new Error('IndexedDB is not available in this environment.');
 	}
 	if (!dbPromise) {
+		let wasBlocked = false;
 		const opening: Promise<IDBPDatabase<FrenchPathDB>> = openDB<FrenchPathDB>(DB_NAME, DB_VERSION, {
 			// Another tab keeps an older connection open: the open stays queued (it is not cancelled)
 			// and completes when that tab closes; the learner is told why nothing is happening.
 			blocked() {
+				wasBlocked = true;
 				notify('blocked');
 			},
 			// Another tab wants to upgrade or delete: step aside so it is never blocked on us.
@@ -112,13 +115,19 @@ export function getDB(): Promise<IDBPDatabase<FrenchPathDB>> {
 					db.createObjectStore('assessments', { keyPath: 'assessmentId' });
 				}
 			}
-		}).catch((error: unknown) => {
-			// A failed open must not be cached forever: the next call retries.
-			if (dbPromise === opening) dbPromise = null;
-			if (!isVersionError(error)) throw error;
-			notify('newer');
-			throw new DatabaseNewerError();
-		});
+		})
+			.then((db) => {
+				// The wait the learner was told about is over.
+				if (wasBlocked) notify('ready');
+				return db;
+			})
+			.catch((error: unknown) => {
+				// A failed open must not be cached forever: the next call retries.
+				if (dbPromise === opening) dbPromise = null;
+				if (!isVersionError(error)) throw error;
+				notify('newer');
+				throw new DatabaseNewerError();
+			});
 		dbPromise = opening;
 	}
 	return dbPromise;
