@@ -4,7 +4,7 @@
 	import { resolve } from '$app/paths';
 	import { loadUnit, buildLexiconForUnits } from '$lib/content/loader';
 	import type { Lexicon } from '$lib/content/lexicon';
-	import { settingsRepo } from '$lib/db';
+	import { assessmentsRepo, settingsRepo } from '$lib/db';
 	import type { DifficultyTier } from '$lib/db/schema';
 	import type { Exercise } from '$lib/content/schema';
 	import {
@@ -83,7 +83,8 @@
 			reduceMotion = settings.reduceMotion;
 			celebrationLevel = settings.celebrationLevel;
 
-			const cooldownMs = await getCheckpointCooldownMs(assessmentIdForGate(gateId));
+			const assessmentId = assessmentIdForGate(gateId);
+			const cooldownMs = await getCheckpointCooldownMs(assessmentId);
 			if (cooldownMs !== null) {
 				cooldownHours = Math.ceil(cooldownMs / 3_600_000);
 				phase = 'cooldown';
@@ -91,7 +92,9 @@
 			}
 
 			const units = await Promise.all(gate.unitIds.map((id) => loadUnit(id)));
-			exercises = buildCheckpointPool(units, tier, gateId);
+			// A failed attempt moves lastFailedAt, so a retry draws new questions; a reload keeps them.
+			const stored = await assessmentsRepo.getAssessment(assessmentId);
+			exercises = buildCheckpointPool(units, tier, gateId, stored?.lastFailedAt ?? 0);
 			lexicon = await buildLexiconForUnits(gate.unitIds, settings.nativeLanguage);
 			phase = 'intro';
 		} catch {
