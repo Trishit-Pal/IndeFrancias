@@ -46,10 +46,53 @@ test('sync round-trip merges progress from another device', async ({ page }) => 
 		buffer: Buffer.from(syncJson)
 	});
 	await expect(page.getByTestId('sync-preview')).toBeVisible();
-	await Promise.all([page.waitForEvent('load'), page.getByTestId('sync-confirm').click()]);
+	await page.getByTestId('sync-confirm').click();
+	await expect(page.getByTestId('sync-complete')).toBeVisible();
+	await Promise.all([page.waitForEvent('load'), page.getByTestId('sync-reload').click()]);
 
 	await page.getByRole('navigation').getByRole('link', { name: 'Learn' }).click();
 	await expect(page.getByTestId('unit-card').first()).toContainText('✓');
+});
+
+test('sync import over existing progress saves a safety copy first and does not reload by itself', async ({
+	page
+}) => {
+	test.setTimeout(60_000);
+	await gotoHome(page);
+	await page.getByTestId('unit-card').first().click();
+	await page.getByTestId('start-lesson').click();
+	await completeLesson(page);
+	await page.getByRole('link', { name: 'Back to path' }).click();
+
+	await page.goto('/settings');
+	await page.getByTestId('sync-passphrase').fill(PASSPHRASE);
+	const exportPromise = page.waitForEvent('download');
+	await page.getByTestId('sync-export').click();
+	const exported = await exportPromise;
+	const exportPath = await exported.path();
+	if (!exportPath) throw new Error('Download path missing');
+	const syncJson = await readFile(exportPath, 'utf8');
+
+	// Importing over the progress just made: there is something to lose, so a copy comes first.
+	await page.getByTestId('sync-import').setInputFiles({
+		name: 'same-device.fpsync',
+		mimeType: 'application/json',
+		buffer: Buffer.from(syncJson)
+	});
+	await expect(page.getByTestId('sync-preview')).toBeVisible();
+	await page.evaluate(() => {
+		(window as unknown as { __notReloaded: boolean }).__notReloaded = true;
+	});
+	const safetyCopy = page.waitForEvent('download');
+	await page.getByTestId('sync-confirm').click();
+	expect((await safetyCopy).suggestedFilename()).toMatch(/^frenchpath-backup-.*\.json$/);
+
+	await expect(page.getByTestId('sync-complete')).toBeVisible();
+	await expect(page.getByTestId('sync-complete')).toHaveAttribute('role', 'status');
+	await expect(page.getByTestId('sync-reload')).toBeVisible();
+	expect(
+		await page.evaluate(() => (window as unknown as { __notReloaded?: boolean }).__notReloaded)
+	).toBe(true);
 });
 
 test('wrong passphrase on sync import shows a friendly error, not a raw exception', async ({

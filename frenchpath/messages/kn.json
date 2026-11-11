@@ -443,5 +443,8 @@
 	"checkpoint_hint_default": "Review the bridge note before answering.",
 	"ritual_morning": "Good morning",
 	"ritual_afternoon": "Afternoon",
-	"ritual_evening": "Evening"
+	"ritual_evening": "Evening",
+	"sync_complete": "Merge complete. Reload to see your combined progress.",
+	"sync_safety_copy_failed": "We couldn't save a copy of your current progress. Try again, or merge without a copy.",
+	"sync_merge_anyway": "Merge without saving a copy"
 }
