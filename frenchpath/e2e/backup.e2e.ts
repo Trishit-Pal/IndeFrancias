@@ -166,3 +166,21 @@ test('tampered backup checksum is rejected', async ({ page }) => {
 	});
 	await expect(page.getByTestId('settings-message')).toContainText(/checksum|integrity|failed/i);
 });
+
+test('restore-complete notice clears when another backup file is chosen', async ({ page }) => {
+	test.setTimeout(60_000);
+	await gotoHome(page);
+	await page.getByTestId('unit-card').first().click();
+	await page.getByTestId('start-lesson').click();
+	await completeLesson(page);
+	await page.getByRole('link', { name: 'Back to path' }).click();
+	const backupJson = await exportBackupViaSettings(page);
+
+	await importBackupFile(page, backupJson, false);
+	await page.getByTestId('import-confirm').click();
+	await expect(page.getByTestId('restore-complete')).toBeVisible({ timeout: 15_000 });
+
+	await importBackupFile(page, backupJson, false);
+	await expect(page.getByTestId('import-preview')).toBeVisible();
+	await expect(page.getByTestId('restore-complete')).toBeHidden();
+});

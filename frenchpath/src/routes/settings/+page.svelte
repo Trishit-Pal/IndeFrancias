@@ -217,6 +217,7 @@
 		const file = input.files?.[0];
 		input.value = '';
 		if (!file) return;
+		restoreDone = false;
 		if (file.size > MAX_BACKUP_BYTES) {
 			message = m.settings_file_too_large({ mb: Math.round(MAX_BACKUP_BYTES / 1024 / 1024) });
 			return;
