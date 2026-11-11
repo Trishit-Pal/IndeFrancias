@@ -29,9 +29,13 @@ jobs:
       - name: Install
         run: npm ci
 
-      # Advisory for now: the tree has known high/critical advisories. Flip to
-      # blocking (drop continue-on-error) once the audit baseline is clean.
-      - name: Dependency audit (advisory)
+      # Shipped packages must have no known high or critical advisories.
+      - name: Dependency audit (shipped packages, blocking)
+        run: npm audit --omit=dev --audit-level=high
+
+      # Advisory until the two major upgrades (@capacitor/assets 4, eslint 9.39.5)
+      # are done; the remaining high/critical advisories are in build tooling.
+      - name: Dependency audit (all packages, advisory)
         run: npm audit --audit-level=high
         continue-on-error: true
 
