@@ -246,6 +246,38 @@ describe('mergePayloads', () => {
 			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
 		});
 
+		it('zero-XP lesson replays between two real days do not bridge them', () => {
+			const [dMinus10, ...replayDays] = lastNDayKeys(11, new Date(`${D}T00:00:00`)).slice(0, 10);
+			const a = payload({
+				streak: [streakRec(1, 1, dMinus10)],
+				stats: [
+					stat(dMinus10, 10, 5, 1, 0),
+					...replayDays.map((d) => stat(d, 0, 5, 1, 0)) // D-9 … D-1
+				]
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: [stat(D, 10, 5, 1, 0)]
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(1);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('a reviews-only day (no XP) still counts as an active day', () => {
+			const a = payload({
+				streak: [streakRec(1, 1, '2026-07-08')],
+				stats: [stat('2026-07-08', 5, 5, 0, 0), stat('2026-07-09', 0, 5, 0, 3)]
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: [stat(D, 10, 5, 1, 0)]
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(3);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
 		it('equal dates: biggest streak, fewest freezes available, most freezes used', () => {
 			const a = payload({ streak: [streakRec(3, 3, D, 2, 0)] });
 			const b = payload({ streak: [streakRec(10, 10, D, 1, 1)] });

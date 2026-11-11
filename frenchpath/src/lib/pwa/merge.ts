@@ -176,7 +176,9 @@ function mergeAssessment(local: AssessmentT, remote: AssessmentT): AssessmentT {
 	return failedTimes.length > 0 ? { ...rest, lastFailedAt: Math.max(...failedTimes) } : rest;
 }
 
-const isActiveDay = (s: StatsT): boolean => s.xp > 0 || s.lessonsCompleted > 0 || s.reviewsDone > 0;
+// lessonsCompleted is deliberately excluded: a replay of an already-aced lesson writes it with no XP
+// and no streak credit. Every path that does credit the streak also adds XP or a review.
+const isActiveDay = (s: StatsT): boolean => s.xp > 0 || s.reviewsDone > 0;
 
 /**
  * `end` itself counts as active (a streak snapshot proves activity even without a qualifying stats
