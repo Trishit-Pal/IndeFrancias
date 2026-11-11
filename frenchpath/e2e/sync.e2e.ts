@@ -148,6 +148,11 @@ test('sync preview cannot be cancelled or closed while the safety copy is being 
 	await expect(page.getByTestId('sync-cancel')).toBeDisabled();
 	await page.keyboard.press('Escape');
 	await expect(page.getByTestId('sync-preview')).toBeVisible();
+	// A second and third Escape must not close it either (the browser stops allowing cancel).
+	await page.keyboard.press('Escape');
+	await expect(page.getByTestId('sync-preview')).toBeVisible();
+	await page.keyboard.press('Escape');
+	await expect(page.getByTestId('sync-preview')).toBeVisible();
 
 	await page.evaluate(() => (window as unknown as { __releaseCopy: () => void }).__releaseCopy());
 	expect((await safetyCopy).suggestedFilename()).toMatch(/^frenchpath-backup-.*\.json$/);

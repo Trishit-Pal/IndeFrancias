@@ -81,6 +81,11 @@ test('restore preview cannot be cancelled or closed while the safety copy is bei
 	await page.keyboard.press('Escape');
 	await expect(page.getByTestId('import-preview')).toBeVisible();
 	await expect(page.getByTestId('import-cancel')).toBeDisabled();
+	// A second and third Escape must not close it either (the browser stops allowing cancel).
+	await page.keyboard.press('Escape');
+	await expect(page.getByTestId('import-preview')).toBeVisible();
+	await page.keyboard.press('Escape');
+	await expect(page.getByTestId('import-preview')).toBeVisible();
 
 	await page.evaluate(() => {
 		const win = window as unknown as { __releaseCopy: () => void; __restoreDigest: () => void };
