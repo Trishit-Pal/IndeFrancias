@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import en from '../../../messages/en.json';
 import hi from '../../../messages/hi.json';
 import { BETA_LOCALES, uiLanguageLabel } from '$lib/profile/types';
+import { LANGUAGES, type UiLanguage } from '$lib/i18n/languages';
 
 type Messages = Record<string, string>;
 
@@ -24,6 +25,9 @@ const SAME_AS_EN_ALLOWED = new Set([
 
 /** Hinglish keeps everyday English app words, so short labels may stay as they are. */
 const HINGLISH_MAX_UNTRANSLATED_WORDS = 3;
+
+/** Locales whose interface text is drafted: every prose value must be in the locale's own script. */
+const DRAFTED_LOCALES = ['bn'];
 
 describe('locale coverage', () => {
 	// Paraglide silently falls back to English for a missing key, so nothing else catches this.
@@ -69,6 +73,14 @@ describe('locale coverage', () => {
 			.filter(([, value]) => /[ऀ-ॿ]/.test(value))
 			.map(([key]) => key);
 		expect(devanagari).toEqual([]);
+	});
+
+	it.each(DRAFTED_LOCALES)('%s.json is written in its own script', (locale) => {
+		const script = LANGUAGES[locale as UiLanguage].script;
+		const untranslated = KEYS.filter(
+			(key) => !SAME_AS_EN_ALLOWED.has(key) && !script.test(LOCALES[locale]![key] ?? '')
+		);
+		expect(untranslated).toEqual([]);
 	});
 });
 
