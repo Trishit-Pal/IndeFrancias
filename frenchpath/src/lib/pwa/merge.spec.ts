@@ -231,7 +231,7 @@ describe('mergePayloads', () => {
 			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
 		});
 
-		it('a minutes-only day before the merged lastActiveDate does not extend the run', () => {
+		it('the older snapshot joins when its last day is adjacent, even with a minutes-only stats row', () => {
 			const a = payload({
 				streak: [streakRec(4, 4, '2026-07-09')],
 				stats: [...activeDaysEndingOn('2026-07-08', 3), stat('2026-07-09', 0, 20, 0, 0)]
@@ -241,8 +241,83 @@ describe('mergePayloads', () => {
 				stats: activeDaysEndingOn(D, 1)
 			});
 			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(a.streak[0].currentStreak + 1);
+			expect(merged.streak[0].longestStreak).toBe(5);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('a minutes-only or replay-only day that is no snapshot date does not bridge two runs', () => {
+			const a = payload({
+				streak: [streakRec(4, 4, '2026-07-07')],
+				stats: activeDaysEndingOn('2026-07-07', 4)
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: [
+					stat('2026-07-08', 0, 20, 0, 0),
+					stat('2026-07-09', 0, 5, 1, 0),
+					stat(D, 10, 5, 1, 0)
+				]
+			});
+			const { merged } = mergePayloads(a, b);
 			expect(merged.streak[0].currentStreak).toBe(1);
 			expect(merged.streak[0].longestStreak).toBe(4);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('a freeze hole inside the older run keeps its count when it joins the newer day', () => {
+			const holeDay = '2026-06-30'; // D-10
+			const a = payload({
+				streak: [streakRec(30, 30, '2026-07-09', 0, 1)],
+				stats: activeDaysEndingOn('2026-07-09', 30).filter((s) => s.date !== holeDay)
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: activeDaysEndingOn(D, 1)
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(31);
+			expect(merged.streak[0].longestStreak).toBe(31);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('an older last day with no qualifying stats row (exam-only) still joins', () => {
+			const a = payload({
+				streak: [streakRec(7, 7, '2026-07-09')],
+				stats: activeDaysEndingOn('2026-07-08', 6) // D-7 … D-2, no row for D-1
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: activeDaysEndingOn(D, 1)
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(8);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('an older snapshot that is not connected by active days is not joined', () => {
+			const a = payload({
+				streak: [streakRec(30, 30, '2026-07-07')],
+				stats: activeDaysEndingOn('2026-07-07', 30)
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: activeDaysEndingOn(D, 1)
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(1);
+			expect(merged.streak[0].longestStreak).toBe(30);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('an older snapshot with an empty lastActiveDate never joins', () => {
+			const a = payload({ streak: [streakRec(5, 5, '')] });
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: activeDaysEndingOn(D, 1)
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(1);
 			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
 		});
 

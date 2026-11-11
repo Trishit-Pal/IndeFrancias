@@ -4,7 +4,8 @@
 // field-wise max score/bestCorrect; srsCards LWW on last_review (tie: reps);
 // reviewLog union deduped by (cardId,ts,grade); stats field-wise max per date;
 // streak joined: later lastActiveDate, current = max(that day plus the consecutive active
-// merged-stats days before it, devices' own count on that date), longest = max of all,
+// merged-stats days before it, devices' own count on that date, an earlier device's count plus the
+// gap when active days connect them), longest = max of all,
 // freezes from the later snapshot (equal dates: min available, max used); skillProfile LWW on
 // updatedAt; assessments: a passed record (xpAwarded > 0) beats a failed one,
 // else LWW on completedAt, lastFailedAt = max of both. Monotonic values use max so a
@@ -198,8 +199,9 @@ function activeRunEndingOn(end: string, stats: StatsT[]): number {
 	return run;
 }
 
-// A streak is the longer of "days recounted from merged stats" and the device's own count; the own
-// count is kept because a freeze bridge is stored only as a counter, not as an active day.
+// A streak is the longest of "days recounted from merged stats", the devices' own count on the later
+// date, and an earlier device's count joined to it; own counts are kept because a freeze bridge is
+// stored only as a counter, not as an active day.
 function mergeStreak(
 	local: StreakT | undefined,
 	remote: StreakT | undefined,
@@ -211,7 +213,16 @@ function mergeStreak(
 		local.lastActiveDate > remote.lastActiveDate ? local.lastActiveDate : remote.lastActiveDate;
 	const current = [local, remote].filter((s) => s.lastActiveDate === lastActiveDate);
 	const own = Math.max(...current.map((s) => s.currentStreak));
-	const currentStreak = Math.max(activeRunEndingOn(lastActiveDate, mergedStats), own);
+	const run = activeRunEndingOn(lastActiveDate, mergedStats);
+	// An earlier snapshot joins only when every day strictly between its last day and the merged one
+	// is active (gap <= run); its own count then covers whatever its stats cannot (freezes, exams).
+	const joined = [local, remote]
+		.filter((s) => s.lastActiveDate !== '' && s.lastActiveDate < lastActiveDate)
+		.map((s) => {
+			const gap = daysBetween(s.lastActiveDate, lastActiveDate);
+			return gap <= run ? s.currentStreak + gap : 0;
+		});
+	const currentStreak = Math.max(run, own, ...joined);
 	return {
 		id: 'streak',
 		currentStreak,
