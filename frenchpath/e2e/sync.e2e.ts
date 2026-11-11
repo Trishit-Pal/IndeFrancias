@@ -161,7 +161,7 @@ test('sync file with dates in the future is refused with a friendly message', as
 	const syncJson = await exportSyncJson(page);
 
 	await chooseSyncFile(page, await shiftLessonDates(syncJson, 3 * DAY_MS));
-	await expect(page.getByTestId('settings-message')).toContainText(/haven't happened yet/i);
+	await expect(page.getByTestId('settings-message')).toContainText(/both devices/i);
 	await expect(page.getByTestId('sync-preview')).not.toBeVisible();
 });
 

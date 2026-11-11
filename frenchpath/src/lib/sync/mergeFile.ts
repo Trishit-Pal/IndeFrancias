@@ -34,7 +34,7 @@ export const MAX_FUTURE_SKEW_MS = 24 * 60 * 60 * 1000;
 export class FutureDatedSyncError extends Error {
 	constructor() {
 		super(
-			'This sync file has dates in the future. Check the date and time on the device that made it, then export again.'
+			'This sync file has dates in the future. Check the date and time on both devices, then try again. If it still fails, use a backup file to move your progress.'
 		);
 		this.name = 'FutureDatedSyncError';
 	}

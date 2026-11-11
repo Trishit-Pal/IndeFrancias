@@ -348,8 +348,9 @@ describe('assertNoFutureDates', () => {
 		const p = pastPayload();
 		const bad = { ...p, reviewLog: [{ ...p.reviewLog[0], ts: NOW + 25 * HOUR }] };
 		expect(() => assertNoFutureDates(bad, NOW)).toThrow(
-			'This sync file has dates in the future. Check the date and time on the device that made it, then export again.'
+			'This sync file has dates in the future. Check the date and time on both devices, then try again. If it still fails, use a backup file to move your progress.'
 		);
+		expect(new FutureDatedSyncError().message).toMatch(/both devices/);
 		expect(new FutureDatedSyncError().name).toBe('FutureDatedSyncError');
 	});
 });
