@@ -26,16 +26,23 @@ const DIACRITICS = /[̀-ͯ]/g;
 // Keep letters, numbers, whitespace, apostrophes and hyphens; drop other punctuation.
 const PUNCTUATION = /[^\p{L}\p{N}\s'-]/gu;
 
+// Typographic apostrophe look-alikes (phone keyboards): U+2019, U+2018, U+02BC, U+0060, U+00B4.
+const APOSTROPHE_LOOKALIKES = /[\u2019\u2018\u02BC\u0060\u00B4]/g;
+
 /**
  * Normalises a free-text answer for forgiving comparison: lowercased,
  * accent-stripped, punctuation-trimmed, whitespace-collapsed. So
  * "Au revoir", "au-revoir" and "  au revoir " all compare equal.
+ * Curly apostrophes fold to "'" and the oe/ae ligatures to "oe"/"ae".
  */
 export function normalizeAnswer(value: string): string {
 	return value
 		.normalize('NFD')
 		.replace(DIACRITICS, '')
+		.replace(APOSTROPHE_LOOKALIKES, "'")
 		.toLowerCase()
+		.replace(/\u0153/g, 'oe')
+		.replace(/\u00E6/g, 'ae')
 		.replace(PUNCTUATION, '')
 		.replace(/\s+/g, ' ')
 		.trim();
