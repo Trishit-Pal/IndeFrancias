@@ -346,6 +346,15 @@ describe('backup export/import', () => {
 		expect(await srsRepo.getAllCards()).toHaveLength(1);
 	});
 
+	it('accepts a backup whose settings name a language this version does not know', async () => {
+		await settingsRepo.saveSettings({ dailyGoalXp: 42 });
+		const file = JSON.parse(await exportBackup());
+		file.payload.settings.uiLanguage = 'ur';
+		file.checksum = await sha256Hex(JSON.stringify(file.payload));
+		const { payload } = await validateAndParseBackup(JSON.stringify(file));
+		expect(payload.settings?.uiLanguage).toBe('en');
+	});
+
 	describe('review-log ids on restore', () => {
 		const OVERFLOW_ID = 9007199254740992; // 2^53: past it the key generator can't advance
 		const row = (cardId: string, ts: number, id?: number) => ({
