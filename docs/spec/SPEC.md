@@ -138,7 +138,8 @@ figure in other docs).
 Authoritative ADRs live in [architecture-map](../architecture-map.md#decision-log-adrs):
 ADR-1 offline/no-backend · ADR-2 FSRS via ts-fsrs · ADR-3 adapter-static SPA · ADR-4 strict CSP ·
 ADR-5 self-hosted fonts · ~~ADR-6 Le Grand Voyage UI~~ (superseded by ADR-8) · ADR-7 mobile via
-Capacitor · ADR-8 L'Indigo Express design system. Full ADR records live in `docs/adr/`. An edit touching
+Capacitor · ADR-8 L'Indigo Express design system · ADR-9 sync merge keeps earned progress. Full ADR
+records live in `docs/adr/`. An edit touching
 an ADR is **high-severity** (see §10).
 
 ## §8 Roadmap & milestones
@@ -233,3 +234,4 @@ This spec is kept honest by the `frenchpath-spec-sync` skill + `/spec-sync` comm
 | 2026-11-10 | Whole-branch review fix wave: CAP-NOTIFY reminders via the service-worker registration (the constructor throws on Android Chrome); CAP-TTS `RecordCompare` releases the mic on unmount; CAP-BACKUP restore no longer reloads (calm message + Reload button, so the safety-copy download can finish); CAP-DESKTOP boots the `200.html` shell (unverified on a real Tauri build); Reset while offline keeps the precache + SW; stale Three.js licence entry removed; placeholder-parity check; CI job timeouts. | §4 | MEDIUM |
 | 2026-11-10 | Test baseline reconciled at `53821e7`: 473 unit + 95 e2e (92 passed, 3 conditional skips). | §5 | LOW |
 | 2026-11-11 | Pre-launch review fixes (branch `worktree-fix-launch-review-findings`; no invariant or ADR text edit). CAP-SYNC: a passed checkpoint beats a later failed attempt; streaks join across devices (zero-XP lesson replays do not count as streak days); sync files dated more than 24 h ahead are refused; import takes a safety copy first, never auto-reloads, locks the preview while importing, and its preview counts replaced items. CAP-EX: typed answers fold curly apostrophes and œ/æ. CAP-GLOSS: the bridge-text parser no longer hangs on an unmatched `*`. CAP-EXAM: a timed-out mock exam scores the section in progress. CAP-BACKUP: review-log ids are reassigned on restore; an unknown language falls back to English. Test baseline 473→537 unit, 95→100 e2e (97 passed, 3 conditional skips). | §4, §5 | MEDIUM |
+| 2026-11-11 | ADR-9 "Sync merge keeps earned progress" added (owner-approved): records the merge rules shipped in the pre-launch review fixes; full record in `docs/adr/0009-sync-merge-keeps-progress.md`. No invariant edit. | §7 | HIGH |
