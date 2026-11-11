@@ -954,6 +954,9 @@
 							{m.sync_preview_replaced({ count: syncPreview.replaced })}
 						</p>
 					{/if}
+					<p class="mt-1 text-sm text-muted" data-testid="sync-preview-safety-copy">
+						{m.settings_import_preview_safety_copy()}
+					</p>
 					{#if syncSafetyCopyFailed}
 						<p
 							class="mt-2 text-sm text-foreground"

@@ -65,6 +65,7 @@ test('sync round-trip merges progress from another device', async ({ page }) => 
 		buffer: Buffer.from(syncJson)
 	});
 	await expect(page.getByTestId('sync-preview')).toBeVisible();
+	await expect(page.getByTestId('sync-preview-safety-copy')).toBeVisible();
 	await page.getByTestId('sync-confirm').click();
 	await expect(page.getByTestId('sync-complete')).toBeVisible();
 	await Promise.all([page.waitForEvent('load'), page.getByTestId('sync-reload').click()]);
@@ -99,6 +100,7 @@ test('sync import over existing progress saves a safety copy first and does not 
 		buffer: Buffer.from(syncJson)
 	});
 	await expect(page.getByTestId('sync-preview')).toBeVisible();
+	await expect(page.getByTestId('sync-preview-safety-copy')).toBeVisible();
 	await expect(page.getByTestId('sync-preview-replaced')).toHaveCount(0);
 	await page.evaluate(() => {
 		(window as unknown as { __notReloaded: boolean }).__notReloaded = true;
@@ -145,7 +147,8 @@ test('sync preview says how many existing items the file will replace', async ({
 	// A file whose lessons were visited a minute later than this device's copy replaces them.
 	await chooseSyncFile(page, await shiftLessonDates(syncJson, MINUTE_MS));
 	await expect(page.getByTestId('sync-preview')).toBeVisible();
-	await expect(page.getByTestId('sync-preview-replaced')).toContainText(/\b1\b/);
+	await expect(page.getByTestId('sync-preview-safety-copy')).toBeVisible();
+	await expect(page.getByTestId('sync-preview-replaced')).toContainText(/\b1\b.*updated/i);
 });
 
 test('sync file with dates in the future is refused with a friendly message', async ({ page }) => {
