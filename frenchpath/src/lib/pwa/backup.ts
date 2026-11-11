@@ -204,7 +204,13 @@ export async function replaceAllData(p: BackupPayload): Promise<void> {
 		if (p.settings) await tx.objectStore('settings').put(p.settings as Settings, SETTINGS_KEY);
 		for (const r of p.progress) await tx.objectStore('progress').put(r as ProgressRecord);
 		for (const r of p.srsCards) await tx.objectStore('srsCards').put(reviveCard(r));
-		for (const r of p.reviewLog) await tx.objectStore('reviewLog').put(r as ReviewLogRecord);
+		// The file's own ids are dropped so the store assigns fresh ones: an explicit id at or
+		// above the key generator's value advances it, and one past 2^53 makes every later add fail.
+		for (const row of p.reviewLog) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars -- dropping `id`, autoIncrement reassigns it
+			const { id, ...r } = row;
+			await tx.objectStore('reviewLog').put(r as ReviewLogRecord);
+		}
 		for (const r of p.streak) await tx.objectStore('streak').put(r as StreakRecord);
 		for (const r of p.stats) await tx.objectStore('stats').put(r as DailyStats);
 		for (const r of p.skillProfile)
