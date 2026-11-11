@@ -1,6 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { openDB, deleteDB } from 'idb';
-import { getDB, resetDatabase, DatabaseBlockedError } from './db';
+import {
+	getDB,
+	resetDatabase,
+	DatabaseBlockedError,
+	DatabaseNewerError,
+	onDatabaseNotice
+} from './db';
 import * as srsRepo from './repositories/srs';
 import * as progressRepo from './repositories/progress';
 import * as settingsRepo from './repositories/settings';
@@ -236,5 +242,100 @@ describe('connection lifecycle', () => {
 			}
 		});
 		await expect(resetDatabase()).resolves.toBeUndefined();
+	});
+});
+
+describe('database notices', () => {
+	async function createNewerDatabase(): Promise<void> {
+		const newer = await openDB(DB_NAME, DB_VERSION + 1, {
+			upgrade(db) {
+				db.createObjectStore('settings');
+			}
+		});
+		newer.close();
+	}
+
+	it('rejects with DatabaseNewerError and notifies "newer" when the database is newer than the app', async () => {
+		await createNewerDatabase();
+		const notices: string[] = [];
+		const off = onDatabaseNotice((kind) => notices.push(kind));
+
+		await expect(getDB()).rejects.toBeInstanceOf(DatabaseNewerError);
+		off();
+
+		expect(notices).toEqual(['newer']);
+	});
+
+	it('does not cache the newer-database failure', async () => {
+		await createNewerDatabase();
+		const off = onDatabaseNotice(() => undefined);
+		await expect(getDB()).rejects.toBeInstanceOf(DatabaseNewerError);
+		off();
+
+		await deleteDB(DB_NAME);
+		expect((await getDB()).version).toBe(DB_VERSION);
+	});
+
+	it('notifies once per failed open even when callers share the failing open', async () => {
+		await createNewerDatabase();
+		const notices: string[] = [];
+		const off = onDatabaseNotice((kind) => notices.push(kind));
+
+		const results = await Promise.allSettled([getDB(), getDB(), getDB()]);
+		off();
+
+		expect(results.every((r) => r.status === 'rejected')).toBe(true);
+		expect(notices).toEqual(['newer']);
+	});
+
+	it('notifies "blocked" while another connection holds an older version, then opens once it closes', async () => {
+		const stubborn = await openDB(DB_NAME, DB_VERSION - 1, {
+			upgrade(db) {
+				db.createObjectStore('settings');
+			}
+		}); // never closes on versionchange, like a tab running older code
+		const notices: string[] = [];
+		const blockedSeen = new Promise<void>((resolve) => {
+			const off = onDatabaseNotice((kind) => {
+				notices.push(kind);
+				off();
+				resolve();
+			});
+		});
+
+		const opening = getDB();
+		await blockedSeen;
+		expect(notices).toEqual(['blocked']);
+
+		stubborn.close(); // the open was not cancelled: it completes now
+		expect((await opening).version).toBe(DB_VERSION);
+	});
+
+	it('still rejects with DatabaseNewerError and reaches later listeners when a listener throws', async () => {
+		await createNewerDatabase();
+		const calls: string[] = [];
+		const offThrowing = onDatabaseNotice(() => {
+			throw new Error('listener bug');
+		});
+		const offRecording = onDatabaseNotice((kind) => calls.push(kind));
+
+		const error = await getDB().catch((e: unknown) => e);
+		offThrowing();
+		offRecording();
+
+		expect(error).toBeInstanceOf(DatabaseNewerError);
+		expect((error as DatabaseNewerError).name).toBe('DatabaseNewerError');
+		expect(calls).toEqual(['newer']);
+	});
+
+	it('does not call a listener after it unsubscribes', async () => {
+		await createNewerDatabase();
+		const calls: string[] = [];
+		const off = onDatabaseNotice((kind) => calls.push(kind));
+		off();
+
+		await expect(getDB()).rejects.toBeInstanceOf(DatabaseNewerError);
+
+		expect(calls).toEqual([]);
 	});
 });

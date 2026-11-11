@@ -386,6 +386,8 @@
 	"save_failed_banner": "Something didn't save. Your earlier progress is safe.",
 	"save_failed_dismiss": "Dismiss",
 	"unexpected_error_banner": "Something went wrong. Your saved progress is safe.",
+	"db_update_newer": "FrenchPath doosre tab mein update ho gaya hai. Aage badhne ke liye is tab ko reload karein.",
+	"db_update_blocked": "Ek update wait kar raha hai. Use poora karne ke liye FrenchPath ke doosre tabs band karein.",
 	"update_ready": "A new version is ready.",
 	"update_now": "Update",
 	"update_later": "Later",

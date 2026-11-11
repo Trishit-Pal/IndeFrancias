@@ -23,10 +23,48 @@ export class DatabaseBlockedError extends Error {
 }
 
 /**
+ * The stored database is newer than this code (another tab already runs an updated version).
+ * Not corruption: reloading this tab to load the new code is the fix, never Reset.
+ */
+export class DatabaseNewerError extends Error {
+	constructor() {
+		super('The database was upgraded by a newer version of the app.');
+		this.name = 'DatabaseNewerError';
+	}
+}
+
+export type DatabaseNoticeKind = 'newer' | 'blocked';
+
+const noticeListeners = new Set<(kind: DatabaseNoticeKind) => void>();
+
+/** Hears about open problems the learner should know of. Returns an unsubscribe function. */
+export function onDatabaseNotice(listener: (kind: DatabaseNoticeKind) => void): () => void {
+	noticeListeners.add(listener);
+	return () => {
+		noticeListeners.delete(listener);
+	};
+}
+
+function notify(kind: DatabaseNoticeKind): void {
+	for (const listener of [...noticeListeners]) {
+		try {
+			listener(kind);
+		} catch {
+			// A faulty listener must never break opening the database or hide it from the others.
+		}
+	}
+}
+
+function isVersionError(error: unknown): boolean {
+	return error instanceof DOMException && error.name === 'VersionError';
+}
+
+/**
  * Returns the shared database handle, opening it on first use.
  * Safe to call repeatedly; the open promise is memoised until the connection
  * is lost (another tab upgrades/deletes, or the browser kills it) or the open
- * fails, after which the next call opens afresh.
+ * fails, after which the next call opens afresh. A database newer than this
+ * code rejects with `DatabaseNewerError` (and notifies `'newer'`).
  */
 export function getDB(): Promise<IDBPDatabase<FrenchPathDB>> {
 	if (typeof indexedDB === 'undefined') {
@@ -34,6 +72,11 @@ export function getDB(): Promise<IDBPDatabase<FrenchPathDB>> {
 	}
 	if (!dbPromise) {
 		const opening: Promise<IDBPDatabase<FrenchPathDB>> = openDB<FrenchPathDB>(DB_NAME, DB_VERSION, {
+			// Another tab keeps an older connection open: the open stays queued (it is not cancelled)
+			// and completes when that tab closes; the learner is told why nothing is happening.
+			blocked() {
+				notify('blocked');
+			},
 			// Another tab wants to upgrade or delete: step aside so it is never blocked on us.
 			blocking() {
 				if (dbPromise === opening) dbPromise = null;
@@ -69,12 +112,14 @@ export function getDB(): Promise<IDBPDatabase<FrenchPathDB>> {
 					db.createObjectStore('assessments', { keyPath: 'assessmentId' });
 				}
 			}
+		}).catch((error: unknown) => {
+			// A failed open must not be cached forever: the next call retries.
+			if (dbPromise === opening) dbPromise = null;
+			if (!isVersionError(error)) throw error;
+			notify('newer');
+			throw new DatabaseNewerError();
 		});
 		dbPromise = opening;
-		// A failed open must not be cached forever: the next call retries.
-		opening.catch(() => {
-			if (dbPromise === opening) dbPromise = null;
-		});
 	}
 	return dbPromise;
 }
@@ -121,7 +166,9 @@ export async function writeAtomically<Name extends StoreNames<FrenchPathDB>, T>(
  * `DatabaseBlockedError` if another tab keeps the database open, rather than
  * hanging; the delete stays queued and completes once that tab closes, which the
  * error's `completed` promise reports. A failed open (the corrupted-database
- * case, when Reset is the escape hatch) must not stop the delete.
+ * case, when Reset is the escape hatch) must not stop the delete. A database
+ * that is merely newer than the running code (`DatabaseNewerError`) is not
+ * corrupted: reloading is the fix there, so Reset must not be suggested for it.
  */
 export async function resetDatabase(): Promise<void> {
 	if (dbPromise) {
