@@ -317,6 +317,47 @@ describe('mergePayloads', () => {
 		});
 	});
 
+	describe('summary.replaced counts shared records where the remote one wins', () => {
+		it('counts a shared card whose remote last_review is later, not as a new card', () => {
+			const local = payload({ srsCards: [card('c1', '2026-01-01T00:00:00.000Z')] });
+			const remote = payload({ srsCards: [card('c1', '2026-02-01T00:00:00.000Z')] });
+			const { summary } = mergePayloads(local, remote);
+			expect(summary.replaced).toBe(1);
+			expect(summary.newCards).toBe(0);
+		});
+
+		it('does not count a shared card when local is later', () => {
+			const local = payload({ srsCards: [card('c1', '2026-02-01T00:00:00.000Z')] });
+			const remote = payload({ srsCards: [card('c1', '2026-01-01T00:00:00.000Z')] });
+			expect(mergePayloads(local, remote).summary.replaced).toBe(0);
+		});
+
+		it('is 0 for an empty remote and for a file identical to local', () => {
+			const local = payload({
+				progress: [prog('u1', 100)],
+				srsCards: [card('c1', '2026-01-01T00:00:00.000Z')],
+				skillProfile: [skillRec('reading', 'A1', 1)],
+				assessments: [assessment('a1', 1)]
+			});
+			expect(mergePayloads(local, payload()).summary.replaced).toBe(0);
+			expect(mergePayloads(local, structuredClone(local)).summary.replaced).toBe(0);
+		});
+
+		it('counts progress, skill profile and assessments the remote wins, once each', () => {
+			const local = payload({
+				progress: [prog('u1', 100)],
+				skillProfile: [skillRec('reading', 'A1', 1)],
+				assessments: [assessment('a1', 100, 40, { xpAwarded: 0, lastFailedAt: 100 })]
+			});
+			const remote = payload({
+				progress: [prog('u1', 200)],
+				skillProfile: [skillRec('reading', 'B1', 2)],
+				assessments: [assessment('a1', 50, 90, { xpAwarded: 80 })] // pass beats later fail
+			});
+			expect(mergePayloads(local, remote).summary.replaced).toBe(3);
+		});
+	});
+
 	it('settings: remote theme never overwrites local; celebratedMilestones is unioned', () => {
 		const local = payload({
 			settings: settings({ theme: 'dark', celebratedMilestones: [1, 2] })
@@ -356,7 +397,13 @@ describe('mergePayloads', () => {
 		expect(merged.skillProfile).toEqual(local.skillProfile);
 		expect(merged.assessments).toEqual(local.assessments);
 		expect(merged.settings).toEqual(local.settings);
-		expect(summary).toEqual({ newReviews: 0, newProgress: 0, newCards: 0, newAssessments: 0 });
+		expect(summary).toEqual({
+			newReviews: 0,
+			newProgress: 0,
+			newCards: 0,
+			newAssessments: 0,
+			replaced: 0
+		});
 	});
 
 	it('is symmetric on disjoint data: A⊕B and B⊕A contain the same records', () => {

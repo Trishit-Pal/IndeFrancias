@@ -8,7 +8,8 @@
 // freezes from the later snapshot (equal dates: min available, max used); skillProfile LWW on
 // updatedAt; assessments: a passed record (xpAwarded > 0) beats a failed one,
 // else LWW on completedAt, lastFailedAt = max of both. Monotonic values use max so a
-// merge can never shrink earned progress.
+// merge can never shrink earned progress. summary.replaced counts shared records
+// (progress, srsCards, skillProfile, assessments) where the remote record wins.
 import type { BackupPayload } from './backupSchema';
 import { daysBetween } from '../utils/date';
 
@@ -17,6 +18,8 @@ export interface MergeSummary {
 	newProgress: number;
 	newCards: number;
 	newAssessments: number;
+	/** Records on both sides where the remote one wins (progress, cards, skills, assessments). */
+	replaced: number;
 }
 export interface MergeResult {
 	merged: BackupPayload;
@@ -39,6 +42,7 @@ const lastReviewEpoch = (c: { last_review?: string }): number =>
 	c.last_review ? new Date(c.last_review).getTime() : 0;
 
 export function mergePayloads(local: BackupPayload, remote: BackupPayload): MergeResult {
+	let replaced = 0;
 	// progress: per lessonId, higher lastVisited wins; score/bestCorrect take field-wise max
 	const progressMap = new Map<string, Progress>(local.progress.map((p) => [p.lessonId, p]));
 	let newProgress = 0;
@@ -49,6 +53,7 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 			newProgress++;
 		} else {
 			const winner = r.lastVisited > l.lastVisited ? r : l;
+			if (winner === r) replaced++;
 			progressMap.set(r.lessonId, {
 				...winner,
 				score: Math.max(l.score, r.score),
@@ -70,6 +75,7 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 		const lEpoch = lastReviewEpoch(l);
 		const rEpoch = lastReviewEpoch(r);
 		const winner = rEpoch !== lEpoch ? (rEpoch > lEpoch ? r : l) : r.reps > l.reps ? r : l;
+		if (winner === r) replaced++;
 		cardsMap.set(r.cardId, winner);
 	}
 
@@ -112,7 +118,9 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 	const skillMap = new Map<string, SkillProfileT>(local.skillProfile.map((s) => [s.skill, s]));
 	for (const r of remote.skillProfile) {
 		const l = skillMap.get(r.skill);
-		skillMap.set(r.skill, !l || r.updatedAt > l.updatedAt ? r : l);
+		const remoteWins = !l || r.updatedAt > l.updatedAt;
+		if (l && remoteWins) replaced++;
+		skillMap.set(r.skill, remoteWins ? r : l);
 	}
 
 	// assessments: per assessmentId, a passed record beats a failed one; else later completedAt wins
@@ -126,6 +134,7 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 			assessmentsMap.set(r.assessmentId, r);
 			newAssessments++;
 		} else {
+			if (assessmentWinner(l, r) === r) replaced++;
 			assessmentsMap.set(r.assessmentId, mergeAssessment(l, r));
 		}
 	}
@@ -146,7 +155,7 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 
 	return {
 		merged,
-		summary: { newReviews, newProgress, newCards, newAssessments }
+		summary: { newReviews, newProgress, newCards, newAssessments, replaced }
 	};
 }
 
