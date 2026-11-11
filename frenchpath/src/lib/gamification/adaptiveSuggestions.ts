@@ -13,10 +13,14 @@ export function suggestUnitForWeakSkill(
 	const weakest = skillProfiles.find((p) => p.skill === weakestName);
 	if (!weakest) return null;
 
-	const available = units.filter((u) => (states.get(u.id) ?? 'locked') !== 'locked');
-	const candidates = available.filter((u) =>
-		u.objective.toLowerCase().includes(weakest.skill.replace('spoken', 'speaking'))
-	);
+	// Locked units can't be started and completed ones are done: neither is a suggestion.
+	const available = units.filter((u) => {
+		const status = states.get(u.id) ?? 'locked';
+		return status !== 'locked' && status !== 'completed';
+	});
+	// Objectives are matched lower-case; both spoken skills share the "speaking" keyword.
+	const keyword = weakest.skill.startsWith('spoken') ? 'speaking' : weakest.skill;
+	const candidates = available.filter((u) => u.objective.toLowerCase().includes(keyword));
 
 	const pool =
 		candidates.length > 0
