@@ -419,6 +419,16 @@ describe('mergePayloads', () => {
 			expect(mergePayloads(a, b).merged.stats).toEqual([stat(DAY, 15, 3, 0, 3)]);
 		});
 
+		it('the day takes the lower of the two bounds on the combined review count', () => {
+			// A counts 4 reviews but holds 9 rows; B counts 3 and holds 3 others. A's count plus B's
+			// unseen rows is 7; B's count plus A's unseen rows is 12. The lower bound, 7, is the total.
+			const a = payload({ stats: [stat(DAY, 20, 5, 0, 4)], reviewLog: logRows('a', 9) });
+			const b = payload({ stats: [stat(DAY, 15, 5, 0, 3)], reviewLog: logRows('b', 3) });
+			const ab = mergePayloads(a, b).merged;
+			expect(ab.stats).toEqual([stat(DAY, 35, 5, 0, 7)]);
+			expect(mergePayloads(b, a).merged.stats).toEqual(statsOf(ab));
+		});
+
 		it('importing the same file a second time changes nothing', () => {
 			const a = payload({ stats: [stat(DAY, 15, 3, 0, 3)], reviewLog: logRows('a', 3) });
 			const b = payload({ stats: [stat(DAY, 40, 10, 1, 0)] });
