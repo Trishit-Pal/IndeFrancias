@@ -40,8 +40,8 @@ export function isClose(a: string, b: string): boolean {
 
 /** "j'ai" / "j’ai" / "est-ce" → ["j","ai"] / ["est","ce"]. Vosk hears elisions
  *  and hyphenations as separate words, so BOTH sides must tokenize alike.
- *  Split the RAW text first: normalizeAnswer deletes curly ’, which would
- *  otherwise fuse "j’ai" into "jai" with no split point left. */
+ *  Split the RAW text first: normalizeAnswer folds the curly ’ to a straight
+ *  ' and keeps it, so splitting afterwards would leave "j'ai" as one word. */
 function subWords(raw: string): string[] {
 	return raw
 		.split(/['’-]+/)

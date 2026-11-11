@@ -7,10 +7,14 @@
 // sides' own counts (negatives read as 0) and a "-only" row is one whose key the other log lacks,
 // bucketed by its local day; xp = max of each side's non-review XP (xp minus XP_PER_REVIEW per its
 // reviews) plus XP_PER_REVIEW * reviewsDone; minutes and lessonsCompleted field-wise max. Rows both
-// sides hold add nothing, so a self-import or repeated import is a no-op in any time zone. Lesson XP
-// from two devices on one day is still a max (it cannot be recomputed), so it can undercount. Reviews
-// exchanged for the first time near midnight between devices in different time zones may be counted
-// on a neighbouring day once. A date on one side only is copied as is;
+// sides hold add nothing, so a self-import or repeated import is a no-op in any time zone, as long
+// as each day's xp is at least XP_PER_REVIEW * reviewsDone (always true from the app). A day below
+// that (possible only in a hand-edited file) is raised once to the consistent value and then stays
+// put. Lesson XP from two devices on one day is still a max (it cannot be recomputed), so it can
+// undercount. The first time reviews made near midnight are exchanged between devices in different
+// time zones, a day's count can come out too low or too high by the exchanged rows near midnight,
+// and a day with no real activity can become active (so a streak can lengthen). That happens once
+// per exchange; later syncs do not repeat it. A date on one side only is copied as is;
 // streak joined: later lastActiveDate, current = max(that day plus the consecutive active
 // merged-stats days before it, devices' own count on that date, an earlier device's count plus the
 // gap when active days connect them), longest = max of all,

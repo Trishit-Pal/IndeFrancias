@@ -33,8 +33,9 @@ jobs:
       - name: Dependency audit (shipped packages, blocking)
         run: npm audit --omit=dev --audit-level=high
 
-      # Advisory until the two major upgrades (@capacitor/assets 4, eslint 9.39.5)
-      # are done; the remaining high/critical advisories are in build tooling.
+      # Advisory until the remaining build-tooling advisories are cleared. They need
+      # @capacitor/assets 4, and the eslint/minimatch chain's suggested fix is a
+      # downgrade to eslint 9.x.
       - name: Dependency audit (all packages, advisory)
         run: npm audit --audit-level=high
         continue-on-error: true
