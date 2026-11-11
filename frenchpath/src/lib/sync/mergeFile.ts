@@ -8,6 +8,7 @@ import {
 	exportBackup,
 	validateAndParseBackup,
 	mergeAllDataAtomically,
+	readLocalPayload,
 	MAX_BACKUP_BYTES
 } from '../pwa/backup';
 import { type BackupPayload } from '../pwa/backupSchema';
@@ -85,18 +86,14 @@ async function decryptAndValidate(fileJson: string, passphrase: string): Promise
 	return payload;
 }
 
-async function currentLocalPayload(): Promise<BackupPayload> {
-	const json = await exportBackup();
-	return (JSON.parse(json) as { payload: BackupPayload }).payload;
-}
-
 /** Decrypt + validate + dry-run merge against the current DB. Mutates nothing. */
 export async function previewSyncMerge(
 	fileJson: string,
 	passphrase: string
 ): Promise<MergeSummary> {
 	const remote = await decryptAndValidate(fileJson, passphrase);
-	const local = await currentLocalPayload();
+	// A preview must not depend on the local data being exportable as a backup.
+	const local = await readLocalPayload();
 	return mergePayloads(local, remote).summary;
 }
 

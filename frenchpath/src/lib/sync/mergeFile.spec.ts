@@ -256,6 +256,42 @@ describe('sync file export/preview/import', () => {
 		expect((await progressRepo.getProgress('other'))?.score).toBe(60);
 	});
 
+	describe('with a local row the backup schema rejects', () => {
+		// The app's type allows any number; the backup schema caps score at 100.
+		const outOfRange = {
+			lessonId: 'bad',
+			status: 'completed' as const,
+			score: 150,
+			attempts: 1,
+			lastVisited: 1,
+			cefrLevel: 'A1' as const
+		};
+		const seed = async (): Promise<string> => {
+			await progressRepo.putProgress({ ...outOfRange, lessonId: 'remote', score: 70 });
+			const remoteFile = await exportSyncFile(PASSPHRASE);
+			await resetDatabase();
+			await progressRepo.putProgress(outOfRange);
+			return remoteFile;
+		};
+
+		it('still previews a valid sync file', async () => {
+			const summary = await previewSyncMerge(await seed(), PASSPHRASE);
+			expect(summary.newProgress).toBe(1);
+		});
+
+		it('leaves the database unchanged while previewing', async () => {
+			const remoteFile = await seed();
+			const before = await progressRepo.getAllProgress();
+			await previewSyncMerge(remoteFile, PASSPHRASE);
+			expect(await progressRepo.getAllProgress()).toEqual(before);
+		});
+
+		it('still refuses to export a backup', async () => {
+			await seed();
+			await expect(exportBackup()).rejects.toThrow(/Backup could not be created/);
+		});
+	});
+
 	it('exports MAX_SYNC_BYTES aliased from the backup size limit', () => {
 		expect(MAX_SYNC_BYTES).toBeGreaterThan(0);
 	});

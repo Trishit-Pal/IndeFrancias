@@ -209,6 +209,11 @@ export async function replaceAllData(p: BackupPayload): Promise<void> {
 }
 
 type AllStoresTx = IDBPTransaction<FrenchPathDB, StoreNames<FrenchPathDB>[], 'readwrite'>;
+type ReadableStoresTx = IDBPTransaction<
+	FrenchPathDB,
+	StoreNames<FrenchPathDB>[],
+	'readonly' | 'readwrite'
+>;
 
 /** Clears every store and writes `p`, inside the caller's transaction (only IDB requests are awaited). */
 async function writeAllStores(tx: AllStoresTx, p: BackupPayload): Promise<void> {
@@ -234,7 +239,7 @@ async function writeAllStores(tx: AllStoresTx, p: BackupPayload): Promise<void> 
 }
 
 /** Reads every store inside the caller's transaction, in the plain shape an export file carries. */
-async function readAllStores(tx: AllStoresTx): Promise<BackupPayload> {
+async function readAllStores(tx: ReadableStoresTx): Promise<BackupPayload> {
 	const rows = {
 		settings: (await tx.objectStore('settings').get(SETTINGS_KEY)) ?? null,
 		progress: await tx.objectStore('progress').getAll(),
@@ -248,6 +253,15 @@ async function readAllStores(tx: AllStoresTx): Promise<BackupPayload> {
 	// Same JSON round trip an export goes through (dates become ISO strings, undefined fields drop).
 	// Synchronous, so the transaction stays alive.
 	return JSON.parse(JSON.stringify(rows)) as BackupPayload;
+}
+
+/** Reads all local data in one read-only transaction, in the shape the merge receives. Writes nothing and does not validate. */
+export async function readLocalPayload(): Promise<BackupPayload> {
+	const db = await getDB();
+	const tx = db.transaction([...STORES], 'readonly');
+	const payload = await readAllStores(tx);
+	await tx.done;
+	return payload;
 }
 
 /**
