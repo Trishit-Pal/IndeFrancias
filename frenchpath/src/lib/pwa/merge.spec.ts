@@ -467,6 +467,45 @@ describe('mergePayloads', () => {
 			expect(byDate.get('2026-07-11')).toEqual(stat('2026-07-11', 40, 10, 1, 0));
 		});
 
+		it('a device importing its own file changes nothing, even when the stats and log buckets disagree', () => {
+			const rows = logRows('s', 5);
+			const a = payload({ stats: [stat(DAY, 10, 2, 0, 2)], reviewLog: rows });
+			const b = payload({ stats: [stat(DAY, 10, 2, 0, 2)], reviewLog: structuredClone(rows) });
+			expect(mergePayloads(a, b).merged.stats).toEqual([stat(DAY, 10, 2, 0, 2)]);
+		});
+
+		it('a day that was one-sided and later becomes shared with the same rows stays unchanged', () => {
+			// 20 XP / 4 reviews with nine rows on the day: the rows are not what the stats count
+			const a = payload({ stats: [stat(DAY, 20, 2, 0, 4)], reviewLog: logRows('s', 9) });
+			const first = mergePayloads(payload(), a).merged;
+			expect(first.stats).toEqual([stat(DAY, 20, 2, 0, 4)]);
+			expect(mergePayloads(first, a).merged.stats).toEqual([stat(DAY, 20, 2, 0, 4)]);
+			expect(mergePayloads(a, first).merged.stats).toEqual([stat(DAY, 20, 2, 0, 4)]);
+		});
+
+		it('a negative reviewsDone (hand-edited file) neither inflates XP nor goes negative', () => {
+			const a = payload({ stats: [stat(DAY, 10, 1, 0, -1000)] });
+			const b = payload({ stats: [stat(DAY, 0, 0, 0, 0)] });
+			for (const [x, y] of [
+				[a, b],
+				[b, a]
+			]) {
+				const day = mergePayloads(x, y).merged.stats[0];
+				expect(day.xp).toBe(10);
+				expect(day.reviewsDone).toBe(0);
+			}
+		});
+
+		it('partly overlapping logs add only the rows each side lacks, in both directions', () => {
+			const row = (cardId: string, i: number) => review(undefined, cardId, NOON + i * 60_000, 3);
+			const [ra, rb, rc, rd, re] = ['a', 'b', 'c', 'd', 'e'].map(row);
+			const a = payload({ stats: [stat(DAY, 15, 3, 0, 3)], reviewLog: [ra, rb, rc] });
+			const b = payload({ stats: [stat(DAY, 20, 4, 0, 4)], reviewLog: [rb, rc, rd, re] });
+			const ab = mergePayloads(a, b).merged.stats;
+			expect(ab).toEqual([stat(DAY, 25, 4, 0, 5)]);
+			expect(mergePayloads(b, a).merged.stats).toEqual(ab);
+		});
+
 		it('log rows from other days are not counted for this date', () => {
 			const otherDay = review(undefined, 'z', NOON + 3 * 86_400_000, 3);
 			const a = payload({ stats: [stat(DAY, 10, 1, 0, 2)], reviewLog: [otherDay] });

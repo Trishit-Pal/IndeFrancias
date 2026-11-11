@@ -3,11 +3,14 @@
 // settings local-wins (milestones unioned); progress LWW on lastVisited with
 // field-wise max score/bestCorrect; srsCards LWW on last_review (tie: reps);
 // reviewLog union deduped by (cardId,ts,grade); stats per date present on both sides:
-// reviewsDone = max(either side, merged-log rows on that day), xp = max of each side's non-review XP
-// (xp minus XP_PER_REVIEW per its reviews) plus XP_PER_REVIEW * reviewsDone, minutes and
-// lessonsCompleted field-wise max. Lesson XP from two devices on one day is still a max (it cannot be
-// recomputed), so it is the one part that can undercount; reviews are never lost or double-counted.
-// A date on one side only is copied as is;
+// reviewsDone = max(lr, rr, min(lr + remote-only rows, rr + local-only rows)) where lr/rr are the
+// sides' own counts (negatives read as 0) and a "-only" row is one whose key the other log lacks,
+// bucketed by its local day; xp = max of each side's non-review XP (xp minus XP_PER_REVIEW per its
+// reviews) plus XP_PER_REVIEW * reviewsDone; minutes and lessonsCompleted field-wise max. Rows both
+// sides hold add nothing, so a self-import or repeated import is a no-op in any time zone. Lesson XP
+// from two devices on one day is still a max (it cannot be recomputed), so it can undercount. Reviews
+// exchanged for the first time near midnight between devices in different time zones may be counted
+// on a neighbouring day once. A date on one side only is copied as is;
 // streak joined: later lastActiveDate, current = max(that day plus the consecutive active
 // merged-stats days before it, devices' own count on that date, an earlier device's count plus the
 // gap when active days connect them), longest = max of all,
@@ -101,11 +104,17 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 	});
 
 	// stats: a date on one side only is kept as is; a shared date follows mergeDayStats
-	const logRowsPerDay = countRowsPerDay(mergedReviews);
+	const localOnlyPerDay = countRowsPerDay(local.reviewLog, remote.reviewLog);
+	const remoteOnlyPerDay = countRowsPerDay(remote.reviewLog, local.reviewLog);
 	const statsMap = new Map<string, StatsT>(local.stats.map((s) => [s.date, s]));
 	for (const r of remote.stats) {
 		const l = statsMap.get(r.date);
-		statsMap.set(r.date, l ? mergeDayStats(l, r, logRowsPerDay.get(r.date) ?? 0) : r);
+		statsMap.set(
+			r.date,
+			l
+				? mergeDayStats(l, r, localOnlyPerDay.get(r.date) ?? 0, remoteOnlyPerDay.get(r.date) ?? 0)
+				: r
+		);
 	}
 
 	// streak: joined using the merged stats, so it must come after them
@@ -156,23 +165,36 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 	};
 }
 
-function countRowsPerDay(log: ReviewLogT[]): Map<string, number> {
+/** Rows of `log` that `other` does not hold (same key as the dedup), counted per local day key. */
+function countRowsPerDay(log: ReviewLogT[], other: ReviewLogT[]): Map<string, number> {
+	const otherKeys = new Set(other.map(reviewKey));
 	const counts = new Map<string, number>();
 	for (const row of log) {
+		if (otherKeys.has(reviewKey(row))) continue;
 		const day = todayKey(new Date(row.ts));
 		counts.set(day, (counts.get(day) ?? 0) + 1);
 	}
 	return counts;
 }
 
-const nonReviewXp = (s: StatsT): number => Math.max(0, s.xp - XP_PER_REVIEW * s.reviewsDone);
+// A hand-edited negative count must not inflate XP.
+const reviewCount = (s: StatsT): number => Math.max(0, s.reviewsDone);
+const nonReviewXp = (s: StatsT): number => Math.max(0, s.xp - XP_PER_REVIEW * reviewCount(s));
 
-// Reviews are rebuilt from the merged log, so two devices' reviews add up and a repeated import
-// cannot count them twice. Everything else on the day (lesson and exam XP) cannot be recomputed, so
-// it keeps the larger side. XP never drops below the larger side's: that side's own review XP is
-// already inside its nonReviewXp split, and mergedReviews is at least its reviewsDone.
-function mergeDayStats(l: StatsT, r: StatsT, logRows: number): StatsT {
-	const reviewsDone = Math.max(l.reviewsDone, r.reviewsDone, logRows);
+// Only reviews one side lacks are added to the other side's count; rows both sides already hold add
+// nothing, so re-merging data both devices have (or importing a device's own file) changes nothing.
+// Everything else on the day (lesson and exam XP) cannot be recomputed, so it keeps the larger side.
+// XP never drops below the larger side's: that side's own review XP is inside its nonReviewXp split
+// and mergedReviews is at least its own count.
+function mergeDayStats(
+	l: StatsT,
+	r: StatsT,
+	localOnlyRows: number,
+	remoteOnlyRows: number
+): StatsT {
+	const lr = reviewCount(l);
+	const rr = reviewCount(r);
+	const reviewsDone = Math.max(lr, rr, Math.min(lr + remoteOnlyRows, rr + localOnlyRows));
 	return {
 		date: r.date,
 		xp: Math.max(nonReviewXp(l), nonReviewXp(r)) + XP_PER_REVIEW * reviewsDone,
