@@ -2,12 +2,15 @@
 // Pure device-to-device merge of two backup payloads. Strategy per store:
 // settings local-wins (milestones unioned); progress LWW on lastVisited with
 // field-wise max score/bestCorrect; srsCards LWW on last_review (tie: reps);
-// reviewLog union deduped by (cardId,ts,grade); streak longest=max, rest from
-// later lastActiveDate; stats field-wise max per date; skillProfile LWW on
+// reviewLog union deduped by (cardId,ts,grade); stats field-wise max per date;
+// streak joined: later lastActiveDate, current = max(consecutive active merged-stats
+// days ending there, devices' own count on that date), longest = max of all,
+// freezes from the later snapshot (equal dates: min available, max used); skillProfile LWW on
 // updatedAt; assessments: a passed record (xpAwarded > 0) beats a failed one,
 // else LWW on completedAt, lastFailedAt = max of both. Monotonic values use max so a
 // merge can never shrink earned progress.
 import type { BackupPayload } from './backupSchema';
+import { daysBetween } from '../utils/date';
 
 export interface MergeSummary {
 	newReviews: number;
@@ -84,9 +87,6 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 		return rest;
 	});
 
-	// streak: longestStreak = max of both; rest of the fields come from the later-lastActiveDate snapshot
-	const mergedStreak = mergeStreak(local.streak[0], remote.streak[0]);
-
 	// stats: per date, every field takes field-wise max (never summed — avoids double-counting)
 	const statsMap = new Map<string, StatsT>(local.stats.map((s) => [s.date, s]));
 	for (const r of remote.stats) {
@@ -104,6 +104,9 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 				: r
 		);
 	}
+
+	// streak: joined using the merged stats, so it must come after them
+	const mergedStreak = mergeStreak(local.streak[0], remote.streak[0], [...statsMap.values()]);
 
 	// skillProfile: per skill, higher updatedAt wins the whole record
 	const skillMap = new Map<string, SkillProfileT>(local.skillProfile.map((s) => [s.skill, s]));
@@ -164,11 +167,45 @@ function mergeAssessment(local: AssessmentT, remote: AssessmentT): AssessmentT {
 	return failedTimes.length > 0 ? { ...rest, lastFailedAt: Math.max(...failedTimes) } : rest;
 }
 
-function mergeStreak(local: StreakT | undefined, remote: StreakT | undefined): StreakT | undefined {
+const isActiveDay = (s: StatsT): boolean => s.xp > 0 || s.lessonsCompleted > 0 || s.reviewsDone > 0;
+
+/** Consecutive active days ending on `end` (0 when `end` itself is not active). */
+function activeRunEndingOn(end: string, stats: StatsT[]): number {
+	const days = stats
+		.filter((s) => isActiveDay(s) && s.date <= end)
+		.map((s) => s.date)
+		.sort()
+		.reverse();
+	let run = 0;
+	for (const day of days) {
+		if (daysBetween(day, end) !== run) break;
+		run++;
+	}
+	return run;
+}
+
+// A streak is the longer of "days recounted from merged stats" and the device's own count; the own
+// count is kept because a freeze bridge is stored only as a counter, not as an active day.
+function mergeStreak(
+	local: StreakT | undefined,
+	remote: StreakT | undefined,
+	mergedStats: StatsT[]
+): StreakT | undefined {
 	if (!local) return remote;
 	if (!remote) return local;
-	const snapshot = remote.lastActiveDate > local.lastActiveDate ? remote : local;
-	return { ...snapshot, longestStreak: Math.max(local.longestStreak, remote.longestStreak) };
+	const lastActiveDate =
+		local.lastActiveDate > remote.lastActiveDate ? local.lastActiveDate : remote.lastActiveDate;
+	const current = [local, remote].filter((s) => s.lastActiveDate === lastActiveDate);
+	const own = Math.max(...current.map((s) => s.currentStreak));
+	const currentStreak = Math.max(activeRunEndingOn(lastActiveDate, mergedStats), own);
+	return {
+		id: 'streak',
+		currentStreak,
+		longestStreak: Math.max(local.longestStreak, remote.longestStreak, currentStreak),
+		lastActiveDate,
+		freezesAvailable: Math.min(...current.map((s) => s.freezesAvailable)),
+		freezesUsed: Math.max(...current.map((s) => s.freezesUsed))
+	};
 }
 
 function mergeSettings(local: SettingsT | null, remote: SettingsT | null): SettingsT | null {

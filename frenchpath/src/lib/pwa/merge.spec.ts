@@ -2,6 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import { mergePayloads } from './merge';
 import type { BackupPayload } from './backupSchema';
+import { lastNDayKeys } from '../utils/date';
 
 const payload = (over: Partial<BackupPayload> = {}): BackupPayload => ({
 	settings: null,
@@ -160,15 +161,80 @@ describe('mergePayloads', () => {
 		expect(local.reviewLog[0].id).toBe(1); // inputs untouched
 	});
 
-	it('streak: longest is the max of both; current snapshot comes from the later lastActiveDate', () => {
-		const local = payload({ streak: [streakRec(3, 7, '2026-07-01', 1, 0)] });
-		const remote = payload({ streak: [streakRec(10, 12, '2026-07-05', 0, 2)] });
-		const { merged } = mergePayloads(local, remote);
-		expect(merged.streak).toHaveLength(1);
-		expect(merged.streak[0].longestStreak).toBe(12);
-		expect(merged.streak[0].currentStreak).toBe(10);
-		expect(merged.streak[0].lastActiveDate).toBe('2026-07-05');
-		expect(merged.streak[0].freezesUsed).toBe(2);
+	describe('streak: joined across devices', () => {
+		const D = '2026-07-10';
+		// `n` consecutive active stats days ending on `end`
+		const activeDaysEndingOn = (end: string, n: number) =>
+			lastNDayKeys(n, new Date(`${end}T00:00:00`)).map((d) => stat(d, 10, 5, 1, 1));
+
+		it('later lastActiveDate sets the date and freezes; own streak survives when stats are silent', () => {
+			const local = payload({ streak: [streakRec(3, 7, '2026-07-01', 1, 0)] });
+			const remote = payload({ streak: [streakRec(10, 12, '2026-07-05', 0, 2)] });
+			const { merged } = mergePayloads(local, remote);
+			expect(merged.streak).toEqual([streakRec(10, 12, '2026-07-05', 0, 2)]);
+		});
+
+		it('adds the old phone run to the new phone day and agrees in both directions', () => {
+			const a = payload({
+				streak: [streakRec(30, 30, '2026-07-09')],
+				stats: activeDaysEndingOn('2026-07-09', 30)
+			});
+			const b = payload({
+				streak: [streakRec(1, 5, D)],
+				stats: activeDaysEndingOn(D, 1)
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak).toEqual([streakRec(31, 31, D)]);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('does not revive a stale streak across a gap', () => {
+			const a = payload({
+				streak: [streakRec(30, 30, '2026-07-05')],
+				stats: activeDaysEndingOn('2026-07-05', 30)
+			});
+			const b = payload({
+				streak: [streakRec(2, 2, D)],
+				stats: activeDaysEndingOn(D, 2)
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(2);
+			expect(merged.streak[0].longestStreak).toBe(30);
+		});
+
+		it('keeps a freeze-bridged streak that the stats alone cannot rebuild', () => {
+			const b = payload({
+				streak: [streakRec(10, 10, D, 0, 1)],
+				stats: [stat(D, 10, 5, 1, 1), stat('2026-07-08', 10, 5, 1, 1)] // gap at 2026-07-09
+			});
+			const { merged } = mergePayloads(payload(), b);
+			expect(merged.streak[0].currentStreak).toBe(10);
+			expect(mergePayloads(b, payload()).merged.streak[0].currentStreak).toBe(10);
+		});
+
+		it('a minutes-only day is not active, so it does not join the older run', () => {
+			const a = payload({
+				streak: [streakRec(4, 4, '2026-07-09')],
+				stats: activeDaysEndingOn('2026-07-09', 4)
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: [stat(D, 0, 20, 0, 0)]
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(1); // run is 0; the snapshot's own count stands
+			expect(merged.streak[0].longestStreak).toBe(4);
+		});
+
+		it('equal dates: biggest streak, fewest freezes available, most freezes used', () => {
+			const a = payload({ streak: [streakRec(3, 3, D, 2, 0)] });
+			const b = payload({ streak: [streakRec(10, 10, D, 1, 1)] });
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBeGreaterThanOrEqual(10);
+			expect(merged.streak[0].freezesAvailable).toBe(1);
+			expect(merged.streak[0].freezesUsed).toBe(1);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
 	});
 
 	it('stats: same date takes field-wise max per field, never summed', () => {
