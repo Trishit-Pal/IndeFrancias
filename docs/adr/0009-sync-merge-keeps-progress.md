@@ -62,8 +62,8 @@ Forces at play:
 |---|---|---|---|
 | Joins runs across devices | Yes | Yes | No |
 | Keeps a freeze-bridged streak | Yes | No (gap looks like a break) | Yes |
-| Devices converge | Yes | Yes | No on equal dates |
-| Can invent a streak | No | No | No |
+| Devices converge | Yes, in one time zone (see known limits) | Yes | No on equal dates |
+| Can invent a streak | No, except across time zones (see known limits) | No | No |
 
 ### Future-dated file: refuse whole (chosen) vs skip bad records vs clamp to now
 | Dimension | Refuse whole | Skip records | Clamp |
@@ -86,8 +86,13 @@ recount would; that is preferred over shortening a streak the learner earned.
   a failed attempt can no longer undo a pass.
 - Harder: a learner whose device clock is, or was while studying, more than a day ahead cannot sync
   from that device until real time catches up; a backup file is the way to move that progress.
-- Unchanged, known limits: XP earned on two devices on the same day is still merged by maximum, not
-  summed (review finding M2). Sync still reads, merges and writes in separate steps (M3). Local
+- Known limits (amended 2026-11-11, after the review follow-up): review XP from two devices on the
+  same day is added together, counting only reviews the other device did not have (review finding
+  M2, fixed); lesson and exam XP for the same day is still the larger of the two. Sync import reads,
+  merges and writes in one transaction (M3, fixed). The first time devices in different time zones
+  exchange reviews, a day's review count can be off by the reviews that fall on another calendar day
+  in the merging device's zone, and an inactive day can become active, so a streak can lengthen; it
+  happens once per exchange and never lowers the larger side's count. Local
   records that are already future-dated still win later merges. The "replaced" count covers lessons,
   cards, skill profile and assessments, not streak or daily stats.
 - To revisit: if freeze use is ever recorded per day, the streak can be recomputed exactly.
