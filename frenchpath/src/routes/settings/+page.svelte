@@ -286,6 +286,7 @@
 		const file = input.files?.[0];
 		input.value = '';
 		if (!file) return;
+		syncDone = false;
 		if (file.size > MAX_SYNC_BYTES) {
 			message = m.settings_file_too_large({ mb: Math.round(MAX_SYNC_BYTES / 1024 / 1024) });
 			return;
