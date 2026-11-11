@@ -29,7 +29,10 @@ jobs:
       - name: Install
         run: npm ci
 
-      # Shipped packages must have no known high or critical advisories.
+      # Packages listed in `dependencies` (--omit=dev) must have no known high or critical
+      # advisories. Some code that runs in the learner's browser (the i18n runtime, the
+      # service-worker libraries) is listed under `devDependencies` and is covered only by the
+      # advisory full-tree step below.
       - name: Dependency audit (shipped packages, blocking)
         run: npm audit --omit=dev --audit-level=high
 

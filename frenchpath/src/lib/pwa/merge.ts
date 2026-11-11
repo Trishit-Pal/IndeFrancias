@@ -11,9 +11,12 @@
 // as each day's xp is at least XP_PER_REVIEW * reviewsDone (always true from the app). A day below
 // that (possible only in a hand-edited file) is raised once to the consistent value and then stays
 // put. Lesson XP from two devices on one day is still a max (it cannot be recomputed), so it can
-// undercount. The first time reviews made near midnight are exchanged between devices in different
-// time zones, a day's count can come out too low or too high by the exchanged rows near midnight,
-// and a day with no real activity can become active (so a streak can lengthen). That happens once
+// undercount. The first time reviews are exchanged between devices in different time zones, a day's
+// count can be off by the rows near a day boundary, though never below the larger side's count.
+// Review-log rows are grouped into days using the merging device's current time zone, so the
+// affected rows are those within the time-zone difference of midnight (several hours for, say,
+// India and North America). A day with no real activity can become active (so a streak can
+// lengthen). That happens once
 // per exchange; later syncs do not repeat it. A date on one side only is copied as is;
 // streak joined: later lastActiveDate, current = max(that day plus the consecutive active
 // merged-stats days before it, devices' own count on that date, an earlier device's count plus the
