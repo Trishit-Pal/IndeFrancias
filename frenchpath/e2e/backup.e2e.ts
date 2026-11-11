@@ -44,6 +44,53 @@ test('backup round-trip restores progress after reset', async ({ page }) => {
 	expect((await safetyCopy).suggestedFilename()).toMatch(/^frenchpath-backup-.*\.json$/);
 });
 
+test('restore preview cannot be cancelled or closed while the safety copy is being made', async ({
+	page
+}) => {
+	test.setTimeout(60_000);
+	await gotoHome(page);
+	await page.getByTestId('unit-card').first().click();
+	await page.getByTestId('start-lesson').click();
+	await completeLesson(page);
+	await page.getByRole('link', { name: 'Back to path' }).click();
+	const backupJson = await exportBackupViaSettings(page);
+
+	await importBackupFile(page, backupJson, false);
+	await expect(page.getByTestId('import-preview')).toBeVisible();
+
+	// Hold the safety copy open: building the backup hashes it with crypto.subtle.digest, so a gate
+	// there keeps the restore in flight until the test releases it (no timing luck).
+	await page.evaluate(() => {
+		const win = window as unknown as {
+			__releaseCopy: () => void;
+			__restoreDigest: () => void;
+		};
+		const gate = new Promise<void>((resolve) => (win.__releaseCopy = resolve));
+		const original = SubtleCrypto.prototype.digest;
+		win.__restoreDigest = () => {
+			SubtleCrypto.prototype.digest = original;
+		};
+		SubtleCrypto.prototype.digest = function (this: SubtleCrypto, ...args) {
+			return gate.then(() => original.apply(this, args));
+		};
+	});
+	const safetyCopy = page.waitForEvent('download');
+	await page.getByTestId('import-confirm').click();
+
+	await expect(page.getByTestId('import-confirm')).toBeDisabled();
+	await page.keyboard.press('Escape');
+	await expect(page.getByTestId('import-preview')).toBeVisible();
+	await expect(page.getByTestId('import-cancel')).toBeDisabled();
+
+	await page.evaluate(() => {
+		const win = window as unknown as { __releaseCopy: () => void; __restoreDigest: () => void };
+		win.__releaseCopy();
+		win.__restoreDigest();
+	});
+	expect((await safetyCopy).suggestedFilename()).toMatch(/^frenchpath-backup-.*\.json$/);
+	await expect(page.getByTestId('restore-complete')).toBeVisible({ timeout: 15_000 });
+});
+
 test('home nudges a backup after progress and goes quiet once exported', async ({ page }) => {
 	await gotoHome(page);
 	await page.getByTestId('unit-card').first().click();

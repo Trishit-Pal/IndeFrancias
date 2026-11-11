@@ -232,6 +232,9 @@
 
 	async function confirmImport(skipSafetyCopy = false) {
 		if (!pendingImportJson || importing) return;
+		// Captured before any await: the preview is locked while importing, but the restore (which
+		// replaces all local data) must only ever use exactly what the learner confirmed.
+		const json = pendingImportJson;
 		importing = true;
 		safetyCopyFailed = false;
 		try {
@@ -241,7 +244,7 @@
 				safetyCopyFailed = true;
 				return;
 			}
-			await importBackup(pendingImportJson);
+			await importBackup(json);
 			// No auto-reload (SPEC invariant 6): unloading now would revoke the safety copy's blob URL
 			// and dismiss iOS's "Download?" sheet. The learner reloads when ready.
 			restoreDone = true;
@@ -879,7 +882,9 @@
 				open={!!importPreview}
 				labelledby="import-preview-title"
 				testid="import-preview"
-				onClose={clearImport}
+				onClose={() => {
+					if (!importing) clearImport();
+				}}
 			>
 				{#if importPreview}
 					<h2 id="import-preview-title" class="font-semibold text-balance text-foreground">
@@ -928,7 +933,13 @@
 								{m.settings_import_restore_anyway()}
 							</button>
 						{/if}
-						<button type="button" class="btn-secondary text-sm" onclick={clearImport}>
+						<button
+							type="button"
+							class="btn-secondary text-sm"
+							onclick={clearImport}
+							disabled={importing}
+							data-testid="import-cancel"
+						>
 							{m.common_cancel()}
 						</button>
 					</div>
