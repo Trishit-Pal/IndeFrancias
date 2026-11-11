@@ -1,5 +1,26 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { openDB, type IDBPDatabase } from 'idb';
 import { resetDatabase } from '../db';
+import { DB_NAME, type FrenchPathDB } from '../db/schema';
+import type { MergeResult } from '../pwa/merge';
+
+// Wraps the real mergePayloads so a test can run code at the instant the import merges
+// (the moment between its local read and its write) and tamper with the merged result.
+const mergeHook = vi.hoisted(() => ({
+	before: null as (() => void) | null,
+	after: null as ((result: MergeResult) => MergeResult) | null
+}));
+vi.mock('../pwa/merge', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('../pwa/merge')>();
+	return {
+		...actual,
+		mergePayloads: (...args: Parameters<typeof actual.mergePayloads>) => {
+			mergeHook.before?.();
+			const result = actual.mergePayloads(...args);
+			return mergeHook.after ? mergeHook.after(result) : result;
+		}
+	};
+});
 import * as progressRepo from '../db/repositories/progress';
 import * as reviewLogRepo from '../db/repositories/reviewLog';
 import { exportBackup } from '../pwa/backup';
@@ -20,7 +41,93 @@ import {
 const PASSPHRASE = 'correct horse battery staple';
 
 beforeEach(async () => {
+	mergeHook.before = null;
+	mergeHook.after = null;
 	await resetDatabase();
+});
+
+const review = (cardId: string, ts: number) => ({
+	cardId,
+	ts,
+	grade: 3,
+	state: 1,
+	stability: 1,
+	difficulty: 5,
+	elapsedDays: 0,
+	scheduledDays: 1
+});
+
+describe('sync import is one transaction (M3)', () => {
+	let second: IDBPDatabase<FrenchPathDB> | null = null;
+	afterEach(() => {
+		second?.close(); // an open second connection would block the next resetDatabase()
+		second = null;
+	});
+
+	it('keeps a review another writer commits between the local read and the write', async () => {
+		await reviewLogRepo.appendReviewLog(review('card-b', 200));
+		const remoteFile = await exportSyncFile(PASSPHRASE);
+		await resetDatabase();
+		await reviewLogRepo.appendReviewLog(review('card-a', 100));
+
+		// A second connection to the same database, opened up front so that the wrapper below
+		// can issue its write synchronously.
+		second = await openDB<FrenchPathDB>(DB_NAME);
+		const secondConn = second;
+		let otherWrite: Promise<unknown> = Promise.resolve();
+		mergeHook.before = () => {
+			// Created while the import runs its merge. Transactions with overlapping scope run in
+			// creation order, so it commits first if the import holds no transaction here, and
+			// queues behind the import's transaction if it does. Deliberately not awaited.
+			otherWrite = secondConn
+				.transaction('reviewLog', 'readwrite')
+				.objectStore('reviewLog')
+				.add(review('card-other-tab', 300));
+		};
+
+		const summary = await importSyncMerge(remoteFile, PASSPHRASE);
+		await otherWrite;
+
+		expect(summary.newReviews).toBe(1);
+		const logs = await reviewLogRepo.getAllReviewLogs();
+		expect(logs.map((r) => r.cardId).sort()).toEqual(['card-a', 'card-b', 'card-other-tab']);
+	});
+
+	it('a failed write rolls the whole import back and keeps the existing message', async () => {
+		await progressRepo.putProgress({
+			lessonId: 'remote',
+			status: 'completed',
+			score: 70,
+			attempts: 1,
+			lastVisited: 1,
+			cefrLevel: 'A1'
+		});
+		const remoteFile = await exportSyncFile(PASSPHRASE);
+		await resetDatabase();
+		await reviewLogRepo.appendReviewLog(review('card-a', 100));
+		await progressRepo.putProgress({
+			lessonId: 'keep',
+			status: 'completed',
+			score: 80,
+			attempts: 1,
+			lastVisited: 1,
+			cefrLevel: 'A1'
+		});
+		const before = await exportBackup();
+
+		// A progress row without its key makes the put fail after every store was cleared.
+		mergeHook.after = (result) => ({
+			...result,
+			merged: { ...result.merged, progress: [{} as never] }
+		});
+
+		await expect(importSyncMerge(remoteFile, PASSPHRASE)).rejects.toThrow(
+			'Sync merge failed — your existing data is unchanged'
+		);
+
+		const after = JSON.parse(await exportBackup()) as { payload: unknown };
+		expect(after.payload).toEqual((JSON.parse(before) as { payload: unknown }).payload);
+	});
 });
 
 describe('sync file export/preview/import', () => {
