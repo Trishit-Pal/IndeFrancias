@@ -3,8 +3,8 @@
 // settings local-wins (milestones unioned); progress LWW on lastVisited with
 // field-wise max score/bestCorrect; srsCards LWW on last_review (tie: reps);
 // reviewLog union deduped by (cardId,ts,grade); stats field-wise max per date;
-// streak joined: later lastActiveDate, current = max(consecutive active merged-stats
-// days ending there, devices' own count on that date), longest = max of all,
+// streak joined: later lastActiveDate, current = max(that day plus the consecutive active
+// merged-stats days before it, devices' own count on that date), longest = max of all,
 // freezes from the later snapshot (equal dates: min available, max used); skillProfile LWW on
 // updatedAt; assessments: a passed record (xpAwarded > 0) beats a failed one,
 // else LWW on completedAt, lastFailedAt = max of both. Monotonic values use max so a
@@ -178,14 +178,17 @@ function mergeAssessment(local: AssessmentT, remote: AssessmentT): AssessmentT {
 
 const isActiveDay = (s: StatsT): boolean => s.xp > 0 || s.lessonsCompleted > 0 || s.reviewsDone > 0;
 
-/** Consecutive active days ending on `end` (0 when `end` itself is not active). */
+/**
+ * `end` itself counts as active (a streak snapshot proves activity even without a qualifying stats
+ * row, e.g. a failed exam), plus the consecutive active stats days immediately before it.
+ */
 function activeRunEndingOn(end: string, stats: StatsT[]): number {
 	const days = stats
-		.filter((s) => isActiveDay(s) && s.date <= end)
+		.filter((s) => isActiveDay(s) && s.date < end)
 		.map((s) => s.date)
 		.sort()
 		.reverse();
-	let run = 0;
+	let run = 1;
 	for (const day of days) {
 		if (daysBetween(day, end) !== run) break;
 		run++;

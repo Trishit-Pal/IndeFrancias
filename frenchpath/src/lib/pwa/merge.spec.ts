@@ -203,16 +203,21 @@ describe('mergePayloads', () => {
 		});
 
 		it('keeps a freeze-bridged streak that the stats alone cannot rebuild', () => {
+			// both sides have a streak record so the join runs; merged stats have a gap at 2026-07-09
+			const a = payload({
+				streak: [streakRec(3, 3, '2026-07-09')],
+				stats: [stat('2026-07-08', 10, 5, 1, 1)]
+			});
 			const b = payload({
 				streak: [streakRec(10, 10, D, 0, 1)],
-				stats: [stat(D, 10, 5, 1, 1), stat('2026-07-08', 10, 5, 1, 1)] // gap at 2026-07-09
+				stats: [stat(D, 10, 5, 1, 1)]
 			});
-			const { merged } = mergePayloads(payload(), b);
+			const { merged } = mergePayloads(a, b);
 			expect(merged.streak[0].currentStreak).toBe(10);
-			expect(mergePayloads(b, payload()).merged.streak[0].currentStreak).toBe(10);
+			expect(mergePayloads(b, a).merged.streak[0].currentStreak).toBe(10);
 		});
 
-		it('a minutes-only day is not active, so it does not join the older run', () => {
+		it('the merged lastActiveDate counts as active even with a minutes-only stats row', () => {
 			const a = payload({
 				streak: [streakRec(4, 4, '2026-07-09')],
 				stats: activeDaysEndingOn('2026-07-09', 4)
@@ -222,8 +227,23 @@ describe('mergePayloads', () => {
 				stats: [stat(D, 0, 20, 0, 0)]
 			});
 			const { merged } = mergePayloads(a, b);
-			expect(merged.streak[0].currentStreak).toBe(1); // run is 0; the snapshot's own count stands
+			expect(merged.streak).toEqual([streakRec(5, 5, D)]);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('a minutes-only day before the merged lastActiveDate does not extend the run', () => {
+			const a = payload({
+				streak: [streakRec(4, 4, '2026-07-09')],
+				stats: [...activeDaysEndingOn('2026-07-08', 3), stat('2026-07-09', 0, 20, 0, 0)]
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: activeDaysEndingOn(D, 1)
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(1);
 			expect(merged.streak[0].longestStreak).toBe(4);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
 		});
 
 		it('equal dates: biggest streak, fewest freezes available, most freezes used', () => {
