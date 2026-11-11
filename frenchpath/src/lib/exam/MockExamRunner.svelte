@@ -95,6 +95,18 @@
 		}
 	}
 
+	// Time is up: score what was answered in the current section (unanswered items count wrong),
+	// then finish without advancing. A repeat or late call finds phase !== 'section' and does nothing.
+	function expireExam() {
+		if (phase !== 'section' || !section) return;
+		const skillScore =
+			'items' in section
+				? objectiveSkillScore(correctInSection, section.items.length)
+				: productiveSkillScore(checkedRubric.filter(Boolean).length);
+		perSkill = { ...perSkill, [section.skill]: skillScore };
+		void finishExam();
+	}
+
 	async function finishExam() {
 		result = scoreExam(perSkill);
 		phase = 'result';
@@ -171,7 +183,7 @@
 			<h1 class="fp-exam-title">{examName} {examLevel} — Épreuve blanche</h1>
 		</div>
 		{#if phase === 'section'}
-			<ExamTimer totalSeconds={EXAM_SECONDS} onExpire={() => void finishExam()} />
+			<ExamTimer totalSeconds={EXAM_SECONDS} onExpire={expireExam} />
 		{:else}
 			<div class="fp-exam-badge">
 				<span>{examLevel}</span>
@@ -314,7 +326,7 @@
 			{/if}
 			<ul class="mt-5 space-y-3">
 				{#each Object.entries(result.perSkill) as [skill, score] (skill)}
-					<li>
+					<li data-testid="exam-skill-score" data-skill={skill}>
 						<div class="flex justify-between text-sm">
 							<span class="text-foreground capitalize">{skill}</span>
 							<span
