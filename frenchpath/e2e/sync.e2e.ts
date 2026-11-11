@@ -185,7 +185,9 @@ test('sync preview says how many existing items the file will replace', async ({
 	await chooseSyncFile(page, await shiftLessonDates(syncJson, MINUTE_MS));
 	await expect(page.getByTestId('sync-preview')).toBeVisible();
 	await expect(page.getByTestId('sync-preview-safety-copy')).toBeVisible();
-	await expect(page.getByTestId('sync-preview-replaced')).toContainText(/\b1\b.*updated/i);
+	await expect(page.getByTestId('sync-preview-replaced')).toHaveText(
+		'1 item already on this device will be updated from this file.'
+	);
 });
 
 test('sync file with dates in the future is refused with a friendly message', async ({ page }) => {

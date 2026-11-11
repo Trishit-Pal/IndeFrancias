@@ -450,5 +450,6 @@
 	"sync_safety_copy_failed": "We couldn't save a copy of your current progress. Try again, or merge without a copy.",
 	"sync_merge_anyway": "Merge without saving a copy",
 	"sync_future_dates": "This sync file has dates in the future. Check the date and time on both devices, then try again. If it still fails, use a backup file to move your progress.",
-	"sync_preview_replaced": "{count} items already on this device will be updated from this file."
+	"sync_preview_replaced_one": "1 item already on this device will be updated from this file.",
+	"sync_preview_replaced_other": "{count} items already on this device will be updated from this file."
 }

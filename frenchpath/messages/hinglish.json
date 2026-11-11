@@ -450,5 +450,6 @@
 	"sync_safety_copy_failed": "Hum aapki current progress ki copy save nahi kar paaye. Try again karein, ya bina copy ke merge karein.",
 	"sync_merge_anyway": "Copy save kiye bina merge karein",
 	"sync_future_dates": "Is sync file mein future ki dates hain. Dono devices ki date aur time check karein, phir dobara try karein. Phir bhi na chale, to apni progress le jaane ke liye backup file use karein.",
-	"sync_preview_replaced": "Is device ke {count} existing items is file se update ho jayenge."
+	"sync_preview_replaced_one": "Is device ka 1 existing item is file se update ho jayega.",
+	"sync_preview_replaced_other": "Is device ke {count} existing items is file se update ho jayenge."
 }

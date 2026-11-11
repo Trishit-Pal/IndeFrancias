@@ -968,7 +968,9 @@
 					</p>
 					{#if syncPreview.replaced > 0}
 						<p class="mt-1 text-sm text-muted" data-testid="sync-preview-replaced">
-							{m.sync_preview_replaced({ count: syncPreview.replaced })}
+							{syncPreview.replaced === 1
+								? m.sync_preview_replaced_one()
+								: m.sync_preview_replaced_other({ count: syncPreview.replaced })}
 						</p>
 					{/if}
 					<p class="mt-1 text-sm text-muted" data-testid="sync-preview-safety-copy">
