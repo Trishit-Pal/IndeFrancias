@@ -128,6 +128,32 @@ describe('sync import is one transaction (M3)', () => {
 		const after = JSON.parse(await exportBackup()) as { payload: unknown };
 		expect(after.payload).toEqual((JSON.parse(before) as { payload: unknown }).payload);
 	});
+
+	it('a merge that throws inside the transaction leaves the database unchanged', async () => {
+		await progressRepo.putProgress({
+			lessonId: 'remote',
+			status: 'completed',
+			score: 70,
+			attempts: 1,
+			lastVisited: 1,
+			cefrLevel: 'A1'
+		});
+		const remoteFile = await exportSyncFile(PASSPHRASE);
+		await resetDatabase();
+		await reviewLogRepo.appendReviewLog(review('card-a', 100));
+		const before = await exportBackup();
+
+		mergeHook.before = () => {
+			throw new Error('merge blew up');
+		};
+
+		await expect(importSyncMerge(remoteFile, PASSPHRASE)).rejects.toThrow(
+			'Sync merge failed — your existing data is unchanged'
+		);
+
+		const after = JSON.parse(await exportBackup()) as { payload: unknown };
+		expect(after.payload).toEqual((JSON.parse(before) as { payload: unknown }).payload);
+	});
 });
 
 describe('sync file export/preview/import', () => {
