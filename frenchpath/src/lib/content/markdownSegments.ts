@@ -35,15 +35,26 @@ export function parseInlineMarkdownSegments(text: string): MarkdownSegment[] {
 			}
 		}
 
+		// Plain text, or an unmatched marker shown literally. Searching from i + 1 means the
+		// chunk always holds at least the current character, so i strictly increases.
 		let next = text.length;
 		for (const marker of ['**', '*', '\n']) {
-			const idx = text.indexOf(marker, i);
+			const idx = text.indexOf(marker, i + 1);
 			if (idx !== -1 && idx < next) next = idx;
 		}
-		const chunk = text.slice(i, next);
-		if (chunk) segments.push({ kind: 'text', content: chunk });
+		pushText(segments, text.slice(i, next));
 		i = next;
 	}
 
 	return segments;
+}
+
+/** Append plain text, merging into a directly preceding text segment. */
+function pushText(segments: MarkdownSegment[], content: string): void {
+	const last = segments[segments.length - 1];
+	if (last?.kind === 'text') {
+		segments[segments.length - 1] = { kind: 'text', content: last.content + content };
+		return;
+	}
+	segments.push({ kind: 'text', content });
 }

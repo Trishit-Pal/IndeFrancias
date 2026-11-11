@@ -33,6 +33,7 @@
 		exportSyncFile,
 		previewSyncMerge,
 		importSyncMerge,
+		FutureDatedSyncError,
 		MAX_SYNC_BYTES
 	} from '$lib/sync/mergeFile';
 	import { WrongPassphraseError } from '$lib/sync/crypto';
@@ -67,6 +68,8 @@
 	let syncPreview = $state<MergeSummary | null>(null);
 	let pendingSyncJson = $state('');
 	let syncImporting = $state(false);
+	let syncSafetyCopyFailed = $state(false);
+	let syncDone = $state(false);
 	let updateChecking = $state(false);
 	let updateResult = $state<UpdateInfo | null>(null);
 	let updateStatus = $state('');
@@ -293,37 +296,45 @@
 			syncPreview = await previewSyncMerge(json, syncPassphrase);
 			pendingSyncJson = json;
 		} catch (error) {
-			if (error instanceof WrongPassphraseError) {
-				message = m.sync_wrong_passphrase();
-			} else {
-				message = error instanceof Error ? error.message : m.settings_import_failed();
-			}
+			message = syncErrorMessage(error);
 		}
 	}
 
-	async function confirmSyncImport() {
+	function syncErrorMessage(error: unknown): string {
+		if (error instanceof WrongPassphraseError) return m.sync_wrong_passphrase();
+		if (error instanceof FutureDatedSyncError) return m.sync_future_dates();
+		return error instanceof Error ? error.message : m.settings_import_failed();
+	}
+
+	async function confirmSyncImport(skipSafetyCopy = false) {
 		if (!pendingSyncJson || syncImporting) return;
+		// Captured before any await: the preview is locked while importing, but the merge must only
+		// ever use exactly what the learner confirmed.
+		const json = pendingSyncJson;
+		const passphrase = syncPassphrase;
 		syncImporting = true;
+		syncSafetyCopyFailed = false;
 		try {
-			await importSyncMerge(pendingSyncJson, syncPassphrase);
-			message = m.sync_success();
-			location.reload();
-		} catch (error) {
-			if (error instanceof WrongPassphraseError) {
-				message = m.sync_wrong_passphrase();
-			} else {
-				message = error instanceof Error ? error.message : m.settings_import_failed();
+			// Same contract as confirmImport: copy first, and a failed copy never merges on its own.
+			if (!skipSafetyCopy && (await hasDataToLose()) && !(await download(true))) {
+				syncSafetyCopyFailed = true;
+				return;
 			}
+			await importSyncMerge(json, passphrase);
+			// No auto-reload, for the same reason as the backup restore (it would cancel the safety copy).
+			syncDone = true;
+		} catch (error) {
+			message = syncErrorMessage(error);
 		} finally {
 			syncImporting = false;
-			syncPreview = null;
-			pendingSyncJson = '';
+			if (!syncSafetyCopyFailed) cancelSyncImport();
 		}
 	}
 
 	function cancelSyncImport() {
 		syncPreview = null;
 		pendingSyncJson = '';
+		syncSafetyCopyFailed = false;
 	}
 
 	let resetPending = $state(false);
@@ -797,6 +808,19 @@
 						/>
 					</label>
 				</div>
+				{#if syncDone}
+					<p class="mt-3 text-sm text-foreground" role="status" data-testid="sync-complete">
+						{m.sync_complete()}
+					</p>
+					<button
+						type="button"
+						class="btn-primary mt-2 text-sm"
+						onclick={() => location.reload()}
+						data-testid="sync-reload"
+					>
+						{m.settings_reset_reload()}
+					</button>
+				{/if}
 			</section>
 
 			<section class="fp-danger-zone">
@@ -915,7 +939,9 @@
 				open={!!syncPreview}
 				labelledby="sync-preview-title"
 				testid="sync-preview"
-				onClose={cancelSyncImport}
+				onClose={() => {
+					if (!syncImporting) cancelSyncImport();
+				}}
 			>
 				{#if syncPreview}
 					<h2 id="sync-preview-title" class="font-semibold text-balance text-foreground">
@@ -929,17 +955,55 @@
 							assessments: syncPreview.newAssessments
 						})}
 					</p>
-					<div class="mt-4 flex gap-2">
+					{#if syncPreview.replaced > 0}
+						<p class="mt-1 text-sm text-muted" data-testid="sync-preview-replaced">
+							{m.sync_preview_replaced({ count: syncPreview.replaced })}
+						</p>
+					{/if}
+					<p class="mt-1 text-sm text-muted" data-testid="sync-preview-safety-copy">
+						{m.settings_import_preview_safety_copy()}
+					</p>
+					{#if syncSafetyCopyFailed}
+						<p
+							class="mt-2 text-sm text-foreground"
+							role="alert"
+							data-testid="sync-safety-copy-failed"
+						>
+							{m.sync_safety_copy_failed()}
+						</p>
+					{/if}
+					<div class="mt-4 flex flex-wrap gap-2">
 						<button
 							type="button"
 							class="btn-primary text-sm"
-							onclick={confirmSyncImport}
+							onclick={() => confirmSyncImport()}
 							disabled={syncImporting}
 							data-testid="sync-confirm"
 						>
-							{syncImporting ? m.settings_importing() : m.sync_confirm()}
+							{syncImporting
+								? m.settings_importing()
+								: syncSafetyCopyFailed
+									? m.common_retry()
+									: m.sync_confirm()}
 						</button>
-						<button type="button" class="btn-secondary text-sm" onclick={cancelSyncImport}>
+						{#if syncSafetyCopyFailed}
+							<button
+								type="button"
+								class="btn-secondary text-sm"
+								onclick={() => confirmSyncImport(true)}
+								disabled={syncImporting}
+								data-testid="sync-confirm-anyway"
+							>
+								{m.sync_merge_anyway()}
+							</button>
+						{/if}
+						<button
+							type="button"
+							class="btn-secondary text-sm"
+							onclick={cancelSyncImport}
+							disabled={syncImporting}
+							data-testid="sync-cancel"
+						>
 							{m.common_cancel()}
 						</button>
 					</div>

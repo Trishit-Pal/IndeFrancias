@@ -2,6 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import { mergePayloads } from './merge';
 import type { BackupPayload } from './backupSchema';
+import { lastNDayKeys } from '../utils/date';
 
 const payload = (over: Partial<BackupPayload> = {}): BackupPayload => ({
 	settings: null,
@@ -83,13 +84,19 @@ const skillRec = (
 	updatedAt: number
 ) => ({ skill, estimatedLevel, updatedAt });
 
-const assessment = (assessmentId: string, completedAt: number, score = 90) => ({
+const assessment = (
+	assessmentId: string,
+	completedAt: number,
+	score = 90,
+	extra: { xpAwarded?: number; lastFailedAt?: number } = {}
+) => ({
 	assessmentId,
 	kind: 'unit_checkpoint' as const,
 	refId: 'u1',
 	score,
 	xpAwarded: 10,
-	completedAt
+	completedAt,
+	...extra
 });
 
 const settings = (over: Partial<NonNullable<BackupPayload['settings']>> = {}) => ({
@@ -154,15 +161,207 @@ describe('mergePayloads', () => {
 		expect(local.reviewLog[0].id).toBe(1); // inputs untouched
 	});
 
-	it('streak: longest is the max of both; current snapshot comes from the later lastActiveDate', () => {
-		const local = payload({ streak: [streakRec(3, 7, '2026-07-01', 1, 0)] });
-		const remote = payload({ streak: [streakRec(10, 12, '2026-07-05', 0, 2)] });
-		const { merged } = mergePayloads(local, remote);
-		expect(merged.streak).toHaveLength(1);
-		expect(merged.streak[0].longestStreak).toBe(12);
-		expect(merged.streak[0].currentStreak).toBe(10);
-		expect(merged.streak[0].lastActiveDate).toBe('2026-07-05');
-		expect(merged.streak[0].freezesUsed).toBe(2);
+	describe('streak: joined across devices', () => {
+		const D = '2026-07-10';
+		// `n` consecutive active stats days ending on `end`
+		const activeDaysEndingOn = (end: string, n: number) =>
+			lastNDayKeys(n, new Date(`${end}T00:00:00`)).map((d) => stat(d, 10, 5, 1, 1));
+
+		it('later lastActiveDate sets the date and freezes; own streak survives when stats are silent', () => {
+			const local = payload({ streak: [streakRec(3, 7, '2026-07-01', 1, 0)] });
+			const remote = payload({ streak: [streakRec(10, 12, '2026-07-05', 0, 2)] });
+			const { merged } = mergePayloads(local, remote);
+			expect(merged.streak).toEqual([streakRec(10, 12, '2026-07-05', 0, 2)]);
+		});
+
+		it('adds the old phone run to the new phone day and agrees in both directions', () => {
+			const a = payload({
+				streak: [streakRec(30, 30, '2026-07-09')],
+				stats: activeDaysEndingOn('2026-07-09', 30)
+			});
+			const b = payload({
+				streak: [streakRec(1, 5, D)],
+				stats: activeDaysEndingOn(D, 1)
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak).toEqual([streakRec(31, 31, D)]);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('does not revive a stale streak across a gap', () => {
+			const a = payload({
+				streak: [streakRec(30, 30, '2026-07-05')],
+				stats: activeDaysEndingOn('2026-07-05', 30)
+			});
+			const b = payload({
+				streak: [streakRec(2, 2, D)],
+				stats: activeDaysEndingOn(D, 2)
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(2);
+			expect(merged.streak[0].longestStreak).toBe(30);
+		});
+
+		it('keeps a freeze-bridged streak that the stats alone cannot rebuild', () => {
+			// both sides have a streak record so the join runs; merged stats have a gap at 2026-07-09
+			const a = payload({
+				streak: [streakRec(3, 3, '2026-07-09')],
+				stats: [stat('2026-07-08', 10, 5, 1, 1)]
+			});
+			const b = payload({
+				streak: [streakRec(10, 10, D, 0, 1)],
+				stats: [stat(D, 10, 5, 1, 1)]
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(10);
+			expect(mergePayloads(b, a).merged.streak[0].currentStreak).toBe(10);
+		});
+
+		it('the merged lastActiveDate counts as active even with a minutes-only stats row', () => {
+			const a = payload({
+				streak: [streakRec(4, 4, '2026-07-09')],
+				stats: activeDaysEndingOn('2026-07-09', 4)
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: [stat(D, 0, 20, 0, 0)]
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak).toEqual([streakRec(5, 5, D)]);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('the older snapshot joins when its last day is adjacent, even with a minutes-only stats row', () => {
+			const a = payload({
+				streak: [streakRec(4, 4, '2026-07-09')],
+				stats: [...activeDaysEndingOn('2026-07-08', 3), stat('2026-07-09', 0, 20, 0, 0)]
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: activeDaysEndingOn(D, 1)
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(a.streak[0].currentStreak + 1);
+			expect(merged.streak[0].longestStreak).toBe(5);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('a minutes-only or replay-only day that is no snapshot date does not bridge two runs', () => {
+			const a = payload({
+				streak: [streakRec(4, 4, '2026-07-07')],
+				stats: activeDaysEndingOn('2026-07-07', 4)
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: [
+					stat('2026-07-08', 0, 20, 0, 0),
+					stat('2026-07-09', 0, 5, 1, 0),
+					stat(D, 10, 5, 1, 0)
+				]
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(1);
+			expect(merged.streak[0].longestStreak).toBe(4);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('a freeze hole inside the older run keeps its count when it joins the newer day', () => {
+			const holeDay = '2026-06-30'; // D-10
+			const a = payload({
+				streak: [streakRec(30, 30, '2026-07-09', 0, 1)],
+				stats: activeDaysEndingOn('2026-07-09', 30).filter((s) => s.date !== holeDay)
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: activeDaysEndingOn(D, 1)
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(31);
+			expect(merged.streak[0].longestStreak).toBe(31);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('an older last day with no qualifying stats row (exam-only) still joins', () => {
+			const a = payload({
+				streak: [streakRec(7, 7, '2026-07-09')],
+				stats: activeDaysEndingOn('2026-07-08', 6) // D-7 … D-2, no row for D-1
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: activeDaysEndingOn(D, 1)
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(8);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('an older snapshot that is not connected by active days is not joined', () => {
+			const a = payload({
+				streak: [streakRec(30, 30, '2026-07-07')],
+				stats: activeDaysEndingOn('2026-07-07', 30)
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: activeDaysEndingOn(D, 1)
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(1);
+			expect(merged.streak[0].longestStreak).toBe(30);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('an older snapshot with an empty lastActiveDate never joins', () => {
+			const a = payload({ streak: [streakRec(5, 5, '')] });
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: activeDaysEndingOn(D, 1)
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(1);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('zero-XP lesson replays between two real days do not bridge them', () => {
+			const [dMinus10, ...replayDays] = lastNDayKeys(11, new Date(`${D}T00:00:00`)).slice(0, 10);
+			const a = payload({
+				streak: [streakRec(1, 1, dMinus10)],
+				stats: [
+					stat(dMinus10, 10, 5, 1, 0),
+					...replayDays.map((d) => stat(d, 0, 5, 1, 0)) // D-9 … D-1
+				]
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: [stat(D, 10, 5, 1, 0)]
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(1);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('a reviews-only day (no XP) still counts as an active day', () => {
+			const a = payload({
+				streak: [streakRec(1, 1, '2026-07-08')],
+				stats: [stat('2026-07-08', 5, 5, 0, 0), stat('2026-07-09', 0, 5, 0, 3)]
+			});
+			const b = payload({
+				streak: [streakRec(1, 1, D)],
+				stats: [stat(D, 10, 5, 1, 0)]
+			});
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBe(3);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
+
+		it('equal dates: biggest streak, fewest freezes available, most freezes used', () => {
+			const a = payload({ streak: [streakRec(3, 3, D, 2, 0)] });
+			const b = payload({ streak: [streakRec(10, 10, D, 1, 1)] });
+			const { merged } = mergePayloads(a, b);
+			expect(merged.streak[0].currentStreak).toBeGreaterThanOrEqual(10);
+			expect(merged.streak[0].freezesAvailable).toBe(1);
+			expect(merged.streak[0].freezesUsed).toBe(1);
+			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
+		});
 	});
 
 	it('stats: same date takes field-wise max per field, never summed', () => {
@@ -186,7 +385,7 @@ describe('mergePayloads', () => {
 		expect(merged.skillProfile[0].updatedAt).toBe(200);
 	});
 
-	it('assessments: later completedAt wins the whole record; summary counts new ones', () => {
+	it('assessments: pass vs pass, later completedAt wins the whole record; summary counts new ones', () => {
 		const local = payload({ assessments: [assessment('a1', 100, 70)] });
 		const remote = payload({
 			assessments: [assessment('a1', 200, 95), assessment('a2', 50)]
@@ -195,6 +394,95 @@ describe('mergePayloads', () => {
 		expect(merged.assessments).toHaveLength(2);
 		expect(merged.assessments.find((a) => a.assessmentId === 'a1')?.score).toBe(95);
 		expect(summary.newAssessments).toBe(1);
+	});
+
+	describe('assessments: a pass survives a failed attempt', () => {
+		const passed = () => assessment('a1', 1000, 90, { xpAwarded: 80 });
+		const failed = () => assessment('a1', 2000, 40, { xpAwarded: 0, lastFailedAt: 2000 });
+
+		it('keeps the earlier pass over a later failure and records lastFailedAt', () => {
+			const { merged } = mergePayloads(
+				payload({ assessments: [passed()] }),
+				payload({ assessments: [failed()] })
+			);
+			expect(merged.assessments).toHaveLength(1);
+			expect(merged.assessments[0]).toMatchObject({
+				xpAwarded: 80,
+				completedAt: 1000,
+				lastFailedAt: 2000
+			});
+		});
+
+		it('gives the same record whichever side holds the pass', () => {
+			const a = payload({ assessments: [passed()] });
+			const b = payload({ assessments: [failed()] });
+			const ab = mergePayloads(a, b).merged.assessments;
+			expect(ab).toEqual(mergePayloads(b, a).merged.assessments);
+			expect(ab[0]).toMatchObject({ xpAwarded: 80, completedAt: 1000, lastFailedAt: 2000 });
+		});
+
+		it('both failed: later completedAt wins and lastFailedAt is the larger', () => {
+			const l = assessment('a1', 100, 30, { xpAwarded: 0, lastFailedAt: 100 });
+			const r = assessment('a1', 200, 50, { xpAwarded: 0, lastFailedAt: 200 });
+			const { merged } = mergePayloads(
+				payload({ assessments: [l] }),
+				payload({ assessments: [r] })
+			);
+			expect(merged.assessments[0]).toMatchObject({
+				score: 50,
+				completedAt: 200,
+				lastFailedAt: 200
+			});
+		});
+
+		it('neither side has lastFailedAt: the merged record has no such key', () => {
+			const { merged } = mergePayloads(
+				payload({ assessments: [assessment('a1', 100)] }),
+				payload({ assessments: [assessment('a1', 200)] })
+			);
+			expect(merged.assessments[0]).not.toHaveProperty('lastFailedAt');
+		});
+	});
+
+	describe('summary.replaced counts shared records where the remote one wins', () => {
+		it('counts a shared card whose remote last_review is later, not as a new card', () => {
+			const local = payload({ srsCards: [card('c1', '2026-01-01T00:00:00.000Z')] });
+			const remote = payload({ srsCards: [card('c1', '2026-02-01T00:00:00.000Z')] });
+			const { summary } = mergePayloads(local, remote);
+			expect(summary.replaced).toBe(1);
+			expect(summary.newCards).toBe(0);
+		});
+
+		it('does not count a shared card when local is later', () => {
+			const local = payload({ srsCards: [card('c1', '2026-02-01T00:00:00.000Z')] });
+			const remote = payload({ srsCards: [card('c1', '2026-01-01T00:00:00.000Z')] });
+			expect(mergePayloads(local, remote).summary.replaced).toBe(0);
+		});
+
+		it('is 0 for an empty remote and for a file identical to local', () => {
+			const local = payload({
+				progress: [prog('u1', 100)],
+				srsCards: [card('c1', '2026-01-01T00:00:00.000Z')],
+				skillProfile: [skillRec('reading', 'A1', 1)],
+				assessments: [assessment('a1', 1)]
+			});
+			expect(mergePayloads(local, payload()).summary.replaced).toBe(0);
+			expect(mergePayloads(local, structuredClone(local)).summary.replaced).toBe(0);
+		});
+
+		it('counts progress, skill profile and assessments the remote wins, once each', () => {
+			const local = payload({
+				progress: [prog('u1', 100)],
+				skillProfile: [skillRec('reading', 'A1', 1)],
+				assessments: [assessment('a1', 100, 40, { xpAwarded: 0, lastFailedAt: 100 })]
+			});
+			const remote = payload({
+				progress: [prog('u1', 200)],
+				skillProfile: [skillRec('reading', 'B1', 2)],
+				assessments: [assessment('a1', 50, 90, { xpAwarded: 80 })] // pass beats later fail
+			});
+			expect(mergePayloads(local, remote).summary.replaced).toBe(3);
+		});
 	});
 
 	it('settings: remote theme never overwrites local; celebratedMilestones is unioned', () => {
@@ -236,7 +524,13 @@ describe('mergePayloads', () => {
 		expect(merged.skillProfile).toEqual(local.skillProfile);
 		expect(merged.assessments).toEqual(local.assessments);
 		expect(merged.settings).toEqual(local.settings);
-		expect(summary).toEqual({ newReviews: 0, newProgress: 0, newCards: 0, newAssessments: 0 });
+		expect(summary).toEqual({
+			newReviews: 0,
+			newProgress: 0,
+			newCards: 0,
+			newAssessments: 0,
+			replaced: 0
+		});
 	});
 
 	it('is symmetric on disjoint data: A⊕B and B⊕A contain the same records', () => {

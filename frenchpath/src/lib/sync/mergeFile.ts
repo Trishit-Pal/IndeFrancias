@@ -12,6 +12,7 @@ import {
 } from '../pwa/backup';
 import { type BackupPayload } from '../pwa/backupSchema';
 import { mergePayloads, type MergeSummary } from '../pwa/merge';
+import { todayKey } from '../utils/date';
 import { encryptPayload, decryptPayload, type EncryptedEnvelope } from './crypto';
 
 /** Envelope carries the backup as base64 ciphertext (~4/3 of plaintext) plus
@@ -25,6 +26,39 @@ function assertSyncFileSize(json: string): void {
 			`Sync file is too large (${Math.round(bytes / 1024)} KB). Maximum is ${Math.round(MAX_SYNC_BYTES / 1024 / 1024)} MB.`
 		);
 	}
+}
+
+/** How far past "now" a sync file's activity dates may be (covers clock skew and time zones). */
+export const MAX_FUTURE_SKEW_MS = 24 * 60 * 60 * 1000;
+
+export class FutureDatedSyncError extends Error {
+	constructor() {
+		super(
+			'This sync file has dates in the future. Check the date and time on both devices, then try again. If it still fails, use a backup file to move your progress.'
+		);
+		this.name = 'FutureDatedSyncError';
+	}
+}
+
+/** Sync only (backup restore must stay unrestricted): refuses the whole file if any
+ *  activity date is past now + skew. `srsCards[].due` and `settings` are not checked. */
+export function assertNoFutureDates(payload: BackupPayload, now: number): void {
+	const limitMs = now + MAX_FUTURE_SKEW_MS;
+	const limitKey = todayKey(new Date(limitMs));
+	const msFields: (number | undefined)[] = [
+		...payload.progress.map((r) => r.lastVisited),
+		...payload.reviewLog.map((r) => r.ts),
+		...payload.skillProfile.map((r) => r.updatedAt),
+		...payload.assessments.flatMap((r) => [r.completedAt, r.lastFailedAt]),
+		...payload.srsCards.map((r) => (r.last_review ? Date.parse(r.last_review) : undefined))
+	];
+	const dateKeys = [
+		...payload.streak.map((r) => r.lastActiveDate).filter((k) => k !== ''),
+		...payload.stats.map((r) => r.date)
+	];
+	const isFuture =
+		msFields.some((ms) => ms !== undefined && ms > limitMs) || dateKeys.some((k) => k > limitKey);
+	if (isFuture) throw new FutureDatedSyncError();
 }
 
 let importInFlight = false;
@@ -46,7 +80,9 @@ async function decryptAndValidate(fileJson: string, passphrase: string): Promise
 		throw new Error('Sync file is not valid JSON.');
 	}
 	const plaintext = await decryptPayload(envelope, passphrase);
-	return (await validateAndParseBackup(plaintext)).payload;
+	const { payload } = await validateAndParseBackup(plaintext);
+	assertNoFutureDates(payload, Date.now());
+	return payload;
 }
 
 async function currentLocalPayload(): Promise<BackupPayload> {

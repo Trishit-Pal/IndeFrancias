@@ -443,5 +443,10 @@
 	"checkpoint_hint_default": "Answer dene se pehle bridge note dobara dekho.",
 	"ritual_morning": "Suprabhat",
 	"ritual_afternoon": "Dopahar",
-	"ritual_evening": "Shaam"
+	"ritual_evening": "Shaam",
+	"sync_complete": "Merge ho gaya. Apni combined progress dekhne ke liye reload karein.",
+	"sync_safety_copy_failed": "Hum aapki current progress ki copy save nahi kar paaye. Try again karein, ya bina copy ke merge karein.",
+	"sync_merge_anyway": "Copy save kiye bina merge karein",
+	"sync_future_dates": "Is sync file mein future ki dates hain. Dono devices ki date aur time check karein, phir dobara try karein. Phir bhi na chale, to apni progress le jaane ke liye backup file use karein.",
+	"sync_preview_replaced": "Is device ke {count} existing items is file se update ho jayenge."
 }

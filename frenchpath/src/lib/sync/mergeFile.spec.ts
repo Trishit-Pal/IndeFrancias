@@ -4,7 +4,18 @@ import * as progressRepo from '../db/repositories/progress';
 import * as reviewLogRepo from '../db/repositories/reviewLog';
 import { exportBackup } from '../pwa/backup';
 import { encryptPayload, WrongPassphraseError } from './crypto';
-import { exportSyncFile, previewSyncMerge, importSyncMerge, MAX_SYNC_BYTES } from './mergeFile';
+import * as srsRepo from '../db/repositories/srs';
+import { todayKey } from '../utils/date';
+import type { BackupPayload } from '../pwa/backupSchema';
+import {
+	exportSyncFile,
+	previewSyncMerge,
+	importSyncMerge,
+	assertNoFutureDates,
+	FutureDatedSyncError,
+	MAX_FUTURE_SKEW_MS,
+	MAX_SYNC_BYTES
+} from './mergeFile';
 
 const PASSPHRASE = 'correct horse battery staple';
 
@@ -175,5 +186,236 @@ describe('sync file export/preview/import', () => {
 		await expect(previewSyncMerge('not json at all', 'any-passphrase')).rejects.toThrow(
 			'Sync file is not valid JSON.'
 		);
+	});
+});
+
+// 23:30 local, so +24h and +25h fall on different calendar days (date-key fields).
+const NOW = new Date(2026, 5, 15, 23, 30).getTime();
+const HOUR = 60 * 60 * 1000;
+const PAST = NOW - 10 * HOUR;
+const PAST_KEY = todayKey(new Date(PAST));
+
+function pastPayload(): BackupPayload {
+	return {
+		settings: null,
+		progress: [
+			{
+				lessonId: 'a1-u1',
+				status: 'completed',
+				score: 90,
+				attempts: 1,
+				lastVisited: PAST,
+				cefrLevel: 'A1'
+			}
+		],
+		srsCards: [
+			{
+				cardId: 'c1',
+				contentId: 'v1',
+				cefrLevel: 'A1',
+				skill: 'reading',
+				due: new Date(PAST).toISOString(),
+				stability: 1,
+				difficulty: 5,
+				elapsed_days: 0,
+				scheduled_days: 1,
+				learning_steps: 0,
+				reps: 1,
+				lapses: 0,
+				state: 1,
+				last_review: new Date(PAST).toISOString(),
+				schedulerVersion: 'v1'
+			}
+		],
+		reviewLog: [
+			{
+				cardId: 'c1',
+				ts: PAST,
+				grade: 3,
+				state: 1,
+				stability: 1,
+				difficulty: 5,
+				elapsedDays: 0,
+				scheduledDays: 1
+			}
+		],
+		streak: [
+			{
+				id: 'streak',
+				currentStreak: 1,
+				longestStreak: 1,
+				lastActiveDate: PAST_KEY,
+				freezesAvailable: 0,
+				freezesUsed: 0
+			}
+		],
+		stats: [{ date: PAST_KEY, xp: 10, minutes: 5, lessonsCompleted: 1, reviewsDone: 1 }],
+		skillProfile: [{ skill: 'reading', estimatedLevel: 'A1', updatedAt: PAST }],
+		assessments: [
+			{
+				assessmentId: 'as1',
+				kind: 'unit_checkpoint',
+				refId: 'a1-u1',
+				score: 80,
+				xpAwarded: 10,
+				completedAt: PAST,
+				lastFailedAt: PAST
+			}
+		]
+	};
+}
+
+describe('assertNoFutureDates', () => {
+	const future = NOW + 25 * HOUR;
+	const futureKey = todayKey(new Date(future));
+	const cases: [string, (p: BackupPayload) => BackupPayload][] = [
+		[
+			'progress.lastVisited',
+			(p) => ({ ...p, progress: [{ ...p.progress[0], lastVisited: future }] })
+		],
+		[
+			'srsCards.last_review',
+			(p) => ({
+				...p,
+				srsCards: [{ ...p.srsCards[0], last_review: new Date(future).toISOString() }]
+			})
+		],
+		['reviewLog.ts', (p) => ({ ...p, reviewLog: [{ ...p.reviewLog[0], ts: future }] })],
+		[
+			'skillProfile.updatedAt',
+			(p) => ({ ...p, skillProfile: [{ ...p.skillProfile[0], updatedAt: future }] })
+		],
+		[
+			'assessments.completedAt',
+			(p) => ({ ...p, assessments: [{ ...p.assessments[0], completedAt: future }] })
+		],
+		[
+			'assessments.lastFailedAt',
+			(p) => ({ ...p, assessments: [{ ...p.assessments[0], lastFailedAt: future }] })
+		],
+		[
+			'streak.lastActiveDate',
+			(p) => ({ ...p, streak: [{ ...p.streak[0], lastActiveDate: futureKey }] })
+		],
+		['stats.date', (p) => ({ ...p, stats: [{ ...p.stats[0], date: futureKey }] })]
+	];
+
+	it('accepts a payload whose dates are all in the past', () => {
+		expect(() => assertNoFutureDates(pastPayload(), NOW)).not.toThrow();
+	});
+
+	it('uses a 24 hour skew', () => {
+		expect(MAX_FUTURE_SKEW_MS).toBe(24 * HOUR);
+	});
+
+	it('refuses a last_review in the year 9999', () => {
+		const p = pastPayload();
+		const bad = {
+			...p,
+			srsCards: [{ ...p.srsCards[0], last_review: '9999-12-31T00:00:00.000Z' }]
+		};
+		expect(() => assertNoFutureDates(bad, NOW)).toThrow(FutureDatedSyncError);
+	});
+
+	it.each(cases)('refuses %s 25 hours ahead', (_field, mutate) => {
+		expect(() => assertNoFutureDates(mutate(pastPayload()), NOW)).toThrow(FutureDatedSyncError);
+	});
+
+	it('boundary: 23 hours ahead passes, 25 hours ahead throws', () => {
+		const p = pastPayload();
+		const at = (ms: number): BackupPayload => ({
+			...p,
+			progress: [{ ...p.progress[0], lastVisited: ms }],
+			stats: [{ ...p.stats[0], date: todayKey(new Date(ms)) }]
+		});
+		expect(() => assertNoFutureDates(at(NOW + 23 * HOUR), NOW)).not.toThrow();
+		expect(() => assertNoFutureDates(at(NOW + 25 * HOUR), NOW)).toThrow(FutureDatedSyncError);
+	});
+
+	it('does not check srsCards.due (legitimately far in the future)', () => {
+		const p = pastPayload();
+		const ok = { ...p, srsCards: [{ ...p.srsCards[0], due: '2099-01-01T00:00:00.000Z' }] };
+		expect(() => assertNoFutureDates(ok, NOW)).not.toThrow();
+	});
+
+	it('skips an empty streak.lastActiveDate ("never")', () => {
+		const p = pastPayload();
+		const ok = { ...p, streak: [{ ...p.streak[0], lastActiveDate: '' }] };
+		expect(() => assertNoFutureDates(ok, NOW)).not.toThrow();
+	});
+
+	it('uses the exact user-facing message', () => {
+		const p = pastPayload();
+		const bad = { ...p, reviewLog: [{ ...p.reviewLog[0], ts: NOW + 25 * HOUR }] };
+		expect(() => assertNoFutureDates(bad, NOW)).toThrow(
+			'This sync file has dates in the future. Check the date and time on both devices, then try again. If it still fails, use a backup file to move your progress.'
+		);
+		expect(new FutureDatedSyncError().message).toMatch(/both devices/);
+		expect(new FutureDatedSyncError().name).toBe('FutureDatedSyncError');
+	});
+});
+
+describe('sync file with future dates', () => {
+	async function futureDatedFile(): Promise<string> {
+		await srsRepo.putCard({
+			cardId: 'far',
+			contentId: 'v-far',
+			cefrLevel: 'A1',
+			skill: 'reading',
+			due: new Date('9999-12-31T00:00:00.000Z'),
+			stability: 1,
+			difficulty: 5,
+			elapsed_days: 0,
+			scheduled_days: 1,
+			learning_steps: 0,
+			reps: 1,
+			lapses: 0,
+			state: 1,
+			last_review: new Date('9999-12-30T00:00:00.000Z'),
+			schedulerVersion: 'v1'
+		});
+		const fileJson = await exportSyncFile(PASSPHRASE);
+		await resetDatabase();
+		return fileJson;
+	}
+
+	async function localPayload(): Promise<BackupPayload> {
+		return (JSON.parse(await exportBackup()) as { payload: BackupPayload }).payload;
+	}
+
+	async function seedLocal(): Promise<void> {
+		await progressRepo.putProgress({
+			lessonId: 'keep',
+			status: 'completed',
+			score: 80,
+			attempts: 1,
+			lastVisited: 1,
+			cefrLevel: 'A1'
+		});
+	}
+
+	it('previewSyncMerge refuses it and writes nothing', async () => {
+		const fileJson = await futureDatedFile();
+		await seedLocal();
+		const before = await localPayload();
+
+		await expect(previewSyncMerge(fileJson, PASSPHRASE)).rejects.toBeInstanceOf(
+			FutureDatedSyncError
+		);
+
+		expect(await localPayload()).toEqual(before);
+	});
+
+	it('importSyncMerge refuses it and leaves local data identical', async () => {
+		const fileJson = await futureDatedFile();
+		await seedLocal();
+		const before = await localPayload();
+
+		await expect(importSyncMerge(fileJson, PASSPHRASE)).rejects.toBeInstanceOf(
+			FutureDatedSyncError
+		);
+
+		expect(await localPayload()).toEqual(before);
+		expect(await srsRepo.getCard('far')).toBeUndefined();
 	});
 });

@@ -13,6 +13,10 @@ describe('gradeTyped', () => {
 	it('typo → hard', () => expect(gradeTyped('dis', ['diz', 'dix'])).toBe('hard'));
 	it('wrong → again', () => expect(gradeTyped('onze', accepted)).toBe('again'));
 	it('empty → again', () => expect(gradeTyped('', accepted)).toBe('again'));
+	it('curly apostrophe is graded the same as a straight one', () => {
+		expect(gradeTyped('j\u2019ai', ["j'ai"])).toBe('good');
+		expect(gradeTyped("j'ai", ['j\u2019ai'])).toBe('good');
+	});
 	it('any accepted form → good', () =>
 		expect(gradeTyped('suis', ['être', 'suis', 'es'])).toBe('good'));
 });

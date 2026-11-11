@@ -73,6 +73,44 @@ describe('backupSchema', () => {
 		expect(backupPayloadSchema.safeParse(bad).success).toBe(false);
 	});
 
+	describe('tolerant language fields', () => {
+		const settings = {
+			uiLanguage: 'en',
+			targetRetention: 0.9,
+			dailyGoalXp: 50,
+			ttsVoice: null,
+			audioSpeed: 1,
+			theme: 'system',
+			reduceMotion: false,
+			persistGranted: false,
+			onboarded: true
+		};
+		const parse = (patch: Record<string, unknown>) =>
+			backupPayloadSchema.safeParse({ ...emptyPayload, settings: { ...settings, ...patch } });
+
+		it('reads an unknown uiLanguage as en', () => {
+			const r = parse({ uiLanguage: 'xx' });
+			expect(r.success).toBe(true);
+			expect(r.data?.settings?.uiLanguage).toBe('en');
+		});
+
+		it('reads an unknown nativeLanguage as undefined', () => {
+			const r = parse({ nativeLanguage: 'xx' });
+			expect(r.success).toBe(true);
+			expect(r.data?.settings?.nativeLanguage).toBeUndefined();
+		});
+
+		it('keeps recognised languages', () => {
+			const r = parse({ uiLanguage: 'hi', nativeLanguage: 'pa' });
+			expect(r.data?.settings?.uiLanguage).toBe('hi');
+			expect(r.data?.settings?.nativeLanguage).toBe('pa');
+		});
+
+		it('still rejects other invalid settings fields', () => {
+			expect(parse({ theme: 'neon' }).success).toBe(false);
+		});
+	});
+
 	it('rejects progress score above 100', () => {
 		const bad = {
 			...emptyPayload,

@@ -16,7 +16,10 @@ const celebrationLevel = z.enum(['full', 'minimal']);
 const difficultyTier = z.enum(['easy', 'regular', 'hard']);
 
 export const settingsSchema = z.object({
-	uiLanguage: z.enum(['en', 'hi', 'hinglish', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa']),
+	// A newer version may add languages; an unknown one must not make the whole file "corrupt".
+	uiLanguage: z
+		.enum(['en', 'hi', 'hinglish', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa'])
+		.catch('en'),
 	targetRetention: z.number().min(0.7).max(0.99),
 	dailyGoalXp: z.number().min(0),
 	ttsVoice: z.string().nullable(),
@@ -25,7 +28,7 @@ export const settingsSchema = z.object({
 	reduceMotion: z.boolean(),
 	persistGranted: z.boolean(),
 	onboarded: z.boolean(),
-	nativeLanguage: nativeLanguage.optional(),
+	nativeLanguage: nativeLanguage.optional().catch(undefined),
 	learningGoal: learningGoal.optional(),
 	targetExamDate: z.string().nullable().optional(),
 	dailyGoalPreset: dailyGoalPreset.optional(),

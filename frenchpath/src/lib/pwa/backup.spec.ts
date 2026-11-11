@@ -4,11 +4,14 @@ import * as srsRepo from '../db/repositories/srs';
 import * as progressRepo from '../db/repositories/progress';
 import * as settingsRepo from '../db/repositories/settings';
 import * as assessmentsRepo from '../db/repositories/assessments';
+import * as reviewLogRepo from '../db/repositories/reviewLog';
 import { createSrsCard } from '../srs/fsrs';
 import {
 	exportBackup,
 	importBackup,
 	previewBackup,
+	replaceAllData,
+	validateAndParseBackup,
 	hasDataToLose,
 	MAX_BACKUP_BYTES
 } from './backup';
@@ -305,10 +308,12 @@ describe('backup export/import', () => {
 		await db.add('reviewLog', { ...entry, elapsedDays: 0, scheduledDays: 1 });
 		await db.add('reviewLog', { ...entry, elapsedDays: 0, scheduledDays: 1 });
 		const file = JSON.parse(await exportBackup());
-		file.payload.reviewLog[1].id = file.payload.reviewLog[0].id; // valid file, colliding key
+		// Review-log ids are dropped on restore, so the colliding key is a duplicated stats day.
+		const day = { date: '2026-01-01', xp: 1, minutes: 1, lessonsCompleted: 0, reviewsDone: 0 };
+		file.payload.stats = [day, day]; // valid file, colliding key
 		file.checksum = await sha256Hex(JSON.stringify(file.payload));
 
-		// Route review-log writes through add(), so the colliding key fails the request
+		// Route stats writes through add(), so the colliding key fails the request
 		// asynchronously the way a quota error would, after the stores were cleared.
 		const realPut = IDBObjectStore.prototype.put;
 		const put = vi.spyOn(IDBObjectStore.prototype, 'put').mockImplementation(function (
@@ -316,7 +321,7 @@ describe('backup export/import', () => {
 			value: unknown,
 			key?: IDBValidKey
 		) {
-			if (this.name === 'reviewLog') return this.add(value);
+			if (this.name === 'stats') return this.add(value);
 			return realPut.call(this, value, key);
 		});
 		try {
@@ -339,6 +344,66 @@ describe('backup export/import', () => {
 		file.checksum = await sha256Hex(JSON.stringify(file.payload));
 		await expect(importBackup(JSON.stringify(file))).rejects.toThrow(/invalid/i);
 		expect(await srsRepo.getAllCards()).toHaveLength(1);
+	});
+
+	it('accepts a backup whose settings name a language this version does not know', async () => {
+		await settingsRepo.saveSettings({ dailyGoalXp: 42 });
+		const file = JSON.parse(await exportBackup());
+		file.payload.settings.uiLanguage = 'ur';
+		file.checksum = await sha256Hex(JSON.stringify(file.payload));
+		const { payload } = await validateAndParseBackup(JSON.stringify(file));
+		expect(payload.settings?.uiLanguage).toBe('en');
+	});
+
+	describe('review-log ids on restore', () => {
+		const OVERFLOW_ID = 9007199254740992; // 2^53: past it the key generator can't advance
+		const row = (cardId: string, ts: number, id?: number) => ({
+			...(id === undefined ? {} : { id }),
+			cardId,
+			ts,
+			grade: 3,
+			state: 2,
+			stability: 1,
+			difficulty: 5,
+			elapsedDays: 0,
+			scheduledDays: 1
+		});
+		const fileWithLogs = async (reviewLog: unknown[]): Promise<string> => {
+			const file = JSON.parse(await exportBackup());
+			file.payload.reviewLog = reviewLog;
+			file.checksum = await sha256Hex(JSON.stringify(file.payload));
+			return JSON.stringify(file);
+		};
+
+		it('does not keep a crafted review-log id from the file', async () => {
+			await importBackup(await fileWithLogs([row('u:1', 1, OVERFLOW_ID)]));
+			const stored = await reviewLogRepo.getAllReviewLogs();
+			expect(stored).toHaveLength(1);
+			expect(stored[0].id).not.toBe(OVERFLOW_ID);
+		});
+
+		it('still saves a new review after restoring a crafted id', async () => {
+			await importBackup(await fileWithLogs([row('u:1', 1, OVERFLOW_ID)]));
+			await reviewLogRepo.appendReviewLog(row('u:2', 2));
+			expect(await reviewLogRepo.countReviews()).toBe(2);
+		});
+
+		it('restores review rows in file order without losing other fields', async () => {
+			const rows = [row('c', 30, 7), row('a', 10, 3), row('b', 20, 5)];
+			await importBackup(await fileWithLogs(rows));
+			const stored = await reviewLogRepo.getAllReviewLogs();
+			const nonId = (r: { id?: number }): Record<string, unknown> =>
+				Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'id'));
+			expect(stored.map(nonId)).toEqual(rows.map(nonId));
+		});
+
+		it('does not mutate the payload it restores', async () => {
+			const { payload } = await validateAndParseBackup(
+				await fileWithLogs([row('u:1', 1, OVERFLOW_ID)])
+			);
+			await replaceAllData(payload);
+			expect(payload.reviewLog[0].id).toBe(OVERFLOW_ID);
+		});
 	});
 
 	it.each([

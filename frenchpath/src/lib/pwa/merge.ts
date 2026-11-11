@@ -2,17 +2,25 @@
 // Pure device-to-device merge of two backup payloads. Strategy per store:
 // settings local-wins (milestones unioned); progress LWW on lastVisited with
 // field-wise max score/bestCorrect; srsCards LWW on last_review (tie: reps);
-// reviewLog union deduped by (cardId,ts,grade); streak longest=max, rest from
-// later lastActiveDate; stats field-wise max per date; skillProfile LWW on
-// updatedAt; assessments LWW on completedAt. Monotonic values use max so a
-// merge can never shrink earned progress.
+// reviewLog union deduped by (cardId,ts,grade); stats field-wise max per date;
+// streak joined: later lastActiveDate, current = max(that day plus the consecutive active
+// merged-stats days before it, devices' own count on that date, an earlier device's count plus the
+// gap when active days connect them), longest = max of all,
+// freezes from the later snapshot (equal dates: min available, max used); skillProfile LWW on
+// updatedAt; assessments: a passed record (xpAwarded > 0) beats a failed one,
+// else LWW on completedAt, lastFailedAt = max of both. Monotonic values use max so a
+// merge can never shrink earned progress. summary.replaced counts shared records
+// (progress, srsCards, skillProfile, assessments) where the remote record wins.
 import type { BackupPayload } from './backupSchema';
+import { daysBetween } from '../utils/date';
 
 export interface MergeSummary {
 	newReviews: number;
 	newProgress: number;
 	newCards: number;
 	newAssessments: number;
+	/** Records on both sides where the remote one wins (progress, cards, skills, assessments). */
+	replaced: number;
 }
 export interface MergeResult {
 	merged: BackupPayload;
@@ -35,6 +43,7 @@ const lastReviewEpoch = (c: { last_review?: string }): number =>
 	c.last_review ? new Date(c.last_review).getTime() : 0;
 
 export function mergePayloads(local: BackupPayload, remote: BackupPayload): MergeResult {
+	let replaced = 0;
 	// progress: per lessonId, higher lastVisited wins; score/bestCorrect take field-wise max
 	const progressMap = new Map<string, Progress>(local.progress.map((p) => [p.lessonId, p]));
 	let newProgress = 0;
@@ -45,6 +54,7 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 			newProgress++;
 		} else {
 			const winner = r.lastVisited > l.lastVisited ? r : l;
+			if (winner === r) replaced++;
 			progressMap.set(r.lessonId, {
 				...winner,
 				score: Math.max(l.score, r.score),
@@ -66,6 +76,7 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 		const lEpoch = lastReviewEpoch(l);
 		const rEpoch = lastReviewEpoch(r);
 		const winner = rEpoch !== lEpoch ? (rEpoch > lEpoch ? r : l) : r.reps > l.reps ? r : l;
+		if (winner === r) replaced++;
 		cardsMap.set(r.cardId, winner);
 	}
 
@@ -82,9 +93,6 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 		const { id, ...rest } = r;
 		return rest;
 	});
-
-	// streak: longestStreak = max of both; rest of the fields come from the later-lastActiveDate snapshot
-	const mergedStreak = mergeStreak(local.streak[0], remote.streak[0]);
 
 	// stats: per date, every field takes field-wise max (never summed — avoids double-counting)
 	const statsMap = new Map<string, StatsT>(local.stats.map((s) => [s.date, s]));
@@ -104,14 +112,19 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 		);
 	}
 
+	// streak: joined using the merged stats, so it must come after them
+	const mergedStreak = mergeStreak(local.streak[0], remote.streak[0], [...statsMap.values()]);
+
 	// skillProfile: per skill, higher updatedAt wins the whole record
 	const skillMap = new Map<string, SkillProfileT>(local.skillProfile.map((s) => [s.skill, s]));
 	for (const r of remote.skillProfile) {
 		const l = skillMap.get(r.skill);
-		skillMap.set(r.skill, !l || r.updatedAt > l.updatedAt ? r : l);
+		const remoteWins = !l || r.updatedAt > l.updatedAt;
+		if (l && remoteWins) replaced++;
+		skillMap.set(r.skill, remoteWins ? r : l);
 	}
 
-	// assessments: per assessmentId, later completedAt wins the whole record
+	// assessments: per assessmentId, a passed record beats a failed one; else later completedAt wins
 	const assessmentsMap = new Map<string, AssessmentT>(
 		local.assessments.map((a) => [a.assessmentId, a])
 	);
@@ -122,7 +135,8 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 			assessmentsMap.set(r.assessmentId, r);
 			newAssessments++;
 		} else {
-			assessmentsMap.set(r.assessmentId, r.completedAt > l.completedAt ? r : l);
+			if (assessmentWinner(l, r) === r) replaced++;
+			assessmentsMap.set(r.assessmentId, mergeAssessment(l, r));
 		}
 	}
 
@@ -142,15 +156,81 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 
 	return {
 		merged,
-		summary: { newReviews, newProgress, newCards, newAssessments }
+		summary: { newReviews, newProgress, newCards, newAssessments, replaced }
 	};
 }
 
-function mergeStreak(local: StreakT | undefined, remote: StreakT | undefined): StreakT | undefined {
+const hasPassed = (a: AssessmentT): boolean => a.xpAwarded > 0;
+
+function assessmentWinner(local: AssessmentT, remote: AssessmentT): AssessmentT {
+	if (hasPassed(local) !== hasPassed(remote)) return hasPassed(remote) ? remote : local;
+	return remote.completedAt > local.completedAt ? remote : local;
+}
+
+function mergeAssessment(local: AssessmentT, remote: AssessmentT): AssessmentT {
+	const winner = assessmentWinner(local, remote);
+	const failedTimes = [local.lastFailedAt, remote.lastFailedAt].filter(
+		(t): t is number => t !== undefined
+	);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars -- re-added below only when defined
+	const { lastFailedAt, ...rest } = winner;
+	return failedTimes.length > 0 ? { ...rest, lastFailedAt: Math.max(...failedTimes) } : rest;
+}
+
+// lessonsCompleted is deliberately excluded: a replay of an already-aced lesson writes it with no XP
+// and no streak credit. Every path that does credit the streak also adds XP or a review.
+const isActiveDay = (s: StatsT): boolean => s.xp > 0 || s.reviewsDone > 0;
+
+/**
+ * `end` itself counts as active (a streak snapshot proves activity even without a qualifying stats
+ * row, e.g. a failed exam), plus the consecutive active stats days immediately before it.
+ */
+function activeRunEndingOn(end: string, stats: StatsT[]): number {
+	const days = stats
+		.filter((s) => isActiveDay(s) && s.date < end)
+		.map((s) => s.date)
+		.sort()
+		.reverse();
+	let run = 1;
+	for (const day of days) {
+		if (daysBetween(day, end) !== run) break;
+		run++;
+	}
+	return run;
+}
+
+// A streak is the longest of "days recounted from merged stats", the devices' own count on the later
+// date, and an earlier device's count joined to it; own counts are kept because a freeze bridge is
+// stored only as a counter, not as an active day.
+function mergeStreak(
+	local: StreakT | undefined,
+	remote: StreakT | undefined,
+	mergedStats: StatsT[]
+): StreakT | undefined {
 	if (!local) return remote;
 	if (!remote) return local;
-	const snapshot = remote.lastActiveDate > local.lastActiveDate ? remote : local;
-	return { ...snapshot, longestStreak: Math.max(local.longestStreak, remote.longestStreak) };
+	const lastActiveDate =
+		local.lastActiveDate > remote.lastActiveDate ? local.lastActiveDate : remote.lastActiveDate;
+	const current = [local, remote].filter((s) => s.lastActiveDate === lastActiveDate);
+	const own = Math.max(...current.map((s) => s.currentStreak));
+	const run = activeRunEndingOn(lastActiveDate, mergedStats);
+	// An earlier snapshot joins only when every day strictly between its last day and the merged one
+	// is active (gap <= run); its own count then covers whatever its stats cannot (freezes, exams).
+	const joined = [local, remote]
+		.filter((s) => s.lastActiveDate !== '' && s.lastActiveDate < lastActiveDate)
+		.map((s) => {
+			const gap = daysBetween(s.lastActiveDate, lastActiveDate);
+			return gap <= run ? s.currentStreak + gap : 0;
+		});
+	const currentStreak = Math.max(run, own, ...joined);
+	return {
+		id: 'streak',
+		currentStreak,
+		longestStreak: Math.max(local.longestStreak, remote.longestStreak, currentStreak),
+		lastActiveDate,
+		freezesAvailable: Math.min(...current.map((s) => s.freezesAvailable)),
+		freezesUsed: Math.max(...current.map((s) => s.freezesUsed))
+	};
 }
 
 function mergeSettings(local: SettingsT | null, remote: SettingsT | null): SettingsT | null {

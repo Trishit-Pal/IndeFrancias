@@ -13,6 +13,27 @@ describe('normalizeAnswer', () => {
 		expect(normalizeAnswer('e\u0301')).toBe('e');
 		expect(normalizeAnswer('é')).toBe('e');
 	});
+
+	it('treats a curly apostrophe like the straight one', () => {
+		expect(normalizeAnswer('j\u2019ai')).toBe("j'ai");
+		expect(normalizeAnswer('j\u2019ai')).toBe(normalizeAnswer("j'ai"));
+	});
+
+	it.each([
+		['U+2018', 'l\u2018eau'],
+		['U+02BC', 'l\u02BCeau'],
+		['U+0060', 'l\u0060eau'],
+		['U+00B4', 'l\u00B4eau']
+	])('folds the %s apostrophe look-alike to the straight apostrophe', (_name, typed) => {
+		expect(normalizeAnswer(typed)).toBe("l'eau");
+	});
+
+	it('folds the oe and ae ligatures, including upper case', () => {
+		expect(normalizeAnswer('s\u0153ur')).toBe('soeur');
+		expect(normalizeAnswer('\u0152uvre')).toBe('oeuvre');
+		expect(normalizeAnswer('ex \u00E6quo')).toBe('ex aequo');
+		expect(normalizeAnswer('\u00C6quo')).toBe('aequo');
+	});
 });
 
 describe('gradeExercise', () => {
@@ -40,6 +61,19 @@ describe('gradeExercise', () => {
 		expect(gradeExercise(cloze, { type: 'cloze', text: 'AU REVOIR' })).toBe(true);
 		expect(gradeExercise(cloze, { type: 'cloze', text: 'au-revoir' })).toBe(true);
 		expect(gradeExercise(cloze, { type: 'cloze', text: 'bonjour' })).toBe(false);
+	});
+
+	it('grades typed answers the same whether the apostrophe is curly or straight', () => {
+		const straight: Exercise = {
+			type: 'cloze',
+			id: 'c',
+			text: '{{}}',
+			answer: "j'ai faim",
+			accept: []
+		};
+		const curly: Exercise = { ...straight, answer: 'J\u2019ai faim' };
+		expect(gradeExercise(straight, { type: 'cloze', text: 'J\u2019ai faim' })).toBe(true);
+		expect(gradeExercise(curly, { type: 'cloze', text: "j'ai faim" })).toBe(true);
 	});
 
 	it('rejects empty cloze answers', () => {
