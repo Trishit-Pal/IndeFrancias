@@ -83,13 +83,19 @@ const skillRec = (
 	updatedAt: number
 ) => ({ skill, estimatedLevel, updatedAt });
 
-const assessment = (assessmentId: string, completedAt: number, score = 90) => ({
+const assessment = (
+	assessmentId: string,
+	completedAt: number,
+	score = 90,
+	extra: { xpAwarded?: number; lastFailedAt?: number } = {}
+) => ({
 	assessmentId,
 	kind: 'unit_checkpoint' as const,
 	refId: 'u1',
 	score,
 	xpAwarded: 10,
-	completedAt
+	completedAt,
+	...extra
 });
 
 const settings = (over: Partial<NonNullable<BackupPayload['settings']>> = {}) => ({
@@ -186,7 +192,7 @@ describe('mergePayloads', () => {
 		expect(merged.skillProfile[0].updatedAt).toBe(200);
 	});
 
-	it('assessments: later completedAt wins the whole record; summary counts new ones', () => {
+	it('assessments: pass vs pass, later completedAt wins the whole record; summary counts new ones', () => {
 		const local = payload({ assessments: [assessment('a1', 100, 70)] });
 		const remote = payload({
 			assessments: [assessment('a1', 200, 95), assessment('a2', 50)]
@@ -195,6 +201,54 @@ describe('mergePayloads', () => {
 		expect(merged.assessments).toHaveLength(2);
 		expect(merged.assessments.find((a) => a.assessmentId === 'a1')?.score).toBe(95);
 		expect(summary.newAssessments).toBe(1);
+	});
+
+	describe('assessments: a pass survives a failed attempt', () => {
+		const passed = () => assessment('a1', 1000, 90, { xpAwarded: 80 });
+		const failed = () => assessment('a1', 2000, 40, { xpAwarded: 0, lastFailedAt: 2000 });
+
+		it('keeps the earlier pass over a later failure and records lastFailedAt', () => {
+			const { merged } = mergePayloads(
+				payload({ assessments: [passed()] }),
+				payload({ assessments: [failed()] })
+			);
+			expect(merged.assessments).toHaveLength(1);
+			expect(merged.assessments[0]).toMatchObject({
+				xpAwarded: 80,
+				completedAt: 1000,
+				lastFailedAt: 2000
+			});
+		});
+
+		it('gives the same record whichever side holds the pass', () => {
+			const a = payload({ assessments: [passed()] });
+			const b = payload({ assessments: [failed()] });
+			const ab = mergePayloads(a, b).merged.assessments;
+			expect(ab).toEqual(mergePayloads(b, a).merged.assessments);
+			expect(ab[0]).toMatchObject({ xpAwarded: 80, completedAt: 1000, lastFailedAt: 2000 });
+		});
+
+		it('both failed: later completedAt wins and lastFailedAt is the larger', () => {
+			const l = assessment('a1', 100, 30, { xpAwarded: 0, lastFailedAt: 100 });
+			const r = assessment('a1', 200, 50, { xpAwarded: 0, lastFailedAt: 200 });
+			const { merged } = mergePayloads(
+				payload({ assessments: [l] }),
+				payload({ assessments: [r] })
+			);
+			expect(merged.assessments[0]).toMatchObject({
+				score: 50,
+				completedAt: 200,
+				lastFailedAt: 200
+			});
+		});
+
+		it('neither side has lastFailedAt: the merged record has no such key', () => {
+			const { merged } = mergePayloads(
+				payload({ assessments: [assessment('a1', 100)] }),
+				payload({ assessments: [assessment('a1', 200)] })
+			);
+			expect(merged.assessments[0]).not.toHaveProperty('lastFailedAt');
+		});
 	});
 
 	it('settings: remote theme never overwrites local; celebratedMilestones is unioned', () => {

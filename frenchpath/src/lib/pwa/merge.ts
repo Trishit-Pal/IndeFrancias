@@ -4,7 +4,8 @@
 // field-wise max score/bestCorrect; srsCards LWW on last_review (tie: reps);
 // reviewLog union deduped by (cardId,ts,grade); streak longest=max, rest from
 // later lastActiveDate; stats field-wise max per date; skillProfile LWW on
-// updatedAt; assessments LWW on completedAt. Monotonic values use max so a
+// updatedAt; assessments: a passed record (xpAwarded > 0) beats a failed one,
+// else LWW on completedAt, lastFailedAt = max of both. Monotonic values use max so a
 // merge can never shrink earned progress.
 import type { BackupPayload } from './backupSchema';
 
@@ -111,7 +112,7 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 		skillMap.set(r.skill, !l || r.updatedAt > l.updatedAt ? r : l);
 	}
 
-	// assessments: per assessmentId, later completedAt wins the whole record
+	// assessments: per assessmentId, a passed record beats a failed one; else later completedAt wins
 	const assessmentsMap = new Map<string, AssessmentT>(
 		local.assessments.map((a) => [a.assessmentId, a])
 	);
@@ -122,7 +123,7 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 			assessmentsMap.set(r.assessmentId, r);
 			newAssessments++;
 		} else {
-			assessmentsMap.set(r.assessmentId, r.completedAt > l.completedAt ? r : l);
+			assessmentsMap.set(r.assessmentId, mergeAssessment(l, r));
 		}
 	}
 
@@ -144,6 +145,23 @@ export function mergePayloads(local: BackupPayload, remote: BackupPayload): Merg
 		merged,
 		summary: { newReviews, newProgress, newCards, newAssessments }
 	};
+}
+
+const hasPassed = (a: AssessmentT): boolean => a.xpAwarded > 0;
+
+function assessmentWinner(local: AssessmentT, remote: AssessmentT): AssessmentT {
+	if (hasPassed(local) !== hasPassed(remote)) return hasPassed(remote) ? remote : local;
+	return remote.completedAt > local.completedAt ? remote : local;
+}
+
+function mergeAssessment(local: AssessmentT, remote: AssessmentT): AssessmentT {
+	const winner = assessmentWinner(local, remote);
+	const failedTimes = [local.lastFailedAt, remote.lastFailedAt].filter(
+		(t): t is number => t !== undefined
+	);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars -- re-added below only when defined
+	const { lastFailedAt, ...rest } = winner;
+	return failedTimes.length > 0 ? { ...rest, lastFailedAt: Math.max(...failedTimes) } : rest;
 }
 
 function mergeStreak(local: StreakT | undefined, remote: StreakT | undefined): StreakT | undefined {
