@@ -155,6 +155,14 @@ export async function exportBackup(): Promise<string> {
 	const json = JSON.stringify(file);
 	// An export we could not re-import must fail loudly, not hand the learner a dead file.
 	assertBackupSize(json);
+	try {
+		await validateAndParseBackup(json); // read-only: the same gate a restore will apply
+	} catch (err) {
+		throw new Error(
+			'Backup could not be created because some saved data is not in the expected format. Your progress on this device is unchanged.',
+			{ cause: err }
+		);
+	}
 	return json;
 }
 
