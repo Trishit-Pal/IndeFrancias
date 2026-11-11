@@ -33,6 +33,7 @@
 		exportSyncFile,
 		previewSyncMerge,
 		importSyncMerge,
+		FutureDatedSyncError,
 		MAX_SYNC_BYTES
 	} from '$lib/sync/mergeFile';
 	import { WrongPassphraseError } from '$lib/sync/crypto';
@@ -301,6 +302,7 @@
 
 	function syncErrorMessage(error: unknown): string {
 		if (error instanceof WrongPassphraseError) return m.sync_wrong_passphrase();
+		if (error instanceof FutureDatedSyncError) return m.sync_future_dates();
 		return error instanceof Error ? error.message : m.settings_import_failed();
 	}
 
@@ -947,6 +949,11 @@
 							assessments: syncPreview.newAssessments
 						})}
 					</p>
+					{#if syncPreview.replaced > 0}
+						<p class="mt-1 text-sm text-muted" data-testid="sync-preview-replaced">
+							{m.sync_preview_replaced({ count: syncPreview.replaced })}
+						</p>
+					{/if}
 					{#if syncSafetyCopyFailed}
 						<p
 							class="mt-2 text-sm text-foreground"

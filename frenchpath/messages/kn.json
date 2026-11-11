@@ -446,5 +446,7 @@
 	"ritual_evening": "Evening",
 	"sync_complete": "Merge complete. Reload to see your combined progress.",
 	"sync_safety_copy_failed": "We couldn't save a copy of your current progress. Try again, or merge without a copy.",
-	"sync_merge_anyway": "Merge without saving a copy"
+	"sync_merge_anyway": "Merge without saving a copy",
+	"sync_future_dates": "This file has dates that haven't happened yet, so it may be damaged or come from a device with the wrong clock. Check the date on the other device and export again.",
+	"sync_preview_replaced": "{count} items already on this device will be replaced by the newer version in this file."
 }

@@ -446,5 +446,7 @@
 	"ritual_evening": "Shaam",
 	"sync_complete": "Merge ho gaya. Apni combined progress dekhne ke liye reload karein.",
 	"sync_safety_copy_failed": "Hum aapki current progress ki copy save nahi kar paaye. Try again karein, ya bina copy ke merge karein.",
-	"sync_merge_anyway": "Copy save kiye bina merge karein"
+	"sync_merge_anyway": "Copy save kiye bina merge karein",
+	"sync_future_dates": "Is file mein aisi dates hain jo abhi aayi hi nahi hain, isliye file kharab ho sakti hai ya galat clock wale device se aayi ho sakti hai. Doosre device ki date check karein aur dobara export karein.",
+	"sync_preview_replaced": "Is device ke {count} existing items file ke naye version se replace ho jayenge."
 }
