@@ -63,7 +63,24 @@ describe('language picker labels', () => {
 		expect(uiLanguageLabel('en')).toBe('English');
 	});
 
-	it('marks exactly the seven Indic locales as beta', () => {
-		expect([...BETA_LOCALES].sort()).toEqual(['bn', 'gu', 'kn', 'mr', 'pa', 'ta', 'te']);
+	it('labels the Dravidian, Odia and Assamese additions as beta', () => {
+		expect(uiLanguageLabel('ml')).toBe('മലയാളം (beta)');
+		expect(uiLanguageLabel('or')).toBe('ଓଡ଼ିଆ (beta)');
+		expect(uiLanguageLabel('as')).toBe('অসমীয়া (beta)');
+	});
+
+	it('marks exactly the ten Indic locales as beta', () => {
+		expect([...BETA_LOCALES].sort()).toEqual([
+			'as',
+			'bn',
+			'gu',
+			'kn',
+			'ml',
+			'mr',
+			'or',
+			'pa',
+			'ta',
+			'te'
+		]);
 	});
 });

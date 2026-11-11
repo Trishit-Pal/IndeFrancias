@@ -222,6 +222,18 @@ html[lang='pa'] {
 	--fp-font-ui: 'Manrope Variable', 'Noto Sans Gurmukhi', system-ui, sans-serif;
 	--fp-font-hindi: 'Noto Serif Gurmukhi', 'Noto Sans Gurmukhi', serif;
 }
+html[lang='ml'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Malayalam', system-ui, sans-serif;
+	--fp-font-hindi: 'Noto Serif Malayalam', 'Noto Sans Malayalam', serif;
+}
+html[lang='or'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Oriya', system-ui, sans-serif;
+	--fp-font-hindi: 'Noto Serif Oriya', 'Noto Sans Oriya', serif;
+}
+html[lang='as'] {
+	--fp-font-ui: 'Manrope Variable', 'Noto Sans Bengali', system-ui, sans-serif;
+	--fp-font-hindi: 'Noto Serif Bengali', 'Noto Sans Bengali', serif;
+}
 /* Devanagari (hi, mr): the bundled Tiro face serves glossed text; UI labels
    fall back to the system Devanagari sans inside the Manrope stack. */
 html[lang='hi'],
@@ -238,6 +250,9 @@ html:is(
 	[lang='kn'],
 	[lang='gu'],
 	[lang='pa'],
+	[lang='ml'],
+	[lang='or'],
+	[lang='as'],
 	[lang='hi'],
 	[lang='mr']
 ) {

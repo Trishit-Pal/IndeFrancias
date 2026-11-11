@@ -43,8 +43,15 @@ describe('language registry', () => {
 		}
 	});
 
-	it('BETA_LOCALES is exactly the seven Indic locales, in UI order', () => {
-		expect([...BETA_LOCALES]).toEqual(['bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa']);
+	it('BETA_LOCALES is exactly the ten Indic locales, in UI order', () => {
+		expect([...BETA_LOCALES]).toEqual(['bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'ml', 'or', 'as']);
+	});
+
+	it('ml, or and as are interface languages only, not native languages', () => {
+		for (const code of ['ml', 'or', 'as'] as const) {
+			expect(UI_LANGUAGES).toContain(code);
+			expect(NATIVE_LANGUAGES as readonly string[]).not.toContain(code);
+		}
 	});
 
 	it('NATIVE_TO_UI maps every native language to an interface language', () => {

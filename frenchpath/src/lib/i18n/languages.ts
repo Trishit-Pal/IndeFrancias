@@ -11,7 +11,10 @@ export const UI_LANGUAGES = [
 	'kn',
 	'mr',
 	'gu',
-	'pa'
+	'pa',
+	'ml',
+	'or',
+	'as'
 ] as const;
 export type UiLanguage = (typeof UI_LANGUAGES)[number];
 
@@ -42,7 +45,10 @@ export const LANGUAGES: Record<UiLanguage | NativeLanguage, LanguageInfo> = {
 	kn: { label: 'ಕನ್ನಡ', beta: true, htmlLang: 'kn', script: /[\u0C80-\u0CFF]/ },
 	mr: { label: 'मराठी', beta: true, htmlLang: 'mr', script: /[\u0900-\u097F]/ },
 	gu: { label: 'ગુજરાતી', beta: true, htmlLang: 'gu', script: /[\u0A80-\u0AFF]/ },
-	pa: { label: 'ਪੰਜਾਬੀ', beta: true, htmlLang: 'pa', script: /[\u0A00-\u0A7F]/ }
+	pa: { label: 'ਪੰਜਾਬੀ', beta: true, htmlLang: 'pa', script: /[\u0A00-\u0A7F]/ },
+	ml: { label: 'മലയാളം', beta: true, htmlLang: 'ml', script: /[\u0D00-\u0D7F]/ },
+	or: { label: 'ଓଡ଼ିଆ', beta: true, htmlLang: 'or', script: /[\u0B00-\u0B7F]/ },
+	as: { label: 'অসমীয়া', beta: true, htmlLang: 'as', script: /[\u0980-\u09FF]/ }
 };
 
 /** Interface languages whose picker label carries "(beta)". Same order as UI_LANGUAGES. */
