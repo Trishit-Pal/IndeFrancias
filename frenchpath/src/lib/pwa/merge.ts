@@ -257,7 +257,8 @@ function mergeStreak(
 		local.lastActiveDate > remote.lastActiveDate ? local.lastActiveDate : remote.lastActiveDate;
 	const current = [local, remote].filter((s) => s.lastActiveDate === lastActiveDate);
 	const own = Math.max(...current.map((s) => s.currentStreak));
-	const run = activeRunEndingOn(lastActiveDate, mergedStats);
+	// Two never-active records have no day to count (activeRunEndingOn would credit the empty date).
+	const run = lastActiveDate === '' ? 0 : activeRunEndingOn(lastActiveDate, mergedStats);
 	// An earlier snapshot joins only when every day strictly between its last day and the merged one
 	// is active (gap <= run); its own count then covers whatever its stats cannot (freezes, exams).
 	const joined = [local, remote]

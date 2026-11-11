@@ -321,6 +321,16 @@ describe('mergePayloads', () => {
 			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
 		});
 
+		it('two never-active records stay at a streak of 0', () => {
+			const a = payload({ streak: [streakRec(0, 0, '')] });
+			const b = payload({ streak: [streakRec(0, 0, '')] });
+			for (const { merged } of [mergePayloads(a, b), mergePayloads(b, a)]) {
+				expect(merged.streak[0].currentStreak).toBe(0);
+				expect(merged.streak[0].longestStreak).toBe(0);
+				expect(merged.streak[0].lastActiveDate).toBe('');
+			}
+		});
+
 		it('zero-XP lesson replays between two real days do not bridge them', () => {
 			const [dMinus10, ...replayDays] = lastNDayKeys(11, new Date(`${D}T00:00:00`)).slice(0, 10);
 			const a = payload({
