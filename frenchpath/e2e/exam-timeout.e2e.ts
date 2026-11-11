@@ -31,6 +31,8 @@ test('a mock exam that times out scores the section in progress', async ({ page 
 });
 
 const JUMP_MS = 20 * 60 * 1000;
+// Real time keeps running under the fake clock; this bound only guards against counting the jump twice.
+const UPPER_SLACK_S = 10;
 
 async function readTimerSeconds(page: import('@playwright/test').Page): Promise<number> {
 	const text = (await page.getByTestId('exam-timer').textContent()) ?? '';
@@ -53,7 +55,7 @@ test('a suspended tab does not pause the exam clock', async ({ page }) => {
 	await expect
 		.poll(async () => before - (await readTimerSeconds(page)))
 		.toBeGreaterThanOrEqual(JUMP_MS / 1000 - 2);
-	expect(before - (await readTimerSeconds(page))).toBeLessThanOrEqual(JUMP_MS / 1000 + 2);
+	expect(before - (await readTimerSeconds(page))).toBeLessThanOrEqual(JUMP_MS / 1000 + UPPER_SLACK_S);
 });
 
 test('a jump past the end finishes the exam', async ({ page }) => {
