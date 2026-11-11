@@ -9,6 +9,7 @@
 	import InfoBanner from '$lib/components/InfoBanner.svelte';
 	import UpdateToast from '$lib/components/UpdateToast.svelte';
 	import type { IconName } from '$lib/components/icons';
+	import { LANGUAGES } from '$lib/i18n/languages';
 	import * as m from '$lib/paraglide/messages';
 	import { network } from '$lib/stores/online.svelte';
 	import {
@@ -162,8 +163,7 @@
 
 			const settings = await settingsRepo.getSettings();
 			document.documentElement.classList.toggle('reduce-motion', settings.reduceMotion);
-			document.documentElement.lang =
-				settings.uiLanguage === 'hinglish' ? 'en' : settings.uiLanguage;
+			document.documentElement.lang = LANGUAGES[settings.uiLanguage].htmlLang;
 			configureTts(settings.ttsVoice, settings.audioSpeed);
 			await syncTheme();
 			cleanup = watchSystemTheme(() => void syncTheme());

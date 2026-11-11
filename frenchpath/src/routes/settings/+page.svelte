@@ -20,6 +20,7 @@
 		xpFromPreset,
 		type DailyGoalPreset as Preset
 	} from '$lib/profile/types';
+	import { UI_LANGUAGES } from '$lib/i18n/languages';
 	import { LEARNING_GOAL_LABELS } from '$lib/profile/goalCopy';
 	import {
 		exportBackup,
@@ -74,18 +75,7 @@
 	let updateResult = $state<UpdateInfo | null>(null);
 	let updateStatus = $state('');
 
-	const languages: UiLanguage[] = [
-		'en',
-		'hi',
-		'hinglish',
-		'bn',
-		'ta',
-		'te',
-		'kn',
-		'mr',
-		'gu',
-		'pa'
-	];
+	const languages = UI_LANGUAGES;
 
 	const presetOptions: { value: Preset; label: () => string }[] = [
 		{ value: 'casual', label: () => m.settings_preset_casual({ xp: xpFromPreset('casual') }) },

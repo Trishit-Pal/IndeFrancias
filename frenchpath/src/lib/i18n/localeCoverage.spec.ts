@@ -1,20 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import en from '../../../messages/en.json';
 import hi from '../../../messages/hi.json';
-import hinglish from '../../../messages/hinglish.json';
-import bn from '../../../messages/bn.json';
-import ta from '../../../messages/ta.json';
-import te from '../../../messages/te.json';
-import kn from '../../../messages/kn.json';
-import mr from '../../../messages/mr.json';
-import gu from '../../../messages/gu.json';
-import pa from '../../../messages/pa.json';
 import { BETA_LOCALES, uiLanguageLabel } from '$lib/profile/types';
 
 type Messages = Record<string, string>;
 
 const EN: Messages = en;
-const LOCALES: Record<string, Messages> = { hi, hinglish, bn, ta, te, kn, mr, gu, pa };
+const LOCALES: Record<string, Messages> = Object.fromEntries(
+	Object.entries(
+		import.meta.glob<Messages>('../../../messages/*.json', { eager: true, import: 'default' })
+	)
+		.map(([path, messages]) => [path.replace(/^.*\/(.+)\.json$/, '$1'), messages] as const)
+		.filter(([locale]) => locale !== 'en')
+);
 const KEYS = Object.keys(EN).filter((key) => key !== '$schema');
 
 /**

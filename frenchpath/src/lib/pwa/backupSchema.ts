@@ -2,6 +2,7 @@
 // Validates backup files at the import boundary. Dates are stored as ISO
 // strings in the JSON payload and revived to Date objects on write.
 import { z } from 'zod';
+import { NATIVE_LANGUAGES, UI_LANGUAGES } from '../i18n/languages';
 
 // ts-fsrs 5 generatorParameters().w length; optimizer.ts rejects any other length.
 const FSRS_WEIGHT_COUNT = 21;
@@ -9,7 +10,7 @@ const FSRS_WEIGHT_COUNT = 21;
 const cefr = z.enum(['A1', 'A2', 'B1', 'B2', 'C1']);
 const skill = z.enum(['listening', 'reading', 'spokenInteraction', 'spokenProduction', 'writing']);
 
-const nativeLanguage = z.enum(['hi', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'en']);
+const nativeLanguage = z.enum(NATIVE_LANGUAGES);
 const learningGoal = z.enum(['travel', 'delf_a2', 'delf_b2', 'work', 'heritage', 'general']);
 const dailyGoalPreset = z.enum(['casual', 'regular', 'intense']);
 const celebrationLevel = z.enum(['full', 'minimal']);
@@ -17,9 +18,7 @@ const difficultyTier = z.enum(['easy', 'regular', 'hard']);
 
 export const settingsSchema = z.object({
 	// A newer version may add languages; an unknown one must not make the whole file "corrupt".
-	uiLanguage: z
-		.enum(['en', 'hi', 'hinglish', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa'])
-		.catch('en'),
+	uiLanguage: z.enum(UI_LANGUAGES).catch('en'),
 	targetRetention: z.number().min(0.7).max(0.99),
 	dailyGoalXp: z.number().min(0),
 	ttsVoice: z.string().nullable(),

@@ -4,8 +4,8 @@
  */
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { NATIVE_LANGUAGES as NATIVE_LANGS } from '../src/lib/i18n/languages';
 
-const NATIVE_LANGS = ['hi', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'en'] as const;
 const PACKS_DIR = join(import.meta.dirname, '../src/content/packs');
 
 type Card = {

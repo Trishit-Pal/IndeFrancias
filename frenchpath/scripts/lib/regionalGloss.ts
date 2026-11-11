@@ -1,21 +1,16 @@
 /**
  * Regional gloss derivation and script validation for content packs.
  */
-export const NATIVE_LANGS = ['hi', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'en'] as const;
-export type NativeLang = (typeof NATIVE_LANGS)[number];
+import { LANGUAGES, NATIVE_LANGUAGES } from '../../src/lib/i18n/languages';
+import type { NativeLanguage } from '../../src/lib/i18n/languages';
+
+export const NATIVE_LANGS = NATIVE_LANGUAGES;
+export type NativeLang = NativeLanguage;
 
 /** Expected Unicode blocks per gloss language key. */
-export const SCRIPT_RANGES: Record<NativeLang, RegExp> = {
-	hi: /[\u0900-\u097F]/,
-	bn: /[\u0980-\u09FF]/,
-	ta: /[\u0B80-\u0BFF]/,
-	te: /[\u0C00-\u0C7F]/,
-	kn: /[\u0C80-\u0CFF]/,
-	mr: /[\u0900-\u097F]/,
-	gu: /[\u0A80-\u0AFF]/,
-	pa: /[\u0A00-\u0A7F]/,
-	en: /[A-Za-z]/
-};
+export const SCRIPT_RANGES = Object.fromEntries(
+	NATIVE_LANGUAGES.map((lang) => [lang, LANGUAGES[lang].script])
+) as Record<NativeLang, RegExp>;
 
 const DEVANAGARI = /[\u0900-\u097F]/;
 

@@ -1,4 +1,5 @@
 import type { NativeLanguage } from '$lib/db/schema';
+import { glossFallback } from '$lib/i18n/languages';
 import type { BridgeBox, Card } from './schema';
 
 export type GlossSource = Pick<Card, 'hindiGloss' | 'englishGloss' | 'glosses'>;
@@ -8,15 +9,13 @@ export interface GlossResult {
 	secondary?: string;
 }
 
-const FALLBACK_CHAIN: NativeLanguage[] = ['hi', 'en'];
-
 function glossFromMap(
 	glosses: Partial<Record<NativeLanguage, string>>,
 	lang: NativeLanguage
 ): string | undefined {
 	const direct = glosses[lang];
 	if (direct?.trim()) return direct;
-	for (const fb of FALLBACK_CHAIN) {
+	for (const fb of glossFallback(lang)) {
 		const v = glosses[fb];
 		if (v?.trim()) return v;
 	}

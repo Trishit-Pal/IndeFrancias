@@ -7,12 +7,11 @@
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { NATIVE_LANGUAGES as NATIVE_LANGS } from '../src/lib/i18n/languages';
 import { unitSchema, type Unit, type Card } from '../src/lib/content/schema';
 
 const PACKS_DIR = resolve('src/content/packs');
 const dryRun = process.argv.includes('--dry-run');
-
-const NATIVE_LANGS = ['hi', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'en'] as const;
 
 function packFiles(): string[] {
 	return readdirSync(PACKS_DIR, { recursive: true })
