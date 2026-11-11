@@ -117,6 +117,43 @@ test('sync import over existing progress saves a safety copy first and does not 
 	).toBe(true);
 });
 
+test('sync preview cannot be cancelled or closed while the safety copy is being made', async ({
+	page
+}) => {
+	test.setTimeout(60_000);
+	await gotoHome(page);
+	await page.getByTestId('unit-card').first().click();
+	await page.getByTestId('start-lesson').click();
+	await completeLesson(page);
+	await page.getByRole('link', { name: 'Back to path' }).click();
+	const syncJson = await exportSyncJson(page);
+
+	await chooseSyncFile(page, syncJson);
+	await expect(page.getByTestId('sync-preview')).toBeVisible();
+
+	// Hold the safety copy open: building the backup hashes it with crypto.subtle.digest, so a gate
+	// there keeps the import in flight until the test releases it (no timing luck).
+	await page.evaluate(() => {
+		const win = window as unknown as { __releaseCopy: () => void };
+		const gate = new Promise<void>((resolve) => (win.__releaseCopy = resolve));
+		const original = SubtleCrypto.prototype.digest;
+		SubtleCrypto.prototype.digest = function (this: SubtleCrypto, ...args) {
+			return gate.then(() => original.apply(this, args));
+		};
+	});
+	const safetyCopy = page.waitForEvent('download');
+	await page.getByTestId('sync-confirm').click();
+
+	await expect(page.getByTestId('sync-confirm')).toBeDisabled();
+	await expect(page.getByTestId('sync-cancel')).toBeDisabled();
+	await page.keyboard.press('Escape');
+	await expect(page.getByTestId('sync-preview')).toBeVisible();
+
+	await page.evaluate(() => (window as unknown as { __releaseCopy: () => void }).__releaseCopy());
+	expect((await safetyCopy).suggestedFilename()).toMatch(/^frenchpath-backup-.*\.json$/);
+	await expect(page.getByTestId('sync-complete')).toBeVisible();
+});
+
 async function exportSyncJson(page: Page): Promise<string> {
 	await page.goto('/settings');
 	await page.getByTestId('sync-passphrase').fill(PASSPHRASE);

@@ -308,6 +308,10 @@
 
 	async function confirmSyncImport(skipSafetyCopy = false) {
 		if (!pendingSyncJson || syncImporting) return;
+		// Captured before any await: the preview is locked while importing, but the merge must only
+		// ever use exactly what the learner confirmed.
+		const json = pendingSyncJson;
+		const passphrase = syncPassphrase;
 		syncImporting = true;
 		syncSafetyCopyFailed = false;
 		try {
@@ -316,7 +320,7 @@
 				syncSafetyCopyFailed = true;
 				return;
 			}
-			await importSyncMerge(pendingSyncJson, syncPassphrase);
+			await importSyncMerge(json, passphrase);
 			// No auto-reload, for the same reason as the backup restore (it would cancel the safety copy).
 			syncDone = true;
 		} catch (error) {
@@ -935,7 +939,9 @@
 				open={!!syncPreview}
 				labelledby="sync-preview-title"
 				testid="sync-preview"
-				onClose={cancelSyncImport}
+				onClose={() => {
+					if (!syncImporting) cancelSyncImport();
+				}}
 			>
 				{#if syncPreview}
 					<h2 id="sync-preview-title" class="font-semibold text-balance text-foreground">
@@ -991,7 +997,13 @@
 								{m.sync_merge_anyway()}
 							</button>
 						{/if}
-						<button type="button" class="btn-secondary text-sm" onclick={cancelSyncImport}>
+						<button
+							type="button"
+							class="btn-secondary text-sm"
+							onclick={cancelSyncImport}
+							disabled={syncImporting}
+							data-testid="sync-cancel"
+						>
 							{m.common_cancel()}
 						</button>
 					</div>
