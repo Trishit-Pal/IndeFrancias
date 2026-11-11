@@ -7,8 +7,7 @@ import { addStatsInTx } from '../db/repositories/stats';
 import { gradeCard, type ReviewGrade } from './fsrs';
 import { recordDailyActivityInTx } from '../gamification/activity';
 import { todayKey } from '../utils/date';
-
-const XP_PER_REVIEW = 5;
+import { XP_PER_REVIEW } from './constants';
 
 export interface RecordReviewOptions {
 	now?: Date;

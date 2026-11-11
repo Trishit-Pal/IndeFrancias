@@ -386,6 +386,8 @@
 	"save_failed_banner": "Something didn't save. Your earlier progress is safe.",
 	"save_failed_dismiss": "Dismiss",
 	"unexpected_error_banner": "Something went wrong. Your saved progress is safe.",
+	"db_update_newer": "FrenchPath was updated in another tab. Reload this tab to keep going.",
+	"db_update_blocked": "An update is waiting. Close other FrenchPath tabs to finish it.",
 	"update_ready": "A new version is ready.",
 	"update_now": "Update",
 	"update_later": "Later",
@@ -448,5 +450,6 @@
 	"sync_safety_copy_failed": "We couldn't save a copy of your current progress. Try again, or merge without a copy.",
 	"sync_merge_anyway": "Merge without saving a copy",
 	"sync_future_dates": "This sync file has dates in the future. Check the date and time on both devices, then try again. If it still fails, use a backup file to move your progress.",
-	"sync_preview_replaced": "{count} items already on this device will be updated from this file."
+	"sync_preview_replaced_one": "1 item already on this device will be updated from this file.",
+	"sync_preview_replaced_other": "{count} items already on this device will be updated from this file."
 }

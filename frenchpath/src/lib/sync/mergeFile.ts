@@ -7,7 +7,8 @@
 import {
 	exportBackup,
 	validateAndParseBackup,
-	replaceAllData,
+	mergeAllDataAtomically,
+	readLocalPayload,
 	MAX_BACKUP_BYTES
 } from '../pwa/backup';
 import { type BackupPayload } from '../pwa/backupSchema';
@@ -85,18 +86,14 @@ async function decryptAndValidate(fileJson: string, passphrase: string): Promise
 	return payload;
 }
 
-async function currentLocalPayload(): Promise<BackupPayload> {
-	const json = await exportBackup();
-	return (JSON.parse(json) as { payload: BackupPayload }).payload;
-}
-
 /** Decrypt + validate + dry-run merge against the current DB. Mutates nothing. */
 export async function previewSyncMerge(
 	fileJson: string,
 	passphrase: string
 ): Promise<MergeSummary> {
 	const remote = await decryptAndValidate(fileJson, passphrase);
-	const local = await currentLocalPayload();
+	// A preview must not depend on the local data being exportable as a backup.
+	const local = await readLocalPayload();
 	return mergePayloads(local, remote).summary;
 }
 
@@ -115,15 +112,16 @@ export async function importSyncMerge(fileJson: string, passphrase: string): Pro
 
 async function importSyncMergeInner(fileJson: string, passphrase: string): Promise<MergeSummary> {
 	const remote = await decryptAndValidate(fileJson, passphrase);
-	const local = await currentLocalPayload();
-	const { merged, summary } = mergePayloads(local, remote);
 
-	// Same shape as importBackupInner: clear + put inside one transaction, so a
-	// failed put rolls back the clears too and existing data survives.
+	// Read, merge and write in ONE transaction: a write another tab commits meanwhile is
+	// queued until after it (and is kept), never wiped by the clear. A failure anywhere rolls
+	// back the clears too, so existing data survives.
 	try {
-		await replaceAllData(merged);
+		return await mergeAllDataAtomically((local) => {
+			const { merged, summary } = mergePayloads(local, remote);
+			return { merged, result: summary };
+		});
 	} catch (err) {
 		throw new Error('Sync merge failed — your existing data is unchanged', { cause: err });
 	}
-	return summary;
 }

@@ -346,6 +346,40 @@ describe('backup export/import', () => {
 		expect(await srsRepo.getAllCards()).toHaveLength(1);
 	});
 
+	describe('export of data that could not be restored', () => {
+		const EXPORT_REFUSED =
+			'Backup could not be created because some saved data is not in the expected format. Your progress on this device is unchanged.';
+		// The app's own type allows any number here; the backup schema caps score at 100.
+		const outOfRange = {
+			lessonId: 'bad',
+			status: 'completed' as const,
+			score: 150,
+			attempts: 1,
+			lastVisited: 1,
+			cefrLevel: 'A1' as const
+		};
+
+		it('rejects with a clear error and the validation error as cause', async () => {
+			await progressRepo.putProgress(outOfRange);
+			const failure = await exportBackup().then(
+				() => null,
+				(err: unknown) => err
+			);
+			expect(failure).toBeInstanceOf(Error);
+			expect((failure as Error).message).toBe(EXPORT_REFUSED);
+			expect((failure as Error).cause).toBeInstanceOf(Error);
+			expect(((failure as Error).cause as Error).message).toMatch(/invalid backup file/i);
+		});
+
+		it('leaves the database unchanged when it rejects', async () => {
+			await progressRepo.putProgress(outOfRange);
+			await progressRepo.putProgress({ ...outOfRange, lessonId: 'good', score: 90 });
+			const before = await progressRepo.getAllProgress();
+			await expect(exportBackup()).rejects.toThrow(EXPORT_REFUSED);
+			expect(await progressRepo.getAllProgress()).toEqual(before);
+		});
+	});
+
 	it('accepts a backup whose settings name a language this version does not know', async () => {
 		await settingsRepo.saveSettings({ dailyGoalXp: 42 });
 		const file = JSON.parse(await exportBackup());

@@ -2,7 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import { mergePayloads } from './merge';
 import type { BackupPayload } from './backupSchema';
-import { lastNDayKeys } from '../utils/date';
+import { lastNDayKeys, todayKey } from '../utils/date';
 
 const payload = (over: Partial<BackupPayload> = {}): BackupPayload => ({
 	settings: null,
@@ -321,6 +321,16 @@ describe('mergePayloads', () => {
 			expect(mergePayloads(b, a).merged.streak).toEqual(merged.streak);
 		});
 
+		it('two never-active records stay at a streak of 0', () => {
+			const a = payload({ streak: [streakRec(0, 0, '')] });
+			const b = payload({ streak: [streakRec(0, 0, '')] });
+			for (const { merged } of [mergePayloads(a, b), mergePayloads(b, a)]) {
+				expect(merged.streak[0].currentStreak).toBe(0);
+				expect(merged.streak[0].longestStreak).toBe(0);
+				expect(merged.streak[0].lastActiveDate).toBe('');
+			}
+		});
+
 		it('zero-XP lesson replays between two real days do not bridge them', () => {
 			const [dMinus10, ...replayDays] = lastNDayKeys(11, new Date(`${D}T00:00:00`)).slice(0, 10);
 			const a = payload({
@@ -364,16 +374,164 @@ describe('mergePayloads', () => {
 		});
 	});
 
-	it('stats: same date takes field-wise max per field, never summed', () => {
-		const local = payload({ stats: [stat('2026-07-01', 100, 30, 2, 5)] });
-		const remote = payload({ stats: [stat('2026-07-01', 40, 60, 1, 8)] });
-		const { merged } = mergePayloads(local, remote);
-		expect(merged.stats).toHaveLength(1);
-		const s = merged.stats[0];
-		expect(s.xp).toBe(100);
-		expect(s.minutes).toBe(60);
-		expect(s.lessonsCompleted).toBe(2);
-		expect(s.reviewsDone).toBe(8);
+	describe('stats: a shared date keeps review XP from both devices', () => {
+		// Local noon of 2026-07-10 in the test machine's own time zone, so todayKey(new Date(ts)) is DAY.
+		const NOON = new Date(2026, 6, 10, 12, 0, 0).getTime();
+		const DAY = todayKey(new Date(NOON));
+		// `n` log rows on DAY, distinct per `tag`, one minute apart
+		const logRows = (tag: string, n: number) =>
+			Array.from({ length: n }, (_, i) => review(undefined, `${tag}${i}`, NOON + i * 60_000, 3));
+		const statsOf = (p: BackupPayload) => p.stats;
+
+		it('minutes and lessonsCompleted keep the maximum, never summed', () => {
+			const local = payload({ stats: [stat('2026-07-01', 100, 30, 2, 5)] });
+			const remote = payload({ stats: [stat('2026-07-01', 40, 60, 1, 8)] });
+			const { merged } = mergePayloads(local, remote);
+			expect(merged.stats).toHaveLength(1);
+			const s = merged.stats[0];
+			expect(s.minutes).toBe(60);
+			expect(s.lessonsCompleted).toBe(2);
+			// no log rows: reviewsDone is the larger count; xp is max(75, 0) + 5 * 8
+			expect(s.reviewsDone).toBe(8);
+			expect(s.xp).toBe(75 + 40);
+		});
+
+		it('reviews on one device and a lesson on the other both survive, in both directions', () => {
+			const a = payload({ stats: [stat(DAY, 15, 3, 0, 3)], reviewLog: logRows('a', 3) });
+			const b = payload({ stats: [stat(DAY, 40, 10, 1, 0)] });
+			const ab = mergePayloads(a, b).merged;
+			expect(ab.stats).toEqual([stat(DAY, 55, 10, 1, 3)]);
+			expect(mergePayloads(b, a).merged.stats).toEqual(statsOf(ab));
+		});
+
+		it('both devices reviewed and did lessons: reviews are summed through the log, lessons by max', () => {
+			const a = payload({ stats: [stat(DAY, 35, 5, 1, 3)], reviewLog: logRows('a', 3) });
+			const b = payload({ stats: [stat(DAY, 80, 9, 2, 8)], reviewLog: logRows('b', 8) });
+			const ab = mergePayloads(a, b).merged;
+			expect(ab.stats).toEqual([stat(DAY, 40 + 55, 9, 2, 11)]);
+			expect(mergePayloads(b, a).merged.stats).toEqual(statsOf(ab));
+		});
+
+		it('the same reviews on both sides are not counted twice', () => {
+			const rows = logRows('a', 3);
+			const a = payload({ stats: [stat(DAY, 15, 3, 0, 3)], reviewLog: rows });
+			const b = payload({ stats: [stat(DAY, 15, 3, 0, 3)], reviewLog: structuredClone(rows) });
+			expect(mergePayloads(a, b).merged.stats).toEqual([stat(DAY, 15, 3, 0, 3)]);
+		});
+
+		it('the day takes the lower of the two bounds on the combined review count', () => {
+			// A counts 4 reviews but holds 9 rows; B counts 3 and holds 3 others. A's count plus B's
+			// unseen rows is 7; B's count plus A's unseen rows is 12. The lower bound, 7, is the total.
+			const a = payload({ stats: [stat(DAY, 20, 5, 0, 4)], reviewLog: logRows('a', 9) });
+			const b = payload({ stats: [stat(DAY, 15, 5, 0, 3)], reviewLog: logRows('b', 3) });
+			const ab = mergePayloads(a, b).merged;
+			expect(ab.stats).toEqual([stat(DAY, 35, 5, 0, 7)]);
+			expect(mergePayloads(b, a).merged.stats).toEqual(statsOf(ab));
+		});
+
+		it('importing the same file a second time changes nothing', () => {
+			const a = payload({ stats: [stat(DAY, 15, 3, 0, 3)], reviewLog: logRows('a', 3) });
+			const b = payload({ stats: [stat(DAY, 40, 10, 1, 0)] });
+			const once = mergePayloads(a, b).merged;
+			const twice = mergePayloads(once, b).merged;
+			expect(twice.stats).toEqual(once.stats);
+			expect(mergePayloads(twice, b).merged.stats).toEqual(once.stats);
+		});
+
+		it('never shows less XP than either side did', () => {
+			const cases: [BackupPayload, BackupPayload][] = [
+				[
+					payload({ stats: [stat(DAY, 15, 3, 0, 3)], reviewLog: logRows('a', 3) }),
+					payload({ stats: [stat(DAY, 40, 10, 1, 0)] })
+				],
+				[
+					payload({ stats: [stat(DAY, 35, 5, 1, 3)], reviewLog: logRows('a', 3) }),
+					payload({ stats: [stat(DAY, 80, 9, 2, 8)], reviewLog: logRows('b', 8) })
+				],
+				[
+					payload({ stats: [stat(DAY, 100, 30, 2, 5)] }),
+					payload({ stats: [stat(DAY, 40, 60, 1, 8)] })
+				],
+				[payload({ stats: [stat(DAY, 5, 0, 0, 3)] }), payload({ stats: [stat(DAY, 0, 0, 0, 0)] })]
+			];
+			for (const [l, r] of cases) {
+				for (const [x, y] of [
+					[l, r],
+					[r, l]
+				]) {
+					const day = mergePayloads(x, y).merged.stats[0];
+					expect(day.xp).toBeGreaterThanOrEqual(Math.max(l.stats[0].xp, r.stats[0].xp));
+				}
+			}
+		});
+
+		it('inconsistent input (fewer XP than its own reviews are worth) cannot go negative', () => {
+			const a = payload({ stats: [stat(DAY, 5, 1, 0, 3)] });
+			const b = payload({ stats: [stat(DAY, 0, 0, 0, 0)] });
+			for (const [x, y] of [
+				[a, b],
+				[b, a]
+			]) {
+				const day = mergePayloads(x, y).merged.stats[0];
+				expect(day.xp).toBeGreaterThanOrEqual(0);
+				expect(day.xp).toBe(15);
+				expect(day.reviewsDone).toBe(3);
+			}
+		});
+
+		it('dates present on one side only are used as they are', () => {
+			const a = payload({ stats: [stat(DAY, 7, 1, 0, 4)], reviewLog: logRows('a', 9) });
+			const b = payload({ stats: [stat('2026-07-11', 40, 10, 1, 0)] });
+			const byDate = new Map(mergePayloads(a, b).merged.stats.map((s) => [s.date, s]));
+			expect(byDate.get(DAY)).toEqual(stat(DAY, 7, 1, 0, 4));
+			expect(byDate.get('2026-07-11')).toEqual(stat('2026-07-11', 40, 10, 1, 0));
+		});
+
+		it('a device importing its own file changes nothing, even when the stats and log buckets disagree', () => {
+			const rows = logRows('s', 5);
+			const a = payload({ stats: [stat(DAY, 10, 2, 0, 2)], reviewLog: rows });
+			const b = payload({ stats: [stat(DAY, 10, 2, 0, 2)], reviewLog: structuredClone(rows) });
+			expect(mergePayloads(a, b).merged.stats).toEqual([stat(DAY, 10, 2, 0, 2)]);
+		});
+
+		it('a day that was one-sided and later becomes shared with the same rows stays unchanged', () => {
+			// 20 XP / 4 reviews with nine rows on the day: the rows are not what the stats count
+			const a = payload({ stats: [stat(DAY, 20, 2, 0, 4)], reviewLog: logRows('s', 9) });
+			const first = mergePayloads(payload(), a).merged;
+			expect(first.stats).toEqual([stat(DAY, 20, 2, 0, 4)]);
+			expect(mergePayloads(first, a).merged.stats).toEqual([stat(DAY, 20, 2, 0, 4)]);
+			expect(mergePayloads(a, first).merged.stats).toEqual([stat(DAY, 20, 2, 0, 4)]);
+		});
+
+		it('a negative reviewsDone (hand-edited file) neither inflates XP nor goes negative', () => {
+			const a = payload({ stats: [stat(DAY, 10, 1, 0, -1000)] });
+			const b = payload({ stats: [stat(DAY, 0, 0, 0, 0)] });
+			for (const [x, y] of [
+				[a, b],
+				[b, a]
+			]) {
+				const day = mergePayloads(x, y).merged.stats[0];
+				expect(day.xp).toBe(10);
+				expect(day.reviewsDone).toBe(0);
+			}
+		});
+
+		it('partly overlapping logs add only the rows each side lacks, in both directions', () => {
+			const row = (cardId: string, i: number) => review(undefined, cardId, NOON + i * 60_000, 3);
+			const [ra, rb, rc, rd, re] = ['a', 'b', 'c', 'd', 'e'].map(row);
+			const a = payload({ stats: [stat(DAY, 15, 3, 0, 3)], reviewLog: [ra, rb, rc] });
+			const b = payload({ stats: [stat(DAY, 20, 4, 0, 4)], reviewLog: [rb, rc, rd, re] });
+			const ab = mergePayloads(a, b).merged.stats;
+			expect(ab).toEqual([stat(DAY, 25, 4, 0, 5)]);
+			expect(mergePayloads(b, a).merged.stats).toEqual(ab);
+		});
+
+		it('log rows from other days are not counted for this date', () => {
+			const otherDay = review(undefined, 'z', NOON + 3 * 86_400_000, 3);
+			const a = payload({ stats: [stat(DAY, 10, 1, 0, 2)], reviewLog: [otherDay] });
+			const b = payload({ stats: [stat(DAY, 10, 1, 0, 2)] });
+			expect(mergePayloads(a, b).merged.stats).toEqual([stat(DAY, 10, 1, 0, 2)]);
+		});
 	});
 
 	it('skillProfile: higher updatedAt wins the whole record', () => {

@@ -148,6 +148,11 @@ test('sync preview cannot be cancelled or closed while the safety copy is being 
 	await expect(page.getByTestId('sync-cancel')).toBeDisabled();
 	await page.keyboard.press('Escape');
 	await expect(page.getByTestId('sync-preview')).toBeVisible();
+	// A second and third Escape must not close it either (the browser stops allowing cancel).
+	await page.keyboard.press('Escape');
+	await expect(page.getByTestId('sync-preview')).toBeVisible();
+	await page.keyboard.press('Escape');
+	await expect(page.getByTestId('sync-preview')).toBeVisible();
 
 	await page.evaluate(() => (window as unknown as { __releaseCopy: () => void }).__releaseCopy());
 	expect((await safetyCopy).suggestedFilename()).toMatch(/^frenchpath-backup-.*\.json$/);
@@ -185,7 +190,27 @@ test('sync preview says how many existing items the file will replace', async ({
 	await chooseSyncFile(page, await shiftLessonDates(syncJson, MINUTE_MS));
 	await expect(page.getByTestId('sync-preview')).toBeVisible();
 	await expect(page.getByTestId('sync-preview-safety-copy')).toBeVisible();
-	await expect(page.getByTestId('sync-preview-replaced')).toContainText(/\b1\b.*updated/i);
+	await expect(page.getByTestId('sync-preview-replaced')).toHaveText(
+		'1 item already on this device will be updated from this file.'
+	);
+});
+
+test('merge-complete notice clears when another sync file is chosen', async ({ page }) => {
+	test.setTimeout(60_000);
+	await gotoHome(page);
+	await page.getByTestId('unit-card').first().click();
+	await page.getByTestId('start-lesson').click();
+	await completeLesson(page);
+	await page.getByRole('link', { name: 'Back to path' }).click();
+	const syncJson = await exportSyncJson(page);
+
+	await chooseSyncFile(page, syncJson);
+	await page.getByTestId('sync-confirm').click();
+	await expect(page.getByTestId('sync-complete')).toBeVisible();
+
+	await chooseSyncFile(page, syncJson);
+	await expect(page.getByTestId('sync-preview')).toBeVisible();
+	await expect(page.getByTestId('sync-complete')).toBeHidden();
 });
 
 test('sync file with dates in the future is refused with a friendly message', async ({ page }) => {

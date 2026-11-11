@@ -1,5 +1,5 @@
 // Thin service over vosk-browser (which runs its own Web Worker internally).
-// One model instance per session, lazily created and memoized.
+// One model instance per session, lazily created and memoized once it has loaded.
 import { getModelUrl } from './modelSource';
 import type { VoskWord } from './score';
 import type { Model, KaldiRecognizer } from 'vosk-browser';
@@ -17,10 +17,15 @@ function readStub(): string | null {
 
 async function getModel(): Promise<Model> {
 	if (!modelPromise) {
-		modelPromise = (async () => {
+		const loading: Promise<Model> = (async () => {
 			const { createModel } = await import('vosk-browser');
 			return createModel(await getModelUrl());
 		})();
+		// A failed load must not be cached: the next call retries (e.g. once the pack is downloaded).
+		loading.catch(() => {
+			if (modelPromise === loading) modelPromise = null;
+		});
+		modelPromise = loading;
 	}
 	return modelPromise;
 }

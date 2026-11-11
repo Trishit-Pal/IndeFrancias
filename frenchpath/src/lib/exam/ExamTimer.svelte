@@ -16,22 +16,37 @@
 	const seconds = $derived((remaining % 60).toString().padStart(2, '0'));
 	const urgent = $derived(remaining <= 120);
 
+	// Elapsed time comes from the wall clock, not from counting ticks: browsers throttle or
+	// suspend timers in a background tab or a locked phone, and ticks would stop with them.
 	let interval: ReturnType<typeof setInterval> | undefined;
+	let expired = false;
+	let startedAt = 0;
+
+	function sync() {
+		if (expired) return;
+		elapsed = Math.max(0, Math.floor((Date.now() - startedAt) / 1000));
+		if (totalSeconds - elapsed > 0) return;
+		expired = true;
+		clearInterval(interval);
+		onExpire();
+	}
+
+	function onVisibilityChange() {
+		if (document.visibilityState === 'visible') sync();
+	}
+
 	onMount(() => {
-		interval = setInterval(() => {
-			elapsed += 1;
-			if (totalSeconds - elapsed <= 0) {
-				clearInterval(interval);
-				onExpire();
-			}
-		}, 1000);
+		startedAt = Date.now();
+		interval = setInterval(sync, 1000);
+		document.addEventListener('visibilitychange', onVisibilityChange);
+		return () => document.removeEventListener('visibilitychange', onVisibilityChange);
 	});
 	onDestroy(() => clearInterval(interval));
 </script>
 
 <div class="fp-exam-timer" class:fp-exam-timer--urgent={urgent} aria-live="off">
 	<span class="fp-timer-label">Temps restant</span>
-	<span class="fp-timer-value">{minutes}:{seconds}</span>
+	<span class="fp-timer-value" data-testid="exam-timer">{minutes}:{seconds}</span>
 </div>
 
 <style>

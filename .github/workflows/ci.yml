@@ -29,9 +29,17 @@ jobs:
       - name: Install
         run: npm ci
 
-      # Advisory for now: the tree has known high/critical advisories. Flip to
-      # blocking (drop continue-on-error) once the audit baseline is clean.
-      - name: Dependency audit (advisory)
+      # Packages listed in `dependencies` (--omit=dev) must have no known high or critical
+      # advisories. Some code that runs in the learner's browser (the i18n runtime, the
+      # service-worker libraries) is listed under `devDependencies` and is covered only by the
+      # advisory full-tree step below.
+      - name: Dependency audit (shipped packages, blocking)
+        run: npm audit --omit=dev --audit-level=high
+
+      # Advisory until the remaining build-tooling advisories are cleared. They need
+      # @capacitor/assets 4, and the eslint/minimatch chain's suggested fix is a
+      # downgrade to eslint 9.x.
+      - name: Dependency audit (all packages, advisory)
         run: npm audit --audit-level=high
         continue-on-error: true
 

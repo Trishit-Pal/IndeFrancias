@@ -11,7 +11,12 @@
 	import type { IconName } from '$lib/components/icons';
 	import * as m from '$lib/paraglide/messages';
 	import { network } from '$lib/stores/online.svelte';
-	import { settingsRepo } from '$lib/db';
+	import {
+		settingsRepo,
+		onDatabaseNotice,
+		DatabaseNewerError,
+		type DatabaseNoticeKind
+	} from '$lib/db';
 	import { countDue } from '$lib/srs/queue';
 	import {
 		shouldNotify,
@@ -86,6 +91,10 @@
 	// Any promise that rejected with nobody awaiting it (a write, a fetch, a library). Shown, never
 	// auto-reloaded. No preventDefault(): the browser keeps logging it for dev tooling.
 	let unexpectedError = $state(false);
+
+	// The database is newer than this tab's code (reload to fix), or an upgrade is waiting on
+	// another tab. Never reloads by itself: only the button does.
+	let dbNotice = $state<Exclude<DatabaseNoticeKind, 'ready'> | null>(null);
 
 	// A new service worker is waiting. The learner decides when to reload (SPEC invariant 6).
 	let updateReady = $state(false);
@@ -162,11 +171,21 @@
 
 		const onVisibility = () => void maybeNotifyRevision();
 		document.addEventListener('visibilitychange', onVisibility);
-		const onUnhandledRejection = () => (unexpectedError = true);
+		// A DatabaseNewerError already has its own, more useful banner.
+		const onUnhandledRejection = (event: PromiseRejectionEvent) => {
+			if (event.reason instanceof DatabaseNewerError) return;
+			unexpectedError = true;
+		};
 		window.addEventListener('unhandledrejection', onUnhandledRejection);
+		const offDatabaseNotice = onDatabaseNotice((kind) => {
+			// 'ready' only ends the wait it announced; a 'newer' banner still needs its reload.
+			if (kind !== 'ready') dbNotice = kind;
+			else if (dbNotice === 'blocked') dbNotice = null;
+		});
 
 		return () => {
 			cleanup?.();
+			offDatabaseNotice();
 			window.removeEventListener('unhandledrejection', onUnhandledRejection);
 			document.removeEventListener('visibilitychange', onVisibility);
 		};
@@ -244,6 +263,30 @@
 				data-testid="offline-banner"
 			>
 				{m.offline_banner()}
+			</div>
+		{/if}
+
+		{#if dbNotice}
+			<div
+				class="mx-auto w-full max-w-xl px-4 pt-3"
+				role={dbNotice === 'newer' ? 'alert' : 'status'}
+				data-testid="db-update-banner"
+			>
+				<InfoBanner variant="info">
+					<p>{dbNotice === 'newer' ? m.db_update_newer() : m.db_update_blocked()}</p>
+					{#if dbNotice === 'newer'}
+						<div class="mt-3">
+							<button
+								type="button"
+								class="btn-primary text-sm"
+								data-testid="db-update-reload"
+								onclick={() => location.reload()}
+							>
+								{m.error_reload()}
+							</button>
+						</div>
+					{/if}
+				</InfoBanner>
 			</div>
 		{/if}
 

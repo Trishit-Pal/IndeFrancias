@@ -3,6 +3,9 @@
      on Escape (routed to onClose), and returns focus to the opener on close().
      The <dialog> stays mounted and is toggled via showModal()/close(): removing
      an open dialog from the DOM would skip the focus restore.
+     If the browser closes the dialog while `open` is still true (a second Escape
+     after a prevented cancel is not cancelable), it re-opens itself so a locked
+     parent dialog cannot vanish.
      Pass `labelledby` pointing at a heading id inside the panel, and a
      `testid` that lands on the dialog element (e2e selects it). -->
 <script lang="ts">
@@ -44,6 +47,9 @@
 	aria-labelledby={labelledby}
 	data-testid={testid}
 	oncancel={onCancel}
+	onclose={() => {
+		if (open && dialog && !dialog.open) dialog.showModal();
+	}}
 	onclick={(e) => {
 		if (e.target === e.currentTarget) onClose?.();
 	}}

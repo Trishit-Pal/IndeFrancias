@@ -4,6 +4,9 @@ export {
 	getDB,
 	resetDatabase,
 	DatabaseBlockedError,
+	DatabaseNewerError,
+	onDatabaseNotice,
+	type DatabaseNoticeKind,
 	writeAtomically,
 	type WritableStore
 } from './db';

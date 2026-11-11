@@ -4,6 +4,7 @@ import { assessmentsRepo, writeAtomically } from '$lib/db';
 import { addStatsInTx } from '$lib/db/repositories/stats';
 import { recordDailyActivityInTx } from '$lib/gamification/activity';
 import { todayKey } from '$lib/utils/date';
+import { shuffle } from '$lib/utils/seededShuffle';
 import { assessmentIdForGate, type GateDefinition, CHECKPOINT_GATES } from '$lib/lesson/gates';
 import {
 	TIER_CONFIG,
@@ -15,35 +16,27 @@ import {
 
 export { TIER_CONFIG, MILESTONE_XP_BY_TIER, DELF_XP_BY_TIER, effectiveRetention } from './tiers';
 
-/** Deterministic shuffle for reproducible tests when seed provided. */
+/** Deterministic for a given seed; a random draw when no seed is given. */
 export function sampleExercises(
 	exercises: Exercise[],
 	limit: number,
-	seed = Date.now()
+	seed: string = String(Date.now())
 ): Exercise[] {
-	const pool = [...exercises];
-	let s = seed;
-	for (let i = pool.length - 1; i > 0; i--) {
-		s = (s * 1103515245 + 12345) & 0x7fffffff;
-		const j = s % (i + 1);
-		[pool[i], pool[j]] = [pool[j]!, pool[i]!];
-	}
-	return pool.slice(0, Math.min(limit, pool.length));
+	return shuffle(exercises, seed).slice(0, Math.min(limit, exercises.length));
 }
 
-export function gatePoolSeed(gateId: string): number {
-	let s = 2166136261;
-	for (const c of gateId) s = Math.imul(s ^ c.charCodeAt(0), 16777619);
-	return s >>> 0;
-}
-
+/**
+ * `attemptKey` identifies the attempt (the stored `lastFailedAt`, or 0 for a first attempt): it
+ * stays the same through a reload, and changes after a failed attempt so a retry sees new questions.
+ */
 export function buildCheckpointPool(
 	units: Unit[],
 	tier: DifficultyTier,
-	gateId?: string
+	gateId?: string,
+	attemptKey = 0
 ): Exercise[] {
 	const all = units.flatMap((u) => u.exercises);
-	const seed = gateId ? gatePoolSeed(gateId) : Date.now();
+	const seed = gateId ? `${gateId}:${attemptKey}` : undefined;
 	return sampleExercises(all, TIER_CONFIG[tier].questionCount, seed);
 }
 
