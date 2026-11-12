@@ -3,13 +3,13 @@
  * Prettier keeps an object expanded only if the input had a newline after its `{`, so the
  * layout (inline vs expanded objects) of the ORIGINAL file is carried into the text we hand it.
  */
-import { format, resolveConfig } from 'prettier';
+import { format, resolveConfig, type ParserOptions } from 'prettier';
 import * as babel from 'prettier/plugins/babel';
 
 interface AstNode {
 	type: string;
 	start: number;
-	properties?: { key: { value: string }; value: AstNode }[];
+	properties?: { start: number; key: { value: string }; value: AstNode }[];
 	elements?: AstNode[];
 }
 
@@ -39,7 +39,7 @@ export async function formatLikeSource(
 	source: string,
 	updated: unknown
 ): Promise<string> {
-	const root = babel.parsers.json.parse(source, {}) as { node: AstNode };
+	const root = babel.parsers.json.parse(source, {} as ParserOptions) as { node: AstNode };
 	const config = await resolveConfig(file);
 	return format(emit(updated, root.node, source), { ...config, parser: 'json', filepath: file });
 }
