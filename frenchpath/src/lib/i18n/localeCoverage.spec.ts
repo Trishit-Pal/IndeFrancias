@@ -27,7 +27,7 @@ const SAME_AS_EN_ALLOWED = new Set([
 const HINGLISH_MAX_UNTRANSLATED_WORDS = 3;
 
 /** Locales whose interface text is drafted: every prose value must be in the locale's own script. */
-const DRAFTED_LOCALES = ['bn', 'as', 'mr', 'gu', 'pa', 'or', 'ta', 'ml', 'te'];
+const DRAFTED_LOCALES = ['bn', 'as', 'mr', 'gu', 'pa', 'or', 'ta', 'ml', 'te', 'kn'];
 
 describe('locale coverage', () => {
 	// Paraglide silently falls back to English for a missing key, so nothing else catches this.
