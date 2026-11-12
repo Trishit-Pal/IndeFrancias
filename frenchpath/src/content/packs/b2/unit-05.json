@@ -33,7 +33,10 @@
 				"pa": "ਮੁਖ੍ਯ ਵਿਚਾਰ: Argumentation",
 				"ta": "key idea: Argumentation",
 				"te": "key idea: Argumentation",
-				"kn": "key idea: Argumentation"
+				"kn": "key idea: Argumentation",
+				"ml": "പ്രധാന ആശയം: വാദമുഖങ്ങൾ അവതരിപ്പിക്കൽ",
+				"or": "ମୁଖ୍ୟ ଧାରଣା: ଯୁକ୍ତି ପ୍ରଦର୍ଶନ",
+				"as": "মূল ধাৰণা: যুক্তি উপস্থাপন"
 			},
 			"example": {
 				"french": "Cette notion est essentielle pour Priya à Mumbai.",
@@ -48,7 +51,10 @@
 					"pa": "ਯਹ ਅਵਧਾਰਣਾ ਮੁਂਬਈ ਮੇਂ ਪ੍ਰਿਯਾ ਕੇ ਲਿਏ ਆਵਸ਼੍ਯਕ ਹੈ।",
 					"ta": "This concept is essential for Priya in Mumbai.",
 					"te": "This concept is essential for Priya in Mumbai.",
-					"kn": "This concept is essential for Priya in Mumbai."
+					"kn": "This concept is essential for Priya in Mumbai.",
+					"ml": "മുംബൈയിലുള്ള പ്രിയയ്ക്ക് ഈ ആശയം അത്യാവശ്യമാണ്.",
+					"or": "ଏହି ଧାରଣାଟି ମୁମ୍ବାଇରେ ପ୍ରିୟା ପାଇଁ ଅତ୍ୟାବଶ୍ୟକ।",
+					"as": "এই ধাৰণাটো মুম্বাইৰ প্ৰিয়াৰ বাবে অপৰিহাৰ্য।"
 				}
 			},
 			"fauxAmi": false,
@@ -70,7 +76,10 @@
 				"pa": "ਹਾਲਾँਕਿ",
 				"ta": "however",
 				"te": "however",
-				"kn": "however"
+				"kn": "however",
+				"ml": "എന്നിരുന്നാലും",
+				"or": "ତଥାପି",
+				"as": "অৱশ্যে"
 			},
 			"example": {
 				"french": "Cependant, Arjun préfère étudier le soir.",
@@ -85,7 +94,10 @@
 					"pa": "ਹਾਲਾँਕਿ, ਅਰ੍ਜੁਨ ਸ਼ਾਮ ਕੋ ਪਢ़ਨਾ ਪਸਂਦ ਕਰਤਾ ਹੈ।",
 					"ta": "However, Arjun prefers to study in the evening.",
 					"te": "However, Arjun prefers to study in the evening.",
-					"kn": "However, Arjun prefers to study in the evening."
+					"kn": "However, Arjun prefers to study in the evening.",
+					"ml": "എന്നിരുന്നാലും, വൈകുന്നേരം പഠിക്കാനാണ് അർജുന് ഇഷ്ടം.",
+					"or": "ତଥାପି, ଅର୍ଜୁନ ସନ୍ଧ୍ୟାରେ ପଢ଼ିବାକୁ ପସନ୍ଦ କରେ।",
+					"as": "অৱশ্যে, অৰ্জুনে সন্ধিয়া পঢ়িবলৈ বেছি ভাল পায়।"
 				}
 			},
 			"fauxAmi": false,
@@ -107,7 +119,10 @@
 				"pa": "ਇਸਕੇ ਅਲਾਵਾ",
 				"ta": "furthermore",
 				"te": "furthermore",
-				"kn": "furthermore"
+				"kn": "furthermore",
+				"ml": "ഇതിനുപുറമെ",
+				"or": "ଅଧିକନ୍ତୁ",
+				"as": "ইয়াৰ উপৰিও"
 			},
 			"example": {
 				"french": "En outre, nous devons pratiquer chaque jour.",
@@ -122,7 +137,10 @@
 					"pa": "ਇਸਕੇ ਅਲਾਵਾ, ਹਮੇਂ ਹਰ ਦਿਨ ਅਭ੍ਯਾਸ ਕਰਨਾ ਚਾਹਿਏ।",
 					"ta": "Furthermore, we must practise every day.",
 					"te": "Furthermore, we must practise every day.",
-					"kn": "Furthermore, we must practise every day."
+					"kn": "Furthermore, we must practise every day.",
+					"ml": "ഇതിനുപുറമെ, നമ്മൾ എല്ലാ ദിവസവും പരിശീലിക്കണം.",
+					"or": "ଅଧିକନ୍ତୁ, ଆମକୁ ପ୍ରତିଦିନ ଅଭ୍ୟାସ କରିବାକୁ ପଡ଼ିବ।",
+					"as": "ইয়াৰ উপৰিও, আমি প্ৰতিদিনে অনুশীলন কৰিব লাগিব।"
 				}
 			},
 			"fauxAmi": false,
@@ -144,7 +162,10 @@
 				"pa": "ਫਿਰ ਭੀ",
 				"ta": "nevertheless",
 				"te": "nevertheless",
-				"kn": "nevertheless"
+				"kn": "nevertheless",
+				"ml": "അങ്ങനെയാണെങ്കിലും",
+				"or": "ସେଥିସତ୍ତ୍ୱେ",
+				"as": "তথাপিও"
 			},
 			"example": {
 				"french": "Néanmoins, le cours reste accessible.",
@@ -159,7 +180,10 @@
 					"pa": "ਫਿਰ ਭੀ, ਕੋਰ੍ਸ ਸੁਲਭ ਰਹਤਾ ਹੈ।",
 					"ta": "Nevertheless, the course remains accessible.",
 					"te": "Nevertheless, the course remains accessible.",
-					"kn": "Nevertheless, the course remains accessible."
+					"kn": "Nevertheless, the course remains accessible.",
+					"ml": "അങ്ങനെയാണെങ്കിലും, കോഴ്സ് ഇപ്പോഴും എളുപ്പം മനസ്സിലാക്കാവുന്നതാണ്.",
+					"or": "ସେଥିସତ୍ତ୍ୱେ, ପାଠ୍ୟକ୍ରମଟି ସହଜବୋଧ୍ୟ ରହେ।",
+					"as": "তথাপিও, পাঠ্যক্ৰমটো সহজবোধ্য হৈয়ে থাকে।"
 				}
 			},
 			"fauxAmi": false,
@@ -181,7 +205,10 @@
 				"pa": "ਭਾ਷ਣ / ਪ੍ਰਵਚਨ",
 				"ta": "speech / discourse",
 				"te": "speech / discourse",
-				"kn": "speech / discourse"
+				"kn": "speech / discourse",
+				"ml": "പ്രസംഗം / പ്രഭാഷണം",
+				"or": "ଭାଷଣ / ବକ୍ତବ୍ୟ",
+				"as": "ভাষণ / বক্তব্য"
 			},
 			"example": {
 				"french": "Le discours de Priya était clair et structuré.",
@@ -196,7 +223,10 @@
 					"pa": "ਪ੍ਰਿਯਾ ਕਾ ਭਾ਷ਣ ਸ੍ਪ਷੍ਟ ਔਰ ਸਂਰਚਿਤ ਥਾ।",
 					"ta": "Priya's speech was clear and structured.",
 					"te": "Priya's speech was clear and structured.",
-					"kn": "Priya's speech was clear and structured."
+					"kn": "Priya's speech was clear and structured.",
+					"ml": "പ്രിയയുടെ പ്രസംഗം വ്യക്തവും ചിട്ടയുള്ളതുമായിരുന്നു.",
+					"or": "ପ୍ରିୟାର ଭାଷଣ ସ୍ପଷ୍ଟ ଓ ସୁସଂଗଠିତ ଥିଲା।",
+					"as": "প্ৰিয়াৰ ভাষণটো স্পষ্ট আৰু সুসংগঠিত আছিল।"
 				}
 			},
 			"fauxAmi": false,
@@ -218,7 +248,10 @@
 				"pa": "ਸੂਕ੍਷੍ਮ ਅਂਤਰ",
 				"ta": "nuance",
 				"te": "nuance",
-				"kn": "nuance"
+				"kn": "nuance",
+				"ml": "സൂക്ഷ്മഭേദം",
+				"or": "ସୂକ୍ଷ୍ମ ପାର୍ଥକ୍ୟ",
+				"as": "সূক্ষ্ম পাৰ্থক্য"
 			},
 			"example": {
 				"french": "Il faut comprendre chaque nuance du texte.",
@@ -233,7 +266,10 @@
 					"pa": "ਪਾਠ ਕੀ ਪ੍ਰਤ੍ਯੇਕ ਬਾਰੀਕੀ ਕੋ ਸਮਝਨਾ ਚਾਹਿਏ।",
 					"ta": "One must understand each nuance of the text.",
 					"te": "One must understand each nuance of the text.",
-					"kn": "One must understand each nuance of the text."
+					"kn": "One must understand each nuance of the text.",
+					"ml": "പാഠഭാഗത്തിലെ ഓരോ സൂക്ഷ്മഭേദവും മനസ്സിലാക്കണം.",
+					"or": "ପାଠ୍ୟର ପ୍ରତ୍ୟେକ ସୂକ୍ଷ୍ମ ପାର୍ଥକ୍ୟ ବୁଝିବା ଆବଶ୍ୟକ।",
+					"as": "লেখাটোৰ প্ৰতিটো সূক্ষ্ম পাৰ্থক্য বুজিব লাগে।"
 				}
 			},
 			"fauxAmi": false,
