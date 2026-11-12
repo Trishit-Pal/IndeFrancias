@@ -27,7 +27,7 @@ export default defineConfig({
 			// layout or a11y; widen testMatch once CI time is measured.
 			name: 'mobile',
 			use: { ...devices['Pixel 7'] },
-			testMatch: ['**/accessibility.e2e.ts', '**/mobile.e2e.ts']
+			testMatch: ['**/accessibility.e2e.ts', '**/mobile.e2e.ts', '**/i18n-locales.e2e.ts']
 		}
 	]
 });
