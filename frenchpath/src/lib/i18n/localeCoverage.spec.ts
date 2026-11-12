@@ -75,6 +75,17 @@ describe('locale coverage', () => {
 		expect(devanagari).toEqual([]);
 	});
 
+	// Malayalam, Odia and Assamese glosses fall back to English, never Hindi (glossFallback).
+	it.each([
+		['en', 'Hindi'],
+		['ml', 'ഹിന്ദി'],
+		['or', 'ହିନ୍ଦୀ'],
+		['as', 'হিন্দী']
+	])('%s welcome promise does not name Hindi as the bridge', (locale, hindi) => {
+		const messages = locale === 'en' ? EN : LOCALES[locale]!;
+		expect(messages.onb_p1).not.toContain(hindi);
+	});
+
 	it.each(DRAFTED_LOCALES)('%s.json is written in its own script', (locale) => {
 		const script = LANGUAGES[locale as UiLanguage].script;
 		const untranslated = KEYS.filter(
