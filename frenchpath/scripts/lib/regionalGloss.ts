@@ -14,6 +14,17 @@ export const SCRIPT_RANGES = Object.fromEntries(
 
 const DEVANAGARI = /[\u0900-\u097F]/;
 
+const NON_LATIN_SCRIPTS = new Set(
+	Object.values(LANGUAGES)
+		.map((info) => info.script)
+		.filter((script) => script !== LANGUAGES.en.script)
+);
+
+/** True when `text` contains a character of any non-Latin script the app's languages use. */
+export function containsIndicScript(text: string): boolean {
+	return [...NON_LATIN_SCRIPTS].some((script) => script.test(text));
+}
+
 /** Devanagari to Gujarati (+0x180 offset for shared letters). */
 export function devanagariToGujarati(text: string): string {
 	return [...text]
