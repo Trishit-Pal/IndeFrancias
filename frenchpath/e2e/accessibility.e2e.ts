@@ -117,7 +117,8 @@ import AxeBuilder from '@axe-core/playwright';
 type Scene = { label: string; overrides: Record<string, unknown> };
 const SCENES: Scene[] = [
 	{ label: 'light/en', overrides: { theme: 'light', uiLanguage: 'en' } },
-	{ label: 'dark/hinglish', overrides: { theme: 'dark', uiLanguage: 'hinglish' } }
+	{ label: 'dark/hinglish', overrides: { theme: 'dark', uiLanguage: 'hinglish' } },
+	{ label: 'dark/ml', overrides: { theme: 'dark', uiLanguage: 'ml', nativeLanguage: 'ml' } }
 ];
 
 // Paraglide resolves the UI locale from its own localStorage key, not from IDB settings.
