@@ -118,13 +118,14 @@ export async function skipOnboardingViaIdb(page: Page, overrides: Record<string,
 	});
 }
 
-/** Drive the v2+ onboarding wizard through all steps. */
-export async function completeOnboarding(page: Page) {
+/** Drive the v2+ onboarding wizard through all steps, optionally picking a native language. */
+export async function completeOnboarding(page: Page, nativeLanguage?: string) {
 	const wizard = page.getByTestId('onboarding-wizard');
 	const cont = () => wizard.getByRole('button', { name: /^Continue$|^आगे$/ });
 
 	await cont().click();
 	await expect(wizard.getByTestId('native-lang-hi')).toBeVisible();
+	if (nativeLanguage) await wizard.getByTestId(`native-lang-${nativeLanguage}`).click();
 	await cont().click();
 	await expect(wizard.getByTestId('goal-general')).toBeVisible();
 	await cont().click();
