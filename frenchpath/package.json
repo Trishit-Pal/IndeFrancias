@@ -22,6 +22,7 @@
 		"content:proofread": "tsx scripts/proofread-report.ts",
 		"content:proofread:launch": "tsx scripts/proofread-report.ts --launch",
 		"content:translate-glosses": "tsx scripts/translate-glosses.ts",
+		"content:gloss-drafts": "tsx scripts/gloss-drafts.ts",
 		"analyze": "vite build --mode analyze",
 		"model:fetch": "node scripts/fetch-vosk-model.mjs",
 		"version:emit": "node scripts/emit-version-json.mjs",
