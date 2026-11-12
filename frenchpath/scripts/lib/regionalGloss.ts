@@ -7,6 +7,24 @@ import type { NativeLanguage } from '../../src/lib/i18n/languages';
 export const NATIVE_LANGS = NATIVE_LANGUAGES;
 export type NativeLang = NativeLanguage;
 
+/** Languages the legacy scripts derive from Hindi/English. ml, or and as come only from drafts. */
+export const DERIVED_GLOSS_LANGS = [
+	'hi',
+	'bn',
+	'ta',
+	'te',
+	'kn',
+	'mr',
+	'gu',
+	'pa',
+	'en'
+] as const satisfies readonly NativeLang[];
+export type DerivedGlossLang = (typeof DERIVED_GLOSS_LANGS)[number];
+
+export function isDerivedGlossLang(lang: string): boolean {
+	return (DERIVED_GLOSS_LANGS as readonly string[]).includes(lang);
+}
+
 /** Expected Unicode blocks per gloss language key. */
 export const SCRIPT_RANGES = Object.fromEntries(
 	NATIVE_LANGUAGES.map((lang) => [lang, LANGUAGES[lang].script])
@@ -76,7 +94,7 @@ export function buildRegionalGlosses(
 	hi: string,
 	en: string,
 	overrides: DravidianOverrides = {}
-): Record<NativeLang, string> {
+): Record<DerivedGlossLang, string> {
 	const bn = overrides.bn?.[en] ?? devanagariToBengali(hi);
 	const ta = overrides.ta?.[en] ?? overrides.ta?.[hi] ?? en;
 	const te = overrides.te?.[en] ?? overrides.te?.[hi] ?? en;

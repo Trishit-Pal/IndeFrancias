@@ -7,7 +7,7 @@
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { NATIVE_LANGUAGES as NATIVE_LANGS } from '../src/lib/i18n/languages';
+import { DERIVED_GLOSS_LANGS } from './lib/regionalGloss';
 import { unitSchema, type Unit, type Card } from '../src/lib/content/schema';
 
 const PACKS_DIR = resolve('src/content/packs');
@@ -25,7 +25,7 @@ function fillGlosses(card: Card): Card {
 	const hi = card.hindiGloss ?? '';
 	const en = card.englishGloss ?? '';
 	const glosses = Object.fromEntries(
-		NATIVE_LANGS.map((lang) => [lang, lang === 'en' ? en : lang === 'hi' ? hi : hi || en])
+		DERIVED_GLOSS_LANGS.map((lang) => [lang, lang === 'en' ? en : lang === 'hi' ? hi : hi || en])
 	) as Card['glosses'];
 	return { ...card, glosses };
 }

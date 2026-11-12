@@ -241,8 +241,8 @@ export const bridgeBoxSchema = z.object({
 	title: z.string().min(1),
 	body: z.string().min(1),
 	/** Per-language bridge copy (optional; legacy title/body used as fallback). */
-	titleByLang: z.record(nativeLangSchema, z.string()).optional(),
-	bodyByLang: z.record(nativeLangSchema, z.string()).optional(),
+	titleByLang: z.partialRecord(nativeLangSchema, z.string()).optional(),
+	bodyByLang: z.partialRecord(nativeLangSchema, z.string()).optional(),
 	/** Optional micro-quiz before exercises. */
 	quiz: bridgeQuizSchema.optional()
 });

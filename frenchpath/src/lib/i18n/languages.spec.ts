@@ -47,11 +47,27 @@ describe('language registry', () => {
 		expect([...BETA_LOCALES]).toEqual(['bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'ml', 'or', 'as']);
 	});
 
-	it('ml, or and as are interface languages only, not native languages', () => {
-		for (const code of ['ml', 'or', 'as'] as const) {
-			expect(UI_LANGUAGES).toContain(code);
-			expect(NATIVE_LANGUAGES as readonly string[]).not.toContain(code);
-		}
+	it('NATIVE_LANGUAGES is the nine original languages plus ml, or and as, English last', () => {
+		expect([...NATIVE_LANGUAGES]).toEqual([
+			'hi',
+			'bn',
+			'ta',
+			'te',
+			'kn',
+			'mr',
+			'gu',
+			'pa',
+			'ml',
+			'or',
+			'as',
+			'en'
+		]);
+	});
+
+	it('ml, or and as select their own interface language', () => {
+		expect(NATIVE_TO_UI.ml).toBe('ml');
+		expect(NATIVE_TO_UI.or).toBe('or');
+		expect(NATIVE_TO_UI.as).toBe('as');
 	});
 
 	it('NATIVE_TO_UI maps every native language to an interface language', () => {
@@ -62,6 +78,10 @@ describe('language registry', () => {
 
 	it('glossFallback tries hi then en', () => {
 		expect(glossFallback('ta')).toEqual(['hi', 'en']);
+	});
+
+	it('glossFallback skips Hindi for ml, or and as', () => {
+		for (const code of ['ml', 'or', 'as'] as const) expect(glossFallback(code)).toEqual(['en']);
 	});
 
 	it('hinglish renders as html lang en', () => {

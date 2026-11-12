@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { applyGlossDrafts, listGlossItems } from '../../../scripts/lib/glossDrafts';
-import { containsIndicScript } from '../../../scripts/lib/regionalGloss';
+import {
+	DERIVED_GLOSS_LANGS,
+	buildRegionalGlosses,
+	containsIndicScript,
+	isDerivedGlossLang
+} from '../../../scripts/lib/regionalGloss';
 
 const ML = /[\u0D00-\u0D7F]/;
 
@@ -128,5 +133,28 @@ describe('containsIndicScript', () => {
 	});
 	it('ignores accented French', () => {
 		expect(containsIndicScript('Ça coûte déjà 20 € — où ?')).toBe(false);
+	});
+});
+
+describe('buildRegionalGlosses', () => {
+	it('derives exactly the nine Hindi/English-derived languages, never ml, or, as', () => {
+		const built = buildRegionalGlosses('नमस्ते', 'hello');
+		expect(Object.keys(built).sort()).toEqual([...DERIVED_GLOSS_LANGS].sort());
+		expect(DERIVED_GLOSS_LANGS).toHaveLength(9);
+	});
+
+	it('merged over an existing gloss map keeps its ml value', () => {
+		const merged = { ...{ ml: 'നമസ്കാരം', hi: 'old' }, ...buildRegionalGlosses('नमस्ते', 'hello') };
+		expect(merged.ml).toBe('നമസ്കാരം');
+		expect(merged.hi).toBe('नमस्ते');
+	});
+});
+
+describe('isDerivedGlossLang', () => {
+	it('is true for derived languages and false for draft-only ones', () => {
+		expect(isDerivedGlossLang('en')).toBe(true);
+		expect(isDerivedGlossLang('hi')).toBe(true);
+		expect(isDerivedGlossLang('ml')).toBe(false);
+		expect(isDerivedGlossLang('hinglish')).toBe(false);
 	});
 });

@@ -31,14 +31,20 @@ function glossCard(card: Card, overrides: DravidianOverrides): Card {
 	const hi = card.hindiGloss ?? card.glosses?.hi ?? '';
 	const en = card.englishGloss ?? card.glosses?.en ?? hi;
 	if (!hi || !en) return card;
-	const glosses = buildRegionalGlosses(hi, en, overrides) as Card['glosses'];
+	const glosses = {
+		...card.glosses,
+		...buildRegionalGlosses(hi, en, overrides)
+	} as Card['glosses'];
 	const next: Card = { ...card, glosses };
 	if (card.example) {
 		const eHi = card.example.hindiGloss ?? card.example.glosses?.hi ?? hi;
 		const eEn = card.example.englishGloss ?? card.example.glosses?.en ?? en;
 		next.example = {
 			...card.example,
-			glosses: buildRegionalGlosses(eHi, eEn, overrides) as Card['glosses']
+			glosses: {
+				...card.example.glosses,
+				...buildRegionalGlosses(eHi, eEn, overrides)
+			} as Card['glosses']
 		};
 	}
 	return next;

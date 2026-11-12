@@ -18,7 +18,20 @@ export const UI_LANGUAGES = [
 ] as const;
 export type UiLanguage = (typeof UI_LANGUAGES)[number];
 
-export const NATIVE_LANGUAGES = ['hi', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'en'] as const;
+export const NATIVE_LANGUAGES = [
+	'hi',
+	'bn',
+	'ta',
+	'te',
+	'kn',
+	'mr',
+	'gu',
+	'pa',
+	'ml',
+	'or',
+	'as',
+	'en'
+] as const;
 export type NativeLanguage = (typeof NATIVE_LANGUAGES)[number];
 
 /** Everything the app needs to know about one language code. */
@@ -64,14 +77,18 @@ export const NATIVE_TO_UI: Record<NativeLanguage, UiLanguage> = {
 	kn: 'kn',
 	mr: 'mr',
 	gu: 'gu',
-	pa: 'pa'
+	pa: 'pa',
+	ml: 'ml',
+	or: 'or',
+	as: 'as'
 };
 
-const GLOSS_FALLBACK: readonly NativeLanguage[] = ['hi', 'en'];
+const HINDI_FALLBACK: readonly NativeLanguage[] = ['hi', 'en'];
+const ENGLISH_ONLY_FALLBACK: readonly NativeLanguage[] = ['en'];
+/** Languages for which Hindi is no help, so a missing gloss goes straight to English. */
+const SKIPS_HINDI: ReadonlySet<NativeLanguage> = new Set(['ml', 'or', 'as']);
 
 /** Languages tried, in order, when a gloss is missing in the learner's native language. */
-// The argument is part of the contract: a later language may fall back differently.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function glossFallback(_lang: NativeLanguage): readonly NativeLanguage[] {
-	return GLOSS_FALLBACK;
+export function glossFallback(lang: NativeLanguage): readonly NativeLanguage[] {
+	return SKIPS_HINDI.has(lang) ? ENGLISH_ONLY_FALLBACK : HINDI_FALLBACK;
 }

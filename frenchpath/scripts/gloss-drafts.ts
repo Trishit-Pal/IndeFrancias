@@ -10,6 +10,7 @@ import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { unitSchema } from '../src/lib/content/schema';
 import { LANGUAGES } from '../src/lib/i18n/languages';
+import { isDerivedGlossLang } from './lib/regionalGloss';
 import { applyGlossDrafts, listGlossItems } from './lib/glossDrafts';
 import { formatLikeSource } from './lib/packFormat';
 
@@ -63,6 +64,11 @@ function readDrafts(lang: string): Record<string, string> {
 async function applyDrafts(lang: string, checkOnly: boolean): Promise<void> {
 	if (!Object.hasOwn(LANGUAGES, lang)) {
 		fail([`unknown language "${lang}" (known: ${Object.keys(LANGUAGES).join(', ')})`]);
+	}
+	if (isDerivedGlossLang(lang)) {
+		fail([
+			`"${lang}" is derived from Hindi/English by the gloss scripts; drafts are only for other languages`
+		]);
 	}
 	const drafts = readDrafts(lang);
 	const script = LANGUAGES[lang as keyof typeof LANGUAGES].script;

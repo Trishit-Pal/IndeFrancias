@@ -55,15 +55,19 @@ export function getBridgeCopy(
 	bridge: BridgeBox,
 	nativeLanguage: NativeLanguage
 ): { title: string; body: string } {
-	const title =
-		bridge.titleByLang?.[nativeLanguage]?.trim() ||
-		bridge.titleByLang?.hi?.trim() ||
-		bridge.titleByLang?.en?.trim() ||
-		bridge.title;
-	const body =
-		bridge.bodyByLang?.[nativeLanguage]?.trim() ||
-		bridge.bodyByLang?.hi?.trim() ||
-		bridge.bodyByLang?.en?.trim() ||
-		bridge.body;
-	return { title, body };
+	const order = [nativeLanguage, ...glossFallback(nativeLanguage)];
+	const pick = (
+		byLang: Partial<Record<NativeLanguage, string>> | undefined,
+		plain: string
+	): string => {
+		for (const lang of order) {
+			const text = byLang?.[lang]?.trim();
+			if (text) return text;
+		}
+		return plain;
+	};
+	return {
+		title: pick(bridge.titleByLang, bridge.title),
+		body: pick(bridge.bodyByLang, bridge.body)
+	};
 }
