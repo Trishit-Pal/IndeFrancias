@@ -400,7 +400,7 @@ npm run test:unit -- --run src/lib/lesson
 | Onboarding wizard | `e2e/onboarding.e2e.ts`, 7-step flow in `helpers.completeOnboarding()` |
 | Share cards | `shareCard.spec.ts`, progress `share-progress` button |
 | Glosses on packs | `content.spec.ts` enforces `glosses{}` on all cards |
-| Locales | Paraglide `bn`, `ta`, `te`, `kn`, `mr`, `gu`, `pa` message files |
+| Locales | Paraglide `bn`, `ta`, `te`, `kn`, `mr`, `gu`, `pa`, `ml`, `or`, `as` message files; `localeCoverage.spec.ts`; `e2e/i18n-locales.e2e.ts` (13-language phone walk), `e2e/i18n-first-visit.e2e.ts` |
 
 **New E2E files:** `onboarding.e2e.ts`, `checkpoint.e2e.ts`, `celebration.e2e.ts`
 

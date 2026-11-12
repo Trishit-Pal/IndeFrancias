@@ -21,7 +21,7 @@
 **Keyword field (iOS, ≤100 chars, comma-sep, no spaces):**
 `french,DELF,DALF,hindi,offline,spaced,repetition,vocabulary,A1,A2,B1,B2,exam,learn,language,india`
 
-**Long description themes:** offline-first; Hindi and Hinglish, with 7 more Indian languages in beta; FSRS spaced repetition; DELF/DALF mock exams scored like the real thing; no account/no ads/no tracking; the Mumbai→Paris journey.
+**Long description themes:** offline-first; Hindi and Hinglish, with 10 more Indian languages in beta; FSRS spaced repetition; DELF/DALF mock exams scored like the real thing; no account/no ads/no tracking; the Mumbai→Paris journey.
 
 **Localization:** list in `en-IN` + `hi-IN` first; consider `en-US`/`en-GB` for the diaspora.
 
@@ -34,7 +34,7 @@
 > • A structured journey from Mumbai to Paris (A1→C1)
 > • FSRS spaced repetition so you remember, not cram
 > • DELF/DALF mock exams scored like the real exam
-> • 10 Indian-language interface options + inline native-language glosses
+> • 13 interface languages (Hindi, Hinglish and 10 more Indian languages in beta) + inline native-language glosses
 > • 100% offline. No account. No ads. No tracking. Your data never leaves your phone.
 
 ## 4. Screenshot plan (6–8 per platform)

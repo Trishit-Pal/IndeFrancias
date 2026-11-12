@@ -23,7 +23,7 @@ repetition. All progress lives on-device in IndexedDB — there is no backend an
 | Spaced repetition  | `ts-fsrs` (FSRS-6)                                                                  |
 | Content validation | `zod` (single source of truth)                                                      |
 | Styling            | Tailwind CSS v4                                                                     |
-| i18n               | `@inlang/paraglide-js` (en / hi)                                                    |
+| i18n               | `@inlang/paraglide-js` (13 locales)                                                 |
 | Tests              | Vitest (188 unit) + Playwright (35 E2E) — see [docs/testing.md](../docs/testing.md) |
 
 ## Getting started
@@ -126,8 +126,9 @@ See **[docs/testing.md](../docs/testing.md)** for step-by-step user workflows, `
 
 - **App icon:** maskable PNGs (64/192/512 + apple-touch) are generated from `static/icon.svg`
   via `@vite-pwa/assets-generator` (`pwa-assets.config.ts`); regenerate with `npx pwa-assets-generator`.
-- **UI i18n:** Paraglide, 10 locales. English, Hindi and Hinglish are complete; bn/ta/te/kn/mr/gu/pa
-  are labelled "(beta)" in the pickers until translated (`src/lib/i18n/localeCoverage.spec.ts`).
+- **UI i18n:** Paraglide, 13 locales (`src/lib/i18n/languages.ts`). English, Hindi and Hinglish are complete;
+  bn/ta/te/kn/mr/gu/pa/ml/or/as are machine-drafted and labelled "(beta)" in the pickers until a native
+  speaker proofreads them (`src/lib/i18n/localeCoverage.spec.ts`, status in `docs/i18n-pending.md`).
   Lesson content already shows Hindi + English glosses.
 - **OneDrive + builds:** if `npm run build` fails on Windows with `EPERM` on `./build`, it's
   OneDrive locking the folder mid-sync — delete `build/` and retry (or pause OneDrive sync).

@@ -36,7 +36,7 @@ Svelte 5 (runes, forced via `svelte.config.js`), SvelteKit + `@sveltejs/adapter-
 `/` home (Le Voyage + sidebar) · `/learn/[unitId]` lesson · `/review` FSRS · `/progress` L'Atelier · `/settings` · `/checkpoint/[groupId]` · `/exam/{delf-a2,delf-b1,delf-b2,dalf-c1}`. Global chrome + nav in `+layout.svelte`; global CSS `routes/layout.css`.
 
 ## Cross-cutting
-- **i18n** — paraglide; messages in `messages/{locale}.json` (10 locales: en, hi, hinglish, bn, ta, te, kn, mr, gu, pa; base `en`). Generated code in `src/lib/paraglide` (**gitignored**, regen on build).
+- **i18n** — paraglide; messages in `messages/{locale}.json` (13 locales: en, hi, hinglish, bn, ta, te, kn, mr, gu, pa, ml, or, as; base `en`; the one list is `src/lib/i18n/languages.ts`). Generated code in `src/lib/paraglide` (**gitignored**, regen on build).
 - **CSP** — strict, in `svelte.config.js` (`default-src 'self'`). Blocks CDN fonts → fonts self-hosted via `@fontsource` (see ADR-5). e2e enforces "no CSP violations."
 - **Offline** — bundled assets + SW; IndexedDB on-device; no network for core flows.
 - **Testing** — Vitest unit (`src/**/*.spec.ts`), Playwright e2e (`e2e/*.e2e.ts`, builds + previews on :4173). Baseline: **363 unit + 56 e2e green**.
