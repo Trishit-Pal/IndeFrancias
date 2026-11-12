@@ -522,22 +522,23 @@
 		<h2 id="confidence-title" class="text-lg font-semibold text-foreground">
 			{m.confidence_pulse_title()}
 		</h2>
-		<div class="mt-4 grid grid-cols-3 gap-2">
+		<!-- Wraps to a second row when a one-word label (ml, kn, ta) outgrows a third of the dialog. -->
+		<div class="mt-4 flex flex-wrap gap-2">
 			<button
 				type="button"
-				class="btn-secondary text-sm"
+				class="btn-secondary flex-1 text-sm"
 				data-testid="confidence-low"
 				onclick={() => answerConfidence('low')}>{m.confidence_low()}</button
 			>
 			<button
 				type="button"
-				class="btn-primary text-sm"
+				class="btn-primary flex-1 text-sm"
 				data-testid="confidence-ok"
 				onclick={() => answerConfidence('ok')}>{m.confidence_ok()}</button
 			>
 			<button
 				type="button"
-				class="btn-secondary text-sm"
+				class="btn-secondary flex-1 text-sm"
 				data-testid="confidence-high"
 				onclick={() => answerConfidence('high')}>{m.confidence_high()}</button
 			>
