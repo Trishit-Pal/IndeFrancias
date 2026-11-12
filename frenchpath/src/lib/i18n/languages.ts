@@ -83,6 +83,15 @@ export const NATIVE_TO_UI: Record<NativeLanguage, UiLanguage> = {
 	as: 'as'
 };
 
+/**
+ * Onboarding's preselected native language: the language the first visit is shown in, when it
+ * is an Indic native language; otherwise Hindi (English and Hinglish browsers included).
+ */
+export function defaultNativeLanguage(uiLocale: string): NativeLanguage {
+	const lang = NATIVE_LANGUAGES.find((code) => code === uiLocale);
+	return lang && lang !== 'en' ? lang : 'hi';
+}
+
 const HINDI_FALLBACK: readonly NativeLanguage[] = ['hi', 'en'];
 const ENGLISH_ONLY_FALLBACK: readonly NativeLanguage[] = ['en'];
 /** Languages for which Hindi is no help, so a missing gloss goes straight to English. */

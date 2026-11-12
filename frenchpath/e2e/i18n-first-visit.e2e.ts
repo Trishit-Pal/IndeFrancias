@@ -25,6 +25,22 @@ test.describe('browser prefers Malayalam', () => {
 		await expect(page.locator('html')).toHaveAttribute('lang', 'ml');
 		await expect(wizard).toContainText(LANGUAGES.ml.script);
 	});
+
+	test('skipping onboarding on a Malayalam browser keeps Malayalam, not Hindi', async ({
+		page
+	}) => {
+		await page.goto('/');
+		await expect(page.getByTestId('onboarding-wizard')).toBeVisible({ timeout: 15_000 });
+		await page.getByTestId('onboarding-skip').click();
+		await expect(page).toHaveURL(/\/learn\/a1-unit-01/);
+		// The wizard saves the chosen locale (then reloads); poll the saved value, not the old page.
+		await expect
+			.poll(() => page.evaluate(() => localStorage.getItem('PARAGLIDE_LOCALE')), {
+				timeout: 15_000
+			})
+			.toBe('ml');
+		await expect(page.locator('html')).toHaveAttribute('lang', 'ml');
+	});
 });
 
 test('onboarding in Malayalam ends in a Malayalam lesson with Malayalam glosses', async ({

@@ -7,8 +7,23 @@ import {
 	NATIVE_LANGUAGES,
 	NATIVE_TO_UI,
 	UI_LANGUAGES,
+	defaultNativeLanguage,
 	glossFallback
 } from './languages';
+
+describe('defaultNativeLanguage', () => {
+	it('keeps the language the first visit is shown in when it is an Indic native language', () => {
+		expect(defaultNativeLanguage('ml')).toBe('ml');
+		expect(defaultNativeLanguage('ta')).toBe('ta');
+		expect(defaultNativeLanguage('as')).toBe('as');
+	});
+
+	it('falls back to Hindi for English, Hinglish and anything unknown', () => {
+		expect(defaultNativeLanguage('en')).toBe('hi');
+		expect(defaultNativeLanguage('hinglish')).toBe('hi');
+		expect(defaultNativeLanguage('xx')).toBe('hi');
+	});
+});
 
 const ROOT = process.cwd();
 const LATIN = LANGUAGES.en.script;
