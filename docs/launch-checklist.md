@@ -36,7 +36,7 @@ Key automated regressions (detail in [testing.md](./testing.md)):
 - [ ] Streak + freeze badges visible on home
 - [ ] Progress page: 7-day XP chart, longest streak, skill bars after a lesson
 - [ ] Beta disclaimer visible on first-run onboarding
-- [ ] Beta pill renders on B1/B2/C1 cities in the voyage map (desktop + mobile widths)
+- [ ] Beta pill renders on every level's city in the voyage map (desktop + mobile widths)
 - [ ] Record-and-compare works (microphone permission granted)
 
 ## Security & privacy
@@ -48,7 +48,7 @@ Key automated regressions (detail in [testing.md](./testing.md)):
 ## Deploy
 
 - [ ] Vercel project linked with `frenchpath` as root
-- [ ] Vercel build command set to `npm run vercel-build` (fetches the pinned Vosk model before `vite build`; plain `npm run build` is model-free)
+- [ ] Vercel build command is `npm run vercel-build`, set in `frenchpath/vercel.json` with the output directory (fetches the pinned Vosk model before `vite build`; plain `npm run build` is model-free)
 - [ ] Custom domain configured (optional: `frenchpath.in`)
 - [ ] `robots.txt` allows crawling
 - [ ] OG meta tags present (see `+layout.svelte`)
