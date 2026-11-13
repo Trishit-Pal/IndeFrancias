@@ -1,5 +1,53 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { applyGlossDrafts, listGlossItems } from '../../../scripts/lib/glossDrafts';
+import {
+	applyGlossDraftSet,
+	applyGlossDrafts,
+	listGlossItems
+} from '../../../scripts/lib/glossDrafts';
+import { LANGUAGES } from '../i18n/languages';
+import { unitSchema } from './schema';
+
+const DRAFT_ONLY = ['ml', 'or', 'as'] as const;
+
+describe('applyGlossDraftSet — glosses for newly curated cards', () => {
+	// A real pack whose gloss maps lack ml/or/as, as after curation adds cards.
+	const pack = JSON.parse(
+		readFileSync(resolve(process.cwd(), 'src/content/packs/a1/unit-01.json'), 'utf8')
+	);
+	const drafts = Object.fromEntries(DRAFT_ONLY.map((lang) => [lang, {} as Record<string, string>]));
+	const stripped = structuredClone(pack);
+	for (const card of stripped.cards) {
+		for (const [key, holder] of [
+			[`${pack.id}/${card.id}`, card],
+			[`${pack.id}/${card.id}/example`, card.example]
+		]) {
+			if (!holder?.glosses) continue;
+			for (const lang of DRAFT_ONLY) {
+				drafts[lang]![key] = holder.glosses[lang];
+				delete holder.glosses[lang];
+			}
+		}
+	}
+	const sets = DRAFT_ONLY.map((lang) => ({
+		lang,
+		drafts: drafts[lang]!,
+		script: LANGUAGES[lang].script
+	}));
+
+	it('one language alone cannot make the unit valid (the schema needs all three)', () => {
+		const one = applyGlossDrafts(stripped, 'ml', drafts.ml!, LANGUAGES.ml.script);
+		expect(unitSchema.safeParse(one.unit).success).toBe(false);
+	});
+
+	it('applying all three languages in one pass gives a valid unit equal to the original', () => {
+		const result = applyGlossDraftSet(stripped, sets);
+		expect(result.problems).toEqual([]);
+		expect(unitSchema.safeParse(result.unit).success).toBe(true);
+		expect(result.unit).toEqual(pack);
+	});
+});
 import {
 	DERIVED_GLOSS_LANGS,
 	buildRegionalGlosses,

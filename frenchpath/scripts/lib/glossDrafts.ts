@@ -73,3 +73,28 @@ export function applyGlossDrafts(
 	}
 	return { unit: copy, applied, problems };
 }
+
+export interface GlossDraftSet {
+	lang: string;
+	drafts: Readonly<Record<string, string>>;
+	script: RegExp;
+}
+
+/** `applyGlossDrafts` for several languages in one pass, so a card that lacks all of them
+ *  (a newly curated one) comes out with every language at once. */
+export function applyGlossDraftSet(
+	unit: unknown,
+	sets: readonly GlossDraftSet[]
+): { unit: unknown; applied: number; problems: string[] } {
+	return sets.reduce(
+		(acc, { lang, drafts, script }) => {
+			const r = applyGlossDrafts(acc.unit, lang, drafts, script);
+			return {
+				unit: r.unit,
+				applied: acc.applied + r.applied,
+				problems: [...acc.problems, ...r.problems.map((p) => `[${lang}] ${p}`)]
+			};
+		},
+		{ unit, applied: 0, problems: [] as string[] }
+	);
+}

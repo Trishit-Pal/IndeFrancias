@@ -2,7 +2,7 @@
  * Export the gloss worklist and merge translator draft files into the lesson packs.
  *
  *   npx tsx scripts/gloss-drafts.ts --export <out-file.json>
- *   npx tsx scripts/gloss-drafts.ts --apply <lang> [--check]
+ *   npx tsx scripts/gloss-drafts.ts --apply <lang>... [--check]
  *
  * See scripts/gloss-drafts/README.md.
  */
@@ -11,7 +11,7 @@ import { dirname, join, resolve } from 'node:path';
 import { unitSchema } from '../src/lib/content/schema';
 import { LANGUAGES } from '../src/lib/i18n/languages';
 import { isDerivedGlossLang } from './lib/regionalGloss';
-import { applyGlossDrafts, listGlossItems } from './lib/glossDrafts';
+import { applyGlossDraftSet, listGlossItems, type GlossDraftSet } from './lib/glossDrafts';
 import { formatLikeSource } from './lib/packFormat';
 
 const PACKS_DIR = resolve('src/content/packs');
@@ -61,7 +61,7 @@ function readDrafts(lang: string): Record<string, string> {
 	return raw as Record<string, string>;
 }
 
-async function applyDrafts(lang: string, checkOnly: boolean): Promise<void> {
+function draftSet(lang: string): GlossDraftSet {
 	if (!Object.hasOwn(LANGUAGES, lang)) {
 		fail([`unknown language "${lang}" (known: ${Object.keys(LANGUAGES).join(', ')})`]);
 	}
@@ -70,8 +70,16 @@ async function applyDrafts(lang: string, checkOnly: boolean): Promise<void> {
 			`"${lang}" is derived from Hindi/English by the gloss scripts; drafts are only for other languages`
 		]);
 	}
-	const drafts = readDrafts(lang);
-	const script = LANGUAGES[lang as keyof typeof LANGUAGES].script;
+	return {
+		lang,
+		drafts: readDrafts(lang),
+		script: LANGUAGES[lang as keyof typeof LANGUAGES].script
+	};
+}
+
+/** All languages are merged before the schema check: it needs every native language on a card. */
+async function applyDrafts(langs: string[], checkOnly: boolean): Promise<void> {
+	const sets = langs.map(draftSet);
 	const problems: string[] = [];
 	const seen = new Set<string>();
 	const updated: { file: string; unit: unknown }[] = [];
@@ -80,14 +88,16 @@ async function applyDrafts(lang: string, checkOnly: boolean): Promise<void> {
 	for (const file of packFiles()) {
 		const unit = readJson(file);
 		for (const item of listGlossItems(unit)) seen.add(item.key);
-		const result = applyGlossDrafts(unit, lang, drafts, script);
+		const result = applyGlossDraftSet(unit, sets);
 		problems.push(...result.problems.map((p) => `${p} (${file})`));
 		if (!unitSchema.safeParse(result.unit).success) problems.push(`invalid unit schema: ${file}`);
 		applied += result.applied;
 		updated.push({ file, unit: result.unit });
 	}
-	for (const key of Object.keys(drafts)) {
-		if (!seen.has(key)) problems.push(`unknown draft key: ${key}`);
+	for (const { lang, drafts } of sets) {
+		for (const key of Object.keys(drafts)) {
+			if (!seen.has(key)) problems.push(`[${lang}] unknown draft key: ${key}`);
+		}
 	}
 	if (problems.length) fail([...problems, `${problems.length} problem(s); nothing written`]);
 
@@ -107,9 +117,9 @@ async function main(): Promise<void> {
 	const exportAt = args.indexOf('--export');
 	const applyAt = args.indexOf('--apply');
 	if (exportAt >= 0 && args[exportAt + 1]) return exportWorklist(args[exportAt + 1]);
-	if (applyAt >= 0 && args[applyAt + 1])
-		return applyDrafts(args[applyAt + 1], args.includes('--check'));
-	fail(['usage: gloss-drafts.ts --export <out-file.json> | --apply <lang> [--check]']);
+	const langs = applyAt >= 0 ? args.slice(applyAt + 1).filter((a) => !a.startsWith('--')) : [];
+	if (langs.length) return applyDrafts(langs, args.includes('--check'));
+	fail(['usage: gloss-drafts.ts --export <out-file.json> | --apply <lang>... [--check]']);
 }
 
 void main();
