@@ -3,7 +3,7 @@
 > **Single source of truth** for what FrenchPath is and must do. This spec is *living*: it is
 > updated as part of every feature's Definition of Done (see §10). When this spec and any other
 > doc disagree, **this spec wins**.
-> Status: living. Last revised 2026-11-10.
+> Status: living. Last revised 2026-11-13.
 
 ## §1 Vision & positioning
 
@@ -115,7 +115,7 @@ same build for a Windows desktop shell (beta). **No backend.**
 
 Detail: appendix [architecture-map](../architecture-map.md), [mobile-architecture](../product/mobile-architecture.md).
 
-**Test baseline:** 649 unit + 142 e2e (126 passed, 16 skipped: 13 phone-only language-walk tests skipped on the desktop project, 3 conditional skips) (the authoritative count; supersedes any differing
+**Test baseline:** 657 unit + 144 e2e (128 passed, 16 skipped: 13 phone-only language-walk tests skipped on the desktop project, 3 conditional skips) (the authoritative count; supersedes any differing
 figure in other docs).
 
 ## §6 Domain module index
@@ -237,4 +237,4 @@ This spec is kept honest by the `frenchpath-spec-sync` skill + `/spec-sync` comm
 | 2026-11-11 | ADR-9 "Sync merge keeps earned progress" added (owner-approved): records the merge rules shipped in the pre-launch review fixes; full record in `docs/adr/0009-sync-merge-keeps-progress.md`. No invariant edit. | §7 | HIGH |
 | 2026-11-11 | Pre-launch review follow-up (branch `fix/launch-review-mediums`; no invariant or ADR text edit). CAP-SYNC: import reads, merges and writes in one transaction; review XP from two devices on the same day adds up, counting only reviews the other device did not have; two never-active streaks merge to 0; preview uses singular wording for one replaced item, no longer needs an exportable local backup, and clears the merge-complete notice when another file is chosen. CAP-BACKUP: export refuses a backup that would fail its own restore check; the restore preview is locked while the restore runs; the restore-complete notice clears when another file is chosen. Shared Modal re-opens itself if the browser closes it while a locked import is running. CAP-PWA: a banner when the stored database is newer than the app or an update waits on another tab. CAP-EXAM: the timer counts wall-clock time, so a suspended tab does not pause it. CAP-CHECK: unbiased seeded shuffle, new draw on retry (shared `seededShuffle.ts`). CAP-SPEAK: the speech model load is retried after a failure. CAP-GAME: completed units are no longer suggested on Home. CI: the build fails on high or critical advisories in `dependencies`; routine audit fixes applied to the lockfile (no capability row). Test baseline 537→577 unit, 100→106 e2e (103 passed, 3 conditional skips). | §4, §5 | MEDIUM |
 | 2026-11-11 | ADR-9 amended (owner-approved): review findings M2 and M3 recorded as fixed; the cross-time-zone limit of the same-day review count added to its known limits, and its streak options table qualified to match. Full record in `docs/adr/0009-sync-merge-keeps-progress.md`. No invariant edit. | §7 | HIGH |
-| 2026-11-12 | spec-sync: 13 interface languages. CAP-I18N 10→13 locales (adds Malayalam, Odia, Assamese; ten Indic drafts labelled beta) with one registry `src/lib/i18n/languages.ts` and a coverage spec that checks every key, placeholders and the locale's own script; CAP-GLOSS gains drafted ml/or/as glosses (English fallback); CAP-ONB offers ml/or/as and sets `<html lang>` from the language shown on first visit; CAP-BACKUP and CAP-SYNC errors are translated (`DataFileError` codes); lesson confidence buttons wrap on long labels; `docs/i18n-pending.md` is now a status page. Known follow-up: one messages chunk for all locales (176 KB gzip). No invariant, ADR, network, CSP or schema change. Test baseline 577→649 unit, 106→142 e2e (126 passed, 16 skipped: 13 phone-only walk tests on desktop, 3 conditional). | §1, §4, §5, §11 | LOW |
+| 2026-11-12 | spec-sync: 13 interface languages. CAP-I18N 10→13 locales (adds Malayalam, Odia, Assamese; ten Indic drafts labelled beta) with one registry `src/lib/i18n/languages.ts` and a coverage spec that checks every key, placeholders and the locale's own script; CAP-GLOSS gains drafted ml/or/as glosses (English fallback); CAP-ONB offers ml/or/as and sets `<html lang>` from the language shown on first visit and preselects that language as the native language; CAP-BACKUP and CAP-SYNC errors are translated (`DataFileError` codes); lesson confidence buttons wrap on long labels; `docs/i18n-pending.md` is now a status page. Known follow-up: one messages chunk for all locales (176 KB gzip). No invariant, ADR, network, CSP or schema change. Test baseline 577→657 unit, 106→144 e2e (128 passed, 16 skipped: 13 phone-only walk tests on desktop, 3 conditional). | §1, §4, §5, §11 | LOW |
