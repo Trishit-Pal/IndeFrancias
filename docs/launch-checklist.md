@@ -30,6 +30,9 @@ Key automated regressions (detail in [testing.md](./testing.md)):
 
 - [ ] Hindi UI toggle in Settings renders Devanagari correctly
 - [ ] Hinglish UI smoke test on home + lesson
+- [ ] Native-speaker proofread of the ten drafted interface languages (bn, ta, te, kn, mr, gu, pa, ml, or, as) and of the ml/or/as lesson glosses — labelled "(beta)" until done ([i18n-pending.md](./i18n-pending.md))
+- [ ] Phone font QA for every Indic script, including Malayalam, Odia and Assamese (home, lesson, review, settings)
+- [ ] Follow-up (accepted for launch): load only the learner's interface language instead of all 13 in one messages chunk (see [i18n-pending.md](./i18n-pending.md), "download size")
 - [ ] Streak + freeze badges visible on home
 - [ ] Progress page: 7-day XP chart, longest streak, skill bars after a lesson
 - [ ] Beta disclaimer visible on first-run onboarding

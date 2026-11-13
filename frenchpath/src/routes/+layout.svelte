@@ -9,7 +9,9 @@
 	import InfoBanner from '$lib/components/InfoBanner.svelte';
 	import UpdateToast from '$lib/components/UpdateToast.svelte';
 	import type { IconName } from '$lib/components/icons';
+	import { LANGUAGES } from '$lib/i18n/languages';
 	import * as m from '$lib/paraglide/messages';
+	import { getLocale } from '$lib/paraglide/runtime';
 	import { network } from '$lib/stores/online.svelte';
 	import {
 		settingsRepo,
@@ -162,8 +164,9 @@
 
 			const settings = await settingsRepo.getSettings();
 			document.documentElement.classList.toggle('reduce-motion', settings.reduceMotion);
-			document.documentElement.lang =
-				settings.uiLanguage === 'hinglish' ? 'en' : settings.uiLanguage;
+			// The language actually rendered, not the saved setting: on a first visit Paraglide
+			// renders the browser's preferred language while the saved setting is still `en`.
+			document.documentElement.lang = LANGUAGES[getLocale()].htmlLang;
 			configureTts(settings.ttsVoice, settings.audioSpeed);
 			await syncTheme();
 			cleanup = watchSystemTheme(() => void syncTheme());

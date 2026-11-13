@@ -14,7 +14,7 @@ Offline-first French-learning PWA for Indian learners. All UI lives under `frenc
 
 - SvelteKit 2 + **Svelte 5 runes** (`$state`, `$derived`, `$props`, `$bindable`)
 - Tailwind CSS v4 (`src/routes/layout.css`)
-- Paraglide i18n: 10 locales (`en`, `hi`, `hinglish`, `bn`, `ta`, `te`, `kn`, `mr`, `gu`, `pa`) — import via `$lib/paraglide/messages`
+- Paraglide i18n: 13 locales (`en`, `hi`, `hinglish`, `bn`, `ta`, `te`, `kn`, `mr`, `gu`, `pa`, `ml`, `or`, `as`; list in `src/lib/i18n/languages.ts`) — import via `$lib/paraglide/messages`
 - Static prerender + client SPA fallback
 
 ## Conventions
@@ -30,7 +30,7 @@ Offline-first French-learning PWA for Indian learners. All UI lives under `frenc
 
 When adding user-visible strings:
 
-1. Add the key to all 10 `messages/*.json` (real text for `en` + `hi`; English placeholder for the rest, logged one row per locale in `docs/i18n-pending.md` as `` - `<locale>.json` — `<key>` — "<placeholder>" ``)
+1. Add the key to `messages/en.json` and write real text in all 13 `messages/*.json` in the same commit (`src/lib/i18n/localeCoverage.spec.ts` enforces it; status in `docs/i18n-pending.md`)
 2. Use `m.key_name()` in components
 3. Run dev/build so Paraglide regenerates
 

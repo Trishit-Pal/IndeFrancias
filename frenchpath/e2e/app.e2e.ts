@@ -182,10 +182,21 @@ test('UI language toggle switches the interface to Hindi', async ({ page }) => {
 	await gotoHome(page);
 	await page.goto('/settings');
 	const select = page.getByTestId('language-select');
+	await expect(select.locator('option')).toHaveCount(13);
+	await expect(select.locator('option[value="ml"]')).toHaveText('മലയാളം (beta)');
 	await expect(select.locator('option[value="bn"]')).toHaveText('বাংলা (beta)');
 	await expect(select.locator('option[value="hinglish"]')).toHaveText('Hinglish');
 	await select.selectOption('hi');
 	await expect(page.getByRole('navigation')).toContainText('सीखें');
+});
+
+test('choosing Malayalam sets the page language', async ({ page }) => {
+	await gotoHome(page);
+	await page.goto('/settings');
+	await page.getByTestId('language-select').selectOption('ml');
+	await expect(page.locator('html')).toHaveAttribute('lang', 'ml');
+	await page.reload();
+	await expect(page.locator('html')).toHaveAttribute('lang', 'ml');
 });
 
 test('replaying a perfect lesson awards zero improvement XP', async ({ page }) => {

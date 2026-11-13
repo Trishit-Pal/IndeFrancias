@@ -1,6 +1,7 @@
 // The content schema is the single source of truth: it validates AI-drafted
 // and hand-authored content in CI, and its inferred types drive the runtime.
 import { z } from 'zod';
+import { NATIVE_LANGUAGES, type NativeLanguage } from '../i18n/languages';
 
 export const cefrLevelSchema = z.enum(['A1', 'A2', 'B1', 'B2', 'C1']);
 
@@ -23,7 +24,7 @@ export const skillSchema = z.enum([
 /** French nouns carry grammatical gender; other words use 'none'. */
 export const genderSchema = z.enum(['masculine', 'feminine', 'none']);
 
-export const nativeLangSchema = z.enum(['hi', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'en']);
+export const nativeLangSchema = z.enum(NATIVE_LANGUAGES);
 
 /** A build-time-authored writing feedback rule; runs as a regex over the
  *  learner's normalized answer. Lives in content packs so the native
@@ -40,17 +41,13 @@ export const rubricRuleSchema = z.object({
 });
 export type RubricRule = z.infer<typeof rubricRuleSchema>;
 
-export const glossesSchema = z.object({
-	hi: z.string().min(1),
-	bn: z.string().min(1),
-	ta: z.string().min(1),
-	te: z.string().min(1),
-	kn: z.string().min(1),
-	mr: z.string().min(1),
-	gu: z.string().min(1),
-	pa: z.string().min(1),
-	en: z.string().min(1)
-});
+// One required, non-empty gloss per native language (keys come from the registry).
+export const glossesSchema = z.object(
+	Object.fromEntries(NATIVE_LANGUAGES.map((lang) => [lang, z.string().min(1)])) as Record<
+		NativeLanguage,
+		z.ZodString
+	>
+);
 
 /** A worked example sentence, always in an Indian context. */
 export const exampleSchema = z.object({
@@ -244,8 +241,8 @@ export const bridgeBoxSchema = z.object({
 	title: z.string().min(1),
 	body: z.string().min(1),
 	/** Per-language bridge copy (optional; legacy title/body used as fallback). */
-	titleByLang: z.record(nativeLangSchema, z.string()).optional(),
-	bodyByLang: z.record(nativeLangSchema, z.string()).optional(),
+	titleByLang: z.partialRecord(nativeLangSchema, z.string()).optional(),
+	bodyByLang: z.partialRecord(nativeLangSchema, z.string()).optional(),
 	/** Optional micro-quiz before exercises. */
 	quiz: bridgeQuizSchema.optional()
 });

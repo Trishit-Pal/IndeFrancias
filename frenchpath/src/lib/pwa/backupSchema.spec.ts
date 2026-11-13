@@ -106,6 +106,12 @@ describe('backupSchema', () => {
 			expect(r.data?.settings?.nativeLanguage).toBe('pa');
 		});
 
+		it('keeps ml as native and interface language', () => {
+			const r = parse({ uiLanguage: 'ml', nativeLanguage: 'ml' });
+			expect(r.data?.settings?.uiLanguage).toBe('ml');
+			expect(r.data?.settings?.nativeLanguage).toBe('ml');
+		});
+
 		it('still rejects other invalid settings fields', () => {
 			expect(parse({ theme: 'neon' }).success).toBe(false);
 		});

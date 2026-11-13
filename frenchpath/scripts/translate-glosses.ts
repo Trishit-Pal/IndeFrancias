@@ -7,12 +7,11 @@
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { DERIVED_GLOSS_LANGS } from './lib/regionalGloss';
 import { unitSchema, type Unit, type Card } from '../src/lib/content/schema';
 
 const PACKS_DIR = resolve('src/content/packs');
 const dryRun = process.argv.includes('--dry-run');
-
-const NATIVE_LANGS = ['hi', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'en'] as const;
 
 function packFiles(): string[] {
 	return readdirSync(PACKS_DIR, { recursive: true })
@@ -26,7 +25,7 @@ function fillGlosses(card: Card): Card {
 	const hi = card.hindiGloss ?? '';
 	const en = card.englishGloss ?? '';
 	const glosses = Object.fromEntries(
-		NATIVE_LANGS.map((lang) => [lang, lang === 'en' ? en : lang === 'hi' ? hi : hi || en])
+		DERIVED_GLOSS_LANGS.map((lang) => [lang, lang === 'en' ? en : lang === 'hi' ? hi : hi || en])
 	) as Card['glosses'];
 	return { ...card, glosses };
 }

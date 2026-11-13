@@ -12,7 +12,8 @@
 	} from '$lib/profile/types';
 	import { LEARNING_GOAL_LABELS } from '$lib/profile/goalCopy';
 	import type { Settings, DifficultyTier } from '$lib/db/schema';
-	import { setLocale } from '$lib/paraglide/runtime';
+	import { getLocale, setLocale } from '$lib/paraglide/runtime';
+	import { defaultNativeLanguage } from '$lib/i18n/languages';
 	import CharacterMira from './CharacterMira.svelte';
 	import CharacterCoco from './CharacterCoco.svelte';
 	import InfoBanner from './InfoBanner.svelte';
@@ -37,7 +38,7 @@
 	type Step = (typeof STEPS)[number];
 
 	let step = $state<Step>('welcome');
-	let nativeLanguage = $state<NativeLanguage>('hi');
+	let nativeLanguage = $state<NativeLanguage>(defaultNativeLanguage(getLocale()));
 	let learningGoal = $state<LearningGoal>('general');
 	let targetExamDate = $state('');
 	let dailyGoalPreset = $state<DailyGoalPreset>('regular');
@@ -159,7 +160,12 @@
 					>
 						{m.onb_next()}
 					</button>
-					<button type="button" class="btn-secondary mt-2 w-full text-sm" onclick={finish}>
+					<button
+						type="button"
+						class="btn-secondary mt-2 w-full text-sm"
+						data-testid="onboarding-skip"
+						onclick={finish}
+					>
 						{m.onb_skip_defaults()}
 					</button>
 				</div>

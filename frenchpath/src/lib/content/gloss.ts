@@ -1,4 +1,5 @@
 import type { NativeLanguage } from '$lib/db/schema';
+import { glossFallback } from '$lib/i18n/languages';
 import type { BridgeBox, Card } from './schema';
 
 export type GlossSource = Pick<Card, 'hindiGloss' | 'englishGloss' | 'glosses'>;
@@ -8,15 +9,13 @@ export interface GlossResult {
 	secondary?: string;
 }
 
-const FALLBACK_CHAIN: NativeLanguage[] = ['hi', 'en'];
-
 function glossFromMap(
 	glosses: Partial<Record<NativeLanguage, string>>,
 	lang: NativeLanguage
 ): string | undefined {
 	const direct = glosses[lang];
 	if (direct?.trim()) return direct;
-	for (const fb of FALLBACK_CHAIN) {
+	for (const fb of glossFallback(lang)) {
 		const v = glosses[fb];
 		if (v?.trim()) return v;
 	}
@@ -56,15 +55,19 @@ export function getBridgeCopy(
 	bridge: BridgeBox,
 	nativeLanguage: NativeLanguage
 ): { title: string; body: string } {
-	const title =
-		bridge.titleByLang?.[nativeLanguage]?.trim() ||
-		bridge.titleByLang?.hi?.trim() ||
-		bridge.titleByLang?.en?.trim() ||
-		bridge.title;
-	const body =
-		bridge.bodyByLang?.[nativeLanguage]?.trim() ||
-		bridge.bodyByLang?.hi?.trim() ||
-		bridge.bodyByLang?.en?.trim() ||
-		bridge.body;
-	return { title, body };
+	const order = [nativeLanguage, ...glossFallback(nativeLanguage)];
+	const pick = (
+		byLang: Partial<Record<NativeLanguage, string>> | undefined,
+		plain: string
+	): string => {
+		for (const lang of order) {
+			const text = byLang?.[lang]?.trim();
+			if (text) return text;
+		}
+		return plain;
+	};
+	return {
+		title: pick(bridge.titleByLang, bridge.title),
+		body: pick(bridge.bodyByLang, bridge.body)
+	};
 }

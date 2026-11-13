@@ -4,8 +4,8 @@
  */
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { DERIVED_GLOSS_LANGS } from './lib/regionalGloss';
 
-const NATIVE_LANGS = ['hi', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'en'] as const;
 const PACKS_DIR = join(import.meta.dirname, '../src/content/packs');
 
 type Card = {
@@ -18,7 +18,7 @@ type Card = {
 
 function buildGlosses(hi: string, en: string): Record<string, string> {
 	const out: Record<string, string> = {};
-	for (const lang of NATIVE_LANGS) {
+	for (const lang of DERIVED_GLOSS_LANGS) {
 		if (lang === 'hi') out[lang] = hi;
 		else if (lang === 'en') out[lang] = en;
 		else if (lang === 'bn' || lang === 'mr' || lang === 'gu') out[lang] = hi;
@@ -33,14 +33,14 @@ function migrateCard(card: Card): Card {
 	if (!hi || !en) return card;
 	const next: Card = {
 		...card,
-		glosses: buildGlosses(hi, en)
+		glosses: { ...card.glosses, ...buildGlosses(hi, en) }
 	};
 	if (card.example) {
 		const eHi = card.example.hindiGloss ?? hi;
 		const eEn = card.example.englishGloss ?? en;
 		next.example = {
 			...card.example,
-			glosses: buildGlosses(eHi, eEn)
+			glosses: { ...card.example.glosses, ...buildGlosses(eHi, eEn) }
 		};
 	}
 	return next;

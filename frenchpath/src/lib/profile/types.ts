@@ -1,8 +1,11 @@
 import type { UiLanguage } from '$lib/db/schema';
 import * as m from '$lib/paraglide/messages';
 
-export const NATIVE_LANGUAGES = ['hi', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'en'] as const;
-export type NativeLanguage = (typeof NATIVE_LANGUAGES)[number];
+import { BETA_LOCALES, LANGUAGES, NATIVE_LANGUAGES, NATIVE_TO_UI } from '../i18n/languages';
+import type { NativeLanguage } from '../i18n/languages';
+
+export { BETA_LOCALES, NATIVE_LANGUAGES, NATIVE_TO_UI };
+export type { NativeLanguage };
 
 export type LearningGoal = 'travel' | 'delf_a2' | 'delf_b2' | 'work' | 'heritage' | 'general';
 export type DailyGoalPreset = 'casual' | 'regular' | 'intense';
@@ -14,38 +17,14 @@ export const DAILY_GOAL_PRESET_XP: Record<DailyGoalPreset, number> = {
 	intense: 100
 };
 
-/** Maps native language to default UI locale when supported. */
-export const NATIVE_TO_UI: Partial<Record<NativeLanguage, UiLanguage>> = {
-	hi: 'hi',
-	en: 'en',
-	bn: 'bn',
-	ta: 'ta',
-	te: 'te',
-	kn: 'kn',
-	mr: 'mr',
-	gu: 'gu',
-	pa: 'pa'
-};
+export const NATIVE_LANGUAGE_LABELS = Object.fromEntries(
+	NATIVE_LANGUAGES.map((lang) => [lang, LANGUAGES[lang].label])
+) as Record<NativeLanguage, string>;
 
-export const NATIVE_LANGUAGE_LABELS: Record<NativeLanguage, string> = {
-	hi: 'हिन्दी',
-	bn: 'বাংলা',
-	ta: 'தமிழ்',
-	te: 'తెలుగు',
-	kn: 'ಕನ್ನಡ',
-	mr: 'मराठी',
-	gu: 'ગુજરાતી',
-	pa: 'ਪੰਜਾਬੀ',
-	en: 'English'
-};
-
-/** UI locales whose interface text is still mostly English placeholders (see docs/i18n-pending.md). */
-export const BETA_LOCALES: readonly UiLanguage[] = ['bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa'];
-
-/** Picker label for a UI language, suffixed "(beta)" for {@link BETA_LOCALES}. */
+/** Picker label for a UI language, suffixed "(beta)" for beta locales. */
 export function uiLanguageLabel(lang: UiLanguage): string {
-	const label = lang === 'hinglish' ? 'Hinglish' : NATIVE_LANGUAGE_LABELS[lang];
-	return BETA_LOCALES.includes(lang) ? `${label} ${m.language_beta_suffix()}` : label;
+	const { label, beta } = LANGUAGES[lang];
+	return beta ? `${label} ${m.language_beta_suffix()}` : label;
 }
 
 export interface LearnerProfileFields {

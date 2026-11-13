@@ -1,23 +1,47 @@
 /**
  * Regional gloss derivation and script validation for content packs.
  */
-export const NATIVE_LANGS = ['hi', 'bn', 'ta', 'te', 'kn', 'mr', 'gu', 'pa', 'en'] as const;
-export type NativeLang = (typeof NATIVE_LANGS)[number];
+import { LANGUAGES, NATIVE_LANGUAGES } from '../../src/lib/i18n/languages';
+import type { NativeLanguage } from '../../src/lib/i18n/languages';
+
+export const NATIVE_LANGS = NATIVE_LANGUAGES;
+export type NativeLang = NativeLanguage;
+
+/** Languages the legacy scripts derive from Hindi/English. ml, or and as come only from drafts. */
+export const DERIVED_GLOSS_LANGS = [
+	'hi',
+	'bn',
+	'ta',
+	'te',
+	'kn',
+	'mr',
+	'gu',
+	'pa',
+	'en'
+] as const satisfies readonly NativeLang[];
+export type DerivedGlossLang = (typeof DERIVED_GLOSS_LANGS)[number];
+
+export function isDerivedGlossLang(lang: string): boolean {
+	return (DERIVED_GLOSS_LANGS as readonly string[]).includes(lang);
+}
 
 /** Expected Unicode blocks per gloss language key. */
-export const SCRIPT_RANGES: Record<NativeLang, RegExp> = {
-	hi: /[\u0900-\u097F]/,
-	bn: /[\u0980-\u09FF]/,
-	ta: /[\u0B80-\u0BFF]/,
-	te: /[\u0C00-\u0C7F]/,
-	kn: /[\u0C80-\u0CFF]/,
-	mr: /[\u0900-\u097F]/,
-	gu: /[\u0A80-\u0AFF]/,
-	pa: /[\u0A00-\u0A7F]/,
-	en: /[A-Za-z]/
-};
+export const SCRIPT_RANGES = Object.fromEntries(
+	NATIVE_LANGUAGES.map((lang) => [lang, LANGUAGES[lang].script])
+) as Record<NativeLang, RegExp>;
 
 const DEVANAGARI = /[\u0900-\u097F]/;
+
+const NON_LATIN_SCRIPTS = new Set(
+	Object.values(LANGUAGES)
+		.map((info) => info.script)
+		.filter((script) => script !== LANGUAGES.en.script)
+);
+
+/** True when `text` contains a character of any non-Latin script the app's languages use. */
+export function containsIndicScript(text: string): boolean {
+	return [...NON_LATIN_SCRIPTS].some((script) => script.test(text));
+}
 
 /** Devanagari to Gujarati (+0x180 offset for shared letters). */
 export function devanagariToGujarati(text: string): string {
@@ -70,7 +94,7 @@ export function buildRegionalGlosses(
 	hi: string,
 	en: string,
 	overrides: DravidianOverrides = {}
-): Record<NativeLang, string> {
+): Record<DerivedGlossLang, string> {
 	const bn = overrides.bn?.[en] ?? devanagariToBengali(hi);
 	const ta = overrides.ta?.[en] ?? overrides.ta?.[hi] ?? en;
 	const te = overrides.te?.[en] ?? overrides.te?.[hi] ?? en;

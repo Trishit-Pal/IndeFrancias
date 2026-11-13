@@ -118,13 +118,14 @@ export async function skipOnboardingViaIdb(page: Page, overrides: Record<string,
 	});
 }
 
-/** Drive the v2+ onboarding wizard through all steps. */
-export async function completeOnboarding(page: Page) {
+/** Drive the v2+ onboarding wizard through all steps, optionally picking a native language. */
+export async function completeOnboarding(page: Page, nativeLanguage?: string) {
 	const wizard = page.getByTestId('onboarding-wizard');
 	const cont = () => wizard.getByRole('button', { name: /^Continue$|^आगे$/ });
 
 	await cont().click();
 	await expect(wizard.getByTestId('native-lang-hi')).toBeVisible();
+	if (nativeLanguage) await wizard.getByTestId(`native-lang-${nativeLanguage}`).click();
 	await cont().click();
 	await expect(wizard.getByTestId('goal-general')).toBeVisible();
 	await cont().click();
@@ -155,44 +156,11 @@ export async function completeLesson(page: Page) {
 
 	while (!(await summary.isVisible().catch(() => false))) {
 		if (await bridgeContinue.isVisible().catch(() => false)) {
-			const options = page.getByTestId('bridge-quiz-option');
-			const count = await options.count();
-			for (let i = 0; i < count; i++) {
-				await options.nth(i).click();
-				if (await bridgeContinue.isEnabled().catch(() => false)) break;
-			}
-			await bridgeContinue.click();
+			await passBridgeQuiz(page);
 			continue;
 		}
 
-		const cloze = page.locator('[data-testid="cloze-input"]:enabled');
-		const text = page.locator('[data-testid="text-answer"]:enabled');
-		const selects = page.locator('[data-testid="matching-select"]:enabled');
-		const mcq = page.locator('[data-testid="mcq-option"]:enabled');
-		const reorderWord = page.locator('[data-testid="reorder-word"]:enabled');
-		const genderOption = page.locator('[data-testid="gender-option"]:enabled');
-		const speakRecord = page.locator('[data-testid="speak-record"]:enabled');
-
-		await expect(
-			cloze.or(text).or(selects).or(mcq).or(reorderWord).or(genderOption).or(speakRecord).first()
-		).toBeVisible();
-
-		if (await cloze.count()) {
-			await cloze.fill('bonjour');
-		} else if (await text.count()) {
-			await text.fill('test');
-		} else if (await selects.count()) {
-			const count = await selects.count();
-			for (let s = 0; s < count; s++) await selects.nth(s).selectOption({ index: 1 });
-		} else if (await reorderWord.count()) {
-			while ((await reorderWord.count()) > 0) await reorderWord.first().click();
-		} else if (await genderOption.count()) {
-			await genderOption.first().click();
-		} else if (await speakRecord.count()) {
-			await recordAndStop(page);
-		} else {
-			await mcq.first().click();
-		}
+		await answerAnyExercise(page);
 
 		await expect(check).toBeEnabled();
 		await check.click();
@@ -209,6 +177,50 @@ export async function completeLesson(page: Page) {
 	const dismiss = page.getByTestId('celebration-skip');
 	if (await dismiss.isVisible().catch(() => false)) {
 		await dismiss.click();
+	}
+}
+
+/** Picks bridge-quiz options until Continue enables, then continues. */
+export async function passBridgeQuiz(page: Page) {
+	const bridgeContinue = page.getByTestId('bridge-quiz-continue');
+	const options = page.getByTestId('bridge-quiz-option');
+	const count = await options.count();
+	for (let i = 0; i < count; i++) {
+		await options.nth(i).click();
+		if (await bridgeContinue.isEnabled().catch(() => false)) break;
+	}
+	await bridgeContinue.click();
+}
+
+/** Gives the current lesson exercise some answer (right or wrong), enabling Check. */
+export async function answerAnyExercise(page: Page) {
+	const cloze = page.locator('[data-testid="cloze-input"]:enabled');
+	const text = page.locator('[data-testid="text-answer"]:enabled');
+	const selects = page.locator('[data-testid="matching-select"]:enabled');
+	const mcq = page.locator('[data-testid="mcq-option"]:enabled');
+	const reorderWord = page.locator('[data-testid="reorder-word"]:enabled');
+	const genderOption = page.locator('[data-testid="gender-option"]:enabled');
+	const speakRecord = page.locator('[data-testid="speak-record"]:enabled');
+
+	await expect(
+		cloze.or(text).or(selects).or(mcq).or(reorderWord).or(genderOption).or(speakRecord).first()
+	).toBeVisible();
+
+	if (await cloze.count()) {
+		await cloze.fill('bonjour');
+	} else if (await text.count()) {
+		await text.fill('test');
+	} else if (await selects.count()) {
+		const count = await selects.count();
+		for (let s = 0; s < count; s++) await selects.nth(s).selectOption({ index: 1 });
+	} else if (await reorderWord.count()) {
+		while ((await reorderWord.count()) > 0) await reorderWord.first().click();
+	} else if (await genderOption.count()) {
+		await genderOption.first().click();
+	} else if (await speakRecord.count()) {
+		await recordAndStop(page);
+	} else {
+		await mcq.first().click();
 	}
 }
 

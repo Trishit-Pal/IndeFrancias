@@ -53,6 +53,6 @@ guilt.
 ## Accessibility & Inclusion
 
 Keyboard operable throughout, `aria-live` for dynamic feedback, `prefers-reduced-motion`
-honoured on every animation, touch targets ≥44px (SPEC invariant 6). 10 UI locales
-including Hindi (Devanagari via Tiro Devanagari Hindi) and Hinglish; French content is
+honoured on every animation, touch targets ≥44px (SPEC invariant 6). 13 UI locales
+including Hindi (Devanagari via Tiro Devanagari Hindi) and Hinglish (ten Indic drafts labelled beta); French content is
 glossed through the learner's own language. Target WCAG 2.1 AA contrast.

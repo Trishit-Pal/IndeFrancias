@@ -1,31 +1,33 @@
 import { describe, expect, it } from 'vitest';
 import en from '../../../messages/en.json';
 import hi from '../../../messages/hi.json';
-import hinglish from '../../../messages/hinglish.json';
-import bn from '../../../messages/bn.json';
-import ta from '../../../messages/ta.json';
-import te from '../../../messages/te.json';
-import kn from '../../../messages/kn.json';
-import mr from '../../../messages/mr.json';
-import gu from '../../../messages/gu.json';
-import pa from '../../../messages/pa.json';
 import { BETA_LOCALES, uiLanguageLabel } from '$lib/profile/types';
+import { LANGUAGES, type UiLanguage } from '$lib/i18n/languages';
 
 type Messages = Record<string, string>;
 
 const EN: Messages = en;
-const LOCALES: Record<string, Messages> = { hi, hinglish, bn, ta, te, kn, mr, gu, pa };
+const LOCALES: Record<string, Messages> = Object.fromEntries(
+	Object.entries(
+		import.meta.glob<Messages>('../../../messages/*.json', { eager: true, import: 'default' })
+	)
+		.map(([path, messages]) => [path.replace(/^.*\/(.+)\.json$/, '$1'), messages] as const)
+		.filter(([locale]) => locale !== 'en')
+);
 const KEYS = Object.keys(EN).filter((key) => key !== '$schema');
 
-/**
- * hi values allowed to equal English: not prose, so there is nothing to translate.
- * Anything else identical to en.json is an untranslated placeholder.
- */
-const HI_SAME_AS_EN_ALLOWED = new Set([
+/** Values that may equal English in every locale: not prose, nothing to translate. */
+const SAME_AS_EN_ALLOWED = new Set([
 	'onb_title', // French greeting + emoji ("Bonjour ! 👋")
 	'settings_retention_85', // number ("85%")
 	'settings_goal_xp' // placeholder + unit ("{xp} XP")
 ]);
+
+/** Hinglish keeps everyday English app words, so short labels may stay as they are. */
+const HINGLISH_MAX_UNTRANSLATED_WORDS = 3;
+
+/** Locales whose interface text is drafted: every prose value must be in the locale's own script. */
+const DRAFTED_LOCALES = ['bn', 'as', 'mr', 'gu', 'pa', 'or', 'ta', 'ml', 'te', 'kn'];
 
 describe('locale coverage', () => {
 	// Paraglide silently falls back to English for a missing key, so nothing else catches this.
@@ -46,13 +48,50 @@ describe('locale coverage', () => {
 
 	it('hi.json translates every prose string (no English placeholders)', () => {
 		const untranslated = KEYS.filter(
-			(key) => hi[key as keyof typeof hi] === EN[key] && !HI_SAME_AS_EN_ALLOWED.has(key)
+			(key) => hi[key as keyof typeof hi] === EN[key] && !SAME_AS_EN_ALLOWED.has(key)
 		);
 		expect(untranslated).toEqual([]);
 	});
 
 	it('hi allowlist only names keys that still exist', () => {
-		expect([...HI_SAME_AS_EN_ALLOWED].filter((key) => !(key in EN))).toEqual([]);
+		expect([...SAME_AS_EN_ALLOWED].filter((key) => !(key in EN))).toEqual([]);
+	});
+
+	it('hinglish.json translates every sentence', () => {
+		const hinglish = LOCALES.hinglish!;
+		const untranslated = KEYS.filter(
+			(key) =>
+				hinglish[key] === EN[key] &&
+				EN[key]!.trim().split(/\s+/).length > HINGLISH_MAX_UNTRANSLATED_WORDS &&
+				!SAME_AS_EN_ALLOWED.has(key)
+		);
+		expect(untranslated).toEqual([]);
+	});
+
+	it('hinglish.json is written in Latin letters', () => {
+		const devanagari = Object.entries(LOCALES.hinglish!)
+			.filter(([, value]) => /[ऀ-ॿ]/.test(value))
+			.map(([key]) => key);
+		expect(devanagari).toEqual([]);
+	});
+
+	// Malayalam, Odia and Assamese glosses fall back to English, never Hindi (glossFallback).
+	it.each([
+		['en', 'Hindi'],
+		['ml', 'ഹിന്ദി'],
+		['or', 'ହିନ୍ଦୀ'],
+		['as', 'হিন্দী']
+	])('%s welcome promise does not name Hindi as the bridge', (locale, hindi) => {
+		const messages = locale === 'en' ? EN : LOCALES[locale]!;
+		expect(messages.onb_p1).not.toContain(hindi);
+	});
+
+	it.each(DRAFTED_LOCALES)('%s.json is written in its own script', (locale) => {
+		const script = LANGUAGES[locale as UiLanguage].script;
+		const untranslated = KEYS.filter(
+			(key) => !SAME_AS_EN_ALLOWED.has(key) && !script.test(LOCALES[locale]![key] ?? '')
+		);
+		expect(untranslated).toEqual([]);
 	});
 });
 
@@ -65,7 +104,24 @@ describe('language picker labels', () => {
 		expect(uiLanguageLabel('en')).toBe('English');
 	});
 
-	it('marks exactly the seven Indic locales as beta', () => {
-		expect([...BETA_LOCALES].sort()).toEqual(['bn', 'gu', 'kn', 'mr', 'pa', 'ta', 'te']);
+	it('labels the Dravidian, Odia and Assamese additions as beta', () => {
+		expect(uiLanguageLabel('ml')).toBe('മലയാളം (beta)');
+		expect(uiLanguageLabel('or')).toBe('ଓଡ଼ିଆ (beta)');
+		expect(uiLanguageLabel('as')).toBe('অসমীয়া (beta)');
+	});
+
+	it('marks exactly the ten Indic locales as beta', () => {
+		expect([...BETA_LOCALES].sort()).toEqual([
+			'as',
+			'bn',
+			'gu',
+			'kn',
+			'ml',
+			'mr',
+			'or',
+			'pa',
+			'ta',
+			'te'
+		]);
 	});
 });

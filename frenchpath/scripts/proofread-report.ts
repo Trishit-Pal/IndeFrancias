@@ -10,24 +10,11 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { unitSchema, type Unit, type Exercise } from '../src/lib/content/schema';
-import { validateGlossScripts } from './lib/regionalGloss';
+import { containsIndicScript, validateGlossScripts } from './lib/regionalGloss';
 
 const PACKS_DIR = resolve('src/content/packs');
 /** English function words that should not appear in French vocabulary fields. */
 const ENGLISH_IN_FRENCH = /\b(the|hello|goodbye)\b/i;
-/** Indic scripts must not appear in French vocabulary / answer fields. */
-function hasIndicInFrenchText(text: string): boolean {
-	return (
-		/[\u0900-\u097F]/.test(text) ||
-		/[\u0980-\u09FF]/.test(text) ||
-		/[\u0A00-\u0A7F]/.test(text) ||
-		/[\u0B00-\u0B7F]/.test(text) ||
-		/[\u0C00-\u0C7F]/.test(text) ||
-		/[\u0D00-\u0D7F]/.test(text) ||
-		/[\u0A80-\u0AFF]/.test(text)
-	);
-}
-
 function packFiles(): string[] {
 	return readdirSync(PACKS_DIR, { recursive: true })
 		.map(String)
@@ -72,7 +59,7 @@ function checkUnit(unit: Unit, file: string): string[] {
 		if (ENGLISH_IN_FRENCH.test(card.french)) {
 			issues.push(`${file}: card ${card.id} — English in french field: "${card.french}"`);
 		}
-		if (hasIndicInFrenchText(card.french)) {
+		if (containsIndicScript(card.french)) {
 			issues.push(`${file}: card ${card.id} — Indic script in french field: "${card.french}"`);
 		}
 		if (card.glosses) {
@@ -96,7 +83,7 @@ function checkUnit(unit: Unit, file: string): string[] {
 					`${file}: exercise ${ex.id} — English in French answer/content: "${field.slice(0, 60)}"`
 				);
 			}
-			if (hasIndicInFrenchText(field)) {
+			if (containsIndicScript(field)) {
 				issues.push(
 					`${file}: exercise ${ex.id} — Indic script in French field: "${field.slice(0, 60)}"`
 				);

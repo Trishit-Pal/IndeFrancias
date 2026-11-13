@@ -4,6 +4,7 @@
 // crypto and Task 15's merge. Validation on decrypted plaintext runs through
 // the EXACT same pipeline as backup import (size guard -> parse -> checksum
 // -> migrate -> schema) so no new failure mode can reach the database.
+import { DataFileError } from '../pwa/dataFileError';
 import {
 	exportBackup,
 	validateAndParseBackup,
@@ -23,8 +24,12 @@ export const MAX_SYNC_BYTES = Math.ceil(MAX_BACKUP_BYTES * 1.5);
 function assertSyncFileSize(json: string): void {
 	const bytes = new TextEncoder().encode(json).byteLength;
 	if (bytes > MAX_SYNC_BYTES) {
-		throw new Error(
-			`Sync file is too large (${Math.round(bytes / 1024)} KB). Maximum is ${Math.round(MAX_SYNC_BYTES / 1024 / 1024)} MB.`
+		const kb = Math.round(bytes / 1024);
+		const maxMb = Math.round(MAX_SYNC_BYTES / 1024 / 1024);
+		throw new DataFileError(
+			'sync_too_large',
+			`Sync file is too large (${kb} KB). Maximum is ${maxMb} MB.`,
+			{ params: { kb, maxMb } }
 		);
 	}
 }
@@ -78,7 +83,7 @@ async function decryptAndValidate(fileJson: string, passphrase: string): Promise
 	try {
 		envelope = JSON.parse(fileJson) as EncryptedEnvelope;
 	} catch {
-		throw new Error('Sync file is not valid JSON.');
+		throw new DataFileError('sync_not_json', 'Sync file is not valid JSON.');
 	}
 	const plaintext = await decryptPayload(envelope, passphrase);
 	const { payload } = await validateAndParseBackup(plaintext);
@@ -100,7 +105,7 @@ export async function previewSyncMerge(
 /** Decrypt + validate + merge, then write the merged result atomically. */
 export async function importSyncMerge(fileJson: string, passphrase: string): Promise<MergeSummary> {
 	if (importInFlight) {
-		throw new Error('Another sync import is already in progress.');
+		throw new DataFileError('sync_import_busy', 'Another sync import is already in progress.');
 	}
 	importInFlight = true;
 	try {
@@ -122,6 +127,10 @@ async function importSyncMergeInner(fileJson: string, passphrase: string): Promi
 			return { merged, result: summary };
 		});
 	} catch (err) {
-		throw new Error('Sync merge failed — your existing data is unchanged', { cause: err });
+		throw new DataFileError(
+			'sync_merge_failed',
+			'Sync merge failed — your existing data is unchanged',
+			{ cause: err }
+		);
 	}
 }

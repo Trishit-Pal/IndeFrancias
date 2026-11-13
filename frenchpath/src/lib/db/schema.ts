@@ -11,11 +11,11 @@ export type Skill = 'listening' | 'reading' | 'spokenInteraction' | 'spokenProdu
 
 export type LessonStatus = 'locked' | 'available' | 'completed';
 
-export type UiLanguage = 'en' | 'hi' | 'hinglish' | 'bn' | 'ta' | 'te' | 'kn' | 'mr' | 'gu' | 'pa';
+export type { UiLanguage, NativeLanguage } from '../i18n/languages';
+import type { UiLanguage, NativeLanguage } from '../i18n/languages';
 
 export type Theme = 'light' | 'dark' | 'system';
 
-export type NativeLanguage = 'hi' | 'bn' | 'ta' | 'te' | 'kn' | 'mr' | 'gu' | 'pa' | 'en';
 export type LearningGoal = 'travel' | 'delf_a2' | 'delf_b2' | 'work' | 'heritage' | 'general';
 export type DailyGoalPreset = 'casual' | 'regular' | 'intense';
 export type CelebrationLevel = 'full' | 'minimal';

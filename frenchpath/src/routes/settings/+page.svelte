@@ -20,6 +20,7 @@
 		xpFromPreset,
 		type DailyGoalPreset as Preset
 	} from '$lib/profile/types';
+	import { UI_LANGUAGES } from '$lib/i18n/languages';
 	import { LEARNING_GOAL_LABELS } from '$lib/profile/goalCopy';
 	import {
 		exportBackup,
@@ -33,10 +34,9 @@
 		exportSyncFile,
 		previewSyncMerge,
 		importSyncMerge,
-		FutureDatedSyncError,
 		MAX_SYNC_BYTES
 	} from '$lib/sync/mergeFile';
-	import { WrongPassphraseError } from '$lib/sync/crypto';
+	import { dataFileMessage } from '$lib/pwa/dataFileMessage';
 	import type { MergeSummary } from '$lib/pwa/merge';
 	import { ensurePersistence, isPersisted, migrateLegacyLastExport } from '$lib/pwa/persist';
 	import { isNativePlatform } from '$lib/platform';
@@ -74,18 +74,7 @@
 	let updateResult = $state<UpdateInfo | null>(null);
 	let updateStatus = $state('');
 
-	const languages: UiLanguage[] = [
-		'en',
-		'hi',
-		'hinglish',
-		'bn',
-		'ta',
-		'te',
-		'kn',
-		'mr',
-		'gu',
-		'pa'
-	];
+	const languages = UI_LANGUAGES;
 
 	const presetOptions: { value: Preset; label: () => string }[] = [
 		{ value: 'casual', label: () => m.settings_preset_casual({ xp: xpFromPreset('casual') }) },
@@ -206,7 +195,7 @@
 			// Surface native (share/filesystem) or web failures instead of
 			// throwing unhandled — backup is the only data-recovery path.
 			if (!isSafetyCopy) {
-				message = error instanceof Error ? error.message : m.settings_backup_export_failed();
+				message = dataFileMessage(error, m.settings_backup_export_failed());
 			}
 			return false;
 		}
@@ -227,7 +216,7 @@
 			importPreview = await previewBackup(json);
 			pendingImportJson = json;
 		} catch (error) {
-			message = error instanceof Error ? error.message : m.settings_import_failed();
+			message = dataFileMessage(error, m.settings_import_failed());
 		}
 	}
 
@@ -250,7 +239,7 @@
 			// and dismiss iOS's "Download?" sheet. The learner reloads when ready.
 			restoreDone = true;
 		} catch (error) {
-			message = error instanceof Error ? error.message : m.settings_import_failed();
+			message = dataFileMessage(error, m.settings_import_failed());
 		} finally {
 			importing = false;
 			if (!safetyCopyFailed) clearImport();
@@ -278,7 +267,7 @@
 			}
 			message = m.sync_success();
 		} catch (error) {
-			message = error instanceof Error ? error.message : m.settings_backup_export_failed();
+			message = dataFileMessage(error, m.settings_backup_export_failed());
 		}
 	}
 
@@ -301,14 +290,8 @@
 			syncPreview = await previewSyncMerge(json, syncPassphrase);
 			pendingSyncJson = json;
 		} catch (error) {
-			message = syncErrorMessage(error);
+			message = dataFileMessage(error, m.settings_import_failed());
 		}
-	}
-
-	function syncErrorMessage(error: unknown): string {
-		if (error instanceof WrongPassphraseError) return m.sync_wrong_passphrase();
-		if (error instanceof FutureDatedSyncError) return m.sync_future_dates();
-		return error instanceof Error ? error.message : m.settings_import_failed();
 	}
 
 	async function confirmSyncImport(skipSafetyCopy = false) {
@@ -329,7 +312,7 @@
 			// No auto-reload, for the same reason as the backup restore (it would cancel the safety copy).
 			syncDone = true;
 		} catch (error) {
-			message = syncErrorMessage(error);
+			message = dataFileMessage(error, m.settings_import_failed());
 		} finally {
 			syncImporting = false;
 			if (!syncSafetyCopyFailed) cancelSyncImport();
