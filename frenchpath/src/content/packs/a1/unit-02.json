@@ -275,6 +275,351 @@
 			"fauxAmi": true,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
+		},
+		{
+			"id": "a1-fam-fils",
+			"french": "le fils",
+			"gender": "masculine",
+			"ipa": "lə fis",
+			"hindiGloss": "बेटा",
+			"englishGloss": "the son",
+			"glosses": {
+				"hi": "बेटा",
+				"en": "the son",
+				"bn": "বেটা",
+				"mr": "बेटा",
+				"gu": "બેટા",
+				"pa": "ਬੇਟਾ",
+				"ta": "மகன்",
+				"te": "కొడుకు",
+				"kn": "ಮಗ",
+				"ml": "മകൻ",
+				"or": "ପୁଅ",
+				"as": "পুত্ৰ"
+			},
+			"example": {
+				"french": "Mon fils habite à Pune.",
+				"englishGloss": "My son lives in Pune.",
+				"glosses": {
+					"hi": "मेरा बेटा पुणे में रहता है।",
+					"en": "My son lives in Pune.",
+					"bn": "মেরা বেটা পুণে মেং রহতা হৈ৤",
+					"mr": "मेरा बेटा पुणे में रहता है।",
+					"gu": "મેરા બેટા પુણે મેં રહતા હૈ૤",
+					"pa": "ਮੇਰਾ ਬੇਟਾ ਪੁਣੇ ਮੇਂ ਰਹਤਾ ਹੈ।",
+					"ta": "என் மகன் புனேவில் வசிக்கிறான்.",
+					"te": "నా కొడుకు పుణేలో ఉంటాడు.",
+					"kn": "ನನ್ನ ಮಗ ಪುಣೆಯಲ್ಲಿ ವಾಸಿಸುತ್ತಾನೆ.",
+					"ml": "എന്റെ മകൻ പൂനെയിൽ താമസിക്കുന്നു.",
+					"or": "ମୋ ପୁଅ ପୁଣେରେ ରହେ।",
+					"as": "মোৰ পুত্ৰ পুনেত থাকে।"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-fam-fille",
+			"french": "la fille",
+			"gender": "feminine",
+			"ipa": "la fij",
+			"hindiGloss": "बेटी / लड़की",
+			"englishGloss": "the daughter / the girl",
+			"glosses": {
+				"hi": "बेटी / लड़की",
+				"en": "the daughter / the girl",
+				"bn": "বেটী / লড়কী",
+				"mr": "बेटी / लड़की",
+				"gu": "બેટી / લડ઼કી",
+				"pa": "ਬੇਟੀ / ਲਡ़ਕੀ",
+				"ta": "மகள் / சிறுமி",
+				"te": "కూతురు / అమ్మాయి",
+				"kn": "ಮಗಳು / ಹುಡುಗಿ",
+				"ml": "മകൾ / പെൺകുട്ടി",
+				"or": "ଝିଅ",
+				"as": "জী / ছোৱালী"
+			},
+			"example": {
+				"french": "Ma fille s'appelle Ananya.",
+				"englishGloss": "My daughter is called Ananya.",
+				"glosses": {
+					"hi": "मेरी बेटी का नाम अनन्या है।",
+					"en": "My daughter is called Ananya.",
+					"bn": "মেরী বেটী কা নাম অনন্যা হৈ৤",
+					"mr": "मेरी बेटी का नाम अनन्या है।",
+					"gu": "મેરી બેટી કા નામ અનન્યા હૈ૤",
+					"pa": "ਮੇਰੀ ਬੇਟੀ ਕਾ ਨਾਮ ਅਨਨ੍ਯਾ ਹੈ।",
+					"ta": "என் மகளின் பெயர் அனன்யா.",
+					"te": "నా కూతురి పేరు అనన్య.",
+					"kn": "ನನ್ನ ಮಗಳ ಹೆಸರು ಅನನ್ಯಾ.",
+					"ml": "എന്റെ മകളുടെ പേര് അനന്യ.",
+					"or": "ମୋ ଝିଅର ନାମ ଅନନ୍ୟା।",
+					"as": "মোৰ ছোৱালীৰ নাম অনন্যা।"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-fam-grandpere",
+			"french": "le grand-père",
+			"gender": "masculine",
+			"ipa": "lə ɡʁɑ̃.pɛʁ",
+			"hindiGloss": "दादा / नाना",
+			"englishGloss": "the grandfather",
+			"glosses": {
+				"hi": "दादा / नाना",
+				"en": "the grandfather",
+				"bn": "দাদা / নানা",
+				"mr": "दादा / नाना",
+				"gu": "દાદા / નાના",
+				"pa": "ਦਾਦਾ / ਨਾਨਾ",
+				"ta": "தாத்தா",
+				"te": "తాత",
+				"kn": "ಅಜ್ಜ",
+				"ml": "മുത്തച്ഛൻ",
+				"or": "ଜେଜେବାପା / ଅଜା",
+				"as": "ককা"
+			},
+			"example": {
+				"french": "Mon grand-père habite à Kochi.",
+				"englishGloss": "My grandfather lives in Kochi.",
+				"glosses": {
+					"hi": "मेरे दादा कोच्चि में रहते हैं।",
+					"en": "My grandfather lives in Kochi.",
+					"bn": "মেরে দাদা কোচ্চি মেং রহতে হৈং৤",
+					"mr": "मेरे दादा कोच्चि में रहते हैं।",
+					"gu": "મેરે દાદા કોચ્ચિ મેં રહતે હૈં૤",
+					"pa": "ਮੇਰੇ ਦਾਦਾ ਕੋਚ੍ਚਿ ਮੇਂ ਰਹਤੇ ਹੈਂ।",
+					"ta": "என் தாத்தா கொச்சியில் வசிக்கிறார்.",
+					"te": "మా తాత కొచ్చిలో ఉంటారు.",
+					"kn": "ನನ್ನ ಅಜ್ಜ ಕೊಚ್ಚಿಯಲ್ಲಿ ವಾಸಿಸುತ್ತಾರೆ.",
+					"ml": "എന്റെ മുത്തച്ഛൻ കൊച്ചിയിൽ താമസിക്കുന്നു.",
+					"or": "ମୋ ଜେଜେବାପା କୋଚିରେ ରହନ୍ତି।",
+					"as": "মোৰ ককা কোচিত থাকে।"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-fam-grandmere",
+			"french": "la grand-mère",
+			"gender": "feminine",
+			"ipa": "la ɡʁɑ̃.mɛʁ",
+			"hindiGloss": "दादी / नानी",
+			"englishGloss": "the grandmother",
+			"glosses": {
+				"hi": "दादी / नानी",
+				"en": "the grandmother",
+				"bn": "দাদী / নানী",
+				"mr": "दादी / नानी",
+				"gu": "દાદી / નાની",
+				"pa": "ਦਾਦੀ / ਨਾਨੀ",
+				"ta": "பாட்டி",
+				"te": "అమ్మమ్మ / నానమ్మ",
+				"kn": "ಅಜ್ಜಿ",
+				"ml": "മുത്തശ്ശി",
+				"or": "ଜେଜେମା / ଆଈ",
+				"as": "আইতা"
+			},
+			"example": {
+				"french": "Ma grand-mère prépare le thé.",
+				"englishGloss": "My grandmother makes the tea.",
+				"glosses": {
+					"hi": "मेरी दादी चाय बनाती हैं।",
+					"en": "My grandmother makes the tea.",
+					"bn": "মেরী দাদী চায বনাতী হৈং৤",
+					"mr": "मेरी दादी चाय बनाती हैं।",
+					"gu": "મેરી દાદી ચાય બનાતી હૈં૤",
+					"pa": "ਮੇਰੀ ਦਾਦੀ ਚਾਯ ਬਨਾਤੀ ਹੈਂ।",
+					"ta": "என் பாட்டி தேநீர் தயாரிக்கிறார்.",
+					"te": "మా అమ్మమ్మ టీ చేస్తారు.",
+					"kn": "ನನ್ನ ಅಜ್ಜಿ ಚಹಾ ಮಾಡುತ್ತಾರೆ.",
+					"ml": "എന്റെ മുത്തശ്ശി ചായ ഉണ്ടാക്കുന്നു.",
+					"or": "ମୋ ଜେଜେମା ଚା' ତିଆରି କରନ୍ତି।",
+					"as": "মোৰ আইতাই চাহ বনায়।"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-fam-mari",
+			"french": "le mari",
+			"gender": "masculine",
+			"ipa": "lə ma.ʁi",
+			"hindiGloss": "पति",
+			"englishGloss": "the husband",
+			"glosses": {
+				"hi": "पति",
+				"en": "the husband",
+				"bn": "পতি",
+				"mr": "पति",
+				"gu": "પતિ",
+				"pa": "ਪਤਿ",
+				"ta": "கணவர்",
+				"te": "భర్త",
+				"kn": "ಗಂಡ",
+				"ml": "ഭർത്താവ്",
+				"or": "ସ୍ୱାମୀ",
+				"as": "স্বামী"
+			},
+			"example": {
+				"french": "Le mari de Priya est professeur.",
+				"englishGloss": "Priya's husband is a teacher.",
+				"glosses": {
+					"hi": "प्रिया के पति शिक्षक हैं।",
+					"en": "Priya's husband is a teacher.",
+					"bn": "প্রিযা কে পতি শিক্ষক হৈং৤",
+					"mr": "प्रिया के पति शिक्षक हैं।",
+					"gu": "પ્રિયા કે પતિ શિક્ષક હૈં૤",
+					"pa": "ਪ੍ਰਿਯਾ ਕੇ ਪਤਿ ਸ਼ਿਕ੍਷ਕ ਹੈਂ।",
+					"ta": "பிரியாவின் கணவர் ஒரு ஆசிரியர்.",
+					"te": "ప్రియ భర్త ఉపాధ్యాయుడు.",
+					"kn": "ಪ್ರಿಯಾಳ ಗಂಡ ಶಿಕ್ಷಕ.",
+					"ml": "പ്രിയയുടെ ഭർത്താവ് അധ്യാപകനാണ്.",
+					"or": "ପ୍ରିୟାଙ୍କ ସ୍ୱାମୀ ଜଣେ ଶିକ୍ଷକ।",
+					"as": "প্ৰিয়াৰ স্বামী এজন শিক্ষক।"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-fam-femme",
+			"french": "la femme",
+			"gender": "feminine",
+			"ipa": "la fam",
+			"hindiGloss": "पत्नी / औरत",
+			"englishGloss": "the wife / the woman",
+			"glosses": {
+				"hi": "पत्नी / औरत",
+				"en": "the wife / the woman",
+				"bn": "পত্নী / ঔরত",
+				"mr": "पत्नी / औरत",
+				"gu": "પત્ની / ઔરત",
+				"pa": "ਪਤ੍ਨੀ / ਔਰਤ",
+				"ta": "மனைவி / பெண்",
+				"te": "భార్య / స్త్రీ",
+				"kn": "ಹೆಂಡತಿ / ಮಹಿಳೆ",
+				"ml": "ഭാര്യ / സ്ത്രീ",
+				"or": "ପତ୍ନୀ / ମହିଳା",
+				"as": "পত্নী / মহিলা"
+			},
+			"example": {
+				"french": "La femme d'Arjun s'appelle Meera.",
+				"englishGloss": "Arjun's wife is called Meera.",
+				"glosses": {
+					"hi": "अर्जुन की पत्नी का नाम मीरा है।",
+					"en": "Arjun's wife is called Meera.",
+					"bn": "অর্জুন কী পত্নী কা নাম মীরা হৈ৤",
+					"mr": "अर्जुन की पत्नी का नाम मीरा है।",
+					"gu": "અર્જુન કી પત્ની કા નામ મીરા હૈ૤",
+					"pa": "ਅਰ੍ਜੁਨ ਕੀ ਪਤ੍ਨੀ ਕਾ ਨਾਮ ਮੀਰਾ ਹੈ।",
+					"ta": "அர்ஜுனின் மனைவியின் பெயர் மீரா.",
+					"te": "అర్జున్ భార్య పేరు మీరా.",
+					"kn": "ಅರ್ಜುನ್ ಅವರ ಹೆಂಡತಿಯ ಹೆಸರು ಮೀರಾ.",
+					"ml": "അർജുന്റെ ഭാര്യയുടെ പേര് മീര.",
+					"or": "ଅର୍ଜୁନଙ୍କ ପତ୍ନୀଙ୍କ ନାମ ମୀରା।",
+					"as": "অৰ্জুনৰ পত্নীৰ নাম মীৰা।"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-fam-enfant",
+			"french": "l'enfant",
+			"gender": "masculine",
+			"ipa": "lɑ̃.fɑ̃",
+			"hindiGloss": "बच्चा",
+			"englishGloss": "the child",
+			"glosses": {
+				"hi": "बच्चा",
+				"en": "the child",
+				"bn": "বচ্চা",
+				"mr": "बच्चा",
+				"gu": "બચ્ચા",
+				"pa": "ਬਚ੍ਚਾ",
+				"ta": "குழந்தை",
+				"te": "బిడ్డ",
+				"kn": "ಮಗು",
+				"ml": "കുട്ടി",
+				"or": "ପିଲା",
+				"as": "শিশু"
+			},
+			"example": {
+				"french": "L'enfant joue avec son frère.",
+				"englishGloss": "The child plays with his brother.",
+				"glosses": {
+					"hi": "बच्चा अपने भाई के साथ खेलता है।",
+					"en": "The child plays with his brother.",
+					"bn": "বচ্চা অপনে ভাঈ কে সাথ খেলতা হৈ৤",
+					"mr": "बच्चा अपने भाई के साथ खेलता है।",
+					"gu": "બચ્ચા અપને ભાઈ કે સાથ ખેલતા હૈ૤",
+					"pa": "ਬਚ੍ਚਾ ਅਪਨੇ ਭਾਈ ਕੇ ਸਾਥ ਖੇਲਤਾ ਹੈ।",
+					"ta": "குழந்தை தன் சகோதரனுடன் விளையாடுகிறது.",
+					"te": "బిడ్డ తన అన్నతో ఆడుకుంటున్నాడు.",
+					"kn": "ಮಗು ತನ್ನ ಸಹೋದರನ ಜೊತೆ ಆಡುತ್ತದೆ.",
+					"ml": "കുട്ടി സഹോദരനോടൊപ്പം കളിക്കുന്നു.",
+					"or": "ପିଲାଟି ତା' ଭାଇ ସହ ଖେଳେ।",
+					"as": "শিশুটিয়ে ভায়েকৰ লগত খেলে।"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["reading"]
+		},
+		{
+			"id": "a1-poss-mon",
+			"french": "mon",
+			"gender": "none",
+			"ipa": "mɔ̃",
+			"hindiGloss": "मेरा (पुल्लिंग संज्ञा से पहले)",
+			"englishGloss": "my (before a masculine noun)",
+			"glosses": {
+				"hi": "मेरा (पुल्लिंग संज्ञा से पहले)",
+				"en": "my (before a masculine noun)",
+				"bn": "মেরা (পুল্লিংগ সংজ্ঞা সে পহলে)",
+				"mr": "मेरा (पुल्लिंग संज्ञा से पहले)",
+				"gu": "મેરા (પુલ્લિંગ સંજ્ઞા સે પહલે)",
+				"pa": "ਮੇਰਾ (ਪੁਲ੍ਲਿਂਗ ਸਂਜ੍ਞਾ ਸੇ ਪਹਲੇ)",
+				"ta": "என் (ஆண்பால் பெயர்ச்சொல்லுக்கு முன்)",
+				"te": "నా (పుంలింగ నామవాచకం ముందు)",
+				"kn": "ನನ್ನ (ಪುಲ್ಲಿಂಗ ನಾಮಪದದ ಮೊದಲು)",
+				"ml": "എന്റെ (പുല്ലിംഗ നാമത്തിന് മുമ്പ്)",
+				"or": "ମୋର (ପୁଂଲିଙ୍ଗ ବିଶେଷ୍ୟ ଆଗରୁ)",
+				"as": "মোৰ (পুংলিংগ বিশেষ্যৰ আগত)"
+			},
+			"forms": ["ma", "mes"],
+			"example": {
+				"french": "Mon frère habite à Delhi.",
+				"englishGloss": "My brother lives in Delhi.",
+				"glosses": {
+					"hi": "मेरा भाई दिल्ली में रहता है।",
+					"en": "My brother lives in Delhi.",
+					"bn": "মেরা ভাঈ দিল্লী মেং রহতা হৈ৤",
+					"mr": "मेरा भाई दिल्ली में रहता है।",
+					"gu": "મેરા ભાઈ દિલ્લી મેં રહતા હૈ૤",
+					"pa": "ਮੇਰਾ ਭਾਈ ਦਿਲ੍ਲੀ ਮੇਂ ਰਹਤਾ ਹੈ।",
+					"ta": "என் சகோதரன் டெல்லியில் வசிக்கிறான்.",
+					"te": "మా అన్నయ్య ఢిల్లీలో ఉంటాడు.",
+					"kn": "ನನ್ನ ಸಹೋದರ ದೆಹಲಿಯಲ್ಲಿ ವಾಸಿಸುತ್ತಾನೆ.",
+					"ml": "എന്റെ സഹോദരൻ ഡൽഹിയിൽ താമസിക്കുന്നു.",
+					"or": "ମୋ ଭାଇ ଦିଲ୍ଲୀରେ ରହେ।",
+					"as": "মোৰ ভাই দিল্লীত থাকে।"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["writing", "reading"]
 		}
 	],
 	"exercises": [
@@ -380,6 +725,105 @@
 					"right": "sister"
 				}
 			]
+		},
+		{
+			"type": "gender",
+			"id": "a1-u2-ex8",
+			"cardId": "a1-fam-fille",
+			"hint": "A daughter, a girl.",
+			"coachNote": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
+			"noun": "fille",
+			"answer": "feminine",
+			"articleStyle": "definite"
+		},
+		{
+			"type": "gender",
+			"id": "a1-u2-ex9",
+			"cardId": "a1-fam-mari",
+			"hint": "A husband.",
+			"coachNote": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
+			"noun": "mari",
+			"answer": "masculine",
+			"articleStyle": "definite"
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u2-ex10",
+			"cardId": "a1-fam-grandmere",
+			"hint": "« grand-mère » is feminine, so use the feminine possessive.",
+			"coachNote": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
+			"text": "« {{}} grand-mère habite à Kochi. » (My grandmother lives in Kochi.)",
+			"answer": "Ma",
+			"accept": []
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u2-ex11",
+			"cardId": "a1-poss-mon",
+			"hint": "The plural possessive is the same for masculine and feminine.",
+			"coachNote": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
+			"text": "« {{}} parents habitent à Chennai. » (My parents live in Chennai.)",
+			"answer": "Mes",
+			"accept": []
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u2-ex12",
+			"cardId": "a1-fam-femme",
+			"hint": "One French word, two English meanings.",
+			"coachNote": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
+			"prompt": "« la femme » can mean two things. Which pair is correct?",
+			"options": [
+				"the wife / the woman",
+				"the wife / the daughter",
+				"the mother / the woman",
+				"the sister / the girl"
+			],
+			"answerIndex": 0,
+			"explanation": "« La femme » means both 'the woman' and 'the wife'; the sentence tells you which. It is pronounced /fam/."
+		},
+		{
+			"type": "matching",
+			"id": "a1-u2-ex13",
+			"hint": "« grand » makes the older generation.",
+			"coachNote": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
+			"prompt": "Match each family word to its English meaning.",
+			"pairs": [
+				{
+					"left": "le fils",
+					"right": "the son"
+				},
+				{
+					"left": "la fille",
+					"right": "the daughter"
+				},
+				{
+					"left": "le grand-père",
+					"right": "the grandfather"
+				},
+				{
+					"left": "le mari",
+					"right": "the husband"
+				}
+			]
+		},
+		{
+			"type": "dictation",
+			"id": "a1-u2-ex14",
+			"cardId": "a1-fam-grandpere",
+			"hint": "It starts with the masculine possessive.",
+			"coachNote": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
+			"audioText": "Mon grand-père habite à Kochi.",
+			"answer": "Mon grand-père habite à Kochi.",
+			"accept": ["mon grand père habite à Kochi"]
+		},
+		{
+			"type": "reorder",
+			"id": "a1-u2-ex15",
+			"hint": "Possessive, then the noun, then the verb.",
+			"coachNote": "Name family members and say what belongs to you using possessives (A1: can describe family and immediate surroundings).",
+			"prompt": "Build: “My son lives in Pune.”",
+			"words": ["Mon", "fils", "habite", "à", "Pune"]
 		}
 	]
 }
