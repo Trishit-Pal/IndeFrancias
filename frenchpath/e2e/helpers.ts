@@ -438,6 +438,44 @@ export async function confirmRestoreAndReload(page: Page) {
 	await Promise.all([page.waitForEvent('load'), page.getByTestId('restore-reload').click()]);
 }
 
+/**
+ * On /review, answers context cards until a flip card (Show answer + grade buttons)
+ * is on screen. Returns false if the queue ends first, or a card can't be answered
+ * here (speak mode).
+ */
+export async function reachFlipCard(page: Page): Promise<boolean> {
+	const reveal = page.getByTestId('reveal');
+	const ctx = page.getByTestId('context-card');
+	const cont = page.getByTestId('continue');
+	const gotIt = page.getByTestId('leech-got-it');
+	const visible = (testId: string) =>
+		page
+			.getByTestId(testId)
+			.isVisible()
+			.catch(() => false);
+	await expect(reveal.or(ctx).first()).toBeVisible({ timeout: 15_000 });
+	for (let i = 0; i < 20 && !(await visible('reveal')); i++) {
+		if (await visible('review-done')) return false;
+		if (await visible('context-card')) {
+			// An answered card keeps its (now disabled) choices on screen until Continue,
+			// so only ever click enabled controls, then wait for Continue and the card swap.
+			const choice = page.locator('[data-testid="context-choice"]:enabled').first();
+			const recall = page.locator('[data-testid="recall-input"]:enabled');
+			if (!(await visible('continue'))) {
+				if (await choice.isVisible().catch(() => false)) await choice.click();
+				else if (await recall.isVisible().catch(() => false)) {
+					await recall.fill('x');
+					await page.getByTestId('recall-check').click();
+				} else return false;
+			}
+			await cont.click();
+			await expect(cont).toBeHidden();
+		}
+		if (await visible('leech-got-it')) await gotIt.click();
+	}
+	return visible('reveal');
+}
+
 export function fixturePath(name: string): string {
 	return path.join(import.meta.dirname, 'fixtures', name);
 }

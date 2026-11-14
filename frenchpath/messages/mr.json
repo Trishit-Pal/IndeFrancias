@@ -465,5 +465,8 @@
 	"data_error_sync_merge_failed": "सिंक एकत्रीकरण अयशस्वी — तुमचा सध्याचा डेटा आहे तसाच आहे",
 	"data_error_sync_not_a_sync_file": "ही FrenchPath सिंक फाइल नाही.",
 	"sync_preview_replaced_one": "या डिव्हाइसवर आधीपासून असलेली 1 नोंद या फाइलमधून अपडेट केली जाईल.",
-	"sync_preview_replaced_other": "या डिव्हाइसवर आधीपासून असलेल्या {count} नोंदी या फाइलमधून अपडेट केल्या जातील."
+	"sync_preview_replaced_other": "या डिव्हाइसवर आधीपासून असलेल्या {count} नोंदी या फाइलमधून अपडेट केल्या जातील.",
+	"review_end_session": "सत्र संपवा",
+	"review_grade_prompt": "तुम्हाला हे किती आठवले?",
+	"review_next_in": "पुढची उजळणी: {interval}"
 }

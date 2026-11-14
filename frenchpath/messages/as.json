@@ -465,5 +465,8 @@
 	"data_error_sync_merge_failed": "ছিংক একত্ৰিত কৰা বিফল হ'ল — আপোনাৰ আগৰ ডেটা অপৰিৱৰ্তিত আছে",
 	"data_error_sync_not_a_sync_file": "এইটো FrenchPathৰ ছিংক ফাইল নহয়।",
 	"sync_preview_replaced_one": "এই ডিভাইচত আগৰে পৰা থকা 1 টা আইটেম এই ফাইলৰ পৰা আপডেট কৰা হ'ব।",
-	"sync_preview_replaced_other": "এই ডিভাইচত আগৰে পৰা থকা {count} টা আইটেম এই ফাইলৰ পৰা আপডেট কৰা হ'ব।"
+	"sync_preview_replaced_other": "এই ডিভাইচত আগৰে পৰা থকা {count} টা আইটেম এই ফাইলৰ পৰা আপডেট কৰা হ'ব।",
+	"review_end_session": "ছেছন শেষ কৰক",
+	"review_grade_prompt": "এইটো আপোনাৰ কিমান মনত আছিল?",
+	"review_next_in": "পৰৱৰ্তী ৰিভিউ: {interval}"
 }

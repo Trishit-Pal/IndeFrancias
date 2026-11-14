@@ -465,5 +465,8 @@
 	"data_error_sync_merge_failed": "Sync merge nahi ho saka. Aapka maujooda data jaisa tha waisa hi hai.",
 	"data_error_sync_not_a_sync_file": "Yeh FrenchPath sync file nahi hai.",
 	"sync_preview_replaced_one": "Is device ka 1 existing item is file se update ho jayega.",
-	"sync_preview_replaced_other": "Is device ke {count} existing items is file se update ho jayenge."
+	"sync_preview_replaced_other": "Is device ke {count} existing items is file se update ho jayenge.",
+	"review_end_session": "Session khatam karein",
+	"review_grade_prompt": "Aapko yeh kitna yaad tha?",
+	"review_next_in": "Agla review: {interval}"
 }

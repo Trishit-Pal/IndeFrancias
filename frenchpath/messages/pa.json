@@ -465,5 +465,8 @@
 	"data_error_sync_merge_failed": "ਸਿੰਕ ਦਾ ਡਾਟਾ ਮਿਲਾਇਆ ਨਹੀਂ ਜਾ ਸਕਿਆ — ਤੁਹਾਡਾ ਮੌਜੂਦਾ ਡਾਟਾ ਜਿਉਂ ਦਾ ਤਿਉਂ ਹੈ",
 	"data_error_sync_not_a_sync_file": "ਇਹ FrenchPath ਸਿੰਕ ਫ਼ਾਈਲ ਨਹੀਂ ਹੈ।",
 	"sync_preview_replaced_one": "ਇਸ ਡਿਵਾਈਸ 'ਤੇ ਪਹਿਲਾਂ ਤੋਂ ਮੌਜੂਦ 1 ਆਈਟਮ ਇਸ ਫ਼ਾਈਲ ਤੋਂ ਅੱਪਡੇਟ ਕੀਤੀ ਜਾਵੇਗੀ।",
-	"sync_preview_replaced_other": "ਇਸ ਡਿਵਾਈਸ 'ਤੇ ਪਹਿਲਾਂ ਤੋਂ ਮੌਜੂਦ {count} ਆਈਟਮਾਂ ਇਸ ਫ਼ਾਈਲ ਤੋਂ ਅੱਪਡੇਟ ਕੀਤੀਆਂ ਜਾਣਗੀਆਂ।"
+	"sync_preview_replaced_other": "ਇਸ ਡਿਵਾਈਸ 'ਤੇ ਪਹਿਲਾਂ ਤੋਂ ਮੌਜੂਦ {count} ਆਈਟਮਾਂ ਇਸ ਫ਼ਾਈਲ ਤੋਂ ਅੱਪਡੇਟ ਕੀਤੀਆਂ ਜਾਣਗੀਆਂ।",
+	"review_end_session": "ਸੈਸ਼ਨ ਖਤਮ ਕਰੋ",
+	"review_grade_prompt": "ਤੁਹਾਨੂੰ ਇਹ ਕਿੰਨਾ ਯਾਦ ਸੀ?",
+	"review_next_in": "ਅਗਲੀ ਦੁਹਰਾਈ: {interval}"
 }

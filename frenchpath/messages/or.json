@@ -465,5 +465,8 @@
 	"data_error_sync_merge_failed": "ସିଙ୍କ୍ ମିଶାଇବା ବିଫଳ — ଆପଣଙ୍କ ବର୍ତ୍ତମାନର ଡାଟା ଯେମିତି ଥିଲା ସେମିତି ଅଛି",
 	"data_error_sync_not_a_sync_file": "ଏହା FrenchPath ସିଙ୍କ୍ ଫାଇଲ୍ ନୁହେଁ।",
 	"sync_preview_replaced_one": "ଏହି ଡିଭାଇସରେ ଆଗରୁ ଥିବା 1ଟି ଆଇଟମ୍ ଏହି ଫାଇଲରୁ ଅପଡେଟ୍ ହେବ।",
-	"sync_preview_replaced_other": "ଏହି ଡିଭାଇସରେ ଆଗରୁ ଥିବା {count}ଟି ଆଇଟମ୍ ଏହି ଫାଇଲରୁ ଅପଡେଟ୍ ହେବ।"
+	"sync_preview_replaced_other": "ଏହି ଡିଭାଇସରେ ଆଗରୁ ଥିବା {count}ଟି ଆଇଟମ୍ ଏହି ଫାଇଲରୁ ଅପଡେଟ୍ ହେବ।",
+	"review_end_session": "ସେସନ୍ ଶେଷ କରନ୍ତୁ",
+	"review_grade_prompt": "ଏହା ଆପଣଙ୍କର କେତେ ମନେ ଥିଲା?",
+	"review_next_in": "ପରବର୍ତ୍ତୀ ପୁନରାବୃତ୍ତି: {interval}"
 }
