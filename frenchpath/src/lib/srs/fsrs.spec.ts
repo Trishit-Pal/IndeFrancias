@@ -1,6 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { generatorParameters } from 'ts-fsrs';
-import { createSrsCard, gradeCard, getScheduler, retrievability, FSRS_VERSION } from './fsrs';
+import {
+	createSrsCard,
+	gradeCard,
+	getScheduler,
+	previewDue,
+	retrievability,
+	FSRS_VERSION
+} from './fsrs';
 
 const NOW = new Date('2026-01-01T00:00:00Z');
 
@@ -113,5 +120,24 @@ describe('retrievability', () => {
 		const r = retrievability(freshCard());
 		expect(r).toBeGreaterThanOrEqual(0);
 		expect(r).toBeLessThanOrEqual(1);
+	});
+});
+
+describe('previewDue', () => {
+	it('shows where each grade would send the card, matching gradeCard', () => {
+		const card = freshCard();
+		const due = previewDue(card, { now: NOW });
+		for (const grade of ['again', 'hard', 'good', 'easy'] as const) {
+			expect(due[grade].getTime()).toBe(gradeCard(card, grade, { now: NOW }).card.due.getTime());
+		}
+		expect(due.again.getTime()).toBeLessThanOrEqual(due.good.getTime());
+		expect(due.good.getTime()).toBeLessThanOrEqual(due.easy.getTime());
+	});
+
+	it('leaves the card untouched', () => {
+		const card = freshCard();
+		const before = structuredClone(card);
+		previewDue(card, { now: NOW });
+		expect(card).toEqual(before);
 	});
 });

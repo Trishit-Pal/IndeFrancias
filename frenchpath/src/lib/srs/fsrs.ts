@@ -111,6 +111,21 @@ export function gradeCard(
 	};
 }
 
+/** When each grade would bring the card back, without changing it (review screen previews). */
+export function previewDue(
+	card: SrsCard,
+	opts: { now?: Date; targetRetention?: number; weights?: number[] | null } = {}
+): Record<ReviewGrade, Date> {
+	const now = opts.now ?? new Date();
+	const dueAfter = (grade: ReviewGrade) => gradeCard(card, grade, { ...opts, now }).card.due;
+	return {
+		again: dueAfter('again'),
+		hard: dueAfter('hard'),
+		good: dueAfter('good'),
+		easy: dueAfter('easy')
+	};
+}
+
 /** Estimated current recall probability (0–1) for display. */
 export function retrievability(card: SrsCard, now: Date = new Date()): number {
 	return getScheduler().get_retrievability(toFsrsCard(card), now, false);

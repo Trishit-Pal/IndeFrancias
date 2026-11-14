@@ -465,5 +465,8 @@
 	"data_error_sync_merge_failed": "സിങ്ക് ലയനം പരാജയപ്പെട്ടു — നിങ്ങളുടെ നിലവിലുള്ള ഡാറ്റയ്ക്ക് മാറ്റമൊന്നുമില്ല",
 	"data_error_sync_not_a_sync_file": "ഇതൊരു FrenchPath സിങ്ക് ഫയൽ അല്ല.",
 	"sync_preview_replaced_one": "ഈ ഉപകരണത്തിൽ ഇതിനകമുള്ള 1 ഇനം ഈ ഫയലിൽ നിന്ന് പുതുക്കും.",
-	"sync_preview_replaced_other": "ഈ ഉപകരണത്തിൽ ഇതിനകമുള്ള {count} ഇനങ്ങൾ ഈ ഫയലിൽ നിന്ന് പുതുക്കും."
+	"sync_preview_replaced_other": "ഈ ഉപകരണത്തിൽ ഇതിനകമുള്ള {count} ഇനങ്ങൾ ഈ ഫയലിൽ നിന്ന് പുതുക്കും.",
+	"review_end_session": "സെഷൻ അവസാനിപ്പിക്കുക",
+	"review_grade_prompt": "ഇത് നിങ്ങൾക്ക് എത്രത്തോളം ഓർമ്മയുണ്ടായിരുന്നു?",
+	"review_next_in": "അടുത്ത ആവർത്തനം: {interval}"
 }

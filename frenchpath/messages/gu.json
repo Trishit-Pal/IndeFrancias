@@ -465,5 +465,8 @@
 	"data_error_sync_merge_failed": "સિંક જોડાણ નિષ્ફળ — તમારો હાલનો ડેટા જેમ હતો તેમ જ છે",
 	"data_error_sync_not_a_sync_file": "આ FrenchPath સિંક ફાઇલ નથી.",
 	"sync_preview_replaced_one": "આ ડિવાઇસ પર પહેલેથી રહેલી 1 આઇટમ આ ફાઇલમાંથી અપડેટ થશે.",
-	"sync_preview_replaced_other": "આ ડિવાઇસ પર પહેલેથી રહેલી {count} આઇટમ આ ફાઇલમાંથી અપડેટ થશે."
+	"sync_preview_replaced_other": "આ ડિવાઇસ પર પહેલેથી રહેલી {count} આઇટમ આ ફાઇલમાંથી અપડેટ થશે.",
+	"review_end_session": "સત્ર સમાપ્ત કરો",
+	"review_grade_prompt": "તમને આ કેટલું યાદ હતું?",
+	"review_next_in": "આગળનું પુનરાવર્તન: {interval}"
 }
