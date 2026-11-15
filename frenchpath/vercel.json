@@ -1,4 +1,7 @@
 {
+	"framework": null,
+	"buildCommand": "npm run vercel-build",
+	"outputDirectory": "build",
 	"cleanUrls": true,
 	"rewrites": [{ "source": "/((?!_app/|audio/|models/).*)", "destination": "/200" }],
 	"headers": [
