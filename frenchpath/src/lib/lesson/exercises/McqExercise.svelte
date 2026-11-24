@@ -3,6 +3,7 @@
 	import type { ExerciseResponse } from '$lib/lesson/engine';
 	import type { Lexicon } from '$lib/content/lexicon';
 	import GlossText from '$lib/components/GlossText.svelte';
+	import { shuffledIndices } from '$lib/utils/seededShuffle';
 
 	let {
 		exercise,
@@ -19,6 +20,13 @@
 	} = $props();
 
 	const selected = $derived(response?.type === 'mcq' ? response.selectedIndex : -1);
+
+	// Options are drawn in a shuffled order so the authored first option (the
+	// correct one in most packs) is not always on top. The nonce is fixed for
+	// this mount, so the order holds while the learner answers and changes on a
+	// replay. Every index used below is still the authored index.
+	const orderNonce = Math.random().toString(36).slice(2);
+	const order = $derived(shuffledIndices(exercise.options.length, `${orderNonce}:${exercise.id}`));
 
 	function choose(i: number) {
 		if (submitted) return;
@@ -39,16 +47,17 @@
 	<legend class="mb-2 text-lg font-semibold text-foreground">
 		<GlossText text={exercise.prompt} {lexicon} forceGlossWords={exercise.promptGlosses ?? []} />
 	</legend>
-	{#each exercise.options as option, i (i)}
+	{#each order as i (i)}
 		{#if !hiddenMcqIndices.includes(i)}
 			<button
 				type="button"
 				class={optionClass(i)}
 				aria-pressed={i === selected}
 				data-testid="mcq-option"
+				data-option-index={i}
 				onclick={() => choose(i)}
 			>
-				{option}
+				{exercise.options[i]}
 			</button>
 		{/if}
 	{/each}

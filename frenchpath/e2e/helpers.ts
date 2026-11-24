@@ -294,7 +294,10 @@ async function applyExerciseAnswer(page: Page, ex: Exercise) {
 
 	switch (ex.type) {
 		case 'mcq':
-			await page.locator('[data-testid="mcq-option"]').nth(ex.answerIndex).click({ force: true });
+			// Options are shown in a shuffled order; data-option-index is the authored index.
+			await page
+				.locator(`[data-testid="mcq-option"][data-option-index="${ex.answerIndex}"]`)
+				.click({ force: true });
 			break;
 		case 'gender': {
 			const art =
@@ -343,8 +346,11 @@ async function applyExerciseAnswer(page: Page, ex: Exercise) {
 		case 'reading':
 			for (let q = 0; q < ex.questions.length; q++) {
 				await page
-					.locator('[data-testid="reading-option"]')
-					.nth(ex.questions[q]!.answerIndex)
+					.getByTestId('reading-question')
+					.nth(q)
+					.locator(
+						`[data-testid="reading-option"][data-option-index="${ex.questions[q]!.answerIndex}"]`
+					)
 					.click();
 			}
 			break;

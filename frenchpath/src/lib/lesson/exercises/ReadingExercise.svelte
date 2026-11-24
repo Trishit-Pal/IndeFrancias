@@ -3,6 +3,7 @@
 	import type { ExerciseResponse } from '$lib/lesson/engine';
 	import type { Lexicon } from '$lib/content/lexicon';
 	import GlossText from '$lib/components/GlossText.svelte';
+	import { shuffledIndices } from '$lib/utils/seededShuffle';
 
 	let {
 		exercise,
@@ -17,6 +18,15 @@
 	} = $props();
 
 	const selected = $derived(response?.type === 'reading' ? response.selectedIndices : []);
+
+	// One shuffled display order per question (see McqExercise); every index
+	// used for selection and grading is still the authored index.
+	const orderNonce = Math.random().toString(36).slice(2);
+	const orders = $derived(
+		exercise.questions.map((q, qi) =>
+			shuffledIndices(q.options.length, `${orderNonce}:${exercise.id}:${qi}`)
+		)
+	);
 
 	function choose(qIndex: number, optionIndex: number) {
 		if (submitted) return;
@@ -44,18 +54,19 @@
 		<GlossText text={exercise.passage} {lexicon} />
 	</div>
 	{#each exercise.questions as q, qi (qi)}
-		<fieldset class="space-y-2" disabled={submitted}>
+		<fieldset class="space-y-2" disabled={submitted} data-testid="reading-question">
 			<legend class="mb-2 font-semibold text-foreground">
 				<GlossText text={q.prompt} {lexicon} frenchOnly={false} />
 			</legend>
-			{#each q.options as option, oi (oi)}
+			{#each orders[qi] ?? [] as oi (oi)}
 				<button
 					type="button"
 					class={optionClass(qi, oi)}
 					data-testid="reading-option"
+					data-option-index={oi}
 					onclick={() => choose(qi, oi)}
 				>
-					{option}
+					{q.options[oi]}
 				</button>
 			{/each}
 		</fieldset>
