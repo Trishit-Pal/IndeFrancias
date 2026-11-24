@@ -9,6 +9,7 @@
 	import type { ContextPrompt } from '$lib/srs/contextCard';
 	import type { ReviewMode } from '$lib/gamification/todayPlan';
 	import { gradeChoice, gradeSpoken, gradeTyped } from '$lib/srs/contextGrade';
+	import { digitKey } from '$lib/utils/digitKey';
 
 	interface Props {
 		prompt: ContextPrompt;
@@ -16,9 +17,21 @@
 		gloss: string;
 		/** On-device speech recognition is ready; without it `speak` renders as typed recall. */
 		asr?: boolean;
+		/** How long until the card comes back for each grade; shown once answered. */
+		intervals?: Record<ReviewGrade, string>;
+		/** The card is answered and showing its result, but Continue has not been pressed yet. */
+		onPending?: (grade: ReviewGrade, durationMs: number) => void;
 		onAnswered: (grade: ReviewGrade, durationMs: number) => void;
 	}
-	let { prompt, mode = 'read', gloss, asr = false, onAnswered }: Props = $props();
+	let {
+		prompt,
+		mode = 'read',
+		gloss,
+		asr = false,
+		intervals,
+		onPending,
+		onAnswered
+	}: Props = $props();
 
 	const isListen = $derived(mode === 'listen');
 	let typeInstead = $state(false);
@@ -49,6 +62,14 @@
 	let speakNote = $state<'denied' | 'failed' | null>(null);
 	const answered = $derived(picked !== null || submitted);
 	const isCorrect = $derived(submitted ? typedGrade !== 'again' : picked === prompt.answer);
+	// durationMs is set just before `picked`/`submitted` flips, so it is final when this recomputes
+	const finalGrade = $derived<ReviewGrade | null>(
+		!answered ? null : submitted ? typedGrade : gradeChoice(isCorrect, durationMs)
+	);
+	// the page saves this answer if the learner ends the session without pressing Continue
+	$effect(() => {
+		if (finalGrade) onPending?.(finalGrade, durationMs);
+	});
 
 	function replay() {
 		try {
@@ -143,11 +164,20 @@
 	}
 
 	function next() {
-		if (finished || !answered) return;
+		if (finished || finalGrade === null) return;
 		finished = true;
-		onAnswered(submitted ? typedGrade : gradeChoice(isCorrect, durationMs), durationMs);
+		onAnswered(finalGrade, durationMs);
+	}
+
+	// 1–4 pick a choice; typed and spoken answers have no numbered options
+	function onKeydown(event: KeyboardEvent) {
+		if (isSpeak || isType || isGlossOnly || picked !== null) return;
+		const choice = prompt.choices[(digitKey(event) ?? 0) - 1];
+		if (choice) choose(choice);
 	}
 </script>
+
+<svelte:window onkeydown={onKeydown} />
 
 <section class="surface-card p-6 shadow-sm lg:mx-auto lg:max-w-2xl" data-testid="context-card">
 	{#if isListen}
@@ -245,15 +275,17 @@
 			role="group"
 			aria-label={m.review_context_prompt()}
 		>
-			{#each prompt.choices as choice (choice)}
+			{#each prompt.choices as choice, i (choice)}
 				<button
 					type="button"
 					class="fp-context-choice"
 					class:fp-context-right={picked !== null && choice === prompt.answer}
 					class:fp-context-wrong={picked === choice && choice !== prompt.answer}
 					data-testid="context-choice"
+					aria-keyshortcuts={String(i + 1)}
 					disabled={picked !== null}
-					onclick={() => choose(choice)}>{choice}</button
+					onclick={() => choose(choice)}
+					><kbd class="fp-key-hint" aria-hidden="true">{i + 1}</kbd>{choice}</button
 				>
 			{/each}
 		</div>
@@ -272,6 +304,11 @@
 				{:else if isCorrect}{m.review_context_correct()}
 				{:else}{m.review_context_answer({ answer: prompt.answer })}{/if}
 			</p>
+			{#if intervals && finalGrade}
+				<p class="mt-1 text-xs text-muted" data-testid="context-next-in">
+					{m.review_next_in({ interval: intervals[finalGrade] })}
+				</p>
+			{/if}
 		{/if}
 	</div>
 

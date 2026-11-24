@@ -351,6 +351,28 @@ html:not(.reduce-motion) .fp-dictation-wave--active .fp-dictation-bar:nth-child(
 	transform: translateY(1px);
 	box-shadow: none;
 }
+.fp-grade-interval {
+	display: block;
+	margin-top: 2px;
+	font-size: 12px;
+	font-weight: 600;
+}
+/* Number-key hint: only where there is a keyboard to press it on. */
+.fp-key-hint {
+	display: none;
+}
+@media (hover: hover) and (pointer: fine) {
+	.fp-key-hint {
+		display: inline-block;
+		margin-inline-end: 0.4em;
+		padding: 0 0.35em;
+		border: 1px solid var(--fp-border);
+		border-radius: 4px;
+		font: inherit;
+		font-size: 0.75em;
+		font-weight: 600;
+	}
+}
 .fp-grade-btn--again {
 	background: color-mix(in srgb, var(--fp-error) 14%, var(--fp-paper));
 }

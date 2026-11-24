@@ -465,5 +465,8 @@
 	"data_error_sync_merge_failed": "సింక్ విలీనం విఫలమైంది — మీ ప్రస్తుత డేటాలో మార్పు లేదు",
 	"data_error_sync_not_a_sync_file": "ఇది FrenchPath సింక్ ఫైల్ కాదు.",
 	"sync_preview_replaced_one": "ఈ పరికరంలో ఇప్పటికే ఉన్న 1 అంశం ఈ ఫైల్ నుంచి అప్‌డేట్ అవుతుంది.",
-	"sync_preview_replaced_other": "ఈ పరికరంలో ఇప్పటికే ఉన్న {count} అంశాలు ఈ ఫైల్ నుంచి అప్‌డేట్ అవుతాయి."
+	"sync_preview_replaced_other": "ఈ పరికరంలో ఇప్పటికే ఉన్న {count} అంశాలు ఈ ఫైల్ నుంచి అప్‌డేట్ అవుతాయి.",
+	"review_end_session": "సెషన్ ముగించండి",
+	"review_grade_prompt": "ఇది మీకు ఎంత బాగా గుర్తుంది?",
+	"review_next_in": "తదుపరి పునశ్చరణ: {interval}"
 }

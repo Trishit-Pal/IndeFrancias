@@ -28,7 +28,11 @@
 	import type { NativeLanguage } from '$lib/db/schema';
 	import { speakFrench, ttsAvailable } from '$lib/audio/tts';
 	import { shareProgress } from '$lib/share/shareCard';
-	import type { ReviewGrade } from '$lib/srs/fsrs';
+	import { previewDue, type ReviewGrade } from '$lib/srs/fsrs';
+	import { formatInterval } from '$lib/srs/interval';
+	import { digitKey } from '$lib/utils/digitKey';
+	import { getLocale } from '$lib/paraglide/runtime';
+	import { LANGUAGES, type UiLanguage } from '$lib/i18n/languages';
 	import type { ReviewMode } from '$lib/gamification/todayPlan';
 	import ContextCard from '$lib/srs/ContextCard.svelte';
 	import LeechRescue from '$lib/srs/LeechRescue.svelte';
@@ -67,6 +71,7 @@
 	// card ids whose rescue panel was already shown this session (once per card)
 	const rescued = new SvelteSet<string>();
 	let cardArea = $state<HTMLElement>();
+	let gradeGroup = $state<HTMLElement>();
 
 	const mode = $derived(parseReviewMode(page.url.searchParams.get('mode')));
 	const currentItem = $derived(queue[index] ?? null);
@@ -87,6 +92,18 @@
 		{ grade: 'good', label: m.grade_good },
 		{ grade: 'easy', label: m.grade_easy }
 	];
+
+	const intervalLocale = LANGUAGES[getLocale() as UiLanguage].htmlLang;
+
+	/** How long until the card comes back for each grade, e.g. { good: '4 days' }. */
+	function intervalsFor(srs: SrsCard): Record<ReviewGrade, string> {
+		const now = new Date();
+		const due = previewDue(srs, { now, targetRetention, weights: fsrsWeights });
+		const text = (g: ReviewGrade) =>
+			formatInterval(due[g].getTime() - now.getTime(), intervalLocale);
+		return { again: text('again'), hard: text('hard'), good: text('good'), easy: text('easy') };
+	}
+	const flipIntervals = $derived(currentItem && revealed ? intervalsFor(currentItem.srs) : null);
 
 	function formatDuration(ms: number): string {
 		const mins = Math.floor(ms / 60_000);
@@ -178,7 +195,18 @@
 		}
 	}
 
+	// A context card that is answered but still waiting on Continue. It has already told the
+	// learner when it comes back, so ending the session must save it, not drop it.
+	let pendingAnswer: { grade: ReviewGrade; durationMs: number } | null = null;
+
+	async function endSession() {
+		const pending = pendingAnswer;
+		if (pending) await grade(pending.grade, pending.durationMs);
+		if (phase === 'reviewing' && !gradeError) finishSession();
+	}
+
 	async function gradeItem(item: ReviewItem, grade: ReviewGrade, measuredMs?: number) {
+		pendingAnswer = null;
 		if (isNativePlatform()) void tapHaptic();
 		else if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
 		await recordReview(item.srs, grade, {
@@ -192,21 +220,55 @@
 			index += 1;
 			revealed = false;
 			cardStartedAt = Date.now();
+			// a flip card has no component to claim focus; context cards focus themselves on mount
+			await tick();
+			cardArea?.querySelector<HTMLElement>('[data-testid="reveal"]')?.focus();
 		} else {
-			sessionDurationMs = Date.now() - sessionStartedAt;
-			phase = 'done';
-			void maybeRunFsrsOptimizer();
+			finishSession();
 		}
+	}
+
+	function finishSession() {
+		sessionDurationMs = Date.now() - sessionStartedAt;
+		phase = 'done';
+		void maybeRunFsrsOptimizer();
+	}
+
+	async function reveal() {
+		revealed = true;
+		// Focus the group, not a grade: a held Enter must not grade the card by accident.
+		await tick();
+		gradeGroup?.focus();
+	}
+
+	// 1–4 grade a revealed flip card (context cards handle their own number keys).
+	function onKeydown(event: KeyboardEvent) {
+		if (phase !== 'reviewing' || showRescue || !revealed) return;
+		if (currentItem?.presentation !== 'flip') return;
+		const picked = grades[(digitKey(event) ?? 0) - 1];
+		if (picked) void grade(picked.grade);
 	}
 </script>
 
 <svelte:head><title>{m.nav_review()} · FrenchPath</title></svelte:head>
+<svelte:window onkeydown={onKeydown} />
 
 <main class="page-shell">
-	<a
-		class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
-		href={resolve('/')}>{m.common_home()}</a
-	>
+	<div class="flex items-center justify-between gap-3">
+		<a
+			class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
+			href={resolve('/')}>{m.common_home()}</a
+		>
+		{#if phase === 'reviewing' && reviewedCount > 0}
+			<button
+				type="button"
+				class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
+				data-testid="review-end"
+				disabled={grading}
+				onclick={endSession}>{m.review_end_session()}</button
+			>
+		{/if}
+	</div>
 
 	{#if phase === 'loading'}
 		<p class="mt-6 text-muted" role="status">{m.review_loading()}</p>
@@ -250,6 +312,8 @@
 							mode={currentItem.presentation as ReviewMode}
 							gloss={getGloss(currentItem.content, nativeLanguage).primary}
 							asr={asrReady}
+							intervals={intervalsFor(currentItem.srs)}
+							onPending={(grade, durationMs) => (pendingAnswer = { grade, durationMs })}
 							onAnswered={grade}
 						/>
 					</div>
@@ -340,17 +404,29 @@
 
 				{#if revealed}
 					<div
+						bind:this={gradeGroup}
 						class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:mx-auto lg:max-w-2xl"
+						role="group"
+						aria-label={m.review_grade_prompt()}
+						tabindex="-1"
 						data-testid="grade-buttons"
 					>
-						{#each grades as g (g.grade)}
+						{#each grades as g, i (g.grade)}
 							<button
 								type="button"
 								class="fp-grade-btn fp-grade-btn--{g.grade}"
 								data-grade={g.grade}
+								aria-keyshortcuts={String(i + 1)}
 								disabled={grading}
-								onclick={() => grade(g.grade)}>{g.label()}</button
+								onclick={() => grade(g.grade)}
 							>
+								<kbd class="fp-key-hint" aria-hidden="true">{i + 1}</kbd>{g.label()}
+								{#if flipIntervals}
+									<span class="fp-grade-interval" data-testid="grade-interval"
+										>{flipIntervals[g.grade]}</span
+									>
+								{/if}
+							</button>
 						{/each}
 					</div>
 				{:else}
@@ -358,7 +434,7 @@
 						type="button"
 						class="btn-primary mt-5 w-full lg:mx-auto lg:block lg:max-w-2xl"
 						data-testid="reveal"
-						onclick={() => (revealed = true)}>{m.review_show_answer()}</button
+						onclick={reveal}>{m.review_show_answer()}</button
 					>
 				{/if}
 			{/if}

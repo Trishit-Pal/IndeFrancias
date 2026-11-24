@@ -465,5 +465,8 @@
 	"data_error_sync_merge_failed": "সিঙ্ক একত্রিত করা ব্যর্থ — আপনার আগের ডেটা অপরিবর্তিত আছে",
 	"data_error_sync_not_a_sync_file": "এটি FrenchPath-এর সিঙ্ক ফাইল নয়।",
 	"sync_preview_replaced_one": "এই ডিভাইসে আগে থেকে থাকা 1টি আইটেম এই ফাইল থেকে আপডেট হবে।",
-	"sync_preview_replaced_other": "এই ডিভাইসে আগে থেকে থাকা {count}টি আইটেম এই ফাইল থেকে আপডেট হবে।"
+	"sync_preview_replaced_other": "এই ডিভাইসে আগে থেকে থাকা {count}টি আইটেম এই ফাইল থেকে আপডেট হবে।",
+	"review_end_session": "সেশন শেষ করুন",
+	"review_grade_prompt": "এটি আপনার কতটা মনে ছিল?",
+	"review_next_in": "পরের রিভিউ: {interval}"
 }

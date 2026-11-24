@@ -465,5 +465,8 @@
 	"data_error_sync_merge_failed": "ಸಿಂಕ್ ವಿಲೀನ ವಿಫಲವಾಯಿತು — ನಿಮ್ಮ ಈಗಿನ ಡೇಟಾ ಬದಲಾಗಿಲ್ಲ",
 	"data_error_sync_not_a_sync_file": "ಇದು FrenchPath ಸಿಂಕ್ ಫೈಲ್ ಅಲ್ಲ.",
 	"sync_preview_replaced_one": "ಈ ಸಾಧನದಲ್ಲಿ ಈಗಾಗಲೇ ಇರುವ 1 ಐಟಂ ಈ ಫೈಲ್‌ನಿಂದ ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತದೆ.",
-	"sync_preview_replaced_other": "ಈ ಸಾಧನದಲ್ಲಿ ಈಗಾಗಲೇ ಇರುವ {count} ಐಟಂಗಳು ಈ ಫೈಲ್‌ನಿಂದ ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತವೆ."
+	"sync_preview_replaced_other": "ಈ ಸಾಧನದಲ್ಲಿ ಈಗಾಗಲೇ ಇರುವ {count} ಐಟಂಗಳು ಈ ಫೈಲ್‌ನಿಂದ ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತವೆ.",
+	"review_end_session": "ಸೆಷನ್ ಮುಗಿಸಿ",
+	"review_grade_prompt": "ಇದು ನಿಮಗೆ ಎಷ್ಟು ಚೆನ್ನಾಗಿ ನೆನಪಿತ್ತು?",
+	"review_next_in": "ಮುಂದಿನ ಪುನರಾವರ್ತನೆ: {interval}"
 }

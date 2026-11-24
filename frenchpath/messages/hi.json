@@ -465,5 +465,8 @@
 	"data_error_sync_merge_failed": "सिंक मर्ज नहीं हो सका। आपका मौजूदा डेटा जैसा था वैसा ही है।",
 	"data_error_sync_not_a_sync_file": "यह FrenchPath सिंक फ़ाइल नहीं है।",
 	"sync_preview_replaced_one": "इस डिवाइस का 1 मौजूदा आइटम इस फ़ाइल से अपडेट किया जाएगा।",
-	"sync_preview_replaced_other": "इस डिवाइस के {count} मौजूदा आइटम इस फ़ाइल से अपडेट किए जाएँगे।"
+	"sync_preview_replaced_other": "इस डिवाइस के {count} मौजूदा आइटम इस फ़ाइल से अपडेट किए जाएँगे।",
+	"review_end_session": "सत्र समाप्त करें",
+	"review_grade_prompt": "आपको यह कितना याद था?",
+	"review_next_in": "अगला दोहराव: {interval}"
 }
