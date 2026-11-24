@@ -19,8 +19,7 @@ const T = {
 		'Arjun works in a bank.': 'அர்ஜுன் ஒரு வங்கியில் வேலை செய்கிறான்.',
 		"As a starter, I'll have a samosa.": 'ஆரம்ப உணவாக, நான் சமோசா வாங்குகிறேன்.',
 		'Do you like tea?': 'உங்களுக்கு தேநீர் பிடிக்கிறதா?',
-		'During Diwali, my family gathers in Jaipur.':
-			'தீபாவளி போது, என் குடும்பம் Jaipur-இல் கூடுகிறது.',
+		'During Diwali, my family gathers in Jaipur.': 'தீபாவளி போது, என் குடும்பம் Jaipur-இல் கூடுகிறது.',
 		'During my childhood, I lived in Pune.': 'என் சிறுவயதில், நான் Pune-இல் வாழ்ந்தேன்.',
 		'For Diwali, Arjun returned home to Jaipur.': 'தீபாவளிக்காக, அர்ஜுன் Jaipur வீடு திரும்பினான்.',
 		'Go straight ahead.': 'நேராக போங்கள்.',
@@ -52,8 +51,7 @@ const T = {
 		'I take a shower in the morning.': 'காலையில் நான் குளிக்கிறேன்.',
 		'I talk to them in French.': 'நான் அவர்களிடம் பிரெஞ்சில் பேசுகிறேன்.',
 		'I think biryani is delicious.': 'பிரியாணி சுவையானது என்று நான் நினைக்கிறேன்.',
-		'I used to play cricket every Sunday.':
-			'ஒவ்வொரு ஞாயிற்றுக்கிழமை கிரிக்கெட் விளையாடுவது என் வழக்கம்.',
+		'I used to play cricket every Sunday.': 'ஒவ்வொரு ஞாயிற்றுக்கிழமை கிரிக்கெட் விளையாடுவது என் வழக்கம்.',
 		'I went to Goa by train.': 'நான் ரயிலில் Goa சென்றேன்.',
 		'I work every day.': 'நான் தினமும் வேலை செய்கிறேன்.',
 		'I write a letter to my friend.': 'நான் என் நண்பனுக்கு கடிதம் எழுதுகிறேன்.',

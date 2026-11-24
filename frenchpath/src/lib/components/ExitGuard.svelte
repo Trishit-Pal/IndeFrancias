@@ -55,13 +55,17 @@
 			type="button"
 			class="btn-secondary text-sm"
 			data-testid="lesson-exit-stay"
-			onclick={() => (open = false)}>{m.lesson_exit_stay()}</button
+			onclick={() => (open = false)}
 		>
+			{m.lesson_exit_stay()}
+		</button>
 		<button
 			type="button"
 			class="btn-primary text-sm"
 			data-testid="lesson-exit-leave"
-			onclick={confirmExit}>{m.lesson_exit_confirm()}</button
+			onclick={confirmExit}
 		>
+			{m.lesson_exit_confirm()}
+		</button>
 	</div>
 </Modal>

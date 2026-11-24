@@ -257,16 +257,20 @@
 	<div class="flex items-center justify-between gap-3">
 		<a
 			class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
-			href={resolve('/')}>{m.common_home()}</a
+			href={resolve('/')}
 		>
+			{m.common_home()}
+		</a>
 		{#if phase === 'reviewing' && reviewedCount > 0}
 			<button
 				type="button"
 				class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
 				data-testid="review-end"
 				disabled={grading}
-				onclick={endSession}>{m.review_end_session()}</button
+				onclick={endSession}
 			>
+				{m.review_end_session()}
+			</button>
 		{/if}
 	</div>
 
@@ -422,9 +426,9 @@
 							>
 								<kbd class="fp-key-hint" aria-hidden="true">{i + 1}</kbd>{g.label()}
 								{#if flipIntervals}
-									<span class="fp-grade-interval" data-testid="grade-interval"
-										>{flipIntervals[g.grade]}</span
-									>
+									<span class="fp-grade-interval" data-testid="grade-interval">
+										{flipIntervals[g.grade]}
+									</span>
 								{/if}
 							</button>
 						{/each}
@@ -434,8 +438,10 @@
 						type="button"
 						class="btn-primary mt-5 w-full lg:mx-auto lg:block lg:max-w-2xl"
 						data-testid="reveal"
-						onclick={reveal}>{m.review_show_answer()}</button
+						onclick={reveal}
 					>
+						{m.review_show_answer()}
+					</button>
 				{/if}
 			{/if}
 		</div>

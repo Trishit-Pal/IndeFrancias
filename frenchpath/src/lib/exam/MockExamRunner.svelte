@@ -174,8 +174,10 @@
 <main class="page-shell lg:max-w-3xl">
 	<a
 		class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
-		href={resolve('/')}>{m.common_home()}</a
+		href={resolve('/')}
 	>
+		{m.common_home()}
+	</a>
 
 	<header class="fp-exam-header mt-3">
 		<div>
@@ -218,9 +220,9 @@
 		{#if isObjective && objItem}
 			<p class="mt-4 mb-2 text-sm text-muted">
 				Question
-				<span class="fp-figure"
-					>{itemIndex + 1} of {'items' in section ? section.items.length : 0}</span
-				>
+				<span class="fp-figure">
+					{itemIndex + 1} of {'items' in section ? section.items.length : 0}
+				</span>
 			</p>
 			{#key objItem.id}
 				<Exercise exercise={objItem} bind:response {submitted} lexicon={new Map()} />
@@ -240,8 +242,10 @@
 					class="btn-primary mt-5 w-full"
 					data-testid="exam-check"
 					disabled={response === null}
-					onclick={checkItem}>{m.exam_check()}</button
+					onclick={checkItem}
 				>
+					{m.exam_check()}
+				</button>
 			{/if}
 		{:else if section && 'prompt' in section}
 			<p class="surface-card mt-4 rounded-xl bg-subtle p-4 text-foreground">{section.prompt}</p>
@@ -332,8 +336,9 @@
 							<span
 								class="fp-figure"
 								style="color: {score < 5 ? 'var(--fp-error)' : 'var(--fp-muted)'}"
-								>{score} / 25</span
 							>
+								{score} / 25
+							</span>
 						</div>
 						<div class="mt-1 h-2 overflow-hidden rounded-full bg-subtle">
 							<div
@@ -361,8 +366,9 @@
 					{m.share_progress()}
 				</button>
 			{/if}
-			<a class="btn-primary mt-4 block text-center" href={resolve('/')}>{m.common_back_to_path()}</a
-			>
+			<a class="btn-primary mt-4 block text-center" href={resolve('/')}>
+				{m.common_back_to_path()}
+			</a>
 		</div>
 	{/if}
 </main>

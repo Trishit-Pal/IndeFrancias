@@ -360,9 +360,10 @@
 							class="btn-primary flex items-center justify-between gap-2"
 							data-testid="checkpoint-node-{gate.id}"
 						>
-							<span class="flex items-center gap-2"
-								><Icon name="check" size={17} /> {gate.label}</span
-							>
+							<span class="flex items-center gap-2">
+								<Icon name="check" size={17} />
+								{gate.label}
+							</span>
 							<Icon name="chevron-right" size={18} />
 						</a>
 					{/each}

@@ -68,8 +68,10 @@
 				animate:flip
 				type="button"
 				class="min-h-11 rounded-lg bg-jaipur-light px-3 py-1 text-foreground"
-				onclick={() => removeAt(pos)}>{exercise.words[id]}</button
+				onclick={() => removeAt(pos)}
 			>
+				{exercise.words[id]}
+			</button>
 		{/each}
 	</div>
 
@@ -80,8 +82,10 @@
 				type="button"
 				class="min-h-11 rounded-lg border border-border bg-card px-3 py-1 hover:border-primary"
 				data-testid="reorder-word"
-				onclick={() => add(token.id)}>{token.word}</button
+				onclick={() => add(token.id)}
 			>
+				{token.word}
+			</button>
 		{/each}
 	</div>
 

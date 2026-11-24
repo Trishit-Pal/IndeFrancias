@@ -8,9 +8,9 @@
 	const notFound = $derived(page.status === 404);
 </script>
 
-<svelte:head
-	><title>{notFound ? m.error_not_found_title() : m.error_title()} · FrenchPath</title></svelte:head
->
+<svelte:head>
+	<title>{notFound ? m.error_not_found_title() : m.error_title()} · FrenchPath</title>
+</svelte:head>
 
 <main class="page-shell" data-testid="error-page">
 	<h1 class="fp-display-md text-balance text-foreground">

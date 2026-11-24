@@ -202,8 +202,10 @@
 						type="button"
 						class="btn-primary flex-1"
 						data-testid="onboarding-next"
-						onclick={next}>{m.onb_next()}</button
+						onclick={next}
 					>
+						{m.onb_next()}
+					</button>
 				</div>
 			{:else if step === 'goal'}
 				<h2 class="text-xl font-bold text-foreground">{m.onb_goal_title()}</h2>
@@ -246,8 +248,10 @@
 						type="button"
 						class="btn-primary flex-1"
 						data-testid="onboarding-next"
-						onclick={next}>{m.onb_next()}</button
+						onclick={next}
 					>
+						{m.onb_next()}
+					</button>
 				</div>
 			{:else if step === 'difficulty'}
 				<h2 class="text-xl font-bold text-foreground">{m.onb_difficulty_title()}</h2>
@@ -279,8 +283,10 @@
 						type="button"
 						class="btn-primary flex-1"
 						data-testid="onboarding-next"
-						onclick={next}>{m.onb_next()}</button
+						onclick={next}
 					>
+						{m.onb_next()}
+					</button>
 				</div>
 			{:else if step === 'rhythm'}
 				<h2 class="text-xl font-bold text-foreground">{m.onb_rhythm_title()}</h2>
@@ -312,8 +318,10 @@
 						type="button"
 						class="btn-primary flex-1"
 						data-testid="onboarding-next"
-						onclick={next}>{m.onb_next()}</button
+						onclick={next}
 					>
+						{m.onb_next()}
+					</button>
 				</div>
 			{:else if step === 'sovereignty'}
 				<h2 class="text-xl font-bold text-foreground">{m.onb_sovereignty_title()}</h2>
@@ -338,8 +346,10 @@
 					target="_blank"
 					rel="noopener"
 					class="mt-3 inline-flex min-h-11 items-center text-sm underline"
-					data-testid="onboarding-privacy-link">{m.onb_privacy_link()}</a
+					data-testid="onboarding-privacy-link"
 				>
+					{m.onb_privacy_link()}
+				</a>
 				<!-- eslint-enable svelte/no-navigation-without-resolve -->
 				<div class="mt-6 flex gap-2">
 					<button type="button" class="btn-secondary flex-1" onclick={back}>{m.onb_back()}</button>
@@ -347,8 +357,10 @@
 						type="button"
 						class="btn-primary flex-1"
 						data-testid="onboarding-next"
-						onclick={next}>{m.onb_next()}</button
+						onclick={next}
 					>
+						{m.onb_next()}
+					</button>
 				</div>
 			{:else if step === 'ready'}
 				<div class="text-center">

@@ -201,11 +201,13 @@
 			class="fp-display-lg text-center text-balance text-foreground"
 			data-testid="context-sentence"
 		>
-			{prompt.before}<span class="fp-blank"
-				>{#if answered}{prompt.answer}{:else}<span aria-hidden="true">＿＿＿</span><span
-						class="sr-only">{m.review_context_blank()}</span
-					>{/if}</span
-			>{prompt.after}
+			{prompt.before}<span class="fp-blank">
+				{#if answered}{prompt.answer}{:else}<span aria-hidden="true">＿＿＿</span><span
+						class="sr-only"
+					>
+						{m.review_context_blank()}
+					</span>{/if}
+			</span>{prompt.after}
 		</p>
 		<p class="mt-2 text-center text-sm text-muted" style="font-family: var(--fp-font-hindi)">
 			{gloss}
@@ -232,8 +234,10 @@
 				class="btn-secondary min-h-11"
 				data-testid="speak-type-instead"
 				disabled={checking}
-				onclick={switchToTyping}>{m.review_speak_type_instead()}</button
+				onclick={switchToTyping}
 			>
+				{m.review_speak_type_instead()}
+			</button>
 		</div>
 		<p class="mt-2 min-h-5 text-center text-sm text-muted" aria-live="polite">
 			{#if checking}{m.review_speak_checking()}
@@ -264,9 +268,9 @@
 				lang="fr"
 				disabled={submitted}
 			/>
-			<button type="submit" class="btn-primary" data-testid="recall-check" disabled={submitted}
-				>{m.review_recall_check()}</button
-			>
+			<button type="submit" class="btn-primary" data-testid="recall-check" disabled={submitted}>
+				{m.review_recall_check()}
+			</button>
 		</form>
 	{:else}
 		<div
@@ -285,8 +289,9 @@
 					aria-keyshortcuts={String(i + 1)}
 					disabled={picked !== null}
 					onclick={() => choose(choice)}
-					><kbd class="fp-key-hint" aria-hidden="true">{i + 1}</kbd>{choice}</button
 				>
+					<kbd class="fp-key-hint" aria-hidden="true">{i + 1}</kbd>{choice}
+				</button>
 			{/each}
 		</div>
 	{/if}
@@ -318,8 +323,10 @@
 			class="btn-primary mt-4 w-full"
 			data-testid="continue"
 			bind:this={continueBtn}
-			onclick={next}>{m.review_context_continue()}</button
+			onclick={next}
 		>
+			{m.review_context_continue()}
+		</button>
 	{/if}
 </section>
 

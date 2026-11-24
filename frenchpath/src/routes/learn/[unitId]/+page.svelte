@@ -296,8 +296,10 @@
 	{:else if phase === 'intro' && unit}
 		<a
 			class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
-			href={resolve('/')}>{m.common_home()}</a
+			href={resolve('/')}
 		>
+			{m.common_home()}
+		</a>
 		<span class="fp-skill-chip ml-2 rounded-full px-2 py-0.5 text-xs font-semibold uppercase">
 			{unit.cefrLevel}
 		</span>
@@ -539,20 +541,26 @@
 				type="button"
 				class="btn-secondary flex-1 text-sm"
 				data-testid="confidence-low"
-				onclick={() => answerConfidence('low')}>{m.confidence_low()}</button
+				onclick={() => answerConfidence('low')}
 			>
+				{m.confidence_low()}
+			</button>
 			<button
 				type="button"
 				class="btn-primary flex-1 text-sm"
 				data-testid="confidence-ok"
-				onclick={() => answerConfidence('ok')}>{m.confidence_ok()}</button
+				onclick={() => answerConfidence('ok')}
 			>
+				{m.confidence_ok()}
+			</button>
 			<button
 				type="button"
 				class="btn-secondary flex-1 text-sm"
 				data-testid="confidence-high"
-				onclick={() => answerConfidence('high')}>{m.confidence_high()}</button
+				onclick={() => answerConfidence('high')}
 			>
+				{m.confidence_high()}
+			</button>
 		</div>
 	</div>
 </Modal>
