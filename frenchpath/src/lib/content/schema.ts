@@ -6,8 +6,11 @@ import { NATIVE_LANGUAGES, type NativeLanguage } from '../i18n/languages';
 export const cefrLevelSchema = z.enum(['A1', 'A2', 'B1', 'B2', 'C1']);
 
 /** Levels whose French is still AI-drafted and shown as clearly-labelled beta
- *  until a native-speaker proofread lands (SPEC invariant 5). */
+ *  until a native-speaker proofread lands (SPEC invariant 5). The open beta
+ *  ships every level this way; remove a level here only after its proofread. */
 export const BETA_LEVELS: ReadonlySet<z.infer<typeof cefrLevelSchema>> = new Set([
+	'A1',
+	'A2',
 	'B1',
 	'B2',
 	'C1'
