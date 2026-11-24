@@ -320,6 +320,351 @@
 			"fauxAmi": false,
 			"cefrLevel": "A1",
 			"skills": ["reading"]
+		},
+		{
+			"id": "a1-greet-bonsoir",
+			"french": "bonsoir",
+			"gender": "none",
+			"ipa": "bɔ̃swaʁ",
+			"hindiGloss": "शुभ संध्या",
+			"englishGloss": "good evening",
+			"glosses": {
+				"hi": "शुभ संध्या",
+				"en": "good evening",
+				"bn": "শুভ সংধ্যা",
+				"mr": "शुभ संध्या",
+				"gu": "શુભ સંધ્યા",
+				"pa": "ਸ਼ੁਭ ਸਂਧ੍ਯਾ",
+				"ta": "மாலை வணக்கம்",
+				"te": "శుభ సాయంత్రం",
+				"kn": "ಶುಭ ಸಂಜೆ",
+				"ml": "ശുഭ സായാഹ്നം",
+				"or": "ଶୁଭ ସନ୍ଧ୍ୟା",
+				"as": "শুভ সন্ধিয়া"
+			},
+			"example": {
+				"french": "Bonsoir, Madame Sharma !",
+				"englishGloss": "Good evening, Mrs Sharma!",
+				"glosses": {
+					"hi": "शुभ संध्या, श्रीमती शर्मा!",
+					"en": "Good evening, Mrs Sharma!",
+					"bn": "শুভ সংধ্যা, শ্রীমতী শর্মা!",
+					"mr": "शुभ संध्या, श्रीमती शर्मा!",
+					"gu": "શુભ સંધ્યા, શ્રીમતી શર્મા!",
+					"pa": "ਸ਼ੁਭ ਸਂਧ੍ਯਾ, ਸ਼੍ਰੀਮਤੀ ਸ਼ਰ੍ਮਾ!",
+					"ta": "மாலை வணக்கம், திருமதி சர்மா!",
+					"te": "శుభ సాయంత్రం, శ్రీమతి శర్మ!",
+					"kn": "ಶುಭ ಸಂಜೆ, ಶ್ರೀಮತಿ ಶರ್ಮಾ!",
+					"ml": "ശുഭ സായാഹ്നം, ശ്രീമതി ശർമ്മ!",
+					"or": "ଶୁଭ ସନ୍ଧ୍ୟା, ଶ୍ରୀମତୀ ଶର୍ମା!",
+					"as": "শুভ সন্ধিয়া, শ্ৰীমতী শৰ্মা!"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-greet-svp",
+			"french": "s'il vous plaît",
+			"gender": "none",
+			"ipa": "sil vu plɛ",
+			"hindiGloss": "कृपया",
+			"englishGloss": "please (formal)",
+			"glosses": {
+				"hi": "कृपया",
+				"en": "please (formal)",
+				"bn": "কৃপযা",
+				"mr": "कृपया",
+				"gu": "કૃપયા",
+				"pa": "ਕ੃ਪਯਾ",
+				"ta": "தயவுசெய்து",
+				"te": "దయచేసి",
+				"kn": "ದಯವಿಟ್ಟು",
+				"ml": "ദയവായി",
+				"or": "ଦୟାକରି",
+				"as": "অনুগ্ৰহ কৰি"
+			},
+			"example": {
+				"french": "Un thé, s'il vous plaît.",
+				"englishGloss": "One tea, please.",
+				"glosses": {
+					"hi": "एक चाय, कृपया।",
+					"en": "One tea, please.",
+					"bn": "এক চায, কৃপযা৤",
+					"mr": "एक चाय, कृपया।",
+					"gu": "એક ચાય, કૃપયા૤",
+					"pa": "ਏਕ ਚਾਯ, ਕ੃ਪਯਾ।",
+					"ta": "ஒரு தேநீர், தயவுசெய்து.",
+					"te": "ఒక టీ, దయచేసి.",
+					"kn": "ಒಂದು ಚಹಾ, ದಯವಿಟ್ಟು.",
+					"ml": "ഒരു ചായ, ദയവായി.",
+					"or": "ଗୋଟିଏ ଚା', ଦୟାକରି।",
+					"as": "এক কাপ চাহ, অনুগ্ৰহ কৰি।"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-greet-excusezmoi",
+			"french": "excusez-moi",
+			"gender": "none",
+			"ipa": "ɛkskyze mwa",
+			"hindiGloss": "माफ़ कीजिए",
+			"englishGloss": "excuse me (formal)",
+			"glosses": {
+				"hi": "माफ़ कीजिए",
+				"en": "excuse me (formal)",
+				"bn": "মাফ় কীজিএ",
+				"mr": "माफ़ कीजिए",
+				"gu": "માફ઼ કીજિએ",
+				"pa": "ਮਾਫ़ ਕੀਜਿਏ",
+				"ta": "மன்னிக்கவும்",
+				"te": "క్షమించండి",
+				"kn": "ಕ್ಷಮಿಸಿ",
+				"ml": "ക്ഷമിക്കണം",
+				"or": "କ୍ଷମା କରନ୍ତୁ",
+				"as": "ক্ষমা কৰিব"
+			},
+			"example": {
+				"french": "Excusez-moi, vous êtes Madame Rao ?",
+				"englishGloss": "Excuse me, are you Mrs Rao?",
+				"glosses": {
+					"hi": "माफ़ कीजिए, क्या आप श्रीमती राव हैं?",
+					"en": "Excuse me, are you Mrs Rao?",
+					"bn": "মাফ় কীজিএ, ক্যা আপ শ্রীমতী রা঵ হৈং?",
+					"mr": "माफ़ कीजिए, क्या आप श्रीमती राव हैं?",
+					"gu": "માફ઼ કીજિએ, ક્યા આપ શ્રીમતી રાવ હૈં?",
+					"pa": "ਮਾਫ़ ਕੀਜਿਏ, ਕ੍ਯਾ ਆਪ ਸ਼੍ਰੀਮਤੀ ਰਾਵ ਹੈਂ?",
+					"ta": "மன்னிக்கவும், நீங்கள் திருமதி ராவ் தானா?",
+					"te": "క్షమించండి, మీరు శ్రీమతి రావు గారా?",
+					"kn": "ಕ್ಷಮಿಸಿ, ನೀವು ಶ್ರೀಮತಿ ರಾವ್ ಅವರೇ?",
+					"ml": "ക്ഷമിക്കണം, നിങ്ങൾ ശ്രീമതി റാവു ആണോ?",
+					"or": "କ୍ଷମା କରନ୍ତୁ, ଆପଣ ଶ୍ରୀମତୀ ରାଓ କି?",
+					"as": "ক্ষমা কৰিব, আপুনি শ্ৰীমতী ৰাও নেকি?"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-greet-oui",
+			"french": "oui",
+			"gender": "none",
+			"ipa": "wi",
+			"hindiGloss": "हाँ",
+			"englishGloss": "yes",
+			"glosses": {
+				"hi": "हाँ",
+				"en": "yes",
+				"bn": "হাঁ",
+				"mr": "हाँ",
+				"gu": "હાઁ",
+				"pa": "ਹਾँ",
+				"ta": "ஆம்",
+				"te": "అవును",
+				"kn": "ಹೌದು",
+				"ml": "അതെ",
+				"or": "ହଁ",
+				"as": "হয়"
+			},
+			"example": {
+				"french": "Oui, je m'appelle Arjun.",
+				"englishGloss": "Yes, my name is Arjun.",
+				"glosses": {
+					"hi": "हाँ, मेरा नाम अर्जुन है।",
+					"en": "Yes, my name is Arjun.",
+					"bn": "হাঁ, মেরা নাম অর্জুন হৈ৤",
+					"mr": "हाँ, मेरा नाम अर्जुन है।",
+					"gu": "હાઁ, મેરા નામ અર્જુન હૈ૤",
+					"pa": "ਹਾँ, ਮੇਰਾ ਨਾਮ ਅਰ੍ਜੁਨ ਹੈ।",
+					"ta": "ஆம், என் பெயர் அர்ஜுன்.",
+					"te": "అవును, నా పేరు అర్జున్.",
+					"kn": "ಹೌದು, ನನ್ನ ಹೆಸರು ಅರ್ಜುನ್.",
+					"ml": "അതെ, എന്റെ പേര് അർജുൻ.",
+					"or": "ହଁ, ମୋ ନାମ ଅର୍ଜୁନ।",
+					"as": "হয়, মোৰ নাম অৰ্জুন।"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction", "listening"]
+		},
+		{
+			"id": "a1-greet-non",
+			"french": "non",
+			"gender": "none",
+			"ipa": "nɔ̃",
+			"hindiGloss": "नहीं",
+			"englishGloss": "no",
+			"glosses": {
+				"hi": "नहीं",
+				"en": "no",
+				"bn": "নহীং",
+				"mr": "नहीं",
+				"gu": "નહીં",
+				"pa": "ਨਹੀਂ",
+				"ta": "இல்லை",
+				"te": "లేదు / కాదు",
+				"kn": "ಇಲ್ಲ",
+				"ml": "ഇല്ല",
+				"or": "ନା",
+				"as": "নহয়"
+			},
+			"example": {
+				"french": "Non, merci.",
+				"englishGloss": "No, thank you.",
+				"glosses": {
+					"hi": "नहीं, धन्यवाद।",
+					"en": "No, thank you.",
+					"bn": "নহীং, ধন্য঵াদ৤",
+					"mr": "नहीं, धन्यवाद।",
+					"gu": "નહીં, ધન્યવાદ૤",
+					"pa": "ਨਹੀਂ, ਧਨ੍ਯਵਾਦ।",
+					"ta": "இல்லை, நன்றி.",
+					"te": "వద్దు, ధన్యవాదాలు.",
+					"kn": "ಬೇಡ, ಧನ್ಯವಾದಗಳು.",
+					"ml": "വേണ്ട, നന്ദി.",
+					"or": "ନା, ଧନ୍ୟବାଦ।",
+					"as": "নালাগে, ধন্যবাদ।"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction", "listening"]
+		},
+		{
+			"id": "a1-greet-cava",
+			"french": "ça va",
+			"gender": "none",
+			"ipa": "sa va",
+			"hindiGloss": "क्या हाल है? / ठीक हूँ",
+			"englishGloss": "how are you? / I'm fine (informal)",
+			"glosses": {
+				"hi": "क्या हाल है? / ठीक हूँ",
+				"en": "how are you? / I'm fine (informal)",
+				"bn": "ক্যা হাল হৈ? / ঠীক হূঁ",
+				"mr": "क्या हाल है? / ठीक हूँ",
+				"gu": "ક્યા હાલ હૈ? / ઠીક હૂઁ",
+				"pa": "ਕ੍ਯਾ ਹਾਲ ਹੈ? / ਠੀਕ ਹੂँ",
+				"ta": "எப்படி இருக்கிறாய்? / நலம்",
+				"te": "ఎలా ఉన్నావు? / బాగున్నాను",
+				"kn": "ಹೇಗಿದ್ದೀಯ? / ಚೆನ್ನಾಗಿದ್ದೇನೆ",
+				"ml": "സുഖമാണോ? / സുഖം",
+				"or": "କେମିତି ଅଛ? / ଭଲ ଅଛି",
+				"as": "কেনে আছা? / ভালে আছোঁ"
+			},
+			"example": {
+				"french": "Ça va bien, merci.",
+				"englishGloss": "I'm fine, thank you.",
+				"glosses": {
+					"hi": "मैं ठीक हूँ, धन्यवाद।",
+					"en": "I'm fine, thank you.",
+					"bn": "মৈং ঠীক হূঁ, ধন্য঵াদ৤",
+					"mr": "मैं ठीक हूँ, धन्यवाद।",
+					"gu": "મૈં ઠીક હૂઁ, ધન્યવાદ૤",
+					"pa": "ਮੈਂ ਠੀਕ ਹੂँ, ਧਨ੍ਯਵਾਦ।",
+					"ta": "நான் நலமாக இருக்கிறேன், நன்றி.",
+					"te": "నేను బాగున్నాను, ధన్యవాదాలు.",
+					"kn": "ನಾನು ಚೆನ್ನಾಗಿದ್ದೇನೆ, ಧನ್ಯವಾದಗಳು.",
+					"ml": "എനിക്ക് സുഖമാണ്, നന്ദി.",
+					"or": "ମୁଁ ଭଲ ଅଛି, ଧନ୍ୟବାଦ।",
+					"as": "মই ভালে আছোঁ, ধন্যবাদ।"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
+		},
+		{
+			"id": "a1-greet-enchante",
+			"french": "enchanté",
+			"gender": "none",
+			"ipa": "ɑ̃ʃɑ̃te",
+			"hindiGloss": "आपसे मिलकर खुशी हुई",
+			"englishGloss": "pleased to meet you",
+			"glosses": {
+				"hi": "आपसे मिलकर खुशी हुई",
+				"en": "pleased to meet you",
+				"bn": "আপসে মিলকর খুশী হুঈ",
+				"mr": "आपसे मिलकर खुशी हुई",
+				"gu": "આપસે મિલકર ખુશી હુઈ",
+				"pa": "ਆਪਸੇ ਮਿਲਕਰ ਖੁਸ਼ੀ ਹੁਈ",
+				"ta": "உங்களைச் சந்தித்ததில் மகிழ்ச்சி",
+				"te": "మిమ్మల్ని కలవడం సంతోషం",
+				"kn": "ನಿಮ್ಮನ್ನು ಭೇಟಿಯಾಗಿ ಸಂತೋಷವಾಯಿತು",
+				"ml": "നിങ്ങളെ കണ്ടതിൽ സന്തോഷം",
+				"or": "ଆପଣଙ୍କୁ ଭେଟି ଖୁସି ଲାଗିଲା",
+				"as": "আপোনাক লগ পাই ভাল লাগিল"
+			},
+			"forms": ["enchantée"],
+			"example": {
+				"french": "Enchanté, Priya !",
+				"englishGloss": "Pleased to meet you, Priya!",
+				"glosses": {
+					"hi": "आपसे मिलकर खुशी हुई, प्रिया!",
+					"en": "Pleased to meet you, Priya!",
+					"bn": "আপসে মিলকর খুশী হুঈ, প্রিযা!",
+					"mr": "आपसे मिलकर खुशी हुई, प्रिया!",
+					"gu": "આપસે મિલકર ખુશી હુઈ, પ્રિયા!",
+					"pa": "ਆਪਸੇ ਮਿਲਕਰ ਖੁਸ਼ੀ ਹੁਈ, ਪ੍ਰਿਯਾ!",
+					"ta": "உங்களைச் சந்தித்ததில் மகிழ்ச்சி, பிரியா!",
+					"te": "మిమ్మల్ని కలవడం సంతోషం, ప్రియా!",
+					"kn": "ನಿಮ್ಮನ್ನು ಭೇಟಿಯಾಗಿ ಸಂತೋಷವಾಯಿತು, ಪ್ರಿಯಾ!",
+					"ml": "നിങ്ങളെ കണ്ടതിൽ സന്തോഷം, പ്രിയ!",
+					"or": "ଆପଣଙ୍କୁ ଭେଟି ଖୁସି ଲାଗିଲା, ପ୍ରିୟା!",
+					"as": "আপোনাক লগ পাই ভাল লাগিল, প্ৰিয়া!"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction", "writing"]
+		},
+		{
+			"id": "a1-intro-comment",
+			"french": "comment vous appelez-vous ?",
+			"gender": "none",
+			"ipa": "kɔmɑ̃ vu.z‿aple vu",
+			"hindiGloss": "आपका नाम क्या है?",
+			"englishGloss": "what is your name? (formal)",
+			"glosses": {
+				"hi": "आपका नाम क्या है?",
+				"en": "what is your name? (formal)",
+				"bn": "আপকা নাম ক্যা হৈ?",
+				"mr": "आपका नाम क्या है?",
+				"gu": "આપકા નામ ક્યા હૈ?",
+				"pa": "ਆਪਕਾ ਨਾਮ ਕ੍ਯਾ ਹੈ?",
+				"ta": "உங்கள் பெயர் என்ன?",
+				"te": "మీ పేరు ఏమిటి?",
+				"kn": "ನಿಮ್ಮ ಹೆಸರೇನು?",
+				"ml": "നിങ്ങളുടെ പേര് എന്താണ്?",
+				"or": "ଆପଣଙ୍କ ନାମ କ'ଣ?",
+				"as": "আপোনাৰ নাম কি?"
+			},
+			"example": {
+				"french": "Bonjour, comment vous appelez-vous ?",
+				"englishGloss": "Hello, what is your name?",
+				"glosses": {
+					"hi": "नमस्ते, आपका नाम क्या है?",
+					"en": "Hello, what is your name?",
+					"bn": "নমস্তে, আপকা নাম ক্যা হৈ?",
+					"mr": "नमस्ते, आपका नाम क्या है?",
+					"gu": "નમસ્તે, આપકા નામ ક્યા હૈ?",
+					"pa": "ਨਮਸ੍ਤੇ, ਆਪਕਾ ਨਾਮ ਕ੍ਯਾ ਹੈ?",
+					"ta": "வணக்கம், உங்கள் பெயர் என்ன?",
+					"te": "నమస్కారం, మీ పేరు ఏమిటి?",
+					"kn": "ನಮಸ್ಕಾರ, ನಿಮ್ಮ ಹೆಸರೇನು?",
+					"ml": "നമസ്കാരം, നിങ്ങളുടെ പേര് എന്താണ്?",
+					"or": "ନମସ୍କାର, ଆପଣଙ୍କ ନାମ କ'ଣ?",
+					"as": "নমস্কাৰ, আপোনাৰ নাম কি?"
+				}
+			},
+			"fauxAmi": false,
+			"cefrLevel": "A1",
+			"skills": ["spokenInteraction"]
 		}
 	],
 	"exercises": [
@@ -435,6 +780,102 @@
 			"hint": "Use vocabulary from this unit and the bridge note.",
 			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce onese",
 			"phrase": "je voudrais un café"
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u1-ex9",
+			"cardId": "a1-greet-bonsoir",
+			"hint": "Think about the time of day.",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce oneself).",
+			"prompt": "It is 8 pm in Jaipur. How does Arjun greet his neighbour politely?",
+			"options": ["Bonsoir", "Bonjour", "Au revoir", "Merci"],
+			"answerIndex": 0,
+			"explanation": "« Bonsoir » is the greeting for the evening; « Bonjour » is for the daytime."
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u1-ex10",
+			"cardId": "a1-greet-svp",
+			"hint": "The formal way to say 'please'.",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce oneself).",
+			"text": "Ordering politely: « Un thé, {{}}. »",
+			"answer": "s'il vous plaît",
+			"accept": ["s'il vous plait", "sil vous plait"]
+		},
+		{
+			"type": "matching",
+			"id": "a1-u1-ex11",
+			"hint": "Two are greetings, two are answers.",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce oneself).",
+			"prompt": "Match each French word to its English meaning.",
+			"pairs": [
+				{
+					"left": "bonsoir",
+					"right": "good evening"
+				},
+				{
+					"left": "oui",
+					"right": "yes"
+				},
+				{
+					"left": "non",
+					"right": "no"
+				},
+				{
+					"left": "s'il vous plaît",
+					"right": "please"
+				}
+			]
+		},
+		{
+			"type": "dictation",
+			"id": "a1-u1-ex12",
+			"cardId": "a1-greet-cava",
+			"hint": "A short reply meaning 'I'm fine, thank you.'",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce oneself).",
+			"audioText": "Ça va bien, merci.",
+			"answer": "Ça va bien, merci.",
+			"accept": ["ça va bien merci"]
+		},
+		{
+			"type": "reorder",
+			"id": "a1-u1-ex13",
+			"hint": "French puts « vous » both before and after the verb here.",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce oneself).",
+			"prompt": "Build the formal question: “What is your name?”",
+			"words": ["Comment", "vous", "appelez-vous"]
+		},
+		{
+			"type": "translation",
+			"id": "a1-u1-ex14",
+			"cardId": "a1-greet-excusezmoi",
+			"hint": "You say it to get a stranger's attention politely.",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce oneself).",
+			"prompt": "Excusez-moi",
+			"direction": "fr-en",
+			"answer": "excuse me",
+			"accept": ["pardon me", "sorry"]
+		},
+		{
+			"type": "mcq",
+			"id": "a1-u1-ex15",
+			"cardId": "a1-greet-enchante",
+			"hint": "The word agrees with the person who is speaking.",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce oneself).",
+			"prompt": "Priya, a woman, writes that she is pleased to meet someone. Which spelling does she use?",
+			"options": ["Enchantée", "Enchanté", "Enchantés", "Enchant"],
+			"answerIndex": 0,
+			"explanation": "The word agrees with the speaker: a woman writes « enchantée » with an extra -e. Both spellings sound the same."
+		},
+		{
+			"type": "cloze",
+			"id": "a1-u1-ex16",
+			"cardId": "a1-greet-non",
+			"hint": "It means 'no'.",
+			"coachNote": "Greet people, say your name, and use basic courtesy words (A1: can use familiar everyday expressions and introduce oneself).",
+			"text": "« Un café ? » — « {{}}, merci. » (No, thank you.)",
+			"answer": "Non",
+			"accept": []
 		}
 	]
 }
