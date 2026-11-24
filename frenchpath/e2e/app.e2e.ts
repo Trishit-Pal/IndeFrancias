@@ -203,7 +203,8 @@ test('replaying a perfect lesson awards zero improvement XP', async ({ page }) =
 	// completeLesson answers by position, and Matching/Reorder shuffle with
 	// Math.random — so the replay could out-score the first run (flaky). A
 	// constant Math.random makes Fisher-Yates yield the same order every time,
-	// so both runs score identically. Only those two shuffles use Math.random.
+	// so both runs score identically. Multiple-choice, reading and bridge-quiz
+	// options also take their shuffle seed from Math.random, so they are pinned too.
 	await page.addInitScript(() => {
 		Math.random = () => 0;
 	});
