@@ -85,7 +85,6 @@
 		"@capacitor/status-bar": "^8.0.4",
 		"@fontsource-variable/fraunces": "^5.3.0",
 		"@fontsource-variable/manrope": "^5.3.0",
-		"bits-ui": "^2.20.6",
 		"fsrs-browser": "^6.6.0",
 		"idb": "^8.0.4",
 		"ts-fsrs": "^5.4.1",
