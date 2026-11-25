@@ -1,8 +1,8 @@
 # ADR-10: Service-worker build on @vite-pwa/sveltekit 2
 
-**Status:** Proposed (becomes Accepted when the product owner merges PR #25)
+**Status:** Accepted
 **Date:** 2026-11-25
-**Deciders:** Product owner
+**Deciders:** Product owner (option A chosen and signed off 2026-11-25)
 
 ## Context
 
@@ -128,9 +128,17 @@ installs keeps the blast radius small.
   build; the update prompt appeared, nothing reloaded on its own, Update switched to the new worker
   under the same cache name, old-only entries were removed, and a lesson deep link booted offline.
 
+**The update prompt (decided with this ADR):**
+
+- Deploying this build shows the update prompt to every learner who already installed the app.
+  **Update** reloads the page, and a lesson, checkpoint, mock exam or review keeps its state in
+  memory, so the prompt is now held while one of those screens is open and appears on the next
+  screen (`isSessionRoute` in `src/lib/pwa/updatePrompt.ts`). The daily loop wins ties.
+- While the prompt is visible the page reserves room for it, so the end of a page (Reset, About)
+  can always be scrolled clear of it.
+
 **To revisit:**
 
-- No automated test covers the service-worker update flow. The probe above was a one-off.
 - `@unplugin-pwa/*` is at 0.0.x: read its changelog on every bump instead of trusting the range.
 
 ## Action Items
@@ -139,5 +147,6 @@ installs keeps the blast radius small.
 2. [x] Compare the generated worker with version 1 and run the upgrade probe.
 3. [ ] On a real deployment: install the PWA on a phone from the version 1 build, deploy this
        build, and confirm the update prompt, the reload and offline use.
-4. [ ] Add an automated e2e test for the update prompt (needs two builds in one run).
+4. [x] Add an automated e2e test for the update prompt (`e2e/update-prompt.e2e.ts`; the preview
+       server serves a byte-different worker to one test context, so one build is enough).
 5. [ ] SvelteKit 3 migration (separate decision).
