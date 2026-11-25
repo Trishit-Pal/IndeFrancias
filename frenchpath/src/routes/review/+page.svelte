@@ -176,22 +176,32 @@
 	let grading = $state(false); // mirrors the gate for the disabled attribute
 	let gradeError = $state(false);
 
-	async function grade(grade: ReviewGrade, measuredMs?: number) {
+	/**
+	 * Saves a grade, then moves to the next card (or straight to the summary with `endAfter`).
+	 * Resolves `false` when the save failed: nothing was saved and the card stays on screen.
+	 */
+	async function grade(
+		grade: ReviewGrade,
+		measuredMs?: number,
+		endAfter = false
+	): Promise<boolean> {
 		const item = currentItem;
-		if (!item) return;
+		if (!item) return false;
 		try {
 			await gradeGate.run(async () => {
 				gradeError = false;
 				grading = true;
 				try {
-					await gradeItem(item, grade, measuredMs);
+					await gradeItem(item, grade, measuredMs, endAfter);
 				} finally {
 					grading = false;
 				}
 			});
+			return true;
 		} catch {
 			// recordReview is one transaction: nothing was saved and the card stays for another tap.
 			gradeError = true;
+			return false;
 		}
 	}
 
@@ -201,12 +211,19 @@
 
 	async function endSession() {
 		const pending = pendingAnswer;
-		if (pending) await grade(pending.grade, pending.durationMs);
-		if (phase === 'reviewing' && !gradeError) finishSession();
+		// A pending answer is saved first and the session ends from inside that save, so the
+		// next card is never shown. If the save fails the session stays open with the answer kept.
+		if (pending) await grade(pending.grade, pending.durationMs, true);
+		// Nothing waiting to be saved: end now, even if an earlier grade failed to save.
+		else if (phase === 'reviewing') finishSession();
 	}
 
-	async function gradeItem(item: ReviewItem, grade: ReviewGrade, measuredMs?: number) {
-		pendingAnswer = null;
+	async function gradeItem(
+		item: ReviewItem,
+		grade: ReviewGrade,
+		measuredMs?: number,
+		endAfter = false
+	) {
 		if (isNativePlatform()) void tapHaptic();
 		else if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
 		await recordReview(item.srs, grade, {
@@ -214,9 +231,11 @@
 			durationMs: measuredMs ?? Date.now() - cardStartedAt,
 			weights: fsrsWeights
 		});
+		// Cleared only once the review is saved: a failed save keeps the answer for a retry.
+		pendingAnswer = null;
 		reviewedCount += 1;
 		if (isRecalled(grade)) goodCount += 1;
-		if (index + 1 < queue.length) {
+		if (!endAfter && index + 1 < queue.length) {
 			index += 1;
 			revealed = false;
 			cardStartedAt = Date.now();
@@ -290,7 +309,7 @@
 
 		{#if gradeError}
 			<InfoBanner variant="error" role="alert" class="mt-4">
-				<p>{m.review_grade_error()}</p>
+				<p data-testid="review-grade-error">{m.review_grade_error()}</p>
 			</InfoBanner>
 		{/if}
 

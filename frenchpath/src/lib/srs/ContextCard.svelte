@@ -21,7 +21,11 @@
 		intervals?: Record<ReviewGrade, string>;
 		/** The card is answered and showing its result, but Continue has not been pressed yet. */
 		onPending?: (grade: ReviewGrade, durationMs: number) => void;
-		onAnswered: (grade: ReviewGrade, durationMs: number) => void;
+		/** Continue was pressed. Resolving `false` means the save failed and the card stays. */
+		onAnswered: (
+			grade: ReviewGrade,
+			durationMs: number
+		) => void | boolean | Promise<void | boolean>;
 	}
 	let {
 		prompt,
@@ -163,10 +167,11 @@
 		void tick().then(() => continueBtn?.focus());
 	}
 
-	function next() {
+	async function next() {
 		if (finished || finalGrade === null) return;
 		finished = true;
-		onAnswered(finalGrade, durationMs);
+		// A failed save leaves this card on screen: let Continue try again.
+		if ((await onAnswered(finalGrade, durationMs)) === false) finished = false;
 	}
 
 	// 1–4 pick a choice; typed and spoken answers have no numbered options
