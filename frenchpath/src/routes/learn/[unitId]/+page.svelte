@@ -35,6 +35,7 @@
 	import { fly, fade } from 'svelte/transition';
 	import * as m from '$lib/paraglide/messages';
 	import { createOnceGate } from '$lib/srs/onceGate';
+	import { shuffledIndices } from '$lib/utils/seededShuffle';
 
 	type Phase = 'loading' | 'intro' | 'bridge-quiz' | 'exercise' | 'finished' | 'error' | 'locked';
 
@@ -55,6 +56,15 @@
 	let xpFloat = $state(0);
 	let bridgeQuizIndex = $state<number | null>(null);
 	let bridgeQuizSubmitted = $state(false);
+	// Shuffled display order for the bridge-quiz options (see McqExercise). Fixed
+	// for this visit, so a retry after a wrong pick keeps the same layout.
+	const bridgeOrderNonce = Math.random().toString(36).slice(2);
+	const bridgeQuizOrder = $derived(
+		shuffledIndices(
+			unit?.bridge?.quiz?.options.length ?? 0,
+			`${bridgeOrderNonce}:${unit?.id ?? ''}`
+		)
+	);
 	let showConfidencePulse = $state(false);
 	let confidenceAnswered = $state(false);
 	let pendingAdvance = $state(false);
@@ -286,8 +296,10 @@
 	{:else if phase === 'intro' && unit}
 		<a
 			class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
-			href={resolve('/')}>{m.common_home()}</a
+			href={resolve('/')}
 		>
+			{m.common_home()}
+		</a>
 		<span class="fp-skill-chip ml-2 rounded-full px-2 py-0.5 text-xs font-semibold uppercase">
 			{unit.cefrLevel}
 		</span>
@@ -365,7 +377,7 @@
 		<h2 class="mt-4 text-lg font-semibold">{m.lesson_quick_check()}</h2>
 		<p class="mt-2 text-muted">{quiz.prompt}</p>
 		<ul class="mt-4 space-y-2">
-			{#each quiz.options as option, i (option)}
+			{#each bridgeQuizOrder as i (i)}
 				<li>
 					<button
 						type="button"
@@ -378,12 +390,13 @@
 								? 'ring-2 ring-primary'
 								: ''}"
 						data-testid="bridge-quiz-option"
+						data-option-index={i}
 						onclick={() => {
 							bridgeQuizIndex = i;
 							bridgeQuizSubmitted = true;
 						}}
 					>
-						{option}
+						{quiz.options[i]}
 					</button>
 				</li>
 			{/each}
@@ -528,20 +541,26 @@
 				type="button"
 				class="btn-secondary flex-1 text-sm"
 				data-testid="confidence-low"
-				onclick={() => answerConfidence('low')}>{m.confidence_low()}</button
+				onclick={() => answerConfidence('low')}
 			>
+				{m.confidence_low()}
+			</button>
 			<button
 				type="button"
 				class="btn-primary flex-1 text-sm"
 				data-testid="confidence-ok"
-				onclick={() => answerConfidence('ok')}>{m.confidence_ok()}</button
+				onclick={() => answerConfidence('ok')}
 			>
+				{m.confidence_ok()}
+			</button>
 			<button
 				type="button"
 				class="btn-secondary flex-1 text-sm"
 				data-testid="confidence-high"
-				onclick={() => answerConfidence('high')}>{m.confidence_high()}</button
+				onclick={() => answerConfidence('high')}
 			>
+				{m.confidence_high()}
+			</button>
 		</div>
 	</div>
 </Modal>

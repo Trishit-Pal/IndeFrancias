@@ -331,9 +331,9 @@
 	<ul class="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
 		{#each stats as stat (stat.label)}
 			<li class="fp-stat-card">
-				<span class="fp-stat-icon" style="color: {stat.tint}"
-					><Icon name={stat.icon} size={20} /></span
-				>
+				<span class="fp-stat-icon" style="color: {stat.tint}">
+					<Icon name={stat.icon} size={20} />
+				</span>
 				<span class="fp-stat-num fp-serif">{stat.value}</span>
 				<span class="fp-stat-lbl">{stat.label}</span>
 			</li>
@@ -372,8 +372,10 @@
 						{m.progress_focus_area()}: {skillLabel(weakestSkill.skill)} ({weakestSkill.estimatedLevel})
 						<a
 							class="inline-flex min-h-11 items-center text-primary underline"
-							href={resolve('/review')}>{m.nav_review()} →</a
+							href={resolve('/review')}
 						>
+							{m.nav_review()} →
+						</a>
 					</p>
 				{/if}
 				<ul class="mt-3 space-y-3">

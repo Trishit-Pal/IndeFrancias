@@ -24,7 +24,7 @@
 		{ name: 'fsrs-browser', licence: 'BSD 3-Clause', notice: 'Copyright 2023 Alex Nguyen' },
 		{ name: 'ts-fsrs', licence: 'MIT', notice: 'Copyright (c) 2026 Open Spaced Repetition' },
 		{ name: 'Svelte and SvelteKit', licence: 'MIT' },
-		{ name: 'bits-ui, zod, Capacitor', licence: 'MIT' },
+		{ name: 'zod, Capacitor', licence: 'MIT' },
 		{ name: 'idb', licence: 'ISC' }
 	];
 </script>
@@ -40,8 +40,10 @@
 				target="_blank"
 				rel="noopener noreferrer"
 				class="inline-flex min-h-11 items-center underline"
-				data-testid="feedback-link">{m.about_feedback()}</a
+				data-testid="feedback-link"
 			>
+				{m.about_feedback()}
+			</a>
 			<!-- eslint-enable svelte/no-navigation-without-resolve -->
 		</li>
 		<li>
@@ -49,8 +51,10 @@
 			<a
 				href="/privacy"
 				class="inline-flex min-h-11 items-center underline"
-				data-testid="privacy-link">{m.about_privacy()}</a
+				data-testid="privacy-link"
 			>
+				{m.about_privacy()}
+			</a>
 			<!-- eslint-enable svelte/no-navigation-without-resolve -->
 		</li>
 	</ul>

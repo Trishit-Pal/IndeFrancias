@@ -273,13 +273,13 @@
 						{m.voyage_you_are_in({ city: activeBand.city.city })}
 					</h3>
 					<p class="fp-voyage-hero-meta">
-						<span class="fp-figure"
-							>{m.voyage_leg({ n: String(currentIndex + 1), total: String(bands.length) })}</span
-						>
+						<span class="fp-figure">
+							{m.voyage_leg({ n: String(currentIndex + 1), total: String(bands.length) })}
+						</span>
 						· {m.voyage_lessons_done({ done: String(legDone), total: String(legTotal) })}
-						{#if BETA_LEVELS.has(activeBand.level)}&nbsp;<span class="fp-beta-badge"
-								>{m.beta_badge()}</span
-							>{/if}
+						{#if BETA_LEVELS.has(activeBand.level)}&nbsp;<span class="fp-beta-badge">
+								{m.beta_badge()}
+							</span>{/if}
 					</p>
 				</div>
 			</div>
@@ -308,11 +308,11 @@
 			{#if dueCount > 0}
 				<a class="fp-voyage-hero-due" href={resolve('/review')} data-testid="voyage-review-due">
 					<Icon name="review" size={16} />
-					<span
-						>{dueCount === 1
+					<span>
+						{dueCount === 1
 							? m.home_cards_due_one()
-							: m.home_cards_due_other({ count: String(dueCount) })}</span
-					>
+							: m.home_cards_due_other({ count: String(dueCount) })}
+					</span>
 					<Icon name="chevron-right" size={16} />
 				</a>
 			{/if}
@@ -379,9 +379,9 @@
 			>
 				<div class="fp-voyage-city-label">{band.city.city}</div>
 				<div class="fp-voyage-city-sublabel">
-					{band.level}{#if BETA_LEVELS.has(band.level)}&nbsp;<span class="fp-beta-badge"
-							>{m.beta_badge()}</span
-						>{/if}
+					{band.level}{#if BETA_LEVELS.has(band.level)}&nbsp;<span class="fp-beta-badge">
+							{m.beta_badge()}
+						</span>{/if}
 				</div>
 				<div
 					class="fp-voyage-city-node"
@@ -466,15 +466,17 @@
 			<div class="fp-voyage-city-row {bi % 2 === 0 ? 'fp-row-right' : 'fp-row-left'}">
 				<div class="fp-voyage-city-info">
 					<span class="fp-city-name" class:fp-active-city={active}>{band.city.city}</span>
-					<span class="fp-city-cefr"
-						>{band.level} · {active
+					<span class="fp-city-cefr">
+						{band.level} · {active
 							? m.voyage_here()
 							: done
 								? m.voyage_done()
 								: m.voyage_ahead()}{#if BETA_LEVELS.has(band.level)}&nbsp;<span
-								class="fp-beta-badge">{m.beta_badge()}</span
-							>{/if}</span
-					>
+								class="fp-beta-badge"
+							>
+								{m.beta_badge()}
+							</span>{/if}
+					</span>
 				</div>
 				<div
 					class="fp-voyage-city-node-v"
@@ -506,8 +508,10 @@
 					{@render glyph(activeBand.city.glyph)}
 				</svg>
 				{activeBand.city.city} · {activeBand.level}{#if BETA_LEVELS.has(activeBand.level)}&nbsp;<span
-						class="fp-beta-badge">{m.beta_badge()}</span
-					>{/if}
+						class="fp-beta-badge"
+					>
+						{m.beta_badge()}
+					</span>{/if}
 			</p>
 			<ul class="fp-lesson-nodes">
 				{#each activeBand.units as unit (unit.id)}
@@ -535,9 +539,9 @@
 							<span class="fp-lesson-node-text">
 								<span class="fp-lesson-node-title">{unit.title}</span>
 								{#if st === 'locked'}
-									<span class="fp-lesson-node-reason"
-										>{lockReasons.get(unit.id) ?? m.voyage_locked()}</span
-									>
+									<span class="fp-lesson-node-reason">
+										{lockReasons.get(unit.id) ?? m.voyage_locked()}
+									</span>
 								{/if}
 							</span>
 						</a>

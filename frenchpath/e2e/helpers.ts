@@ -294,7 +294,10 @@ async function applyExerciseAnswer(page: Page, ex: Exercise) {
 
 	switch (ex.type) {
 		case 'mcq':
-			await page.locator('[data-testid="mcq-option"]').nth(ex.answerIndex).click({ force: true });
+			// Options are shown in a shuffled order; data-option-index is the authored index.
+			await page
+				.locator(`[data-testid="mcq-option"][data-option-index="${ex.answerIndex}"]`)
+				.click({ force: true });
 			break;
 		case 'gender': {
 			const art =
@@ -343,8 +346,11 @@ async function applyExerciseAnswer(page: Page, ex: Exercise) {
 		case 'reading':
 			for (let q = 0; q < ex.questions.length; q++) {
 				await page
-					.locator('[data-testid="reading-option"]')
-					.nth(ex.questions[q]!.answerIndex)
+					.getByTestId('reading-question')
+					.nth(q)
+					.locator(
+						`[data-testid="reading-option"][data-option-index="${ex.questions[q]!.answerIndex}"]`
+					)
 					.click();
 			}
 			break;
@@ -436,6 +442,44 @@ export async function confirmRestoreAndReload(page: Page) {
 	await page.getByTestId('import-confirm').click();
 	await expect(page.getByTestId('restore-complete')).toBeVisible({ timeout: 15_000 });
 	await Promise.all([page.waitForEvent('load'), page.getByTestId('restore-reload').click()]);
+}
+
+/**
+ * On /review, answers context cards until a flip card (Show answer + grade buttons)
+ * is on screen. Returns false if the queue ends first, or a card can't be answered
+ * here (speak mode).
+ */
+export async function reachFlipCard(page: Page): Promise<boolean> {
+	const reveal = page.getByTestId('reveal');
+	const ctx = page.getByTestId('context-card');
+	const cont = page.getByTestId('continue');
+	const gotIt = page.getByTestId('leech-got-it');
+	const visible = (testId: string) =>
+		page
+			.getByTestId(testId)
+			.isVisible()
+			.catch(() => false);
+	await expect(reveal.or(ctx).first()).toBeVisible({ timeout: 15_000 });
+	for (let i = 0; i < 20 && !(await visible('reveal')); i++) {
+		if (await visible('review-done')) return false;
+		if (await visible('context-card')) {
+			// An answered card keeps its (now disabled) choices on screen until Continue,
+			// so only ever click enabled controls, then wait for Continue and the card swap.
+			const choice = page.locator('[data-testid="context-choice"]:enabled').first();
+			const recall = page.locator('[data-testid="recall-input"]:enabled');
+			if (!(await visible('continue'))) {
+				if (await choice.isVisible().catch(() => false)) await choice.click();
+				else if (await recall.isVisible().catch(() => false)) {
+					await recall.fill('x');
+					await page.getByTestId('recall-check').click();
+				} else return false;
+			}
+			await cont.click();
+			await expect(cont).toBeHidden();
+		}
+		if (await visible('leech-got-it')) await gotIt.click();
+	}
+	return visible('reveal');
 }
 
 export function fixturePath(name: string): string {

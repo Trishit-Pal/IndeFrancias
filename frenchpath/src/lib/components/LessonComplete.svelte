@@ -62,12 +62,14 @@
 				class="btn-primary block"
 				href={resolve('/learn/[unitId]', { unitId: nextUnitId })}
 				data-sveltekit-reload
-				data-testid="next-lesson">{m.voyage_next()}</a
+				data-testid="next-lesson"
 			>
+				{m.voyage_next()}
+			</a>
 		{/if}
-		<a class="{nextUnitId ? 'btn-secondary' : 'btn-primary'} block" href={resolve('/review')}
-			>{m.lesson_review_now()}</a
-		>
+		<a class="{nextUnitId ? 'btn-secondary' : 'btn-primary'} block" href={resolve('/review')}>
+			{m.lesson_review_now()}
+		</a>
 		<a class="btn-secondary block" href={resolve('/')}>{m.common_back_to_path()}</a>
 	</div>
 </div>

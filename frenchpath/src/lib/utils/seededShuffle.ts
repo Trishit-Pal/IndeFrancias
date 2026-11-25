@@ -26,3 +26,14 @@ export function shuffle<T>(items: readonly T[], seed: string): T[] {
 	}
 	return out;
 }
+
+/**
+ * The indices `0..count-1` in shuffled order: a display order for answer options.
+ * Options keep their authored index as their identity, so grading is unaffected.
+ */
+export function shuffledIndices(count: number, seed: string): number[] {
+	return shuffle(
+		Array.from({ length: count }, (_, i) => i),
+		seed
+	);
+}

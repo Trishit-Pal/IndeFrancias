@@ -142,3 +142,38 @@ test('tab-bar navigation mid-checkpoint asks before discarding the attempt', asy
 	await page.getByTestId('lesson-exit-leave').click();
 	await expect(page).toHaveURL(/\/review/);
 });
+
+// The first exercise of unit 1 is a four-option question whose authored answer
+// is option 0. data-option-index carries the authored index of each button.
+test('multiple-choice options are shuffled and still graded by their authored index', async ({
+	page
+}) => {
+	const options = page.getByTestId('mcq-option');
+	const orders: string[] = [];
+	for (let visit = 0; visit < 5; visit++) {
+		await startFirstLesson(page);
+		await expect(options).toHaveCount(4);
+		const indices = await options.evaluateAll((els) =>
+			els.map((el) => el.getAttribute('data-option-index'))
+		);
+		orders.push(indices.join(''));
+	}
+	// Five visits all landing on the authored order has odds of about 1 in 8 million.
+	expect(orders.some((order) => order !== '0123')).toBe(true);
+
+	await page.locator('[data-testid="mcq-option"][data-option-index="0"]').click();
+	await page.getByTestId('check').click();
+	await expect(page.getByTestId('feedback')).toHaveClass(/feedback-correct/);
+});
+
+test('a wrong multiple-choice pick is marked wrong and the authored answer is shown', async ({
+	page
+}) => {
+	await startFirstLesson(page);
+	await page.locator('[data-testid="mcq-option"][data-option-index="1"]').click();
+	await page.getByTestId('check').click();
+	await expect(page.getByTestId('feedback')).toHaveClass(/feedback-incorrect/);
+	await expect(page.locator('[data-testid="mcq-option"][data-option-index="0"]')).toHaveClass(
+		/option-correct/
+	);
+});

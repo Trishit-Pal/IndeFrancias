@@ -9,6 +9,7 @@
 	import type { ContextPrompt } from '$lib/srs/contextCard';
 	import type { ReviewMode } from '$lib/gamification/todayPlan';
 	import { gradeChoice, gradeSpoken, gradeTyped } from '$lib/srs/contextGrade';
+	import { digitKey } from '$lib/utils/digitKey';
 
 	interface Props {
 		prompt: ContextPrompt;
@@ -16,9 +17,25 @@
 		gloss: string;
 		/** On-device speech recognition is ready; without it `speak` renders as typed recall. */
 		asr?: boolean;
-		onAnswered: (grade: ReviewGrade, durationMs: number) => void;
+		/** How long until the card comes back for each grade; shown once answered. */
+		intervals?: Record<ReviewGrade, string>;
+		/** The card is answered and showing its result, but Continue has not been pressed yet. */
+		onPending?: (grade: ReviewGrade, durationMs: number) => void;
+		/** Continue was pressed. Resolving `false` means the save failed and the card stays. */
+		onAnswered: (
+			grade: ReviewGrade,
+			durationMs: number
+		) => void | boolean | Promise<void | boolean>;
 	}
-	let { prompt, mode = 'read', gloss, asr = false, onAnswered }: Props = $props();
+	let {
+		prompt,
+		mode = 'read',
+		gloss,
+		asr = false,
+		intervals,
+		onPending,
+		onAnswered
+	}: Props = $props();
 
 	const isListen = $derived(mode === 'listen');
 	let typeInstead = $state(false);
@@ -49,6 +66,14 @@
 	let speakNote = $state<'denied' | 'failed' | null>(null);
 	const answered = $derived(picked !== null || submitted);
 	const isCorrect = $derived(submitted ? typedGrade !== 'again' : picked === prompt.answer);
+	// durationMs is set just before `picked`/`submitted` flips, so it is final when this recomputes
+	const finalGrade = $derived<ReviewGrade | null>(
+		!answered ? null : submitted ? typedGrade : gradeChoice(isCorrect, durationMs)
+	);
+	// the page saves this answer if the learner ends the session without pressing Continue
+	$effect(() => {
+		if (finalGrade) onPending?.(finalGrade, durationMs);
+	});
 
 	function replay() {
 		try {
@@ -142,12 +167,22 @@
 		void tick().then(() => continueBtn?.focus());
 	}
 
-	function next() {
-		if (finished || !answered) return;
+	async function next() {
+		if (finished || finalGrade === null) return;
 		finished = true;
-		onAnswered(submitted ? typedGrade : gradeChoice(isCorrect, durationMs), durationMs);
+		// A failed save leaves this card on screen: let Continue try again.
+		if ((await onAnswered(finalGrade, durationMs)) === false) finished = false;
+	}
+
+	// 1–4 pick a choice; typed and spoken answers have no numbered options
+	function onKeydown(event: KeyboardEvent) {
+		if (isSpeak || isType || isGlossOnly || picked !== null) return;
+		const choice = prompt.choices[(digitKey(event) ?? 0) - 1];
+		if (choice) choose(choice);
 	}
 </script>
+
+<svelte:window onkeydown={onKeydown} />
 
 <section class="surface-card p-6 shadow-sm lg:mx-auto lg:max-w-2xl" data-testid="context-card">
 	{#if isListen}
@@ -171,11 +206,13 @@
 			class="fp-display-lg text-center text-balance text-foreground"
 			data-testid="context-sentence"
 		>
-			{prompt.before}<span class="fp-blank"
-				>{#if answered}{prompt.answer}{:else}<span aria-hidden="true">＿＿＿</span><span
-						class="sr-only">{m.review_context_blank()}</span
-					>{/if}</span
-			>{prompt.after}
+			{prompt.before}<span class="fp-blank">
+				{#if answered}{prompt.answer}{:else}<span aria-hidden="true">＿＿＿</span><span
+						class="sr-only"
+					>
+						{m.review_context_blank()}
+					</span>{/if}
+			</span>{prompt.after}
 		</p>
 		<p class="mt-2 text-center text-sm text-muted" style="font-family: var(--fp-font-hindi)">
 			{gloss}
@@ -202,8 +239,10 @@
 				class="btn-secondary min-h-11"
 				data-testid="speak-type-instead"
 				disabled={checking}
-				onclick={switchToTyping}>{m.review_speak_type_instead()}</button
+				onclick={switchToTyping}
 			>
+				{m.review_speak_type_instead()}
+			</button>
 		</div>
 		<p class="mt-2 min-h-5 text-center text-sm text-muted" aria-live="polite">
 			{#if checking}{m.review_speak_checking()}
@@ -234,9 +273,9 @@
 				lang="fr"
 				disabled={submitted}
 			/>
-			<button type="submit" class="btn-primary" data-testid="recall-check" disabled={submitted}
-				>{m.review_recall_check()}</button
-			>
+			<button type="submit" class="btn-primary" data-testid="recall-check" disabled={submitted}>
+				{m.review_recall_check()}
+			</button>
 		</form>
 	{:else}
 		<div
@@ -245,16 +284,19 @@
 			role="group"
 			aria-label={m.review_context_prompt()}
 		>
-			{#each prompt.choices as choice (choice)}
+			{#each prompt.choices as choice, i (choice)}
 				<button
 					type="button"
 					class="fp-context-choice"
 					class:fp-context-right={picked !== null && choice === prompt.answer}
 					class:fp-context-wrong={picked === choice && choice !== prompt.answer}
 					data-testid="context-choice"
+					aria-keyshortcuts={String(i + 1)}
 					disabled={picked !== null}
-					onclick={() => choose(choice)}>{choice}</button
+					onclick={() => choose(choice)}
 				>
+					<kbd class="fp-key-hint" aria-hidden="true">{i + 1}</kbd>{choice}
+				</button>
 			{/each}
 		</div>
 	{/if}
@@ -272,6 +314,11 @@
 				{:else if isCorrect}{m.review_context_correct()}
 				{:else}{m.review_context_answer({ answer: prompt.answer })}{/if}
 			</p>
+			{#if intervals && finalGrade}
+				<p class="mt-1 text-xs text-muted" data-testid="context-next-in">
+					{m.review_next_in({ interval: intervals[finalGrade] })}
+				</p>
+			{/if}
 		{/if}
 	</div>
 
@@ -281,8 +328,10 @@
 			class="btn-primary mt-4 w-full"
 			data-testid="continue"
 			bind:this={continueBtn}
-			onclick={next}>{m.review_context_continue()}</button
+			onclick={next}
 		>
+			{m.review_context_continue()}
+		</button>
 	{/if}
 </section>
 

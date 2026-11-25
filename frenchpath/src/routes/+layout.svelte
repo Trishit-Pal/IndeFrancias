@@ -221,8 +221,9 @@
 	<a
 		href="#main"
 		class="btn-secondary sr-only bg-card focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50"
-		>{m.skip_to_content()}</a
 	>
+		{m.skip_to_content()}
+	</a>
 	<div role="status" aria-live="polite" class="sr-only">{routeAnnouncement}</div>
 	<!-- Desktop sidebar (lg+) -->
 	<aside

@@ -72,6 +72,8 @@
 		type="button"
 		class="btn-primary mt-5 min-h-11 w-full"
 		data-testid="leech-got-it"
-		onclick={onDone}>{m.leech_got_it()}</button
+		onclick={onDone}
 	>
+		{m.leech_got_it()}
+	</button>
 </section>

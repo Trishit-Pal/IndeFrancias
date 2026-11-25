@@ -188,8 +188,10 @@
 <main class="page-shell">
 	<a
 		class="inline-flex min-h-11 items-center text-sm text-muted hover:underline"
-		href={resolve('/')}>{m.common_home()}</a
+		href={resolve('/')}
 	>
+		{m.common_home()}
+	</a>
 
 	{#if phase === 'loading'}
 		<p class="mt-6 text-muted">{m.checkpoint_loading()}</p>
@@ -198,9 +200,9 @@
 	{:else if phase === 'load-error'}
 		<InfoBanner variant="error" role="alert" class="mt-6">
 			<p>{m.checkpoint_load_error()}</p>
-			<a class="btn-secondary mt-3 inline-block text-sm" href={resolve('/')}
-				>{m.common_back_to_path()}</a
-			>
+			<a class="btn-secondary mt-3 inline-block text-sm" href={resolve('/')}>
+				{m.common_back_to_path()}
+			</a>
 		</InfoBanner>
 	{:else if phase === 'cooldown'}
 		<p class="mt-6 text-muted" role="alert" data-testid="checkpoint-cooldown">
@@ -214,12 +216,12 @@
 			<p class="mt-2 text-muted">{m.checkpoint_intro_desc()}</p>
 			<div class="mt-4 flex items-center gap-2">
 				<TierBadge {tier} />
-				<span class="text-sm text-muted"
-					>{m.checkpoint_questions_to_pass({
+				<span class="text-sm text-muted">
+					{m.checkpoint_questions_to_pass({
 						count: cfg.questionCount,
 						percent: cfg.passPercent
-					})}</span
-				>
+					})}
+				</span>
 			</div>
 			<ul class="mt-4 list-inside list-disc text-sm text-muted">
 				<li>{m.checkpoint_hints_available({ count: cfg.maxHints })}</li>
@@ -244,9 +246,9 @@
 			{/if}
 		</p>
 		{#if cfg.maxHints > hintsUsed}
-			<button type="button" class="btn-secondary mt-2 text-sm" onclick={applyHint}
-				>{m.checkpoint_hint()}</button
-			>
+			<button type="button" class="btn-secondary mt-2 text-sm" onclick={applyHint}>
+				{m.checkpoint_hint()}
+			</button>
 		{/if}
 		<div class="mt-4">
 			<ExerciseView
@@ -312,9 +314,9 @@
 				{m.share_progress()}
 			</button>
 		{/if}
-		<a class="btn-primary mt-4 block w-full text-center" href={resolve('/')}
-			>{m.common_back_to_path()}</a
-		>
+		<a class="btn-primary mt-4 block w-full text-center" href={resolve('/')}>
+			{m.common_back_to_path()}
+		</a>
 	{/if}
 </main>
 

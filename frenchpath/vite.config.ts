@@ -33,6 +33,11 @@ export default defineConfig(({ mode }) => ({
 		paraglideVitePlugin({
 			project: './project.inlang',
 			outdir: './src/lib/paraglide',
+			// Real files on disk, the same layout `npm run i18n:compile` writes. Paraglide 3's
+			// Vite default ('virtual-modules') makes messages.js re-export from `virtual:` ids
+			// that only Vite resolves; Playwright loads e2e helpers that import app source in
+			// plain Node and cannot collect a single test.
+			outputStructure: 'message-modules',
 			// Persist the chosen UI language locally (no locale in the URL — keeps
 			// routing, the service worker and prerendering simple for this SPA).
 			strategy: ['localStorage', 'preferredLanguage', 'baseLocale']

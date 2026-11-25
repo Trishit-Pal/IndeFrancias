@@ -14,6 +14,9 @@ export default defineConfig({
 		env: { VITE_E2E: '1' }
 	},
 	testMatch: '**/*.e2e.{ts,js}',
+	// Many specs play a whole A1 lesson (some play it twice). Units 1 and 2 doubled in
+	// length, which put those specs at 23-30 s against Playwright's 30 s default.
+	timeout: 60_000,
 	use: {
 		launchOptions: {
 			// Let getUserMedia() succeed headlessly (no real mic in CI/automated runs).
