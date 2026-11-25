@@ -220,7 +220,40 @@ const T = {
 		what: 'என்ன',
 		where: 'எங்கே',
 		why: 'ஏன்',
-		yesterday: 'நேற்று'
+		yesterday: 'நேற்று',
+		// A1 depth, first batch (units 1 and 2)
+		'good evening': 'மாலை வணக்கம்',
+		'Good evening, Mrs Sharma!': 'மாலை வணக்கம், திருமதி சர்மா!',
+		'please (formal)': 'தயவுசெய்து',
+		'One tea, please.': 'ஒரு தேநீர், தயவுசெய்து.',
+		'excuse me (formal)': 'மன்னிக்கவும்',
+		'Excuse me, are you Mrs Rao?': 'மன்னிக்கவும், நீங்கள் திருமதி ராவ் தானா?',
+		yes: 'ஆம்',
+		'Yes, my name is Arjun.': 'ஆம், என் பெயர் அர்ஜுன்.',
+		no: 'இல்லை',
+		'No, thank you.': 'இல்லை, நன்றி.',
+		"how are you? / I'm fine (informal)": 'எப்படி இருக்கிறாய்? / நலம்',
+		"I'm fine, thank you.": 'நான் நலமாக இருக்கிறேன், நன்றி.',
+		'pleased to meet you': 'உங்களைச் சந்தித்ததில் மகிழ்ச்சி',
+		'Pleased to meet you, Priya!': 'உங்களைச் சந்தித்ததில் மகிழ்ச்சி, பிரியா!',
+		'what is your name? (formal)': 'உங்கள் பெயர் என்ன?',
+		'Hello, what is your name?': 'வணக்கம், உங்கள் பெயர் என்ன?',
+		'the son': 'மகன்',
+		'My son lives in Pune.': 'என் மகன் புனேவில் வசிக்கிறான்.',
+		'the daughter / the girl': 'மகள் / சிறுமி',
+		'My daughter is called Ananya.': 'என் மகளின் பெயர் அனன்யா.',
+		'the grandfather': 'தாத்தா',
+		'My grandfather lives in Kochi.': 'என் தாத்தா கொச்சியில் வசிக்கிறார்.',
+		'the grandmother': 'பாட்டி',
+		'My grandmother makes the tea.': 'என் பாட்டி தேநீர் தயாரிக்கிறார்.',
+		'the husband': 'கணவர்',
+		"Priya's husband is a teacher.": 'பிரியாவின் கணவர் ஒரு ஆசிரியர்.',
+		'the wife / the woman': 'மனைவி / பெண்',
+		"Arjun's wife is called Meera.": 'அர்ஜுனின் மனைவியின் பெயர் மீரா.',
+		'the child': 'குழந்தை',
+		'The child plays with his brother.': 'குழந்தை தன் சகோதரனுடன் விளையாடுகிறது.',
+		'my (before a masculine noun)': 'என் (ஆண்பால் பெயர்ச்சொல்லுக்கு முன்)',
+		'My brother lives in Delhi.': 'என் சகோதரன் டெல்லியில் வசிக்கிறான்.'
 	},
 	te: JSON.parse(readFileSync(resolve('scripts/data/dravido-te-translations.json'), 'utf8')),
 	kn: JSON.parse(readFileSync(resolve('scripts/data/dravido-kn-translations.json'), 'utf8'))
@@ -249,5 +282,6 @@ for (const key of keys) {
 	out.kn[key] = T.kn[key];
 }
 
-writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n', 'utf8');
+// Tabs: the repo's Prettier style, so a run leaves the file lint-clean and unchanged.
+writeFileSync(OUT, JSON.stringify(out, null, '\t') + '\n', 'utf8');
 console.log(`Wrote ${keys.length} keys × 3 langs to ${OUT}`);
