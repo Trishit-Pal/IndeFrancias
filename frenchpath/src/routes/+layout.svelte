@@ -8,6 +8,7 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import InfoBanner from '$lib/components/InfoBanner.svelte';
 	import UpdateToast from '$lib/components/UpdateToast.svelte';
+	import { isSessionRoute } from '$lib/pwa/updatePrompt';
 	import type { IconName } from '$lib/components/icons';
 	import { LANGUAGES } from '$lib/i18n/languages';
 	import * as m from '$lib/paraglide/messages';
@@ -100,6 +101,9 @@
 
 	// A new service worker is waiting. The learner decides when to reload (SPEC invariant 6).
 	let updateReady = $state(false);
+	// Held during a lesson, checkpoint, exam or review: Update reloads the page, and those
+	// screens keep their state in memory. The prompt appears on the next screen instead.
+	const showUpdatePrompt = $derived(updateReady && !isSessionRoute(page.route.id));
 	let updateSW: ((reloadPage?: boolean) => Promise<void>) | undefined;
 	let updateRequested = false; // this tab clicked Update
 	let workerSwapped = false; // the new worker already took over (Update clicked in another tab)
@@ -321,9 +325,13 @@
 			style="padding-top: env(safe-area-inset-top)"
 		>
 			{@render children()}
+			{#if showUpdatePrompt}
+				<!-- Room for the floating update prompt, so the end of the page can scroll clear of it. -->
+				<div class="h-36" aria-hidden="true" data-testid="update-toast-spacer"></div>
+			{/if}
 		</div>
 
-		{#if updateReady}
+		{#if showUpdatePrompt}
 			<UpdateToast onupdate={applyUpdate} onlater={() => (updateReady = false)} />
 		{/if}
 

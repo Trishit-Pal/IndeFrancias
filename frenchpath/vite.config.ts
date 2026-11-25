@@ -1,11 +1,14 @@
 import { paraglideVitePlugin } from '@inlang/paraglide-js';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vitest/config';
-import { sveltekit } from '@sveltejs/kit/vite';
-import { SvelteKitPWA } from '@vite-pwa/sveltekit';
+import { withPwa } from '@vite-pwa/sveltekit';
+import svelteConfig from './svelte.config.js';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { readFileSync } from 'node:fs';
 import type { Plugin } from 'vite';
+
+// SvelteKit's plugin takes `kit` options flattened next to the Svelte ones (compilerOptions, …).
+const { kit: kitOptions, ...svelteOptions } = svelteConfig;
 
 /** Largest file the service worker precaches; bigger ones (the vosk ASR chunk) are skipped. */
 const PRECACHE_MAX_FILE_BYTES = 2 * 1024 * 1024;
@@ -29,7 +32,6 @@ export default defineConfig(({ mode }) => ({
 	},
 	plugins: [
 		tailwindcss(),
-		sveltekit(),
 		paraglideVitePlugin({
 			project: './project.inlang',
 			outdir: './src/lib/paraglide',
@@ -42,99 +44,108 @@ export default defineConfig(({ mode }) => ({
 			// routing, the service worker and prerendering simple for this SPA).
 			strategy: ['localStorage', 'preferredLanguage', 'baseLocale']
 		}),
-		SvelteKitPWA({
-			// 'prompt', never 'autoUpdate': an activating update must not reload the page on the
-			// learner (lesson state is in memory). +layout.svelte shows UpdateToast instead.
-			registerType: 'prompt',
-			injectRegister: 'auto',
-			// Precache adapter-static's SPA shell (svelte.config.js `fallback`) so the SW can serve
-			// it for deep links like /learn/a1-unit-01 (the prerendered Home page would boot Home).
-			kit: { adapterFallback: '200.html', spa: true },
-			// vosk-browser (the WASM ASR engine, ~6MB) is only ever pulled in via a
-			// dynamic import inside src/lib/speech/asr.ts, once a learner opts into
-			// a speak exercise's model download. SvelteKit hashes client chunk
-			// filenames (no [name] control), so it can't be glob-excluded from the
-			// precache by path the way static/models/ is below — instead, workbox
-			// skips files over `maximumFileSizeToCacheInBytes` (below) from the
-			// precache manifest with a console warning rather than hard-failing the
-			// build, since skipping it is exactly what we want.
-			showMaximumFileSizeToCacheInBytesWarning: true,
-			includeAssets: [
-				'favicon.svg',
-				'icon.svg',
-				'pwa-64x64.png',
-				'pwa-192x192.png',
-				'pwa-512x512.png',
-				'maskable-icon-512x512.png',
-				'apple-touch-icon-180x180.png'
-			],
-			manifest: {
-				name: 'FrenchPath — Learn French',
-				short_name: 'FrenchPath',
-				description:
-					'Offline-first French learning for Indian learners (A1–C1) with spaced repetition. No account needed.',
-				lang: 'en',
-				theme_color: '#faf7f0',
-				background_color: '#faf7f0',
-				display: 'standalone',
-				orientation: 'portrait',
-				start_url: '/',
-				scope: '/',
-				categories: ['education'],
-				icons: [
-					{ src: '/pwa-64x64.png', sizes: '64x64', type: 'image/png' },
-					{ src: '/pwa-192x192.png', sizes: '192x192', type: 'image/png' },
-					{ src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png' },
-					{
-						src: '/maskable-icon-512x512.png',
-						sizes: '512x512',
-						type: 'image/png',
-						purpose: 'maskable'
-					},
-					{ src: '/icon.svg', sizes: 'any', type: 'image/svg+xml' }
-				]
-			},
-			workbox: {
-				// `wasm` so the FSRS optimizer (fsrs-browser, ~330 KB) also runs offline. No legacy
-				// `woff`: @fontsource lists woff2 first and every supported browser takes it.
-				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff2,wasm,json,html}'],
-				// Pinned at workbox's 2 MiB default on purpose: everything in the app shell fits
-				// well under it, and the ~5.8 MB vosk ASR chunk must stay out (see above).
+		// @vite-pwa/sveltekit 2: `withPwa` replaces `sveltekit()` + `SvelteKitPWA()`. It calls
+		// sveltekit() itself and wraps the adapter so the service worker is built after it runs.
+		// SvelteKit only takes options from one place, so svelte.config.js (still the single
+		// source: svelte-check, eslint and headers.spec.ts read it) is passed through here, and
+		// the build prints "svelte.config.js is ignored" for that reason.
+		...withPwa(
+			{ ...kitOptions, ...svelteOptions },
+			{
+				// 'prompt', never 'autoUpdate': an activating update must not reload the page on the
+				// learner (lesson state is in memory). +layout.svelte shows UpdateToast instead.
+				registerType: 'prompt',
+				injectRegister: 'auto',
+				// Precache adapter-static's SPA shell (svelte.config.js `fallback`) so the SW can serve
+				// it for deep links like /learn/a1-unit-01 (the prerendered Home page would boot Home).
+				kit: { adapterFallback: '200.html', spa: true },
+				// vosk-browser (the WASM ASR engine, ~6MB) is only ever pulled in via a
+				// dynamic import inside src/lib/speech/asr.ts, once a learner opts into
+				// a speak exercise's model download. SvelteKit hashes client chunk
+				// filenames (no [name] control), so it can't be glob-excluded from the
+				// precache by path the way static/models/ is below — instead, files over
+				// `maximumFileSizeToCacheInBytes` are left out of the precache manifest with a
+				// build warning. Pinned at workbox's 2 MiB default on purpose: everything in the
+				// app shell fits well under it, and the ~5.8 MB vosk ASR chunk must stay out.
 				maximumFileSizeToCacheInBytes: PRECACHE_MAX_FILE_BYTES,
-				// The Vosk ASR model (static/models/) is a same-origin opt-in download,
-				// never part of the app-shell precache (privacy: web speech is opt-in).
-				// version.json must also stay out of the precache — checkForUpdate()
-				// needs a live network fetch to detect a newer deployment; a precached
-				// copy would always compare equal to itself (see updates.ts).
-				globIgnores: ['**/models/**', '**/version.json'],
-				navigateFallback: '/200.html',
-				// `?mode=` must not defeat the precache match for /review (else it gets the bare SPA shell);
-				// keep workbox's defaults too.
-				ignoreURLParametersMatching: [/^utm_/, /^fbclid$/, /^mode$/],
-				navigateFallbackDenylist: [/^\/manifest\.webmanifest$/],
-				runtimeCaching: [
-					{
-						urlPattern: ({ url }) => url.pathname.startsWith('/audio/'),
-						handler: 'CacheFirst',
-						options: {
-							cacheName: 'frenchpath-audio',
-							expiration: { maxEntries: 500, maxAgeSeconds: 60 * 60 * 24 * 60 },
-							cacheableResponse: { statuses: [0, 200] }
+				// v2 fails the build on an oversized file unless told not to; skipping is what we want.
+				throwMaximumFileSizeToCacheInBytes: false,
+				includeAssets: [
+					'icon.svg',
+					'pwa-64x64.png',
+					'pwa-192x192.png',
+					'pwa-512x512.png',
+					'maskable-icon-512x512.png',
+					'apple-touch-icon-180x180.png'
+				],
+				manifest: {
+					name: 'FrenchPath — Learn French',
+					short_name: 'FrenchPath',
+					description:
+						'Offline-first French learning for Indian learners (A1–C1) with spaced repetition. No account needed.',
+					lang: 'en',
+					theme_color: '#faf7f0',
+					background_color: '#faf7f0',
+					display: 'standalone',
+					orientation: 'portrait',
+					start_url: '/',
+					scope: '/',
+					categories: ['education'],
+					icons: [
+						{ src: '/pwa-64x64.png', sizes: '64x64', type: 'image/png' },
+						{ src: '/pwa-192x192.png', sizes: '192x192', type: 'image/png' },
+						{ src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png' },
+						{
+							src: '/maskable-icon-512x512.png',
+							sizes: '512x512',
+							type: 'image/png',
+							purpose: 'maskable'
+						},
+						{ src: '/icon.svg', sizes: 'any', type: 'image/svg+xml' }
+					]
+				},
+				generateSW: {
+					// `wasm` so the FSRS optimizer (fsrs-browser, ~330 KB) also runs offline. No legacy
+					// `woff`: @fontsource lists woff2 first and every supported browser takes it.
+					globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff2,wasm,json,html}'],
+					// The Vosk ASR model (static/models/) is a same-origin opt-in download,
+					// never part of the app-shell precache (privacy: web speech is opt-in).
+					// version.json must also stay out of the precache — checkForUpdate()
+					// needs a live network fetch to detect a newer deployment; a precached
+					// copy would always compare equal to itself (see updates.ts).
+					globIgnores: ['**/models/**', '**/version.json'],
+					navigateFallback: '/200.html',
+					// v1 turned this on by default; v2 does not. Without it, precache entries from a
+					// previous deployment are never deleted from the learner's device.
+					cleanupOutdatedCaches: true,
+					// `?mode=` must not defeat the precache match for /review (else it gets the bare SPA shell);
+					// keep workbox's defaults too.
+					ignoreURLParametersMatching: [/^utm_/, /^fbclid$/, /^mode$/],
+					navigateFallbackDenylist: [/^\/manifest\.webmanifest$/],
+					runtimeCaching: [
+						{
+							urlPattern: ({ url }) => url.pathname.startsWith('/audio/'),
+							handler: 'CacheFirst',
+							options: {
+								cacheName: 'frenchpath-audio',
+								expiration: { maxEntries: 500, maxAgeSeconds: 60 * 60 * 24 * 60 },
+								cacheableResponse: { statuses: [0, 200] }
+							}
+						},
+						{
+							urlPattern: ({ url }) => url.pathname.includes('/_app/immutable/chunks/'),
+							handler: 'CacheFirst',
+							options: {
+								cacheName: 'frenchpath-chunks',
+								expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 365 },
+								cacheableResponse: { statuses: [0, 200] }
+							}
 						}
-					},
-					{
-						urlPattern: ({ url }) => url.pathname.includes('/_app/immutable/chunks/'),
-						handler: 'CacheFirst',
-						options: {
-							cacheName: 'frenchpath-chunks',
-							expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 365 },
-							cacheableResponse: { statuses: [0, 200] }
-						}
-					}
-				]
-			},
-			devOptions: { enabled: false }
-		}),
+					]
+				},
+				devOptions: { enabled: false }
+			}
+		),
 		{
 			// ponytail: `vite preview` serves .svelte-kit/output, but adapter-static writes 200.html
 			// only into build/, so preview 404s the shell the SW precaches. Serve it the way real
@@ -144,6 +155,22 @@ export default defineConfig(({ mode }) => ({
 				server.middlewares.use('/200.html', (_req, res) => {
 					res.setHeader('Content-Type', 'text/html; charset=utf-8');
 					res.end(readFileSync('build/200.html'));
+				});
+			}
+		} satisfies Plugin,
+		{
+			// e2e only: a browser decides "a new version is ready" by comparing sw.js byte for
+			// byte. A request carrying the fp-e2e-sw-bump cookie gets the same worker plus one
+			// comment line, so a single test context sees an update without a second build
+			// (e2e/update-prompt.e2e.ts). Preview-only and VITE_E2E-only; never shipped.
+			name: 'preview-e2e-sw-bump',
+			configurePreviewServer(server) {
+				if (process.env.VITE_E2E !== '1') return;
+				server.middlewares.use('/sw.js', (req, res, next) => {
+					if (!req.headers.cookie?.includes('fp-e2e-sw-bump=')) return next();
+					res.setHeader('Content-Type', 'text/javascript; charset=utf-8');
+					res.setHeader('Cache-Control', 'no-store');
+					res.end(readFileSync('build/sw.js', 'utf8') + '\n// e2e: bumped\n');
 				});
 			}
 		} satisfies Plugin,
