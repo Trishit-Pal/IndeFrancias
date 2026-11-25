@@ -158,6 +158,22 @@ export default defineConfig(({ mode }) => ({
 				});
 			}
 		} satisfies Plugin,
+		{
+			// e2e only: a browser decides "a new version is ready" by comparing sw.js byte for
+			// byte. A request carrying the fp-e2e-sw-bump cookie gets the same worker plus one
+			// comment line, so a single test context sees an update without a second build
+			// (e2e/update-prompt.e2e.ts). Preview-only and VITE_E2E-only; never shipped.
+			name: 'preview-e2e-sw-bump',
+			configurePreviewServer(server) {
+				if (process.env.VITE_E2E !== '1') return;
+				server.middlewares.use('/sw.js', (req, res, next) => {
+					if (!req.headers.cookie?.includes('fp-e2e-sw-bump=')) return next();
+					res.setHeader('Content-Type', 'text/javascript; charset=utf-8');
+					res.setHeader('Cache-Control', 'no-store');
+					res.end(readFileSync('build/sw.js', 'utf8') + '\n// e2e: bumped\n');
+				});
+			}
+		} satisfies Plugin,
 		mode === 'analyze' &&
 			visualizer({
 				filename: 'build/stats.html',
