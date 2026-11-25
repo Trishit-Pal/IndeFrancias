@@ -2,6 +2,8 @@ import { test, expect } from '@playwright/test';
 import { gotoHome, completeLesson, completeCheckpoint } from './helpers';
 
 test('checkpoint appears after 3 units and blocks unit 4 until passed', async ({ page }) => {
+	// Three full lessons: units 1 and 2 doubled in length, so the default 30 s is too tight.
+	test.setTimeout(120_000);
 	await gotoHome(page);
 	for (const unitId of ['a1-unit-01', 'a1-unit-02', 'a1-unit-03']) {
 		await page.locator(`a[href*="/learn/${unitId}"]`).first().click();
